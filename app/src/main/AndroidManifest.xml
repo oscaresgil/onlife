@@ -16,6 +16,21 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <!-- Este servira para enviar a la API online, el numero de registro que se acaba de activar.
+             De la misma forma, este podra recibir los responds del servidor y podra mostrarlos en el telefono utilizando intents. -->
+        <receiver android:name=".GCMClient.GcmBroadcastReceiver"
+            android:permission="com.google.android.c2dm.permission.SEND">
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+                <category android:name="com.hmkcode.android.gcm" />
+            </intent-filter>
+        </receiver>
+        <!-- Se crea un nuevo servicio de la aplicacion -->
+        <service android:name=".GCMClient.GcmMessageHandler" />
+
+        <!-- Guarda la version de Google Play Services para poder utilizar GCM -->
+        <!--meta-data android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" /-->
     </application>
 
 </manifest>
