@@ -15,17 +15,17 @@ import com.example.henzer.socialize.R;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 
-public class GcmMessageHandler extends IntentService{
+public class GcmMessageHandler extends IntentService {
     private NotificationManager myNotificationManager;
     private String[] msg = new String[2];
     private Handler handler;
     //private int notificationId = 111;
 
-    public GcmMessageHandler(){
+    public GcmMessageHandler() {
         super("GcmMessageHandler");
     }
 
-    public void onCreate(){
+    public void onCreate() {
         super.onCreate();
         handler = new Handler();
     }
@@ -42,21 +42,22 @@ public class GcmMessageHandler extends IntentService{
 
         showToast();
 
-        onMessage(this,intent);
+        onMessage(this, intent);
         Log.i("GCM", "Received: (" + messageType + ") " + extras.getString("title"));
         GcmBroadcastReceiver.completeWakefulIntent(intent);
     }
+
     protected void onMessage(Context context, Intent intent) {
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
                         // Icono que tendra la notificacion
                         .setSmallIcon(R.drawable.ic_launcher)
-                        // Nombre de la notificacion (La que aparece en la barra)
+                                // Nombre de la notificacion (La que aparece en la barra)
                         .setTicker("New Notification!")
-                        // Nombre de la notificacion (La que aparece en las notificaciones)
+                                // Nombre de la notificacion (La que aparece en las notificaciones)
                         .setContentTitle(msg[0])
                         .setPriority(Notification.PRIORITY_HIGH)
-                        // Texto con el mensaje de la notificacion
+                                // Texto con el mensaje de la notificacion
                         .setContentText(msg[1]);
         myNotificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -65,8 +66,8 @@ public class GcmMessageHandler extends IntentService{
 
     }
 
-    public void showToast(){
-        handler.post(new Runnable(){
+    public void showToast() {
+        handler.post(new Runnable() {
             @Override
             public void run() {
                 Toast.makeText(getApplicationContext(), msg[0], Toast.LENGTH_LONG).show();
