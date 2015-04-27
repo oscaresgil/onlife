@@ -5,12 +5,20 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.EditText;
 
+import com.example.henzer.socialize.GCMClient.GCMHelper;
+
+import java.io.IOException;
+
 public class MainActivity extends Activity {
+    // Este es el numero de proyecto para el Google Cloud Messaging (GCM). Este nunca cambia y es estatico.
+    private static final String PROJECT_NUMBER = "194566212765";
 
     public static final String MyPREFERENCES = "MyPrefs";
     public static final String name = "nameKey";
@@ -47,9 +55,36 @@ public class MainActivity extends Activity {
         editor.putString(name, u);
         editor.putString(pass, p);
         editor.commit();
+        GetGCM();
         Intent i = new Intent(this, com.example.
                 henzer.socialize.HomeActivity.class);
         startActivity(i);
+    }
+
+    private void GetGCM() {
+        new AsyncTask<Void, Void, String>() {
+            @Override
+            protected String doInBackground(Void... params) {
+                String msg = "";
+                try {
+                    GCMHelper gcmRegistrationHelper = new GCMHelper(getApplicationContext());
+                    String gcmRegID = gcmRegistrationHelper.GCMRegister(PROJECT_NUMBER);
+                    Log.i("GCM", gcmRegID);
+                } catch (IOException e) {
+                    msg = "Error : " + e.getMessage();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                return msg;
+            }
+
+            /*
+            * En este metodo se deberia de almacenar en la base de datos este numero de ID del dispositivo
+             */
+            @Override
+            public void onPostExecute(String msg) {
+            }
+        }.execute();
     }
 
     @Override
