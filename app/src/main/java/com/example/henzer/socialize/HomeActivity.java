@@ -26,7 +26,7 @@ public class HomeActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.home_page);
         // Get the ViewPager and set it's PagerAdapter so that it can display items
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
         viewPager.setAdapter(new SampleFragmentPagerAdapter(getSupportFragmentManager(), HomeActivity.this));
@@ -111,6 +111,11 @@ public class HomeActivity extends ActionBarActivity {
         SharedPreferences.Editor editor = sharedpreferences.edit();
         editor.clear();
         editor.commit();
+        moveTaskToBack(true);
+        HomeActivity.this.finish();
+    }
+
+    public void exit(View view){
         moveTaskToBack(true);
         HomeActivity.this.finish();
     }
