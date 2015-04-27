@@ -9,8 +9,12 @@
         app:showAsAction="never" />
     <item
         android:id="@+id/logout"
-        android:title="@string/logout" />
+        android:title="@string/logout"
+        android:onClick="logout"
+        app:showAsAction="never"/>
     <item
         android:id="@+id/exit"
-        android:title="@string/exit" />
+        android:title="@string/exit"
+        android:onClick="exit"
+        app:showAsAction="never"/>
 </menu>

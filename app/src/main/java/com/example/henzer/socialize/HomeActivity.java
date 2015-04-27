@@ -7,7 +7,6 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
 /**
  * Created by Oscar on 4/26/2015.
@@ -34,7 +33,7 @@ public class HomeActivity extends ActionBarActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.menu_home, menu);
         return true;
     }
 
@@ -53,7 +52,7 @@ public class HomeActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void logout(View view) {
+    public void logout(MenuItem item) {
         SharedPreferences sharedpreferences = getSharedPreferences
                 (MainActivity.MyPREFERENCES, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedpreferences.edit();
@@ -63,7 +62,7 @@ public class HomeActivity extends ActionBarActivity {
         HomeActivity.this.finish();
     }
 
-    public void exit(View view){
+    public void exit(MenuItem item){
         moveTaskToBack(true);
         HomeActivity.this.finish();
     }
