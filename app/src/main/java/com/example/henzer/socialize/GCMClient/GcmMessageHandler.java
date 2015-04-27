@@ -61,22 +61,6 @@ public class GcmMessageHandler extends IntentService{
         myNotificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-
-        // Este codigo servira para crear una notificacion y crear una nueva instancia de una actividad cualquiera.
-
-       /* Intent resultIntent = new Intent(this,Notification.class);
-        resultIntent.putExtra("notificationId",notificationId);
-        //Retorna a la app
-        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-        // Se agrega la app en el stack por el intento
-        stackBuilder.addParentStack(Notification.class);
-        // Se agrega el intent que inicia la actividad hasta la cima del stack
-        stackBuilder.addNextIntent(resultIntent);
-        // Solo una vez se puede apachar la notificacion
-        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_ONE_SHOT);
-        // Inicia la actividad cuando el usuario apacha la notificacion
-        mBuilder.setContentIntent(resultPendingIntent);*/
-
         myNotificationManager.notify(0, mBuilder.build());
 
     }
