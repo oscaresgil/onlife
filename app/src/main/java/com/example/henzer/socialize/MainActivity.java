@@ -1,6 +1,7 @@
 package com.example.henzer.socialize;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -11,7 +12,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
+import com.example.henzer.socialize.Controller.AddNewUser;
 import com.example.henzer.socialize.GCMClient.GCMHelper;
+import com.example.henzer.socialize.Models.Person;
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
@@ -51,6 +54,10 @@ public class MainActivity extends Activity {
     private CallbackManager callbackManager;
     private ProfileTracker profileTracker;
     private AccessTokenTracker tokenTracker;
+
+
+    private ProgressDialog pDialog;
+
     private FacebookCallback<LoginResult> facebookCallback = new FacebookCallback<LoginResult>() {
         @Override
         public void onSuccess(LoginResult loginResult) {
@@ -88,13 +95,16 @@ public class MainActivity extends Activity {
                         Log.i("DATA",s.toString());
                         i.putExtra("data",s);
                         startActivity(i);
+                        Log.i("Friends Array ",friends.toString());
+                        GetGCM();
+                        Log.d("Login", "Login Successful");
+
+
                     }catch(Exception e){e.printStackTrace();}
                 }
             }).executeAsync();
 
-            Log.i("Friends Array ",friends.toString());
-            GetGCM();
-            Log.d("Login","Login Successful");
+
         }
 
         @Override
@@ -114,6 +124,7 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.println(1, "Prueba: ", "Empezo");
         FacebookSdk.sdkInitialize(this.getApplicationContext());
         setContentView(R.layout.activity_main);
         username = (EditText) findViewById(R.id.editText1);
@@ -182,9 +193,9 @@ public class MainActivity extends Activity {
         if (sharedpreferences.contains(name)) {
             if (sharedpreferences.contains(pass)) {
 
-                Intent i = new Intent(this,HomeActivity.class);
+                //Intent i = new Intent(this,HomeActivity.class);
 
-                startActivity(i);
+                //startActivity(i);
 
             }
         }
@@ -208,8 +219,8 @@ public class MainActivity extends Activity {
         editor.commit();
         GetGCM();
 
-        Intent i = new Intent(this, com.example. henzer.socialize.HomeActivity.class);
-        startActivity(i);
+        //Intent i = new Intent(this, com.example. henzer.socialize.HomeActivity.class);
+        //startActivity(i);
     }
 
     private void GetGCM() {
@@ -229,13 +240,23 @@ public class MainActivity extends Activity {
                 }
                 return msg;
             }
-
             /*
             * En este metodo se deberia de almacenar en la base de datos este numero de ID del dispositivo
              */
+
             @Override
-            public void onPostExecute(String msg) {
+            public void onPostExecute(String idMSG) {
+                AddNewUser addNewUser = new AddNewUser(MainActivity.this);
+                Person nuevo = new Person();
+                nuevo.setId(Integer.parseInt(userLogin.getId()));
+                nuevo.setName(userLogin.getName());
+                nuevo.setId_phone(idMSG);
+                nuevo.setPhoto(userLogin.getUrl().toString());
+                nuevo.setState("A");
+                Log.i("NUEVO: ", nuevo.toString());
+                addNewUser.execute(nuevo);
             }
         }.execute();
     }
+
 }
