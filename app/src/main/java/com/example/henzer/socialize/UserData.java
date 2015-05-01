@@ -3,9 +3,10 @@ package com.example.henzer.socialize;
 
 import android.graphics.Bitmap;
 
+import java.io.Serializable;
 import java.net.URL;
 
-public class UserData {
+public class UserData implements Serializable{
     String id="";
     String name="";
     Bitmap icon;

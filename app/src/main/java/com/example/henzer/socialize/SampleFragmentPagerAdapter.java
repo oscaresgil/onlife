@@ -35,9 +35,14 @@ public class SampleFragmentPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        Bundle arguments = new Bundle();
-        arguments.putSerializable("data", sessionData);
-        return new ContactsFragment();
+        if (position==0) {
+            Bundle arguments = new Bundle();
+            arguments.putSerializable("data", sessionData);
+            return ContactsFragment.newInstance(arguments);
+        }
+        else{
+            return new Fragment();
+        }
         //return PageFragment.newInstance(position + 1);
     }
 

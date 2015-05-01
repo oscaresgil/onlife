@@ -63,16 +63,53 @@ public class ContactsFragment extends ListFragment {
         return null;
     }
 
+    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+        Bitmap mIcon11;
+        protected Bitmap doInBackground(String... urls) {
+            try {
+                String userID = urls[0];
+                String urlStr = "https://graph.facebook.com/" + userID + "/picture?type=large";
+                Bitmap img = null;
 
+                HttpClient client = new DefaultHttpClient();
+                HttpGet request = new HttpGet(urlStr);
+                HttpResponse response;
+                try {
+                    response = (HttpResponse)client.execute(request);
+                    HttpEntity entity = response.getEntity();
+                    BufferedHttpEntity bufferedEntity = new BufferedHttpEntity(entity);
+                    InputStream inputStream = bufferedEntity.getContent();
+                    img = BitmapFactory.decodeStream(inputStream);
+                } catch (ClientProtocolException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+                return img;
+            }catch(Exception e){e.printStackTrace();}
+            return mIcon11;
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap bitmap) {
+            Log.i("BITMAP Icon", bitmap.toString());
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.contacts_view, container, false);
-        FlipSettings settings = new FlipSettings.Builder().defaultPage(0).build();
+        FlipSettings settings = new FlipSettings.Builder().defaultPage(1).build();
         friends = ((SessionData)getArguments().getSerializable("data")).getFriends();
 
         for(UserData u: friends){
-            u.setIcon(getFacebookProfilePicture(u.getId()));
+            try {
+                Bitmap b =new DownloadImageTask().execute(u.getId()).get();
+                Log.i("BITMAP",b.toString());
+                u.setIcon(b);
+            }catch (Exception e){e.printStackTrace();}
         }
         adapter =  new ContactsAdapter(getActivity(), friends, settings);
         setListAdapter(adapter);

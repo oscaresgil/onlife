@@ -21,13 +21,14 @@ public class HomeActivity extends ActionBarActivity {
     private SessionData sessionData;
 
     public HomeActivity(){
-        sessionData = (SessionData)getIntent().getExtras().getSerializable("Data");
+
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_page);
+        sessionData = (SessionData)getIntent().getExtras().getSerializable("data");
 
         // Get the ViewPager and set it's PagerAdapter so that it can display items
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);

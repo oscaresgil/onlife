@@ -30,4 +30,12 @@ public class SessionData implements Serializable{
     public void setFriends(List<UserData> friends) {
         this.friends = friends;
     }
+
+    @Override
+    public String toString() {
+        return "SessionData{" +
+                "user=" + user +
+                ", friends=" + friends +
+                '}';
+    }
 }
