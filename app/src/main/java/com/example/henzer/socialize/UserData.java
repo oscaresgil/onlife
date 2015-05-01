@@ -27,10 +27,6 @@ public class UserData {
         this.url = url;
     }
 
-    public Bitmap getImageAvatar() {
-        return icon;
-    }
-
     public int getBackground(){
         return background;
     }
@@ -49,6 +45,18 @@ public class UserData {
 
     public void setId(String id){
         this.id = id;
+    }
+
+    public Bitmap getIcon() {
+        return icon;
+    }
+
+    public void setIcon(Bitmap icon) {
+        this.icon = icon;
+    }
+
+    public void setBackground(int background) {
+        this.background = background;
     }
 
     public String toString(){

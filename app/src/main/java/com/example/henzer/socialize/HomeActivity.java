@@ -18,16 +18,23 @@ import com.facebook.login.LoginManager;
  */
 
 public class HomeActivity extends ActionBarActivity {
+    private SessionData sessionData;
 
+    public HomeActivity(){
+        sessionData = (SessionData)getIntent().getExtras().getSerializable("Data");
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_page);
+
         // Get the ViewPager and set it's PagerAdapter so that it can display items
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
-        viewPager.setAdapter(new SampleFragmentPagerAdapter(getSupportFragmentManager(), HomeActivity.this));
+        SampleFragmentPagerAdapter pgAdapter = new SampleFragmentPagerAdapter(getSupportFragmentManager(), HomeActivity.this);
+        pgAdapter.setSessionData(sessionData);
 
+        viewPager.setAdapter(pgAdapter);
         // Give the SlidingTabLayout the ViewPager
         SlidingTabLayout slidingTabLayout = (SlidingTabLayout) findViewById(R.id.sliding_tabs);
         // Center the tabs in the layout
