@@ -35,6 +35,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".FriendInfActivity"
+            android:label="@string/title_friend_page"
+            android:windowSoftInputMode="adjustResize|stateHidden"
+            android:launchMode="standard"/>
 
         <!--
              Este servira para enviar a la API online, el numero de registro que se acaba de activar.

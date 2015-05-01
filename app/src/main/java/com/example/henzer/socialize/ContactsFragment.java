@@ -1,8 +1,10 @@
 package com.example.henzer.socialize;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -12,7 +14,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.yalantis.flipviewpager.adapter.BaseFlipAdapter;
 import com.yalantis.flipviewpager.utils.FlipSettings;
@@ -27,8 +31,6 @@ import org.apache.http.impl.client.DefaultHttpClient;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.List;
 
 /**
@@ -50,25 +52,12 @@ public class ContactsFragment extends ListFragment {
 
     }
 
-    public static Bitmap getFacebookProfilePicture(String userID){
-        try {
-            URL imageURL = new URL("https://graph.facebook.com/" + userID + "/picture?type=large");
-            Bitmap bitmap = BitmapFactory.decodeStream(imageURL.openConnection().getInputStream());
-            return bitmap;
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
     private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
         Bitmap mIcon11;
         protected Bitmap doInBackground(String... urls) {
             try {
                 String userID = urls[0];
-                String urlStr = "https://graph.facebook.com/" + userID + "/picture?type=large";
+                String urlStr = "https://graph.facebook.com/" + userID + "/picture?width=400&height=400";
                 Bitmap img = null;
 
                 HttpClient client = new DefaultHttpClient();
@@ -116,6 +105,17 @@ public class ContactsFragment extends ListFragment {
         return v;
     }
 
+    @Override
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        super.onListItemClick(l, v, position, id);
+        UserData user = (UserData)getListAdapter().getItem(position);
+        Toast.makeText(getActivity(), user.getName(), Toast.LENGTH_SHORT).show();
+        Intent i = new Intent(getActivity(),FriendInfActivity.class);
+        i.putExtra("data",user);
+        startActivity(i);
+
+    }
+
     class ContactsAdapter extends BaseFlipAdapter<UserData> {
         private final int PAGES = 3;
         public ContactsAdapter(Context context, List<UserData> items, FlipSettings settings) {
@@ -130,8 +130,8 @@ public class ContactsFragment extends ListFragment {
                 view = getActivity().getLayoutInflater().inflate(R.layout.contacts, viewGroup, false);
                 holder.leftAvatar = (ImageView) view.findViewById(R.id.first_image);
                 holder.rightAvatar = (ImageView) view.findViewById(R.id.second_image);
-                //holder.infoPage = getActivity().getLayoutInflater().inflate(R.layout.contacts_layout_values,viewGroup,false);
-                //holder.name = (TextView) holder.infoPage.findViewById(R.id.name);
+                holder.infoPage = getActivity().getLayoutInflater().inflate(R.layout.contacts_layout_values,viewGroup,false);
+                holder.name = (TextView) holder.infoPage.findViewById(R.id.name);
                 view.setTag(holder);
             }
             else{
@@ -139,14 +139,16 @@ public class ContactsFragment extends ListFragment {
             }
             if (i==1){
                 holder.leftAvatar.setImageBitmap(userData.getIcon());
+                userData.setIcon(null);
                 if (userData2 !=null){
                     holder.rightAvatar.setImageBitmap(userData2.getIcon());
+                    userData2.setIcon(null);
                 }
             }
             else{
-                //fillContact(holder,i==0? allContactsFriends:allContactsFriends2);
-                //holder.infoPage.setTag(holder);
-                //return holder.infoPage;
+                fillContact(holder,i==0? userData:userData2);
+                holder.infoPage.setTag(holder);
+                return holder.infoPage;
             }
             return view;
         }
@@ -159,14 +161,14 @@ public class ContactsFragment extends ListFragment {
 
     private void fillContact(ContactsHolder holder, UserData friend){
         if (friend==null) return;
-        //holder.infoPage.setBackgroundColor(getResources().getColor(friend.getBackground()));
-        //holder.name.setText(friend.getName());
+        holder.infoPage.setBackgroundColor(Color.BLACK);
+        holder.name.setText(friend.getName());
     }
 
     class ContactsHolder{
         ImageView leftAvatar;
         ImageView rightAvatar;
-        //View infoPage;
+        View infoPage;
         TextView name;
     }
 }
