@@ -181,9 +181,11 @@ public class MainActivity extends Activity {
         sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
         if (sharedpreferences.contains(name)) {
             if (sharedpreferences.contains(pass)) {
+
                 Intent i = new Intent(this,HomeActivity.class);
 
                 startActivity(i);
+
             }
         }
         else if(AccessToken.getCurrentAccessToken()!=null){
@@ -205,9 +207,6 @@ public class MainActivity extends Activity {
         editor.putString(pass, p);
         editor.commit();
         GetGCM();
-        friends.add(new UserData("123456789","Juan Prueba",null));
-        friends.add(new UserData("12345674219","Juan Prueba2",null));
-        friends.add(new UserData("123456789","Juan Prueba3 ",null));
 
         Intent i = new Intent(this, com.example. henzer.socialize.HomeActivity.class);
         startActivity(i);
