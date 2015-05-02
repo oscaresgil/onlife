@@ -12,6 +12,8 @@
     <string name="logout">Logout</string>
     <string name="title_home_page">Home Page</string>
     <string name="title_friend_page"></string>
+    <string name="add_group">Add Group</string>
     <string name="exit">Exit without logout</string>
+    <string name="new_group">New Group</string>
 
 </resources>

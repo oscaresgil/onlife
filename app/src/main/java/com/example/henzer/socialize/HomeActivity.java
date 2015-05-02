@@ -47,6 +47,8 @@ public class HomeActivity extends ActionBarActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_home, menu);
+        menu.findItem(R.id.addGroup).setVisible(false);
+        menu.findItem(R.id.refreshContacts).setVisible(true);
         return true;
     }
 

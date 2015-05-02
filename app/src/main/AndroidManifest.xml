@@ -73,6 +73,10 @@
             android:launchMode="standard"
             android:label="@string/title_home_page"
             android:windowSoftInputMode="adjustResize|stateHidden"></activity>
+        <activity android:name=".GroupInfActivity"
+            android:launchMode="standard"
+            android:label="@string/new_group"
+            android:windowSoftInputMode="adjustResize|stateHidden"/>
     </application>
 
 </manifest>

@@ -11,6 +11,8 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ListFragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -48,8 +50,42 @@ public class ContactsFragment extends ListFragment {
         }
         return myfragment;
     }
-    public ContactsFragment(){
+    public ContactsFragment(){}
 
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        setHasOptionsMenu(false);
+        View v = inflater.inflate(R.layout.contacts_view, container, false);
+        FlipSettings settings = new FlipSettings.Builder().defaultPage(1).build();
+        friends = ((SessionData)getArguments().getSerializable("data")).getFriends();
+
+        for(UserData u: friends){
+            try {
+                Bitmap b =new DownloadImageTask().execute(u.getId()).get();
+                Log.i("BITMAP",b.toString());
+                u.setIcon(b);
+            }catch (Exception e){e.printStackTrace();}
+        }
+        adapter =  new ContactsAdapter(getActivity(), friends, settings);
+        setListAdapter(adapter);
+        return v;
+    }
+
+    @Override
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        super.onListItemClick(l, v, position, id);
+        UserData user = (UserData)getListAdapter().getItem(position);
+        Toast.makeText(getActivity(), user.getName(), Toast.LENGTH_SHORT).show();
+        Intent i = new Intent(getActivity(),FriendInfActivity.class);
+        i.putExtra("data",user);
+        startActivity(i);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        menu.getItem(R.id.addGroup).setVisible(false);
+        menu.getItem(R.id.refreshContacts).setVisible(true);
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
@@ -85,35 +121,6 @@ public class ContactsFragment extends ListFragment {
         protected void onPostExecute(Bitmap bitmap) {
             Log.i("BITMAP Icon", bitmap.toString());
         }
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.contacts_view, container, false);
-        FlipSettings settings = new FlipSettings.Builder().defaultPage(1).build();
-        friends = ((SessionData)getArguments().getSerializable("data")).getFriends();
-
-        for(UserData u: friends){
-            try {
-                Bitmap b =new DownloadImageTask().execute(u.getId()).get();
-                Log.i("BITMAP",b.toString());
-                u.setIcon(b);
-            }catch (Exception e){e.printStackTrace();}
-        }
-        adapter =  new ContactsAdapter(getActivity(), friends, settings);
-        setListAdapter(adapter);
-        return v;
-    }
-
-    @Override
-    public void onListItemClick(ListView l, View v, int position, long id) {
-        super.onListItemClick(l, v, position, id);
-        UserData user = (UserData)getListAdapter().getItem(position);
-        Toast.makeText(getActivity(), user.getName(), Toast.LENGTH_SHORT).show();
-        Intent i = new Intent(getActivity(),FriendInfActivity.class);
-        i.putExtra("data",user);
-        startActivity(i);
-
     }
 
     class ContactsAdapter extends BaseFlipAdapter<UserData> {
