@@ -1,12 +1,14 @@
 package com.example.henzer.socialize;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.view.MenuItem;
+import android.widget.NumberPicker;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -25,15 +27,27 @@ import de.hdodenhof.circleimageview.CircleImageView;
 /**
  * Created by Boris on 01/05/2015.
  */
-public class FriendInfActivity extends Activity {
+public class FriendInfActivity extends ActionBarActivity {
     private UserData friend;
+    private NumberPicker minPicker;
+    private NumberPicker secPicker;
 
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
+        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
         setContentView(R.layout.friend_information);
+
         Intent i = getIntent();
         friend = (UserData)i.getSerializableExtra("data");
+
+        minPicker = (NumberPicker) findViewById(R.id.timeMinBlock);
+        secPicker = (NumberPicker) findViewById(R.id.timeSecBlock);
+        minPicker.setMinValue(1); minPicker.setMaxValue(3);
+        secPicker.setMinValue(0); secPicker.setMaxValue(9);
+
+        actionBar.setTitle(friend.getName());
         CircleImageView imageView = (CircleImageView) findViewById(R.id.avatar);
         try {
             imageView.setImageBitmap(new DownloadImageTask().execute(friend.getId()).get());
@@ -42,7 +56,6 @@ public class FriendInfActivity extends Activity {
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
-        //Slidr.attach(this);
     }
 
     private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
@@ -81,4 +94,9 @@ public class FriendInfActivity extends Activity {
         }
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        finish();
+        return true;
+    }
 }

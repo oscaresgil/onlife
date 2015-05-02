@@ -20,8 +20,8 @@ public class SampleFragmentPagerAdapter extends FragmentPagerAdapter {
         this.sessionData = sessionData;
     }
 
-    final int PAGE_COUNT = 3;
-    private String tabTitles[] = new String[]{"Contactos", "Grupos", "Favoritos"};
+    final int PAGE_COUNT = 2;
+    private String tabTitles[] = new String[]{"Contactos", "Grupos"};
     private Context context;
 
     public SampleFragmentPagerAdapter(FragmentManager fm, Context context) {
@@ -35,15 +35,14 @@ public class SampleFragmentPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
+        Bundle arguments = new Bundle();
+        arguments.putSerializable("data", sessionData);
         if (position==0) {
-            Bundle arguments = new Bundle();
-            arguments.putSerializable("data", sessionData);
             return ContactsFragment.newInstance(arguments);
         }
-        else{
-            return new Fragment();
+        else {
+            return GroupsFragment.newInstance(arguments);
         }
-        //return PageFragment.newInstance(position + 1);
     }
 
     @Override

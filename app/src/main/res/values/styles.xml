@@ -4,5 +4,11 @@
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
     </style>
+    <style name="FriendStyle" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:textColor">#000000</item>
+        <item name="android:typeface">monospace</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:colorBackground">@color/background_material_light</item>
+    </style>
 
 </resources>

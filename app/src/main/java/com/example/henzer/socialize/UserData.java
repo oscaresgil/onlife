@@ -12,6 +12,7 @@ public class UserData implements Serializable{
     Bitmap icon;
     URL url;
     int background;
+    boolean selected;
 
     public UserData(String id, String name, URL url){
         this.id = id;
@@ -58,6 +59,14 @@ public class UserData implements Serializable{
 
     public void setBackground(int background) {
         this.background = background;
+    }
+
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
     }
 
     public String toString(){
