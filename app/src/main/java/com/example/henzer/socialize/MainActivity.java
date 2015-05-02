@@ -9,7 +9,9 @@ import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 
 import com.example.henzer.socialize.Controller.AddNewUser;
@@ -36,11 +38,14 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity{
     // Este es el numero de proyecto para el Google Cloud Messaging (GCM). Este nunca cambia y es estatico.
     private static final String PROJECT_NUMBER = "194566212765";
+    public static final String TAG = "MainActivity";
 
     public static List<UserData> friends = new ArrayList<>();
     public static UserData userLogin;
@@ -51,12 +56,13 @@ public class MainActivity extends Activity {
     private SharedPreferences sharedpreferences;
     private EditText username, password;
 
+    private LoginButton loginButton;
     private CallbackManager callbackManager;
     private ProfileTracker profileTracker;
     private AccessTokenTracker tokenTracker;
-
-
     private ProgressDialog pDialog;
+
+
 
     private FacebookCallback<LoginResult> facebookCallback = new FacebookCallback<LoginResult>() {
         @Override
@@ -65,7 +71,9 @@ public class MainActivity extends Activity {
             Profile profile = Profile.getCurrentProfile();
             try {
                 userLogin = new UserData(profile.getId(), profile.getName(), new URL("http://graph.facebook.com/" + profile.getId() + "/picture?type=large"));
-            }catch(Exception e){}
+            }catch(Exception e){
+                Log.e(TAG, e.getLocalizedMessage());
+            }
             // https://developers.facebook.com/docs/reference/android/current/class/GraphResponse/
             new GraphRequest(AccessToken.getCurrentAccessToken(), "/me/friends", null, HttpMethod.GET, new GraphRequest.Callback() {
                 @Override
@@ -88,23 +96,13 @@ public class MainActivity extends Activity {
                             UserData contact = new UserData(id,name,pathURL);
                             friends.add(contact);
                         }
-                        Intent i = new Intent(MainActivity.this,HomeActivity.class);
+
                         Log.i("ACTUAL USER",userLogin.toString());
                         Log.i("ACTUAL FRIENDS", friends.toString());
-                        SessionData s = new SessionData(userLogin,friends);
-                        Log.i("DATA",s.toString());
-                        i.putExtra("data",s);
-                        startActivity(i);
-                        Log.i("Friends Array ",friends.toString());
                         GetGCM();
-                        Log.d("Login", "Login Successful");
-
-
                     }catch(Exception e){e.printStackTrace();}
                 }
             }).executeAsync();
-
-
         }
 
         @Override
@@ -114,69 +112,37 @@ public class MainActivity extends Activity {
 
         @Override
         public void onError(FacebookException e) {
+            e.printStackTrace();
             Log.d("Login","Login Error");
+            Log.e("MainActivity", e.getLocalizedMessage());
         }
     };
-
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.println(1, "Prueba: ", "Empezo");
-        FacebookSdk.sdkInitialize(this.getApplicationContext());
-        setContentView(R.layout.activity_main);
         username = (EditText) findViewById(R.id.editText1);
         password = (EditText) findViewById(R.id.editText2);
-    }
 
-    public void setupTokenTracker(){
-        tokenTracker = new AccessTokenTracker() {
-            @Override
-            protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken, AccessToken newAccessToken) {
-                Log.d("Token Tracker 1",""+oldAccessToken);
-                Log.d("Token Tracker 2",""+newAccessToken);
-                tokenTracker.stopTracking();
-                AccessToken.setCurrentAccessToken(newAccessToken);
-            }
-        };
-        tokenTracker.startTracking();
-    }
-    public void setupProfileTracker(){
-        profileTracker = new ProfileTracker() {
-            @Override
-            protected void onCurrentProfileChanged(Profile oldProfile, Profile newProfile) {
-                Log.d("Profile Tracker 1",""+oldProfile);
-                Log.d("Profile Tracker 2",""+newProfile);
-                profileTracker.stopTracking();
-                Profile.setCurrentProfile(newProfile);
-            }
-        };
-        profileTracker.startTracking();
+        FacebookSdk.sdkInitialize(this.getApplicationContext());
+        callbackManager = CallbackManager.Factory.create();
+        loginButton = (LoginButton) findViewById(R.id.login_facebook_button);
+        LoginManager.getInstance().registerCallback(callbackManager, facebookCallback);
+        setContentView(R.layout.activity_main);
     }
 
     public void loginwithfb(View view){
-        callbackManager = CallbackManager.Factory.create();
-        setupTokenTracker();
-        setupProfileTracker();
-
-        LoginButton fbButton = (LoginButton) view.findViewById(R.id.login_facebook_button);
-        fbButton.setReadPermissions("public_profile", "user_friends", "email");
-        fbButton.registerCallback(callbackManager, facebookCallback);
-    }
-
-    @Override
-    protected void onStop(){
-        super.onDestroy();
+        if(AccessToken.getCurrentAccessToken()==null) {
+            LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile", "user_friends", "email"));
+        }else{
+            LoginManager.getInstance().logOut();
+        }
     }
 
     @Override
     protected  void onDestroy(){
         super.onDestroy();
         LoginManager.getInstance().logOut();
-        tokenTracker.stopTracking();
-        profileTracker.stopTracking();
     }
 
     @Override
@@ -188,19 +154,9 @@ public class MainActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        Log.i("Methods","I passed onResume()");
-        sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
-        if (sharedpreferences.contains(name)) {
-            if (sharedpreferences.contains(pass)) {
-
-                //Intent i = new Intent(this,HomeActivity.class);
-
-                //startActivity(i);
-
-            }
-        }
-        else if(AccessToken.getCurrentAccessToken()!=null){
-            Log.i("Methods","I resume onResume()");
+        Log.e("Methods","I passed onResume()");
+        if(AccessToken.getCurrentAccessToken()!=null){
+            //Log.e("Methods","I resume onResume()");
             //Intent i = new Intent(this,HomeActivity.class);
             //startActivity(i);
         }
@@ -233,30 +189,39 @@ public class MainActivity extends Activity {
                     String gcmRegID = gcmRegistrationHelper.GCMRegister(PROJECT_NUMBER);
                     msg = gcmRegID;
                     Log.i("GCM", gcmRegID);
+                    return msg;
                 } catch (IOException e) {
-                    msg = "Error : " + e.getMessage();
+                    return null;
                 } catch (Exception e) {
                     e.printStackTrace();
+                    return null;
                 }
-                return msg;
             }
-            /*
-            * En este metodo se deberia de almacenar en la base de datos este numero de ID del dispositivo
-             */
-
             @Override
             public void onPostExecute(String idMSG) {
                 AddNewUser addNewUser = new AddNewUser(MainActivity.this);
                 Person nuevo = new Person();
-                nuevo.setId(Integer.parseInt(userLogin.getId()));
+                nuevo.setId(userLogin.getId());
                 nuevo.setName(userLogin.getName());
                 nuevo.setId_phone(idMSG);
                 nuevo.setPhoto(userLogin.getUrl().toString());
                 nuevo.setState("A");
                 Log.i("NUEVO: ", nuevo.toString());
-                addNewUser.execute(nuevo);
+                try {
+                    Boolean resp = addNewUser.execute(nuevo).get();
+                    if(resp){
+                        SessionData s = new SessionData(userLogin,friends);
+                        Intent i = new Intent(MainActivity.this,HomeActivity.class);
+                        Log.i("DATA",s.toString());
+                        i.putExtra("data",s);
+                        startActivity(i);
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
             }
         }.execute();
     }
-
 }

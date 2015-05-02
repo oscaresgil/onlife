@@ -4,7 +4,7 @@ package com.example.henzer.socialize.Models;
  * Created by Henzer on 01/05/2015.
  */
 public class Person {
-    private int id;
+    private String id;
     private String id_phone;
     private String name;
     private String photo;
@@ -14,7 +14,7 @@ public class Person {
     public Person() {
     }
 
-    public Person(int id, String id_phone, String name, String photo, String bitmap, String state) {
+    public Person(String id, String id_phone, String name, String photo, String bitmap, String state) {
         this.id = id;
         this.id_phone = id_phone;
         this.name = name;
@@ -23,11 +23,11 @@ public class Person {
         this.state = state;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

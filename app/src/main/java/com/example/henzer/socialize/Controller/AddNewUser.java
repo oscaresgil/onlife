@@ -30,8 +30,9 @@ public class AddNewUser extends AsyncTask<Person, Person, Boolean> {
     @Override
     protected void onPreExecute(){
         super.onPreExecute();
+        Log.e("MainActivity", "Mostrando el Progress Dialog");
         pDialog = new ProgressDialog(context);
-        pDialog.setMessage("Loading friends...");
+        pDialog.setMessage("Save new user...");
         pDialog.setIndeterminate(false);
         pDialog.setCancelable(true);
         pDialog.show();
@@ -41,19 +42,22 @@ public class AddNewUser extends AsyncTask<Person, Person, Boolean> {
     protected Boolean doInBackground(Person... params) {
         Person n = params[0];
         //Parametros a enviar
-        List<NameValuePair> p = new ArrayList<NameValuePair>();
+        List<NameValuePair> p = new ArrayList<>();
+        p.add(new BasicNameValuePair("tag", "newUser"));
         p.add(new BasicNameValuePair("id", n.getId()+""));
         p.add(new BasicNameValuePair("id_phone", n.getId_phone()));
         p.add(new BasicNameValuePair("photo", n.getPhoto()));
         p.add(new BasicNameValuePair("name", n.getName()));
         p.add(new BasicNameValuePair("state", n.getState()));
 
-        JSONObject json = jsonParser.makeHttpRequest("", "POST", p);
+        JSONObject json = jsonParser.makeHttpRequest("http://socialize.comyr.com/Prueba/person.php", "POST", p);
         Log.d("Create Response", json.toString());
-        return false;
+        return true;
     }
 
-    protected void onPostExecute(String param){
+    @Override
+    protected void onPostExecute(Boolean param){
+        Log.e("MainActivity", "Quitando el Progress Dialog");
         pDialog.dismiss();
     }
 
