@@ -10,6 +10,8 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.widget.NumberPicker;
 
+import com.example.henzer.socialize.Models.Person;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -28,7 +30,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
  * Created by Boris on 01/05/2015.
  */
 public class FriendInfActivity extends ActionBarActivity {
-    private UserData friend;
+    private Person friend;
     private NumberPicker minPicker;
     private NumberPicker secPicker;
 
@@ -40,7 +42,7 @@ public class FriendInfActivity extends ActionBarActivity {
         setContentView(R.layout.friend_information);
 
         Intent i = getIntent();
-        friend = (UserData)i.getSerializableExtra("data");
+        friend = (Person)i.getSerializableExtra("data");
 
         minPicker = (NumberPicker) findViewById(R.id.timeMinBlock);
         secPicker = (NumberPicker) findViewById(R.id.timeSecBlock);

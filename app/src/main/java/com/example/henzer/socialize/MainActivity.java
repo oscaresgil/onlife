@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.henzer.socialize.Controller.AddNewUser;
 import com.example.henzer.socialize.Controller.LoadAllInformation;
@@ -35,6 +36,7 @@ import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -49,8 +51,8 @@ public class MainActivity extends Activity{
     private static final String PROJECT_NUMBER = "194566212765";
     public static final String TAG = "MainActivity";
 
-    public static List<UserData> friends = new ArrayList<>();
-    public static UserData userLogin;
+    public List<Person> friends = new ArrayList();
+    public Person userLogin;
 
     public static final String MyPREFERENCES = "MyPrefs";
     public static final String name = "nameKey";
@@ -77,7 +79,7 @@ public class MainActivity extends Activity{
                     Log.i("PROFILE: ",Profile.getCurrentProfile().getName());
                     Profile profile = Profile.getCurrentProfile();
                     try {
-                        userLogin = new UserData(profile.getId(), profile.getName(), new URL("http://graph.facebook.com/" + profile.getId() + "/picture?type=large"));
+                        userLogin = new Person(profile.getId(), null, profile.getName(), "http://graph.facebook.com/" + profile.getId() + "/picture?type=large", null, "A");
                     }catch(Exception e){
                         Log.e(TAG, e.getLocalizedMessage());
                     }
@@ -100,7 +102,7 @@ public class MainActivity extends Activity{
 
                                     Log.i("Friend "+i,id+" = "+name);
                                     Log.i("Friend URL "+i,path.toString());
-                                    UserData contact = new UserData(id,name,pathURL);
+                                    Person contact = new Person(id, null, name, pathURL.toString(), null, "A");
                                     friends.add(contact);
                                 }
 
@@ -172,15 +174,35 @@ public class MainActivity extends Activity{
         super.onResume();
         Log.e("Methods","I passed onResume()");
         if(AccessToken.getCurrentAccessToken()!=null){
+            SharedPreferences prefe=getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+            try {
+                JSONObject mySession = new JSONObject(prefe.getString("session", ""));
+                JSONObject me = mySession.getJSONObject("me");
+                JSONArray fr = mySession.getJSONArray("friends");
+                userLogin = new Person(me.getString("id"), me.getString("id_phone"), me.getString("name"), me.getString("photo"), null, me.getString("state"));
+                friends = new ArrayList();
+                Person friend = null;
+                for(int i = 0; i<fr.length(); i++){
+                    JSONObject f = fr.getJSONObject(i);
+                    friend = new Person(f.getString("id"), f.getString("id_phone"), f.getString("name"), f.getString("photo"), null, f.getString("state"));
+                    friends.add(friend);
+                }
+
+                SessionData s = new SessionData(userLogin,friends);
+                Intent i = new Intent(MainActivity.this,HomeActivity.class);
+                Log.i("DATA",s.toString());
+                i.putExtra("data",s);
+                startActivity(i);
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
             //Log.e("Methods","I resume onResume()");
             //Intent i = new Intent(this,HomeActivity.class);
             //startActivity(i);
         }
     }
 
-    public static List<UserData> getFriends(){
-        return friends;
-    }
     private void GetGCM() {
         new AsyncTask<Void, Void, String>() {
             @Override
@@ -201,51 +223,42 @@ public class MainActivity extends Activity{
             }
             @Override
             public void onPostExecute(String idMSG) {
-                AddNewUser addNewUser = new AddNewUser(MainActivity.this);
-                Person nuevo = new Person();
-                nuevo.setId(userLogin.getId());
-                nuevo.setName(userLogin.getName());
-                nuevo.setId_phone(idMSG);
-                nuevo.setPhoto(userLogin.getUrl().toString());
-                nuevo.setState("A");
-                Log.i("NUEVO: ", nuevo.toString());
-
+                //AddNewUser addNewUser = new AddNewUser(MainActivity.this);
+                userLogin.setId_phone(idMSG);
+                LoadAllInformation load = new LoadAllInformation(MainActivity.this);
+                List<Person> enviados = new ArrayList<Person>();
+                enviados.add(userLogin);
+                enviados.addAll(friends);
+                JSONObject data = null;
                 try {
-                    Boolean resp = addNewUser.execute(nuevo).get();
-                    if(resp){
+                    data = load.execute(enviados).get();
+                    Log.e(TAG, data.toString());
+
+                    boolean error = data.getBoolean("error");
+                    String mensaje = data.getString("message");
+                    if(error == false){
+                        sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+                        Editor editor = sharedpreferences.edit();
+                        editor.putString("session", data.toString());
+                        editor.commit();
+
                         SessionData s = new SessionData(userLogin,friends);
                         Intent i = new Intent(MainActivity.this,HomeActivity.class);
                         Log.i("DATA",s.toString());
                         i.putExtra("data",s);
                         startActivity(i);
+                    }else{
+                        Toast.makeText(MainActivity.this, mensaje, Toast.LENGTH_SHORT).show();
                     }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 } catch (ExecutionException e) {
                     e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
             }
         }.execute();
-    }
-
-    public JSONObject getAllInformation(String id, List<UserData> friends ){
-        LoadAllInformation load = new LoadAllInformation(MainActivity.this);
-        String[] IDS = new String[friends.size()];
-        IDS[0] = id;
-        int i = 1;
-        for(UserData u: friends){
-            IDS[i] = u.getId();
-            i++;
-        }
-        JSONObject result = null;
-        try {
-            result = load.execute(IDS).get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
-        return result;
     }
 
 }

@@ -22,9 +22,9 @@ import android.util.Log;
 
 public class JSONParser {
 
-    static InputStream is = null;
-    static JSONObject jObj = null;
-    static String json = "";
+    private InputStream is = null;
+    private JSONObject jObj = null;
+    private String json = "";
 
     // constructor
     public JSONParser() {
@@ -88,7 +88,7 @@ public class JSONParser {
         try {
             jObj = new JSONObject(json);
         } catch (JSONException e) {
-            Log.e("JSON Parser", "Error parsing data " + e.toString());
+            Log.e("JSON Parser", "Error parsing data " + e.toString() + "\n" + json);
         }
 
         // return JSON String

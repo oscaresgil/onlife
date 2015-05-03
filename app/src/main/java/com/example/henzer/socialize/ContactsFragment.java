@@ -20,6 +20,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.henzer.socialize.Models.Person;
 import com.yalantis.flipviewpager.adapter.BaseFlipAdapter;
 import com.yalantis.flipviewpager.utils.FlipSettings;
 
@@ -39,7 +40,7 @@ import java.util.List;
  * Created by hp1 on 21-01-2015.
  */
 public class ContactsFragment extends ListFragment {
-    private List<UserData> friends;
+    private List<Person> friends;
     private ContactsAdapter adapter;
 
     public static final String TAG = "ContactsFragment";
@@ -59,7 +60,7 @@ public class ContactsFragment extends ListFragment {
         FlipSettings settings = new FlipSettings.Builder().defaultPage(1).build();
         friends = ((SessionData)getArguments().getSerializable("data")).getFriends();
 
-        for(UserData u: friends){
+        for(Person u: friends){
             try {
                 Bitmap b =new DownloadImageTask().execute(u.getId()).get();
                 Log.i("BITMAP",b.toString());
@@ -74,7 +75,7 @@ public class ContactsFragment extends ListFragment {
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
-        UserData user = (UserData)getListAdapter().getItem(position);
+        Person user = (Person)getListAdapter().getItem(position);
         Toast.makeText(getActivity(), user.getName(), Toast.LENGTH_SHORT).show();
         Intent i = new Intent(getActivity(),FriendInfActivity.class);
         i.putExtra("data",user);
@@ -123,14 +124,14 @@ public class ContactsFragment extends ListFragment {
         }
     }
 
-    class ContactsAdapter extends BaseFlipAdapter<UserData> {
+    class ContactsAdapter extends BaseFlipAdapter<Person> {
         private final int PAGES = 3;
-        public ContactsAdapter(Context context, List<UserData> items, FlipSettings settings) {
+        public ContactsAdapter(Context context, List<Person> items, FlipSettings settings) {
             super(context, items, settings);
         }
 
         @Override
-        public View getPage(int i, View view, ViewGroup viewGroup, UserData userData, UserData userData2) {
+        public View getPage(int i, View view, ViewGroup viewGroup, Person userData, Person userData2) {
             final ContactsHolder holder;
             if (view == null){
                 holder = new ContactsHolder();
@@ -166,7 +167,7 @@ public class ContactsFragment extends ListFragment {
         }
     }
 
-    private void fillContact(ContactsHolder holder, UserData friend){
+    private void fillContact(ContactsHolder holder, Person friend){
         if (friend==null) return;
         holder.infoPage.setBackgroundColor(Color.BLACK);
         holder.name.setText(friend.getName());

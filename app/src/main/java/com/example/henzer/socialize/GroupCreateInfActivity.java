@@ -30,6 +30,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.henzer.socialize.Models.Person;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -48,7 +50,7 @@ import java.util.List;
  */
 public class GroupCreateInfActivity extends ActionBarActivity {
     private SessionData sessionData;
-    private List<UserData> friends;
+    private List<Person> friends;
     private CheckListAdapter checkListAdapter;
 
     private Uri mImageCaptureUri;
@@ -71,7 +73,7 @@ public class GroupCreateInfActivity extends ActionBarActivity {
         sessionData = (SessionData) i.getSerializableExtra("data");
         friends = sessionData.getFriends();
 
-        for(UserData u: friends){
+        for(Person u: friends){
             try {
                 Bitmap b =new DownloadImageTask().execute(u.getId()).get();
                 u.setIcon(b);
@@ -137,8 +139,8 @@ public class GroupCreateInfActivity extends ActionBarActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
         if (i == R.id.saveGroup_button) {
-            List<UserData> friendsChecked = checkListAdapter.friends;
-            for (UserData userData: friendsChecked){
+            List<Person> friendsChecked = checkListAdapter.friends;
+            for (Person userData: friendsChecked){
                 if (userData.isSelected())
                     Log.i("User is Checked",userData.getName());
             }
@@ -261,10 +263,10 @@ public class GroupCreateInfActivity extends ActionBarActivity {
         }
     }
 
-    private class CheckListAdapter extends ArrayAdapter<UserData> {
-        private List<UserData> friends;
+    private class CheckListAdapter extends ArrayAdapter<Person> {
+        private List<Person> friends;
 
-        public CheckListAdapter(Context context, int textViewResourceId, List<UserData> friends) {
+        public CheckListAdapter(Context context, int textViewResourceId, List<Person> friends) {
             super(context, textViewResourceId, friends);
             this.friends = friends;
         }
@@ -285,7 +287,7 @@ public class GroupCreateInfActivity extends ActionBarActivity {
                 holder.check.setOnClickListener( new View.OnClickListener() {
                     public void onClick(View v) {
                         CheckBox cb = (CheckBox) v ;
-                        UserData friend = (UserData) cb.getTag();
+                        Person friend = (Person) cb.getTag();
                         Toast.makeText(getApplicationContext(),
                                 "Clicked on Checkbox: " + cb.getText() +
                                         " is " + cb.isChecked(),
@@ -298,7 +300,7 @@ public class GroupCreateInfActivity extends ActionBarActivity {
                 holder = (Holder) convertView.getTag();
             }
 
-            UserData friend = friends.get(position);
+            Person friend = friends.get(position);
             holder.avatar.setImageBitmap(friend.getIcon());
             holder.check.setText(friend.getName());
             holder.check.setSelected(friend.isSelected());

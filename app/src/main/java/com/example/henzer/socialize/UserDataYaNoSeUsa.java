@@ -6,7 +6,7 @@ import android.graphics.Bitmap;
 import java.io.Serializable;
 import java.net.URL;
 
-public class UserData implements Serializable{
+public class UserDataYaNoSeUsa implements Serializable{
     String id="";
     String name="";
     Bitmap icon;
@@ -14,7 +14,7 @@ public class UserData implements Serializable{
     int background;
     boolean selected;
 
-    public UserData(String id, String name, URL url){
+    public UserDataYaNoSeUsa(String id, String name, URL url){
         this.id = id;
         this.name = name;
         this.url = url;

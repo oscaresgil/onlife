@@ -1,5 +1,7 @@
 package com.example.henzer.socialize;
 
+import com.example.henzer.socialize.Models.Person;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -7,27 +9,27 @@ import java.util.List;
  * Created by Boris on 30/04/2015.
  */
 public class SessionData implements Serializable{
-    private UserData user;
-    private List<UserData> friends;
+    private Person user;
+    private List<Person> friends;
 
-    public SessionData(UserData user, List<UserData> friends) {
+    public SessionData(Person user, List<Person> friends) {
         this.user = user;
         this.friends = friends;
     }
 
-    public UserData getUser() {
+    public Person getUser() {
         return user;
     }
 
-    public void setUser(UserData user) {
+    public void setUser(Person user) {
         this.user = user;
     }
 
-    public List<UserData> getFriends() {
+    public List<Person> getFriends() {
         return friends;
     }
 
-    public void setFriends(List<UserData> friends) {
+    public void setFriends(List<Person> friends) {
         this.friends = friends;
     }
 

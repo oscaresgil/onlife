@@ -14,6 +14,8 @@ import android.widget.ListView;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 
+import com.example.henzer.socialize.Models.Person;
+
 import java.util.List;
 
 /**
@@ -22,7 +24,7 @@ import java.util.List;
 public class GroupInfActivity extends ActionBarActivity {
     private String nameGroup;
     private GroupAdapter adapter;
-    private List<UserData> friendsInGroup;
+    private List<Person> friendsInGroup;
     private NumberPicker minPicker;
     private NumberPicker secPicker;
 
@@ -61,10 +63,10 @@ public class GroupInfActivity extends ActionBarActivity {
         return true;
     }
 
-    class GroupAdapter extends ArrayAdapter<UserData> {
-        List<UserData> objects;
+    class GroupAdapter extends ArrayAdapter<Person> {
+        List<Person> objects;
 
-        public GroupAdapter(Context context, int resource, List<UserData> objects) {
+        public GroupAdapter(Context context, int resource, List<Person> objects) {
             super(context, resource, objects);
             this.objects = objects;
         }
