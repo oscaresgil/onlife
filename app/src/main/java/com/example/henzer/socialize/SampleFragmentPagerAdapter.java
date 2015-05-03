@@ -6,6 +6,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
+import com.example.henzer.socialize.Models.SessionData;
+
 /**
  * Created by Henzer on 25/04/2015.
  */

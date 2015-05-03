@@ -1,7 +1,5 @@
 package com.example.henzer.socialize.Models;
 
-import android.graphics.Bitmap;
-
 import java.io.Serializable;
 
 /**
@@ -12,20 +10,18 @@ public class Person implements Serializable{
     private String id_phone;
     private String name;
     private String photo;
-    private Bitmap icon;
     private String state;
-    int background;
-    boolean selected;
+    private int background;
+    private boolean selected;
 
     public Person() {
     }
 
-    public Person(String id, String id_phone, String name, String photo, Bitmap icon, String state) {
+    public Person(String id, String id_phone, String name, String photo, String state) {
         this.id = id;
         this.id_phone = id_phone;
         this.name = name;
         this.photo = photo;
-        this.icon = icon;
         this.state = state;
     }
 
@@ -61,14 +57,6 @@ public class Person implements Serializable{
         this.photo = photo;
     }
 
-    public Bitmap getIcon() {
-        return icon;
-    }
-
-    public void setIcon(Bitmap icon) {
-        this.icon = icon;
-    }
-
     public String getState() {
         return state;
     }
@@ -100,7 +88,6 @@ public class Person implements Serializable{
                 ", id_phone='" + id_phone + '\'' +
                 ", name='" + name + '\'' +
                 ", photo='" + photo + '\'' +
-                ", icon='" + icon + '\'' +
                 ", state='" + state + '\'' +
                 '}';
     }

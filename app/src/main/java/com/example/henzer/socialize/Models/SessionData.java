@@ -1,4 +1,4 @@
-package com.example.henzer.socialize;
+package com.example.henzer.socialize.Models;
 
 import com.example.henzer.socialize.Models.Person;
 

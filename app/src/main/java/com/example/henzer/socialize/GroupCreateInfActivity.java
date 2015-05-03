@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ResolveInfo;
@@ -11,7 +12,6 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -31,18 +31,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.henzer.socialize.Models.Person;
-
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.entity.BufferedHttpEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
+import com.example.henzer.socialize.Models.SessionData;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 
 /**
@@ -72,28 +63,13 @@ public class GroupCreateInfActivity extends ActionBarActivity {
         Intent i = getIntent();
         sessionData = (SessionData) i.getSerializableExtra("data");
         friends = sessionData.getFriends();
-
-        for(Person u: friends){
-            try {
-                Bitmap b =new DownloadImageTask().execute(u.getId()).get();
-                u.setIcon(b);
-            }catch (Exception e){e.printStackTrace();}
-        }
+        Log.i("Friends in Create Group",friends.toString());
 
         selectTypeImage();
 
         ListView listView = (ListView) findViewById(R.id.listView);
         checkListAdapter = new CheckListAdapter(this,R.layout.select_contact_group,friends);
         listView.setAdapter(checkListAdapter);
-        /*listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                CheckBox cb = (CheckBox) view;
-                UserData friend = (UserData) parent.getItemAtPosition(position);
-                Toast.makeText(getApplicationContext(), "Clicked on Friend: " + friend.getName(), Toast.LENGTH_SHORT).show();
-                friend.setSelected(cb.isChecked());
-            }
-        });*/
     }
 
     @Override
@@ -101,7 +77,7 @@ public class GroupCreateInfActivity extends ActionBarActivity {
         if (resultCode == RESULT_OK) {
             avatarGroup.setImageBitmap(bitmap);
         }
-        if (requestCode == PICK_FROM_FILE) {
+        if (requestCode == PICK_FROM_FILE && resultCode == RESULT_OK) {
             mImageCaptureUri = data.getData();
             // From Gallery
             path = getRealPathFromURI(mImageCaptureUri);
@@ -117,7 +93,7 @@ public class GroupCreateInfActivity extends ActionBarActivity {
                 }
                 bitmap = BitmapFactory.decodeFile(path);
             }
-        } else if (requestCode == PICK_FROM_CAMERA) {
+        } else if (requestCode == PICK_FROM_CAMERA && resultCode==RESULT_OK) {
             path = mImageCaptureUri.getPath();
             try {
                 performCrop();
@@ -187,6 +163,20 @@ public class GroupCreateInfActivity extends ActionBarActivity {
         });
     }
 
+    private Bitmap cargarImagen(Context context, String name){
+        ContextWrapper cw = new ContextWrapper(context);
+        File dirImages = cw.getDir("Profiles",Context.MODE_APPEND);
+        File myPath = new File(dirImages, name+".png");
+        Bitmap b = null;
+        try {
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+            b = BitmapFactory.decodeFile(myPath.getAbsolutePath(), options);
+        }catch (Exception e){e.printStackTrace();}
+        b = Bitmap.createScaledBitmap(b, 60, 60, false);
+        return b;
+    }
+
     public String getRealPathFromURI(Uri contentUri){
         String [] proj      = {MediaStore.Images.Media.DATA};
         Cursor cursor       = managedQuery( contentUri, proj, null, null,null);
@@ -228,41 +218,6 @@ public class GroupCreateInfActivity extends ActionBarActivity {
         }
     }
 
-    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
-        Bitmap mIcon11;
-        protected Bitmap doInBackground(String... urls) {
-            try {
-                String userID = urls[0];
-                String urlStr = "https://graph.facebook.com/" + userID + "/picture?width=60&height=60";
-                Bitmap img = null;
-
-                HttpClient client = new DefaultHttpClient();
-                HttpGet request = new HttpGet(urlStr);
-                HttpResponse response;
-                try {
-                    response = (HttpResponse)client.execute(request);
-                    HttpEntity entity = response.getEntity();
-                    BufferedHttpEntity bufferedEntity = new BufferedHttpEntity(entity);
-                    InputStream inputStream = bufferedEntity.getContent();
-                    img = BitmapFactory.decodeStream(inputStream);
-                } catch (ClientProtocolException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-                return img;
-            }catch(Exception e){e.printStackTrace();}
-            return mIcon11;
-        }
-
-        @Override
-        protected void onPostExecute(Bitmap bitmap) {
-            Log.i("BITMAP Icon", bitmap.toString());
-        }
-    }
-
     private class CheckListAdapter extends ArrayAdapter<Person> {
         private List<Person> friends;
 
@@ -301,7 +256,7 @@ public class GroupCreateInfActivity extends ActionBarActivity {
             }
 
             Person friend = friends.get(position);
-            holder.avatar.setImageBitmap(friend.getIcon());
+            holder.avatar.setImageBitmap(cargarImagen(GroupCreateInfActivity.this,friend.getId()+""));
             holder.check.setText(friend.getName());
             holder.check.setSelected(friend.isSelected());
             holder.check.setTag(friend);

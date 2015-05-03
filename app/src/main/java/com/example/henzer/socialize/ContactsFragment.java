@@ -1,6 +1,7 @@
 package com.example.henzer.socialize;
 
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -18,9 +19,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.example.henzer.socialize.BlockActivity.FriendActionActivity;
 import com.example.henzer.socialize.Models.Person;
+import com.example.henzer.socialize.Models.SessionData;
 import com.yalantis.flipviewpager.adapter.BaseFlipAdapter;
 import com.yalantis.flipviewpager.utils.FlipSettings;
 
@@ -32,6 +34,8 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.entity.BufferedHttpEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -62,9 +66,7 @@ public class ContactsFragment extends ListFragment {
 
         for(Person u: friends){
             try {
-                Bitmap b =new DownloadImageTask().execute(u.getId()).get();
-                Log.i("BITMAP",b.toString());
-                u.setIcon(b);
+                guardarImagen(getActivity(), u.getId(), new DownloadImageTask().execute(u.getId()).get());
             }catch (Exception e){e.printStackTrace();}
         }
         adapter =  new ContactsAdapter(getActivity(), friends, settings);
@@ -76,8 +78,7 @@ public class ContactsFragment extends ListFragment {
     public void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
         Person user = (Person)getListAdapter().getItem(position);
-        Toast.makeText(getActivity(), user.getName(), Toast.LENGTH_SHORT).show();
-        Intent i = new Intent(getActivity(),FriendInfActivity.class);
+        Intent i = new Intent(getActivity(),FriendActionActivity.class);
         i.putExtra("data",user);
         startActivity(i);
     }
@@ -87,6 +88,34 @@ public class ContactsFragment extends ListFragment {
         menu.getItem(R.id.addGroup).setVisible(false);
         menu.getItem(R.id.refreshContacts).setVisible(true);
         super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    private String guardarImagen(Context context, String name, Bitmap image){
+        ContextWrapper cw = new ContextWrapper(context);
+        File dirImages = cw.getDir("Profiles",Context.MODE_PRIVATE);
+        File myPath = new File(dirImages, name+".png");
+
+        FileOutputStream fos = null;
+        try{
+            fos = new FileOutputStream(myPath);
+            image.compress(Bitmap.CompressFormat.PNG, 90, fos);
+            fos.flush();
+        }catch (Exception e){e.printStackTrace();}
+        Log.i("IMAGE SAVED","PATH: "+myPath);
+        return myPath.getAbsolutePath();
+    }
+
+    private Bitmap cargarImagen(Context context, String name){
+        ContextWrapper cw = new ContextWrapper(context);
+        File dirImages = cw.getDir("Profiles",Context.MODE_APPEND);
+        File myPath = new File(dirImages, name+".png");
+        Bitmap b = null;
+        try {
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+            b = BitmapFactory.decodeFile(myPath.getAbsolutePath(), options);
+        }catch (Exception e){e.printStackTrace();}
+        return b;
     }
 
     private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
@@ -146,11 +175,9 @@ public class ContactsFragment extends ListFragment {
                 holder = (ContactsHolder) view.getTag();
             }
             if (i==1){
-                holder.leftAvatar.setImageBitmap(userData.getIcon());
-                userData.setIcon(null);
+                holder.leftAvatar.setImageBitmap(cargarImagen(getActivity(), userData.getId()));
                 if (userData2 !=null){
-                    holder.rightAvatar.setImageBitmap(userData2.getIcon());
-                    userData2.setIcon(null);
+                    holder.rightAvatar.setImageBitmap(cargarImagen(getActivity(), userData2.getId()));
                 }
             }
             else{

@@ -3,11 +3,12 @@
     android:id="@+id/tablelayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <TableRow>
+    <TableRow style="@style/AppTheme">
         <ImageView
             android:id="@+id/image_group"
             android:layout_width="100dp"
-            android:layout_height="100dp"/>
+            android:layout_height="100dp"
+            android:layout_marginRight="10dp"/>
 
         <TextView
             style="@style/AppTheme"

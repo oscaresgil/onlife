@@ -9,17 +9,15 @@ import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.henzer.socialize.Controller.AddNewUser;
 import com.example.henzer.socialize.Controller.LoadAllInformation;
 import com.example.henzer.socialize.GCMClient.GCMHelper;
 import com.example.henzer.socialize.Models.Person;
+import com.example.henzer.socialize.Models.SessionData;
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
@@ -33,7 +31,6 @@ import com.facebook.Profile;
 import com.facebook.ProfileTracker;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
-import com.facebook.login.widget.LoginButton;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -43,6 +40,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -79,7 +78,7 @@ public class MainActivity extends Activity{
                     Log.i("PROFILE: ",Profile.getCurrentProfile().getName());
                     Profile profile = Profile.getCurrentProfile();
                     try {
-                        userLogin = new Person(profile.getId(), null, profile.getName(), "http://graph.facebook.com/" + profile.getId() + "/picture?type=large", null, "A");
+                        userLogin = new Person(profile.getId(), null, profile.getName(), "http://graph.facebook.com/" + profile.getId() + "/picture?type=large", "A");
                     }catch(Exception e){
                         Log.e(TAG, e.getLocalizedMessage());
                     }
@@ -102,10 +101,10 @@ public class MainActivity extends Activity{
 
                                     Log.i("Friend "+i,id+" = "+name);
                                     Log.i("Friend URL "+i,path.toString());
-                                    Person contact = new Person(id, null, name, pathURL.toString(), null, "A");
+                                    Person contact = new Person(id, null, name, pathURL.toString(), "A");
                                     friends.add(contact);
                                 }
-
+                                Collections.sort(friends, new nameComparator());
                                 Log.i("ACTUAL USER",userLogin.toString());
                                 Log.i("ACTUAL FRIENDS", friends.toString());
                                 GetGCM();
@@ -157,11 +156,11 @@ public class MainActivity extends Activity{
         }
     }
 
-    @Override
+    /*@Override
     protected  void onDestroy(){
         super.onDestroy();
         //LoginManager.getInstance().logOut();
-    }
+    }*/
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -179,12 +178,13 @@ public class MainActivity extends Activity{
                 JSONObject mySession = new JSONObject(prefe.getString("session", ""));
                 JSONObject me = mySession.getJSONObject("me");
                 JSONArray fr = mySession.getJSONArray("friends");
-                userLogin = new Person(me.getString("id"), me.getString("id_phone"), me.getString("name"), me.getString("photo"), null, me.getString("state"));
+                userLogin = new Person(me.getString("id"), me.getString("id_phone"), me.getString("name"), me.getString("photo"), me.getString("state"));
                 friends = new ArrayList();
                 Person friend = null;
                 for(int i = 0; i<fr.length(); i++){
                     JSONObject f = fr.getJSONObject(i);
-                    friend = new Person(f.getString("id"), f.getString("id_phone"), f.getString("name"), f.getString("photo"), null, f.getString("state"));
+                    friend = new Person(f.getString("id"), f.getString("id_phone"), f.getString("name"), f.getString("photo"), f.getString("state"));
+                    Log.i("FRIEND AFTER CLOSING",friend.toString());
                     friends.add(friend);
                 }
 
@@ -197,9 +197,12 @@ public class MainActivity extends Activity{
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            //Log.e("Methods","I resume onResume()");
-            //Intent i = new Intent(this,HomeActivity.class);
-            //startActivity(i);
+        }
+    }
+    class nameComparator implements Comparator<Person> {
+        @Override
+        public int compare(Person person1, Person person2) {
+            return person1.getName().compareTo(person2.getName());
         }
     }
 
@@ -260,5 +263,4 @@ public class MainActivity extends Activity{
             }
         }.execute();
     }
-
 }
