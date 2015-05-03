@@ -12,9 +12,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 
 import com.example.henzer.socialize.Controller.AddNewUser;
+import com.example.henzer.socialize.Controller.LoadAllInformation;
 import com.example.henzer.socialize.GCMClient.GCMHelper;
 import com.example.henzer.socialize.Models.Person;
 import com.facebook.AccessToken;
@@ -56,7 +58,7 @@ public class MainActivity extends Activity{
     private SharedPreferences sharedpreferences;
     private EditText username, password;
 
-    private LoginButton loginButton;
+    private Button loginFB;
     private CallbackManager callbackManager;
     private ProfileTracker profileTracker;
     private AccessTokenTracker tokenTracker;
@@ -65,44 +67,53 @@ public class MainActivity extends Activity{
 
 
     private FacebookCallback<LoginResult> facebookCallback = new FacebookCallback<LoginResult>() {
+        private ProfileTracker mProfileTracker;
+
         @Override
         public void onSuccess(LoginResult loginResult) {
-            Log.i("PROFILE: ",Profile.getCurrentProfile().getName());
-            Profile profile = Profile.getCurrentProfile();
-            try {
-                userLogin = new UserData(profile.getId(), profile.getName(), new URL("http://graph.facebook.com/" + profile.getId() + "/picture?type=large"));
-            }catch(Exception e){
-                Log.e(TAG, e.getLocalizedMessage());
-            }
-            // https://developers.facebook.com/docs/reference/android/current/class/GraphResponse/
-            new GraphRequest(AccessToken.getCurrentAccessToken(), "/me/friends", null, HttpMethod.GET, new GraphRequest.Callback() {
+            mProfileTracker = new ProfileTracker() {
                 @Override
-                public void onCompleted(GraphResponse response) {
+                protected void onCurrentProfileChanged(Profile pr, Profile pr2) {
+                    Log.i("PROFILE: ",Profile.getCurrentProfile().getName());
+                    Profile profile = Profile.getCurrentProfile();
                     try {
-                        JSONObject objectResponse = response.getJSONObject();
-                        JSONArray objectData = (JSONArray) objectResponse.get("data");
-                        for (int i=0; i<objectData.length(); i++){
-                            JSONObject objectUser = (JSONObject) objectData.get(i);
-                            String id = (String) objectUser.get("id");
-                            String name = (String) objectUser.get("name");
+                        userLogin = new UserData(profile.getId(), profile.getName(), new URL("http://graph.facebook.com/" + profile.getId() + "/picture?type=large"));
+                    }catch(Exception e){
+                        Log.e(TAG, e.getLocalizedMessage());
+                    }
+                    // https://developers.facebook.com/docs/reference/android/current/class/GraphResponse/
+                    new GraphRequest(AccessToken.getCurrentAccessToken(), "/me/friends", null, HttpMethod.GET, new GraphRequest.Callback() {
+                        @Override
+                        public void onCompleted(GraphResponse response) {
+                            try {
+                                JSONObject objectResponse = response.getJSONObject();
+                                JSONArray objectData = (JSONArray) objectResponse.get("data");
+                                for (int i=0; i<objectData.length(); i++){
+                                    JSONObject objectUser = (JSONObject) objectData.get(i);
+                                    String id = (String) objectUser.get("id");
+                                    String name = (String) objectUser.get("name");
 
-                            // http://stackoverflow.com/questions/5841710/get-user-image-from-facebook-graph-api
-                            // http://stackoverflow.com/questions/23559736/android-skimagedecoderfactory-returned-null-error
-                            String path = "http://graph.facebook.com/"+id+"/picture?type=large";
-                            URL pathURL = new URL(path);
+                                    // http://stackoverflow.com/questions/5841710/get-user-image-from-facebook-graph-api
+                                    // http://stackoverflow.com/questions/23559736/android-skimagedecoderfactory-returned-null-error
+                                    String path = "http://graph.facebook.com/"+id+"/picture?type=large";
+                                    URL pathURL = new URL(path);
 
-                            Log.i("Friend "+i,id+" = "+name);
-                            Log.i("Friend URL "+i,path.toString());
-                            UserData contact = new UserData(id,name,pathURL);
-                            friends.add(contact);
+                                    Log.i("Friend "+i,id+" = "+name);
+                                    Log.i("Friend URL "+i,path.toString());
+                                    UserData contact = new UserData(id,name,pathURL);
+                                    friends.add(contact);
+                                }
+
+                                Log.i("ACTUAL USER",userLogin.toString());
+                                Log.i("ACTUAL FRIENDS", friends.toString());
+                                GetGCM();
+                            }catch(Exception e){e.printStackTrace();}
                         }
-
-                        Log.i("ACTUAL USER",userLogin.toString());
-                        Log.i("ACTUAL FRIENDS", friends.toString());
-                        GetGCM();
-                    }catch(Exception e){e.printStackTrace();}
+                    }).executeAsync();
+                    mProfileTracker.stopTracking();
                 }
-            }).executeAsync();
+            };
+            mProfileTracker.startTracking();
         }
 
         @Override
@@ -125,24 +136,29 @@ public class MainActivity extends Activity{
         password = (EditText) findViewById(R.id.editText2);
 
         FacebookSdk.sdkInitialize(this.getApplicationContext());
-        callbackManager = CallbackManager.Factory.create();
-        loginButton = (LoginButton) findViewById(R.id.login_facebook_button);
-        LoginManager.getInstance().registerCallback(callbackManager, facebookCallback);
+
         setContentView(R.layout.activity_main);
+        loginFB = (Button) findViewById(R.id.loginFB);
+
+        callbackManager = CallbackManager.Factory.create();
+        LoginManager.getInstance().registerCallback(callbackManager, facebookCallback);
     }
 
     public void loginwithfb(View view){
+        friends = new ArrayList<>();
         if(AccessToken.getCurrentAccessToken()==null) {
             LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile", "user_friends", "email"));
+            loginFB.setText("Log out");
         }else{
             LoginManager.getInstance().logOut();
+            loginFB.setText("Login with facebook");
         }
     }
 
     @Override
     protected  void onDestroy(){
         super.onDestroy();
-        LoginManager.getInstance().logOut();
+        //LoginManager.getInstance().logOut();
     }
 
     @Override
@@ -165,20 +181,6 @@ public class MainActivity extends Activity{
     public static List<UserData> getFriends(){
         return friends;
     }
-
-    public void login(View view) {
-        Editor editor = sharedpreferences.edit();
-        String u = username.getText().toString();
-        String p = password.getText().toString();
-        editor.putString(name, u);
-        editor.putString(pass, p);
-        editor.commit();
-        GetGCM();
-
-        //Intent i = new Intent(this, com.example. henzer.socialize.HomeActivity.class);
-        //startActivity(i);
-    }
-
     private void GetGCM() {
         new AsyncTask<Void, Void, String>() {
             @Override
@@ -207,6 +209,7 @@ public class MainActivity extends Activity{
                 nuevo.setPhoto(userLogin.getUrl().toString());
                 nuevo.setState("A");
                 Log.i("NUEVO: ", nuevo.toString());
+
                 try {
                     Boolean resp = addNewUser.execute(nuevo).get();
                     if(resp){
@@ -224,4 +227,25 @@ public class MainActivity extends Activity{
             }
         }.execute();
     }
+
+    public JSONObject getAllInformation(String id, List<UserData> friends ){
+        LoadAllInformation load = new LoadAllInformation(MainActivity.this);
+        String[] IDS = new String[friends.size()];
+        IDS[0] = id;
+        int i = 1;
+        for(UserData u: friends){
+            IDS[i] = u.getId();
+            i++;
+        }
+        JSONObject result = null;
+        try {
+            result = load.execute(IDS).get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
 }

@@ -16,8 +16,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.getbase.floatingactionbutton.AddFloatingActionButton;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +25,6 @@ import java.util.List;
 public class GroupsFragment extends ListFragment {
     public static final String TAG = "GroupsFragment";
     private SessionData sessionData;
-    private AddFloatingActionButton buttonAddGroup;
     private GroupAdapter adapter;
     private List<UserData> groups;
 

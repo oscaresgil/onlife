@@ -29,5 +29,4 @@ dependencies {
     compile 'com.yalantis:flipviewpager:1.0.0'
     compile 'com.r0adkll:slidableactivity:2.0.2'
     compile 'de.hdodenhof:circleimageview:1.2.2'
-    compile 'com.getbase:floatingactionbutton:1.9.0'
 }
