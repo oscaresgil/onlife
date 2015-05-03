@@ -74,6 +74,10 @@ public class GroupsFragment extends ListFragment {
         super.onListItemClick(l, v, position, id);
         UserData group = groups.get(position);
         Toast.makeText(getActivity(), "CLICKED ON "+groups.get(position).getName(), Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(getActivity(),GroupInfActivity.class);
+        intent.putExtra("data",sessionData);
+        intent.putExtra("name",group.getName());
+        startActivity(intent);
     }
 
     @Override
@@ -84,7 +88,7 @@ public class GroupsFragment extends ListFragment {
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Intent i = new Intent(getActivity(),GroupInfActivity.class);
+        Intent i = new Intent(getActivity(),GroupCreateInfActivity.class);
         i.putExtra("data",sessionData);
         startActivity(i);
         return super.onOptionsItemSelected(item);

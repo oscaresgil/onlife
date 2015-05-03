@@ -6,30 +6,70 @@
     android:weightSum="1">
 
     <LinearLayout
+        android:id="@+id/layoutImage"
+        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="156dp"
-        android:weightSum="1">
-
-        <ImageButton
-            android:id="@+id/imageView"
-            android:layout_width="138dp"
-            android:layout_height="138dp"/>
-
-        <EditText
-            style="@style/AppTheme"
-            android:id="@+id/nameNewGroup"
-            android:layout_width="fill_parent"
-            android:layout_height="138dp"
-            android:gravity="center"
-            android:enabled="true"/>
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="194dp"
+        android:layout_weight="0.32">
+        <de.hdodenhof.circleimageview.CircleImageView
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/avatar_group"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_centerInParent="true"
+            android:src="@drawable/ic_crop_original_black_48dp"
+            app:border_width="4dp"
+            app:border_color="#5DFC0A"/>
         <ListView
+            android:id="@+id/friendInGroupList"
+            android:layout_width="fill_parent"
+            android:layout_height="200dp">
+        </ListView>
+    </LinearLayout>
+    <TextView
+        style="@style/FriendStyle"
+        android:id="@+id/availableText"
+        android:layout_width="142dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="Available"
+        android:enabled="false"
+        android:gravity="center" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="152dp"
+        android:gravity="center">
+
+        <NumberPicker
+            style="@style/FriendStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/listView"
-            android:layout_weight="1" />
+            android:id="@+id/timeMinBlock"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center" />
+
+        <NumberPicker
+            style="@style/FriendStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/timeSecBlock"
+            android:layout_gravity="center_horizontal" />
+        <TextView
+            style="@style/FriendStyle"
+            android:layout_width="79dp"
+            android:layout_height="match_parent"
+            android:text="Minutes"
+            android:gravity="center" />
     </LinearLayout>
+    <Button
+        style="@style/FriendStyle"
+        android:layout_width="137dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/blockButton"
+        android:layout_gravity="center_horizontal"
+        android:text="Block" />
+
+
 </LinearLayout>
