@@ -42,7 +42,6 @@ import com.example.henzer.socialize.Models.SessionData;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -79,7 +78,8 @@ public class GroupCreateInfActivity extends ActionBarActivity {
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.orange_light)));
-        actionBar.setTitle((Html.fromHtml("<b><font color=\"#000000\">" + getString(R.string.title_home_page) + "</font></b>")));
+        actionBar.setTitle((Html.fromHtml("<b><font color=\"#000000\">" + getString(R.string.new_group) + "</font></b>")));
+        actionBar.setHomeAsUpIndicator(R.drawable.ic_arrow_back_black_48dp);
 
         Intent i = getIntent();
         sessionData = (SessionData) i.getSerializableExtra("data");

@@ -21,7 +21,6 @@ import com.example.henzer.socialize.Models.Group;
 import com.example.henzer.socialize.Models.SessionData;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -52,6 +51,7 @@ public class GroupsFragment extends ListFragment {
         sessionData = (SessionData) getArguments().getSerializable("data");
 
         groups = sessionData.getGroups();
+        groups.add(new Group("Prueba Nombre",sessionData.getFriends(),"HOLA"));
         adapter = new GroupAdapter(getActivity(), R.layout.groups, groups);
         setListAdapter(adapter);
         return v;

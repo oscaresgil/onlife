@@ -1,8 +1,10 @@
 package com.example.henzer.socialize.BlockActivity;
 
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.text.Html;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.NumberPicker;
@@ -28,19 +30,19 @@ public class GroupActionActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.orange_light)));
+        actionBar.setHomeAsUpIndicator(R.drawable.ic_arrow_back_black_48dp);
         setContentView(R.layout.group_action);
 
         Intent i = getIntent();
         nameGroup = i.getStringExtra("name");
         friendsInGroup = (List<Person>) i.getSerializableExtra("data");
-        getSupportActionBar().setTitle(nameGroup);
+        actionBar.setTitle((Html.fromHtml("<b><font color=\"#000000\">" + nameGroup + "</font></b>")));
 
         minPicker = (NumberPicker) findViewById(R.id.timeMinBlock);
         secPicker = (NumberPicker) findViewById(R.id.timeSecBlock);
-        minPicker.setMinValue(1);
-        minPicker.setMaxValue(3);
-        secPicker.setMinValue(0);
-        secPicker.setMaxValue(9);
+        minPicker.setMinValue(1); minPicker.setMaxValue(3);
+        secPicker.setMinValue(0); secPicker.setMaxValue(9);
     }
 
     @Override

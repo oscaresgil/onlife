@@ -5,8 +5,10 @@ import android.content.ContextWrapper;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -35,8 +37,10 @@ public class GroupInformationActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
+        actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.orange_light)));
+        actionBar.setTitle((Html.fromHtml("<b><font color=\"#000000\">" + "Information" + "</font></b>")));
         actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setTitle("Information");
+        actionBar.setHomeAsUpIndicator(R.drawable.ic_arrow_back_black_48dp);
         setContentView(R.layout.group_information);
 
         Intent i = getIntent();

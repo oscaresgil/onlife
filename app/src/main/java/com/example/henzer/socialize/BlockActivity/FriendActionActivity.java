@@ -5,8 +5,10 @@ import android.content.ContextWrapper;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.text.Html;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -34,6 +36,8 @@ public class FriendActionActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.orange_light)));
+        actionBar.setHomeAsUpIndicator(R.drawable.ic_arrow_back_black_48dp);
         setContentView(R.layout.contact_action);
 
         Intent i = getIntent();
@@ -44,7 +48,7 @@ public class FriendActionActivity extends ActionBarActivity {
         minPicker.setMinValue(1); minPicker.setMaxValue(3);
         secPicker.setMinValue(0); secPicker.setMaxValue(9);
 
-        actionBar.setTitle(friend.getName());
+        actionBar.setTitle((Html.fromHtml("<b><font color=\"#000000\">" + friend.getName() + "</font></b>")));
         CircleImageView imageView = (CircleImageView) findViewById(R.id.avatar);
         imageView.setImageBitmap(cargarImagen(this,friend.getId()+""));
     }
