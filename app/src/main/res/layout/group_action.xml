@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -64,21 +65,10 @@
         <Button
             android:layout_width="137dp"
             android:layout_height="wrap_content"
-            android:id="@+id/timeSecBlock"
-            android:layout_gravity="center_horizontal" />
-        <TextView
-            style="@style/FriendStyle"
-            android:layout_width="79dp"
-            android:layout_height="match_parent"
-            android:text="Minutes"
-            android:gravity="center" />
+            android:id="@+id/blockButton"
+            android:layout_gravity="center_horizontal"
+            android:text="Block"
+            android:onClick="bloquear"/>
     </LinearLayout>
-    <Button
-        android:layout_width="137dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/blockButton"
-        android:layout_gravity="center_horizontal"
-        android:text="Block"
-        android:onClick="bloquear"/>
-    </LinearLayout>
-</ScrollView>
+</LinearLayout>
+

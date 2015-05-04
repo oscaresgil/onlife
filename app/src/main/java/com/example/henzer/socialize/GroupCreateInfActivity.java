@@ -44,6 +44,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -146,6 +147,8 @@ public class GroupCreateInfActivity extends ActionBarActivity {
             String name = nameNewGroup.getText().toString();
             int limit = 30;
             String state = "A";
+
+            guardarImagen(getApplicationContext(),name+"_cropped",bitmap);
             Group newG = new Group(0, name, selected, path, limit, state);
             Log.e(TAG, newG.toString());
 
@@ -155,6 +158,7 @@ public class GroupCreateInfActivity extends ActionBarActivity {
                 if(newG.getId()!=-1){
                     sessionData.getGroups().add(newG);
                     saveGroupInSession(newG);
+                    GroupsFragment.addNewGroup(newG);
                     finish();
                 }
             } catch (InterruptedException e) {
@@ -297,7 +301,21 @@ public class GroupCreateInfActivity extends ActionBarActivity {
         Log.e(TAG, mySession.toString());
         editor.putString("session", mySession.toString());
         editor.commit();
+    }
 
+    private String guardarImagen(Context context, String name, Bitmap image){
+        ContextWrapper cw = new ContextWrapper(context);
+        File dirImages = cw.getDir("Profiles",Context.MODE_PRIVATE);
+        File myPath = new File(dirImages, name+".png");
+
+        FileOutputStream fos = null;
+        try{
+            fos = new FileOutputStream(myPath);
+            image.compress(Bitmap.CompressFormat.PNG, 90, fos);
+            fos.flush();
+        }catch (Exception e){e.printStackTrace();}
+        Log.i("IMAGE SAVED","PATH: "+myPath);
+        return myPath.getAbsolutePath();
     }
 
     private class CheckListAdapter extends ArrayAdapter<Person> {

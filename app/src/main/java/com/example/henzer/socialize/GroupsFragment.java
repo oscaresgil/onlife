@@ -1,7 +1,10 @@
 package com.example.henzer.socialize;
 
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.util.Log;
@@ -20,6 +23,7 @@ import com.example.henzer.socialize.BlockActivity.GroupActionActivity;
 import com.example.henzer.socialize.Models.Group;
 import com.example.henzer.socialize.Models.SessionData;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.List;
 
@@ -30,7 +34,7 @@ public class GroupsFragment extends ListFragment {
     public static final String TAG = "GroupsFragment";
     private SessionData sessionData;
     private GroupAdapter adapter;
-    private List<Group> groups;
+    private static List<Group> groups;
 
     public static GroupsFragment newInstance(Bundle arguments){
         GroupsFragment myfragment = new GroupsFragment();
@@ -51,10 +55,17 @@ public class GroupsFragment extends ListFragment {
         sessionData = (SessionData) getArguments().getSerializable("data");
 
         groups = sessionData.getGroups();
-        groups.add(new Group("Prueba Nombre",sessionData.getFriends(),"HOLA"));
         adapter = new GroupAdapter(getActivity(), R.layout.groups, groups);
         setListAdapter(adapter);
         return v;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        adapter = new GroupAdapter(getActivity(), R.layout.groups, groups);
+        setListAdapter(adapter);
+        adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -68,8 +79,8 @@ public class GroupsFragment extends ListFragment {
         super.onListItemClick(l, v, position, id);
         Group group = groups.get(position);
         Intent intent = new Intent(getActivity(),GroupActionActivity.class);
-        intent.putExtra("data", (Serializable) group.getFriendsInGroup());
-        intent.putExtra("name",group.getName());
+        intent.putExtra("data", (Serializable) group);
+        intent.putExtra("name", group.getName());
         startActivity(intent);
     }
 
@@ -82,9 +93,22 @@ public class GroupsFragment extends ListFragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         Intent i = new Intent(getActivity(),GroupCreateInfActivity.class);
-        i.putExtra("data",sessionData);
+        i.putExtra("data", sessionData);
         startActivity(i);
         return super.onOptionsItemSelected(item);
+    }
+
+    private Bitmap cargarImagen(Context context, String name){
+        ContextWrapper cw = new ContextWrapper(context);
+        File dirImages = cw.getDir("Profiles",Context.MODE_APPEND);
+        File myPath = new File(dirImages, name+".png");
+        Bitmap b = null;
+        try {
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+            b = BitmapFactory.decodeFile(myPath.getAbsolutePath(), options);
+        }catch (Exception e){e.printStackTrace();}
+        return b;
     }
 
     class GroupAdapter extends ArrayAdapter<Group> {
@@ -100,8 +124,17 @@ public class GroupsFragment extends ListFragment {
             View rowView = inflater.inflate(R.layout.groups, null, true);
             TextView text = (TextView) rowView.findViewById(R.id.name_group);
             ImageView image = (ImageView) rowView.findViewById(R.id.image_group);
+            image.setImageBitmap(cargarImagen(getContext(),objects.get(position).getName()+"_cropped"));
             text.setText(objects.get(position).getName());
             return rowView;
         }
+    }
+    public static void addNewGroup(Group group){
+        groups.add(group);
+    }
+    public static void removeGroup(Group group){
+        Log.i("Group Before",group.toString());
+        groups.remove(group);
+        Log.i("Group After", group.toString());
     }
 }

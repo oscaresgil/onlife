@@ -13,6 +13,8 @@ import android.widget.NumberPicker;
 
 import com.example.henzer.socialize.Controller.SendNotification;
 import com.example.henzer.socialize.GroupInformationActivity;
+import com.example.henzer.socialize.GroupsFragment;
+import com.example.henzer.socialize.Models.Group;
 import com.example.henzer.socialize.Models.Person;
 import com.example.henzer.socialize.R;
 
@@ -25,6 +27,7 @@ import java.util.List;
 public class GroupActionActivity extends ActionBarActivity {
     public static final String TAG = "GroupActionActivity";
     private String nameGroup;
+    private Group group;
     private List<Person> friendsInGroup;
     private NumberPicker minPicker;
     private NumberPicker secPicker;
@@ -40,7 +43,8 @@ public class GroupActionActivity extends ActionBarActivity {
 
         Intent i = getIntent();
         nameGroup = i.getStringExtra("name");
-        friendsInGroup = (List<Person>) i.getSerializableExtra("data");
+        group = (Group) i.getSerializableExtra("data");
+        friendsInGroup = group.getFriendsInGroup();
         actionBar.setTitle((Html.fromHtml("<b><font color=\"#000000\">" + nameGroup + "</font></b>")));
 
         minPicker = (NumberPicker) findViewById(R.id.timeMinBlock);
@@ -64,7 +68,8 @@ public class GroupActionActivity extends ActionBarActivity {
             startActivity(intent);
         }
         else if(i == R.id.delete_group){
-
+            GroupsFragment.removeGroup(group);
+            finish();
         }
         else {
             finish();
