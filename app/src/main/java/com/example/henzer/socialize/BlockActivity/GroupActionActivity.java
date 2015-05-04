@@ -5,10 +5,13 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.text.Html;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.NumberPicker;
 
+import com.example.henzer.socialize.Controller.SendNotification;
 import com.example.henzer.socialize.GroupInformationActivity;
 import com.example.henzer.socialize.Models.Person;
 import com.example.henzer.socialize.R;
@@ -20,6 +23,7 @@ import java.util.List;
  * Created by Boris on 02/05/2015.
  */
 public class GroupActionActivity extends ActionBarActivity {
+    public static final String TAG = "GroupActionActivity";
     private String nameGroup;
     private List<Person> friendsInGroup;
     private NumberPicker minPicker;
@@ -67,4 +71,10 @@ public class GroupActionActivity extends ActionBarActivity {
         }
         return true;
     }
+    public void bloquear(View view){
+        SendNotification gcm = new SendNotification(this, "Enjoy your life. \nLeave the phone", "5 min");
+        Log.e(TAG, "Bloquear a: " + friendsInGroup.toString());
+        gcm.execute(friendsInGroup.toArray(new Person[friendsInGroup.size()]));
+    }
+
 }
