@@ -63,7 +63,8 @@
         android:layout_height="wrap_content"
         android:id="@+id/blockButton"
         android:layout_gravity="center_horizontal"
-        android:text="Block" />
+        android:text="Block"
+        android:onClick="bloquear"/>
 
 
 </LinearLayout>
