@@ -14,9 +14,10 @@
     <ListView
         style="@style/AppTheme"
         android:id="@+id/friendInGroupList"
-        android:layout_width="fill_parent"
-        android:layout_marginRight="10dp"
-        android:layout_height="match_parent">
+        android:layout_width="match_parent"
+        android:layout_marginRight="20dp"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="20dp">
     </ListView>
 
 </LinearLayout>

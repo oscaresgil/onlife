@@ -4,12 +4,12 @@
     tools:context=".HomeActivity">
     <item
         android:id="@+id/addGroup"
-        android:icon="@drawable/ic_control_point_grey600_48dp"
+        android:icon="@drawable/ic_add_circle_outline_black_48dp"
         app:showAsAction="always"
         android:title="@string/add_group"/>
     <item
         android:id="@+id/refreshContacts"
-        android:icon="@drawable/ic_rotate_right_grey600_48dp"
+        android:icon="@drawable/ic_refresh_black_48dp"
         app:showAsAction="always"
         android:title="@string/add_group"/>
     <item

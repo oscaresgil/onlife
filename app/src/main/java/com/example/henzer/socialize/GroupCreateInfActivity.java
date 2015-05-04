@@ -11,11 +11,13 @@ import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -24,6 +26,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -46,6 +49,7 @@ public class GroupCreateInfActivity extends ActionBarActivity {
 
     private Uri mImageCaptureUri;
     private ImageButton avatarGroup;
+    private EditText groupName;
     private static final int PICK_FROM_CAMERA = 1;
     private static final int PICK_FROM_FILE = 2;
     private static final int PIC_CROP = 3;
@@ -59,6 +63,8 @@ public class GroupCreateInfActivity extends ActionBarActivity {
         setContentView(R.layout.group_create_information);
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.orange_light)));
+        actionBar.setTitle((Html.fromHtml("<b><font color=\"#000000\">" + getString(R.string.title_home_page) + "</font></b>")));
 
         Intent i = getIntent();
         sessionData = (SessionData) i.getSerializableExtra("data");
@@ -101,7 +107,6 @@ public class GroupCreateInfActivity extends ActionBarActivity {
                 e.printStackTrace();
             }
             bitmap = BitmapFactory.decodeFile(path);
-
         }
     }
 
@@ -117,9 +122,14 @@ public class GroupCreateInfActivity extends ActionBarActivity {
         if (i == R.id.saveGroup_button) {
             List<Person> friendsChecked = checkListAdapter.friends;
             for (Person userData: friendsChecked){
-                if (userData.isSelected())
-                    Log.i("User is Checked",userData.getName());
+                if (userData.isSelected()) {
+                    Log.i("User is Checked", userData.getName());
+                }
             }
+            groupName = (EditText) findViewById(R.id.nameNewGroup);
+            Log.i("Image group",bitmap.toString());
+            Log.i("Path Image Group",path);
+            Log.i("Name Group", groupName.getText().toString());
         } else{
             finish();
         }
@@ -202,7 +212,7 @@ public class GroupCreateInfActivity extends ActionBarActivity {
                 intent.putExtra("outputX", 256);
                 intent.putExtra("outputY", 256);
                 intent.putExtra("scale", true);
-                intent.putExtra("return-data", true);
+                intent.putExtra("return-data", false);
 
                 Intent i = new Intent(intent);
                 ResolveInfo res = list.get(0);

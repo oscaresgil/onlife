@@ -30,7 +30,7 @@ public class FriendActionActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
-        setContentView(R.layout.friend_action);
+        setContentView(R.layout.contact_action);
 
         Intent i = getIntent();
         friend = (Person)i.getSerializableExtra("data");

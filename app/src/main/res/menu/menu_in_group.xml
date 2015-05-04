@@ -3,13 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item android:id="@+id/information_button"
-        android:icon="@drawable/ic_info_outline_grey600_48dp"
+        android:icon="@drawable/ic_info_outline_black_48dp"
         android:title=""
         app:showAsAction="always"/>
 
     <item
         android:id="@+id/delete_group"
-        android:icon="@drawable/ic_close_grey600_48dp"
+        android:icon="@drawable/ic_highlight_remove_black_48dp"
         android:title="@string/add_group"
         app:showAsAction="always"/>
 </menu>
