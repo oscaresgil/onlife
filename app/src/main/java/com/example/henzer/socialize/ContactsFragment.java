@@ -123,7 +123,7 @@ public class ContactsFragment extends ListFragment {
         protected Bitmap doInBackground(String... urls) {
             try {
                 String userID = urls[0];
-                String urlStr = "https://graph.facebook.com/" + userID + "/picture?width=400&height=400";
+                String urlStr = "https://graph.facebook.com/" + userID + "/picture?width=700&height=700";
                 Bitmap img = null;
 
                 HttpClient client = new DefaultHttpClient();

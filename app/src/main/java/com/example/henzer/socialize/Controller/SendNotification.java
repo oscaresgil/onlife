@@ -4,11 +4,8 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.Toast;
 
-import com.example.henzer.socialize.Models.Group;
 import com.example.henzer.socialize.Models.Person;
-import com.example.henzer.socialize.Models.SessionData;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;

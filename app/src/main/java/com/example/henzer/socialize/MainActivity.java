@@ -97,7 +97,8 @@ public class MainActivity extends Activity{
 
                                     // http://stackoverflow.com/questions/5841710/get-user-image-from-facebook-graph-api
                                     // http://stackoverflow.com/questions/23559736/android-skimagedecoderfactory-returned-null-error
-                                    String path = "http://graph.facebook.com/"+id+"/picture?type=large";
+                                    //String path = "http://graph.facebook.com/"+id+"/picture?type=large";
+                                    String path = "https://graph.facebook.com/" + id + "/picture?width=900&height=900";
                                     URL pathURL = new URL(path);
 
                                     Log.i("Friend "+i,id+" = "+name);
@@ -134,9 +135,6 @@ public class MainActivity extends Activity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        username = (EditText) findViewById(R.id.editText1);
-        password = (EditText) findViewById(R.id.editText2);
-
         FacebookSdk.sdkInitialize(this.getApplicationContext());
 
         setContentView(R.layout.activity_main);
