@@ -64,7 +64,6 @@
         <Button
             android:layout_width="137dp"
             android:layout_height="wrap_content"
-<<<<<<< HEAD
             android:id="@+id/timeSecBlock"
             android:layout_gravity="center_horizontal" />
         <TextView
@@ -81,13 +80,5 @@
         android:layout_gravity="center_horizontal"
         android:text="Block"
         android:onClick="bloquear"/>
-=======
-            android:id="@+id/blockButton"
-            android:layout_gravity="center_horizontal"
-            android:text="Block"
-            android:layout_marginBottom="20dp" />
->>>>>>> origin/master
-
-
     </LinearLayout>
 </ScrollView>
