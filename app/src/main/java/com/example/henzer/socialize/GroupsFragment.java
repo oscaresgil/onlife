@@ -124,7 +124,7 @@ public class GroupsFragment extends ListFragment {
             View rowView = inflater.inflate(R.layout.groups, null, true);
             TextView text = (TextView) rowView.findViewById(R.id.name_group);
             ImageView image = (ImageView) rowView.findViewById(R.id.image_group);
-            image.setImageBitmap(cargarImagen(getContext(),objects.get(position).getName()+"_cropped"));
+            image.setImageBitmap(cargarImagen(getContext(),objects.get(position).getName()));
             text.setText(objects.get(position).getName());
             return rowView;
         }
@@ -133,8 +133,10 @@ public class GroupsFragment extends ListFragment {
         groups.add(group);
     }
     public static void removeGroup(Group group){
-        Log.i("Group Before",group.toString());
-        groups.remove(group);
-        Log.i("Group After", group.toString());
+        for (int i=0; i<groups.size(); i++){
+            if (groups.get(i).getId()==group.getId()){
+                groups.remove(i);
+            }
+        }
     }
 }

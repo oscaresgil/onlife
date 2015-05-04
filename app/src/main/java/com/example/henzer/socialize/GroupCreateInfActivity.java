@@ -97,6 +97,10 @@ public class GroupCreateInfActivity extends ActionBarActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
+            if (requestCode == PIC_CROP){
+                Bundle extras = data.getExtras();
+                bitmap = extras.getParcelable("data");
+            }
             avatarGroup.setImageBitmap(bitmap);
         }
         if (requestCode == PICK_FROM_FILE && resultCode == RESULT_OK) {
@@ -113,7 +117,6 @@ public class GroupCreateInfActivity extends ActionBarActivity {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                bitmap = BitmapFactory.decodeFile(path);
             }
         } else if (requestCode == PICK_FROM_CAMERA && resultCode==RESULT_OK) {
             path = mImageCaptureUri.getPath();
@@ -122,7 +125,6 @@ public class GroupCreateInfActivity extends ActionBarActivity {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            bitmap = BitmapFactory.decodeFile(path);
         }
     }
 
@@ -148,7 +150,7 @@ public class GroupCreateInfActivity extends ActionBarActivity {
             int limit = 30;
             String state = "A";
 
-            guardarImagen(getApplicationContext(),name+"_cropped",bitmap);
+            path = guardarImagen(getApplicationContext(),name,bitmap);
             Group newG = new Group(0, name, selected, path, limit, state);
             Log.e(TAG, newG.toString());
 
@@ -245,13 +247,13 @@ public class GroupCreateInfActivity extends ActionBarActivity {
 
             if (size >= 0) {
                 intent.setData(mImageCaptureUri);
-                intent.putExtra("crop", "false");
+                intent.putExtra("crop", "true");
                 intent.putExtra("aspectX", 1);
                 intent.putExtra("aspectY", 1);
                 intent.putExtra("outputX", 256);
                 intent.putExtra("outputY", 256);
-                intent.putExtra("scale", true);
-                intent.putExtra("return-data", false);
+                intent.putExtra("scale", false);
+                intent.putExtra("return-data", true);
 
                 Intent i = new Intent(intent);
                 ResolveInfo res = list.get(0);

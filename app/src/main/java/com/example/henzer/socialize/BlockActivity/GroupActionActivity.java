@@ -1,6 +1,10 @@
 package com.example.henzer.socialize.BlockActivity;
 
+import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -9,6 +13,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.NumberPicker;
 
 import com.example.henzer.socialize.Controller.SendNotification;
@@ -18,6 +23,7 @@ import com.example.henzer.socialize.Models.Group;
 import com.example.henzer.socialize.Models.Person;
 import com.example.henzer.socialize.R;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.List;
 
@@ -27,6 +33,7 @@ import java.util.List;
 public class GroupActionActivity extends ActionBarActivity {
     public static final String TAG = "GroupActionActivity";
     private String nameGroup;
+    private ImageView avatar;
     private Group group;
     private List<Person> friendsInGroup;
     private NumberPicker minPicker;
@@ -44,6 +51,10 @@ public class GroupActionActivity extends ActionBarActivity {
         Intent i = getIntent();
         nameGroup = i.getStringExtra("name");
         group = (Group) i.getSerializableExtra("data");
+
+        avatar = (ImageView) findViewById(R.id.avatar_group);
+        avatar.setImageBitmap(cargarImagen(this,group.getName()));
+
         friendsInGroup = group.getFriendsInGroup();
         actionBar.setTitle((Html.fromHtml("<b><font color=\"#000000\">" + nameGroup + "</font></b>")));
 
@@ -80,6 +91,18 @@ public class GroupActionActivity extends ActionBarActivity {
         SendNotification gcm = new SendNotification(this, "Enjoy your life. \nLeave the phone", "5 min");
         Log.e(TAG, "Bloquear a: " + friendsInGroup.toString());
         gcm.execute(friendsInGroup.toArray(new Person[friendsInGroup.size()]));
+    }
+    private Bitmap cargarImagen(Context context, String name){
+        ContextWrapper cw = new ContextWrapper(context);
+        File dirImages = cw.getDir("Profiles",Context.MODE_APPEND);
+        File myPath = new File(dirImages, name+".png");
+        Bitmap b = null;
+        try {
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+            b = BitmapFactory.decodeFile(myPath.getAbsolutePath(), options);
+        }catch (Exception e){e.printStackTrace();}
+        return b;
     }
 
 }
