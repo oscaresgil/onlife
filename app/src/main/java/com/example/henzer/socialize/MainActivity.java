@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.example.henzer.socialize.Controller.LoadAllInformation;
 import com.example.henzer.socialize.GCMClient.GCMHelper;
+import com.example.henzer.socialize.Models.Group;
 import com.example.henzer.socialize.Models.Person;
 import com.example.henzer.socialize.Models.SessionData;
 import com.facebook.AccessToken;
@@ -153,6 +154,10 @@ public class MainActivity extends Activity{
         }else{
             LoginManager.getInstance().logOut();
             loginFB.setText("Login with facebook");
+            SharedPreferences sharedpreferences = getSharedPreferences(MainActivity.MyPREFERENCES, Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedpreferences.edit();
+            editor.clear();
+            editor.commit();
         }
     }
 
@@ -173,30 +178,7 @@ public class MainActivity extends Activity{
         super.onResume();
         Log.e("Methods","I passed onResume()");
         if(AccessToken.getCurrentAccessToken()!=null){
-            SharedPreferences prefe=getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
-            try {
-                JSONObject mySession = new JSONObject(prefe.getString("session", ""));
-                JSONObject me = mySession.getJSONObject("me");
-                JSONArray fr = mySession.getJSONArray("friends");
-                userLogin = new Person(me.getString("id"), me.getString("id_phone"), me.getString("name"), me.getString("photo"), me.getString("state"));
-                friends = new ArrayList();
-                Person friend = null;
-                for(int i = 0; i<fr.length(); i++){
-                    JSONObject f = fr.getJSONObject(i);
-                    friend = new Person(f.getString("id"), f.getString("id_phone"), f.getString("name"), f.getString("photo"), f.getString("state"));
-                    Log.i("FRIEND AFTER CLOSING",friend.toString());
-                    friends.add(friend);
-                }
-
-                SessionData s = new SessionData(userLogin,friends);
-                Intent i = new Intent(MainActivity.this,HomeActivity.class);
-                Log.i("DATA",s.toString());
-                i.putExtra("data",s);
-                startActivity(i);
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+            gotoHome();
         }
     }
     class nameComparator implements Comparator<Person> {
@@ -229,7 +211,7 @@ public class MainActivity extends Activity{
                 //AddNewUser addNewUser = new AddNewUser(MainActivity.this);
                 userLogin.setId_phone(idMSG);
                 LoadAllInformation load = new LoadAllInformation(MainActivity.this);
-                List<Person> enviados = new ArrayList<Person>();
+                List<Person> enviados = new ArrayList();
                 enviados.add(userLogin);
                 enviados.addAll(friends);
                 JSONObject data = null;
@@ -242,14 +224,10 @@ public class MainActivity extends Activity{
                     if(error == false){
                         sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
                         Editor editor = sharedpreferences.edit();
+                        data.put("groups", new JSONArray());
                         editor.putString("session", data.toString());
                         editor.commit();
-
-                        SessionData s = new SessionData(userLogin,friends);
-                        Intent i = new Intent(MainActivity.this,HomeActivity.class);
-                        Log.i("DATA",s.toString());
-                        i.putExtra("data",s);
-                        startActivity(i);
+                        gotoHome();
                     }else{
                         Toast.makeText(MainActivity.this, mensaje, Toast.LENGTH_SHORT).show();
                     }
@@ -262,5 +240,46 @@ public class MainActivity extends Activity{
                 }
             }
         }.execute();
+    }
+    private void gotoHome(){
+        SharedPreferences prefe=getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+        try {
+            JSONObject mySession = new JSONObject(prefe.getString("session", ""));
+            JSONObject me = mySession.getJSONObject("me");
+            JSONArray fr = mySession.getJSONArray("friends");
+            userLogin = new Person(me.getString("id"), me.getString("id_phone"), me.getString("name"), me.getString("photo"), me.getString("state"));
+            friends = new ArrayList();
+            Person friend = null;
+            for(int i = 0; i<fr.length(); i++){
+                JSONObject f = fr.getJSONObject(i);
+                friend = new Person(f.getString("id"), f.getString("id_phone"), f.getString("name"), f.getString("photo"), f.getString("state"));
+                Log.i("FRIEND AFTER CLOSING",friend.toString());
+                friends.add(friend);
+            }
+            List<Group> groups = new ArrayList();
+            if(mySession.getJSONArray("groups")!=null){
+                JSONArray myGroups = mySession.getJSONArray("groups");
+                for(int i = 0; i<myGroups.length(); i++){
+                    JSONObject element = myGroups.getJSONObject(i);
+                    JSONArray people = element.getJSONArray("people");
+                    List<Person> peop = new ArrayList();
+                    for(int j=0; j<people.length(); j++){
+                        JSONObject per = people.getJSONObject(j);
+                        peop.add(new Person(per.getString("id"), per.getString("id_phone"), per.getString("name"), per.getString("photo"), per.getString("state")));
+                    }
+                    Group g = new Group(element.getInt("id"), element.getString("name"), peop, element.getString("photo"), element.getInt("limit"), element.getString("state"));
+                    groups.add(g);
+                }
+            }
+
+            SessionData s = new SessionData(userLogin,friends, groups);
+            Intent i = new Intent(MainActivity.this,HomeActivity.class);
+            Log.i("DATA",s.toString());
+            i.putExtra("data",s);
+            startActivity(i);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -24,17 +25,27 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.henzer.socialize.Controller.AddNewGroup;
+import com.example.henzer.socialize.Models.Group;
 import com.example.henzer.socialize.Models.Person;
 import com.example.henzer.socialize.Models.SessionData;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.w3c.dom.Text;
+
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Created by Boris on 02/05/2015.
@@ -43,6 +54,7 @@ public class GroupCreateInfActivity extends ActionBarActivity {
     private SessionData sessionData;
     private List<Person> friends;
     private CheckListAdapter checkListAdapter;
+    public static final String TAG ="GroupCreateInfActivity";
 
     private Uri mImageCaptureUri;
     private ImageButton avatarGroup;
@@ -52,11 +64,15 @@ public class GroupCreateInfActivity extends ActionBarActivity {
 
     private Bitmap bitmap = null;
     private String path = "";
+    private EditText nameNewGroup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.group_create_information);
+        nameNewGroup = (EditText)findViewById(R.id.nameNewGroup);
+
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
 
@@ -113,13 +129,38 @@ public class GroupCreateInfActivity extends ActionBarActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        List<Person> selected = new ArrayList();
         int i = item.getItemId();
         if (i == R.id.saveGroup_button) {
             List<Person> friendsChecked = checkListAdapter.friends;
             for (Person userData: friendsChecked){
-                if (userData.isSelected())
-                    Log.i("User is Checked",userData.getName());
+                if (userData.isSelected()) {
+                    Log.i("User is Checked", userData.getName());
+                    selected.add(userData);
+                }
             }
+            String name = nameNewGroup.getText().toString();
+            int limit = 30;
+            String state = "A";
+            Group newG = new Group(0, name, selected, path, limit, state);
+            Log.e(TAG, newG.toString());
+
+            AddNewGroup addNewGroup = new AddNewGroup(GroupCreateInfActivity.this);
+            try {
+                newG = addNewGroup.execute(newG).get();
+                if(newG.getId()!=-1){
+                    sessionData.getGroups().add(newG);
+                    saveGroupInSession(newG);
+                    finish();
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
         } else{
             finish();
         }
@@ -218,6 +259,43 @@ public class GroupCreateInfActivity extends ActionBarActivity {
         }
     }
 
+    private void saveGroupInSession(Group group) throws JSONException {
+        SharedPreferences prefe = getSharedPreferences
+                (MainActivity.MyPREFERENCES, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefe.edit();
+
+        JSONObject mySession = new JSONObject(prefe.getString("session", "{}"));
+        Log.e(TAG, mySession.toString());
+
+        JSONArray myGroups = mySession.getJSONArray("groups");
+
+        JSONObject obj = new JSONObject();
+        obj.put("id", group.getId());
+        obj.put("name", group.getName());
+        obj.put("photo", group.getNameImage());
+        obj.put("limit", group.getLimit());
+        obj.put("state", group.getState());
+
+        JSONArray arr = new JSONArray();
+        for(Person p: group.getFriendsInGroup()){
+            JSONObject friend = new JSONObject();
+            friend.put("id", p.getId());
+            friend.put("id_phone", p.getId_phone());
+            friend.put("name", p.getName());
+            friend.put("photo", p.getPhoto());
+            friend.put("state", p.getState());
+            friend.put("background", p.getBackground());
+            arr.put(friend);
+        }
+        obj.put("people", arr);
+        myGroups.put(obj);
+
+        Log.e(TAG, mySession.toString());
+        editor.putString("session", mySession.toString());
+        editor.commit();
+
+    }
+
     private class CheckListAdapter extends ArrayAdapter<Person> {
         private List<Person> friends;
 
@@ -243,10 +321,7 @@ public class GroupCreateInfActivity extends ActionBarActivity {
                     public void onClick(View v) {
                         CheckBox cb = (CheckBox) v ;
                         Person friend = (Person) cb.getTag();
-                        Toast.makeText(getApplicationContext(),
-                                "Clicked on Checkbox: " + cb.getText() +
-                                        " is " + cb.isChecked(),
-                                Toast.LENGTH_LONG).show();
+                        //Toast.makeText(getApplicationContext(), "Clicked on Checkbox: " + cb.getText() +" is " + cb.isChecked(),Toast.LENGTH_LONG).show();
                         friend.setSelected(cb.isChecked());
                     }
                 });
@@ -269,4 +344,5 @@ public class GroupCreateInfActivity extends ActionBarActivity {
             CheckBox check;
         }
     }
+
 }

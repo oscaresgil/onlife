@@ -7,9 +7,12 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.NumberPicker;
 
+import com.example.henzer.socialize.Controller.SendNotification;
 import com.example.henzer.socialize.Models.Person;
 import com.example.henzer.socialize.R;
 
@@ -21,6 +24,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
  * Created by Boris on 01/05/2015.
  */
 public class FriendActionActivity extends ActionBarActivity {
+    public static final String TAG = "FriendActionActivity";
     private Person friend;
     private NumberPicker minPicker;
     private NumberPicker secPicker;
@@ -62,5 +66,11 @@ public class FriendActionActivity extends ActionBarActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         finish();
         return true;
+    }
+
+    public void bloquear(View view){
+        SendNotification gcm = new SendNotification(this, "Enjoy your life. \nLeave the phone", "5 min");
+        Log.e(TAG, "Bloquear a: " + friend.toString());
+        gcm.execute(friend);
     }
 }

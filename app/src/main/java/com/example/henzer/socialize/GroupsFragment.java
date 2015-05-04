@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -45,13 +46,12 @@ public class GroupsFragment extends ListFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
+        Log.e(TAG, "OnCreateView");
         setHasOptionsMenu(true);
         View v = inflater.inflate(R.layout.groups_view, container, false);
         sessionData = (SessionData) getArguments().getSerializable("data");
 
-        groups = new ArrayList<>();
-        groups.add(new Group("Grupo Prueba",sessionData.getFriends(),"Imagen"));
-
+        groups = sessionData.getGroups();
         adapter = new GroupAdapter(getActivity(), R.layout.groups, groups);
         setListAdapter(adapter);
         return v;
@@ -60,6 +60,7 @@ public class GroupsFragment extends ListFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        Log.e(TAG, "OnViewCreated");
     }
 
     @Override
@@ -99,9 +100,7 @@ public class GroupsFragment extends ListFragment {
             View rowView = inflater.inflate(R.layout.groups, null, true);
             TextView text = (TextView) rowView.findViewById(R.id.name_group);
             ImageView image = (ImageView) rowView.findViewById(R.id.image_group);
-
             text.setText(objects.get(position).getName());
-
             return rowView;
         }
     }
