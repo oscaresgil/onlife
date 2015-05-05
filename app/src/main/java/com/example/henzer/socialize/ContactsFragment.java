@@ -5,7 +5,6 @@ import android.content.ContextWrapper;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -166,24 +165,19 @@ public class ContactsFragment extends ListFragment {
                 holder = new ContactsHolder();
                 view = getActivity().getLayoutInflater().inflate(R.layout.contacts, viewGroup, false);
                 holder.leftAvatar = (ImageView) view.findViewById(R.id.first_image);
+                holder.leftName = (TextView) view.findViewById(R.id.first_name);
                 holder.rightAvatar = (ImageView) view.findViewById(R.id.second_image);
-                holder.infoPage = getActivity().getLayoutInflater().inflate(R.layout.contacts_layout_values,viewGroup,false);
-                holder.name = (TextView) holder.infoPage.findViewById(R.id.name);
+                holder.rightName = (TextView) view.findViewById(R.id.second_name);
                 view.setTag(holder);
             }
             else{
                 holder = (ContactsHolder) view.getTag();
             }
-            if (i==1){
-                holder.leftAvatar.setImageBitmap(cargarImagen(getActivity(), userData.getId()));
-                if (userData2 !=null){
-                    holder.rightAvatar.setImageBitmap(cargarImagen(getActivity(), userData2.getId()));
-                }
-            }
-            else{
-                fillContact(holder,i==0? userData:userData2);
-                holder.infoPage.setTag(holder);
-                return holder.infoPage;
+            holder.leftAvatar.setImageBitmap(cargarImagen(getActivity(), userData.getId()));
+            holder.leftName.setText(userData.getName());
+            if (userData2 !=null){
+                holder.rightAvatar.setImageBitmap(cargarImagen(getActivity(), userData2.getId()));
+                holder.rightName.setText(userData2.getName());
             }
             return view;
         }
@@ -194,16 +188,10 @@ public class ContactsFragment extends ListFragment {
         }
     }
 
-    private void fillContact(ContactsHolder holder, Person friend){
-        if (friend==null) return;
-        holder.infoPage.setBackgroundColor(Color.BLACK);
-        holder.name.setText(friend.getName());
-    }
-
     class ContactsHolder{
         ImageView leftAvatar;
         ImageView rightAvatar;
-        View infoPage;
-        TextView name;
+        TextView leftName;
+        TextView rightName;
     }
 }
