@@ -2,74 +2,74 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/contacts"
     android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="fill_parent"
     android:weightSum="2">
 
     <LinearLayout
         android:layout_width="1dp"
         android:layout_weight="0"
-        android:background="#000000"
+        android:background="@color/date_color"
         android:layout_height="fill_parent"/>
 
     <LinearLayout
         android:orientation="vertical"
-        android:layout_width="179dp"
-        android:layout_height="225dp">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
 
         <de.hdodenhof.circleimageview.CircleImageView
             xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/first_image"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="5"
+            android:layout_marginTop="10dp"
             app:border_color="@color/orange_light"
-            app:border_width="3dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginRight="5dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginBottom="10dp" />
+            app:border_width="3dp"/>
         <TextView
             style="@style/AppTheme"
             android:id="@+id/first_name"
-            android:layout_width="fill_parent"
-            android:layout_height="20dp"
-            android:layout_marginBottom="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+
             android:gravity="center" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="1dp"
         android:layout_weight="0"
-        android:background="#000000"
+        android:background="@color/date_color"
         android:layout_height="fill_parent"/>
 
     <LinearLayout
         android:orientation="vertical"
-        android:layout_width="179dp"
-        android:layout_height="225dp">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
         <de.hdodenhof.circleimageview.CircleImageView
             xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/second_image"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="5"
+            android:layout_marginTop="10dp"
             app:border_width="3dp"
-            app:border_color="@color/orange_light"
-            android:layout_marginTop="5dp"
-            android:layout_marginRight="5dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginBottom="10dp" />
+            app:border_color="@color/orange_light" />
         <TextView
             style="@style/AppTheme"
             android:id="@+id/second_name"
-            android:layout_width="fill_parent"
-            android:layout_height="20dp"
-            android:layout_marginBottom="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+
             android:gravity="center" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="1dp"
         android:layout_weight="0"
-        android:background="#000000"
+        android:background="@color/date_color"
         android:layout_height="fill_parent"/>
 
 </LinearLayout>
