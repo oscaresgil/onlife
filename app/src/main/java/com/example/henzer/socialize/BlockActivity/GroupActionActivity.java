@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.NumberPicker;
+import android.widget.Toast;
 
 import com.example.henzer.socialize.Controller.SendNotification;
 import com.example.henzer.socialize.GroupInformationActivity;
@@ -88,9 +89,13 @@ public class GroupActionActivity extends ActionBarActivity {
         return true;
     }
     public void bloquear(View view){
-        SendNotification gcm = new SendNotification(this, "Enjoy your life. \nLeave the phone", "5 min");
-        Log.e(TAG, "Bloquear a: " + friendsInGroup.toString());
-        gcm.execute(friendsInGroup.toArray(new Person[friendsInGroup.size()]));
+        try {
+            SendNotification gcm = new SendNotification(this, "Enjoy your life. \nLeave the phone", "5 min");
+            Log.e(TAG, "Bloquear a: " + friendsInGroup.toString());
+            gcm.execute(friendsInGroup.toArray(new Person[friendsInGroup.size()]));
+        }catch(Exception ex){
+            Toast.makeText(getApplicationContext(), "There was an error", Toast.LENGTH_LONG).show();
+        }
     }
     private Bitmap cargarImagen(Context context, String name){
         ContextWrapper cw = new ContextWrapper(context);

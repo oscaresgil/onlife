@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.NumberPicker;
+import android.widget.Toast;
 
 import com.example.henzer.socialize.Controller.SendNotification;
 import com.example.henzer.socialize.Models.Person;
@@ -73,8 +74,12 @@ public class FriendActionActivity extends ActionBarActivity {
     }
 
     public void bloquear(View view){
-        SendNotification gcm = new SendNotification(this, "Enjoy your life. \nLeave the phone", "5 min");
-        Log.e(TAG, "Bloquear a: " + friend.toString());
-        gcm.execute(friend);
+        try {
+            SendNotification gcm = new SendNotification(this, "Enjoy your life. \nLeave the phone", "5 min");
+            Log.e(TAG, "Bloquear a: " + friend.toString());
+            gcm.execute(friend);
+        }catch(Exception ex){
+            Toast.makeText(getApplicationContext(), "There was an error", Toast.LENGTH_LONG).show();
+        }
     }
 }
