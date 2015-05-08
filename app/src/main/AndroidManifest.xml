@@ -52,6 +52,19 @@
                 <category android:name="com.hmkcode.android.gcm" />
             </intent-filter>
         </receiver>
+        <receiver android:name=".BlockActivity.DeviceAdmin"
+            android:label="@string/device_admin"
+            android:description="@string/device_admin_description"
+            android:permission="android.permission.BIND_DEVICE_ADMIN">
+            <meta-data android:name="android.app.device_admin"
+                android:resource="@xml/device_admin" />
+            <intent-filter>
+                <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
+                <action android:name="android.app.action.ACTION_DEVICE_ADMIN_DISABLED" />
+            </intent-filter>
+        </receiver>
+        <meta-data android:name="android.app.device_admin"
+            android:resource="@xml/device_admin" />
 
         <!-- Se crea un nuevo servicio de la aplicacion -->
         <service android:name=".GCMClient.GcmMessageHandler" />

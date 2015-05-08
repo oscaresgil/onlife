@@ -9,7 +9,10 @@
     <string name="facebook_app_id">781334441987917</string>
     <string name="Signin">Sign In</string>
     <string name="Login">Login</string>
+    <string name="LoginFB">Login with Facebook</string>
     <string name="logout">Logout</string>
+    <string name="device_admin">Lockscreen OnLife Authorization</string>
+    <string name="device_admin_description">This allow your phone to be locked</string>
     <string name="title_home_page">OnLife</string>
     <string name="title_friend_page"></string>
     <string name="add_group">Add Group</string>

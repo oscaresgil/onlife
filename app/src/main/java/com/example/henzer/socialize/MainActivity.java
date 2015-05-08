@@ -2,6 +2,8 @@ package com.example.henzer.socialize;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.app.admin.DevicePolicyManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -14,6 +16,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.henzer.socialize.BlockActivity.DeviceAdmin;
 import com.example.henzer.socialize.Controller.LoadAllInformation;
 import com.example.henzer.socialize.GCMClient.GCMHelper;
 import com.example.henzer.socialize.Models.Group;
@@ -50,6 +53,7 @@ public class MainActivity extends Activity{
     // Este es el numero de proyecto para el Google Cloud Messaging (GCM). Este nunca cambia y es estatico.
     private static final String PROJECT_NUMBER = "194566212765";
     public static final String TAG = "MainActivity";
+    private static final int ACTIVATION_REQUEST = 47;
 
     public List<Person> friends = new ArrayList();
     public Person userLogin;
@@ -65,6 +69,10 @@ public class MainActivity extends Activity{
     private ProfileTracker profileTracker;
     private AccessTokenTracker tokenTracker;
     private ProgressDialog pDialog;
+
+    ComponentName myDeviceAdmin;
+    DevicePolicyManager devicePolicyManager;
+    private boolean isAdminActive;
 
 
 
@@ -135,6 +143,27 @@ public class MainActivity extends Activity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Launch the activity to have the user enable our admin.
+
+        devicePolicyManager = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
+
+        myDeviceAdmin = new ComponentName(this, DeviceAdmin.class);
+        isAdminActive = devicePolicyManager.isAdminActive(myDeviceAdmin);
+        System.out.println(isAdminActive);
+        if (!isAdminActive) {
+            Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
+            intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, myDeviceAdmin);
+            intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION,
+                    this.getString(R.string.device_admin_description));
+            startActivityForResult(intent, ACTIVATION_REQUEST);
+        }
+
+
+        /*devicePolicyManager.removeActiveAdmin(myDeviceAdmin);
+        enableDeviceCapabilitiesArea(false);
+        mAdminActive = false;
+        }*/
+
         FacebookSdk.sdkInitialize(this.getApplicationContext());
 
         setContentView(R.layout.activity_main);
@@ -144,7 +173,7 @@ public class MainActivity extends Activity{
         LoginManager.getInstance().registerCallback(callbackManager, facebookCallback);
     }
 
-    public void loginwithfb(View view){
+    public void loginWithFB(View view){
         friends = new ArrayList<>();
         if(AccessToken.getCurrentAccessToken()==null) {
             LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile", "user_friends", "email"));
@@ -159,6 +188,12 @@ public class MainActivity extends Activity{
         }
     }
 
+    /*public void lock(View view){
+        if (isAdminActive)
+            devicePolicyManager.lockNow();
+        Log.d("mDPM", devicePolicyManager.toString());
+    }*/
+
     /*@Override
     protected  void onDestroy(){
         super.onDestroy();
@@ -167,6 +202,16 @@ public class MainActivity extends Activity{
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case ACTIVATION_REQUEST:
+                if (resultCode == Activity.RESULT_OK) {
+                    Log.i("DeviceAdminSample", "Administration enabled!");
+                } else {
+                    Log.i("DeviceAdminSample", "Administration enable FAILED!");
+                }
+                return;
+        }
         super.onActivityResult(requestCode, resultCode, data);
         if (callbackManager.onActivityResult(requestCode, resultCode, data)) return;
     }
