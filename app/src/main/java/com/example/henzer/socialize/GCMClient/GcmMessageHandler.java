@@ -52,7 +52,7 @@ public class GcmMessageHandler extends IntentService {
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
                         // Icono que tendra la notificacion
-                        .setSmallIcon(R.drawable.icon_app)
+                        .setSmallIcon(R.drawable.icon)
                                 // Nombre de la notificacion (La que aparece en la barra)
                         .setTicker("New Notification!")
                                 // Nombre de la notificacion (La que aparece en las notificaciones)
@@ -66,6 +66,10 @@ public class GcmMessageHandler extends IntentService {
         myNotificationManager.notify(0, mBuilder.build());
         DevicePolicyManager mDPM =
                 (DevicePolicyManager)getSystemService(Context.DEVICE_POLICY_SERVICE);
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException ex) {
+        }
         mDPM.lockNow();
     }
 
