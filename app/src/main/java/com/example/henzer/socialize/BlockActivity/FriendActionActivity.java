@@ -70,6 +70,7 @@ public class FriendActionActivity extends ActionBarActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         finish();
+        overridePendingTransition(R.animator.push_left,R.animator.push_right);
         return true;
     }
 

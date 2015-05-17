@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/tablelayout"
+    android:divider="@color/date_color"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <TableRow style="@style/AppTheme">
-        <ImageView
+        <de.hdodenhof.circleimageview.CircleImageView
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            app:border_width="1dp"
+            app:border_color="@color/orange_light"
             android:id="@+id/image_group"
             android:layout_width="100dp"
             android:layout_height="100dp"

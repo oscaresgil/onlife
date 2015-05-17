@@ -150,29 +150,35 @@ public class GroupCreateInfActivity extends ActionBarActivity {
             int limit = 30;
             String state = "A";
 
-            path = guardarImagen(getApplicationContext(),name,bitmap);
-            Group newG = new Group(0, name, selected, path, limit, state);
-            Log.e(TAG, newG.toString());
+            if (!name.equals("") && !path.equals("") && !friendsChecked.isEmpty()){
+                path = guardarImagen(getApplicationContext(), name, bitmap);
+                Group newG = new Group(0, name, selected, path, limit, state);
+                Log.e(TAG, newG.toString());
 
-            AddNewGroup addNewGroup = new AddNewGroup(GroupCreateInfActivity.this);
-            try {
-                newG = addNewGroup.execute(newG).get();
-                if(newG.getId()!=-1){
-                    sessionData.getGroups().add(newG);
-                    saveGroupInSession(newG);
-                    GroupsFragment.addNewGroup(newG);
-                    finish();
+
+                AddNewGroup addNewGroup = new AddNewGroup(GroupCreateInfActivity.this);
+                try {
+                    newG = addNewGroup.execute(newG).get();
+                    if (newG.getId() != -1) {
+                        sessionData.getGroups().add(newG);
+                        saveGroupInSession(newG);
+                        GroupsFragment.addNewGroup(newG);
+                        finish();
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            } catch (JSONException e) {
-                e.printStackTrace();
             }
-
+            else{
+                Toast.makeText(getApplicationContext(),"Name, Photo or Contacts not specified. Try Again",Toast.LENGTH_LONG).show();
+            }
         } else{
             finish();
+            overridePendingTransition(R.animator.push_left, R.animator.push_right);
         }
         return super.onOptionsItemSelected(item);
     }

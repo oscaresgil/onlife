@@ -82,9 +82,11 @@ public class GroupActionActivity extends ActionBarActivity {
         else if(i == R.id.delete_group){
             GroupsFragment.removeGroup(group);
             finish();
+            overridePendingTransition(R.animator.push_left, R.animator.push_right);
         }
         else {
             finish();
+            overridePendingTransition(R.animator.push_left, R.animator.push_right);
         }
         return true;
     }

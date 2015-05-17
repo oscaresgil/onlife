@@ -3,6 +3,7 @@
     android:id="@+id/contacts"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    android:background="#F8F8F8"
     android:weightSum="2">
 
     <LinearLayout

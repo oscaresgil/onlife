@@ -80,6 +80,7 @@ public class ContactsFragment extends ListFragment {
         Intent i = new Intent(getActivity(),FriendActionActivity.class);
         i.putExtra("data",user);
         startActivity(i);
+        getActivity().overridePendingTransition(R.animator.push_left, R.animator.push_right);
     }
 
     @Override

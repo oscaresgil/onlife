@@ -92,12 +92,15 @@ public class MainActivity extends Activity{
                         Log.e(TAG, e.getLocalizedMessage());
                     }
                     // https://developers.facebook.com/docs/reference/android/current/class/GraphResponse/
-                    new GraphRequest(AccessToken.getCurrentAccessToken(), "/me/friends", null, HttpMethod.GET, new GraphRequest.Callback() {
+                    Bundle params = new Bundle();
+                    params.putString("fields","id,name");
+                    new GraphRequest(AccessToken.getCurrentAccessToken(), "/me/friends", params, HttpMethod.GET, new GraphRequest.Callback() {
                         @Override
                         public void onCompleted(GraphResponse response) {
                             try {
                                 JSONObject objectResponse = response.getJSONObject();
                                 JSONArray objectData = (JSONArray) objectResponse.get("data");
+                                Log.i("DATA",objectData.toString());
                                 for (int i=0; i<objectData.length(); i++){
                                     JSONObject objectUser = (JSONObject) objectData.get(i);
                                     String id = (String) objectUser.get("id");
@@ -109,9 +112,9 @@ public class MainActivity extends Activity{
                                     String path = "https://graph.facebook.com/" + id + "/picture?width=900&height=900";
                                     URL pathURL = new URL(path);
 
-                                    Log.i("Friend "+i,id+" = "+name);
+                                    Log.i("Friend "+i,id+" = "+eliminarTilde(name));
                                     Log.i("Friend URL "+i,path.toString());
-                                    Person contact = new Person(id, null, name, pathURL.toString(), "A");
+                                    Person contact = new Person(id, null, eliminarTilde(name), pathURL.toString(), "A");
                                     friends.add(contact);
                                 }
                                 Collections.sort(friends, new nameComparator());
@@ -171,6 +174,28 @@ public class MainActivity extends Activity{
 
         callbackManager = CallbackManager.Factory.create();
         LoginManager.getInstance().registerCallback(callbackManager, facebookCallback);
+    }
+
+    public String eliminarTilde(String input) {
+        String output = input;
+        for (int i=0; i<output.length(); i++){
+            if ((int)output.charAt(i) == 237){
+                output = output.replace(output.charAt(i),'i');
+            }
+            else if((int)output.charAt(i) == 243){
+                output = output.replace(output.charAt(i),'o');
+            }
+            else if((int)output.charAt(i) == 250){
+                output = output.replace(output.charAt(i),'u');
+            }
+            else if((int)output.charAt(i) == 225){
+                output = output.replace(output.charAt(i),'a');
+            }
+            else if((int)output.charAt(i) == 233){
+                output = output.replace(output.charAt(i),'e');
+            }
+        }
+        return output;
     }
 
     public void loginWithFB(View view){
@@ -303,7 +328,8 @@ public class MainActivity extends Activity{
             Person friend = null;
             for(int i = 0; i<fr.length(); i++){
                 JSONObject f = fr.getJSONObject(i);
-                friend = new Person(f.getString("id"), f.getString("id_phone"), f.getString("name"), f.getString("photo"), f.getString("state"));
+                System.out.println(f.getString("name"));
+                friend = new Person(f.getString("id"), f.getString("id_phone"), eliminarTilde(f.getString("name")), f.getString("photo"), f.getString("state"));
                 Log.i("FRIEND AFTER CLOSING",friend.toString());
                 friends.add(friend);
             }
@@ -322,8 +348,7 @@ public class MainActivity extends Activity{
                     groups.add(g);
                 }
             }
-
-            SessionData s = new SessionData(userLogin,friends, groups);
+            SessionData s = new SessionData(userLogin,friends,groups);
             Intent i = new Intent(MainActivity.this,HomeActivity.class);
             Log.i("DATA",s.toString());
             i.putExtra("data",s);
