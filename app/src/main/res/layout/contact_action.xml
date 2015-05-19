@@ -1,73 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="match_parent" android:layout_width="match_parent">
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:weightSum="1">
-
-    <RelativeLayout
-        android:id="@+id/layoutImage"
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="194dp"
-        android:layout_weight="0.32">
-        <de.hdodenhof.circleimageview.CircleImageView
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/avatar"
-            android:layout_width="200dp"
-            android:layout_height="200dp"
-            android:layout_centerInParent="true"
-            app:border_width="4dp"
-            app:border_color="#5DFC0A"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="20dp" />
-    </RelativeLayout>
-    <TextView
-        style="@style/FriendStyle"
-        android:id="@+id/availableText"
-        android:layout_width="142dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:text="Available"
-        android:enabled="false"
-        android:gravity="center" />
+        android:layout_height="match_parent"
+        android:weightSum="1">
 
-    <LinearLayout
-        style="@style/AppTheme"
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="152dp"
-        android:gravity="center">
-
-        <NumberPicker
-            style="@style/FriendStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/timeMinBlock"
-            android:layout_gravity="center_horizontal"
-            android:gravity="center" />
-
-        <NumberPicker
-            style="@style/FriendStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/timeSecBlock"
-            android:layout_gravity="center_horizontal" />
+        <RelativeLayout
+            android:id="@+id/layoutImage"
+            android:layout_width="match_parent"
+            android:layout_height="194dp"
+            android:layout_weight="0.32">
+            <de.hdodenhof.circleimageview.CircleImageView
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/avatar"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:layout_centerInParent="true"
+                app:border_width="4dp"
+                app:border_color="#5DFC0A"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp" />
+        </RelativeLayout>
         <TextView
             style="@style/FriendStyle"
-            android:layout_width="79dp"
-            android:layout_height="match_parent"
-            android:text="Minutes"
+            android:id="@+id/availableText"
+            android:layout_width="142dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="Available"
+            android:enabled="false"
             android:gravity="center" />
+
+        <LinearLayout
+            style="@style/AppTheme"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="152dp"
+            android:layout_margin="10dp"
+            android:gravity="center"
+            android:id="@+id/contactMessageText"
+            android:focusableInTouchMode="true"
+            android:clickable="false">
+            <TextView
+                style="@style/AppTheme"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:text="Left: 30"
+                android:textColor="@color/black"
+                android:id="@+id/leftCharsContact"
+                android:layout_gravity="right"/>
+            <EditText
+                style="@style/BlockingMessage"
+                android:editable="true"
+                android:id="@+id/messageContact"
+                android:layout_width="fill_parent"
+                android:layout_height="0dp"
+                android:layout_weight="3"
+                android:textAlignment="center" />
+        </LinearLayout>
+        <com.gc.materialdesign.views.ButtonRectangle
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/blockButtonContact"
+            android:layout_gravity="center_horizontal"
+            android:text="Block"
+            android:onClick="bloquear"
+            android:background="@color/orange_light"
+            android:layout_marginBottom="20dp"
+            android:textColor="@color/black"
+            android:textColorHighlight="@color/black" />
+
     </LinearLayout>
-    <Button
-        android:layout_width="137dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/blockButton"
-        android:layout_gravity="center_horizontal"
-        android:text="Block"
-        android:onClick="bloquear"
-        android:layout_marginBottom="20dp" />
-
-
-</LinearLayout>
+</ScrollView>

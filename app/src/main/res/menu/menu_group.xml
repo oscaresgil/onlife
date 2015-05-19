@@ -6,9 +6,4 @@
         android:icon="@drawable/ic_done_black_48dp"
         android:title="@string/add_group"
         app:showAsAction="always"/>
-    <item
-        android:id="@+id/cancelGroup_button"
-        android:icon="@drawable/ic_close_black_48dp"
-        android:title="@string/add_group"
-        app:showAsAction="always"/>
 </menu>

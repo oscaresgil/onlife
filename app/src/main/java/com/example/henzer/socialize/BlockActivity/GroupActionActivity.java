@@ -8,13 +8,17 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.text.Editable;
 import android.text.Html;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.NumberPicker;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.henzer.socialize.Controller.SendNotification;
@@ -37,8 +41,11 @@ public class GroupActionActivity extends ActionBarActivity {
     private ImageView avatar;
     private Group group;
     private List<Person> friendsInGroup;
-    private NumberPicker minPicker;
-    private NumberPicker secPicker;
+    private EditText messageTextView;
+    private TextView charsLeft;
+    private int maximumChars = 30;
+    private int actualChar = 0;
+    private com.gc.materialdesign.views.ButtonRectangle blockButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,15 +61,45 @@ public class GroupActionActivity extends ActionBarActivity {
         group = (Group) i.getSerializableExtra("data");
 
         avatar = (ImageView) findViewById(R.id.avatar_group);
-        avatar.setImageBitmap(cargarImagen(this,group.getName()));
+        avatar.setImageBitmap(cargarImagen(this, group.getName()));
 
         friendsInGroup = group.getFriendsInGroup();
         actionBar.setTitle((Html.fromHtml("<b><font color=\"#000000\">" + nameGroup + "</font></b>")));
 
-        minPicker = (NumberPicker) findViewById(R.id.timeMinBlock);
-        secPicker = (NumberPicker) findViewById(R.id.timeSecBlock);
-        minPicker.setMinValue(1); minPicker.setMaxValue(3);
-        secPicker.setMinValue(0); secPicker.setMaxValue(9);
+
+        blockButton = (com.gc.materialdesign.views.ButtonRectangle) findViewById(R.id.blockButtonGroup);
+        charsLeft = (TextView) findViewById(R.id.leftCharsGroup);
+        messageTextView = (EditText) findViewById(R.id.messageGroup);
+        messageTextView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(!hasFocus) {
+                    InputMethodManager imm =  (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                }
+            }
+        });
+        messageTextView.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                actualChar = maximumChars - s.length();
+                if (actualChar < 0) {
+                    blockButton.setClickable(false);
+                } else {
+                    blockButton.setClickable(true);
+                }
+                charsLeft.setText("Left: " + actualChar);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+
     }
 
     @Override
@@ -92,7 +129,7 @@ public class GroupActionActivity extends ActionBarActivity {
     }
     public void bloquear(View view){
         try {
-            SendNotification gcm = new SendNotification(this, "Enjoy your life. \nLeave the phone", "5 min");
+            SendNotification gcm = new SendNotification(this, messageTextView.getText().toString(), "5 min");
             Log.e(TAG, "Bloquear a: " + friendsInGroup.toString());
             gcm.execute(friendsInGroup.toArray(new Person[friendsInGroup.size()]));
         }catch(Exception ex){

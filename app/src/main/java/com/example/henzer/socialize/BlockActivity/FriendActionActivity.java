@@ -1,5 +1,6 @@
 package com.example.henzer.socialize.BlockActivity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
@@ -8,11 +9,15 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.text.Editable;
 import android.text.Html;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.NumberPicker;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.henzer.socialize.Controller.SendNotification;
@@ -28,12 +33,16 @@ import de.hdodenhof.circleimageview.CircleImageView;
  */
 public class FriendActionActivity extends ActionBarActivity {
     public static final String TAG = "FriendActionActivity";
+    private Person actualUser;
     private Person friend;
-    private NumberPicker minPicker;
-    private NumberPicker secPicker;
+    private EditText messageTextView;
+    private TextView charsLeft;
+    private int maximumChars = 30;
+    private int actualChar = 0;
+    private com.gc.materialdesign.views.ButtonRectangle blockButton;
 
     @Override
-    public void onCreate(Bundle savedInstanceState){
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
@@ -43,15 +52,61 @@ public class FriendActionActivity extends ActionBarActivity {
 
         Intent i = getIntent();
         friend = (Person)i.getSerializableExtra("data");
+        actualUser = (Person) i.getSerializableExtra("actualuser");
 
-        minPicker = (NumberPicker) findViewById(R.id.timeMinBlock);
-        secPicker = (NumberPicker) findViewById(R.id.timeSecBlock);
-        minPicker.setMinValue(1); minPicker.setMaxValue(3);
-        secPicker.setMinValue(0); secPicker.setMaxValue(9);
-
+        blockButton = (com.gc.materialdesign.views.ButtonRectangle) findViewById(R.id.blockButtonContact);
+        charsLeft = (TextView) findViewById(R.id.leftCharsContact);
+        messageTextView = (EditText) findViewById(R.id.messageContact);
+        messageTextView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(v.getId()==R.id.messageContact && !hasFocus) {
+                    InputMethodManager inputMethodManager = (InputMethodManager)  getSystemService(Activity.INPUT_METHOD_SERVICE);
+                    inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+                }
+            }
+        });
+        messageTextView.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                actualChar = maximumChars - s.length();
+                if (actualChar<0){
+                    blockButton.setClickable(false);
+                }
+                else{
+                    blockButton.setClickable(true);
+                }
+                charsLeft.setText("Left: " + actualChar);
+            }
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
         actionBar.setTitle((Html.fromHtml("<b><font color=\"#000000\">" + friend.getName() + "</font></b>")));
         CircleImageView imageView = (CircleImageView) findViewById(R.id.avatar);
         imageView.setImageBitmap(cargarImagen(this,friend.getId()+""));
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    protected void onDestroy() {
+        InputMethodManager imm = (InputMethodManager)getSystemService(
+                Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(messageTextView.getWindowToken(), 0);
+        super.onDestroy();
+    }
+
+    @Override
+    public void onBackPressed() {
+        InputMethodManager imm = (InputMethodManager)getSystemService(
+                Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(messageTextView.getWindowToken(), 0);
+        super.onBackPressed();
     }
 
     private Bitmap cargarImagen(Context context, String name){
@@ -75,12 +130,18 @@ public class FriendActionActivity extends ActionBarActivity {
     }
 
     public void bloquear(View view){
-        try {
-            SendNotification gcm = new SendNotification(this, "Enjoy your life. \nLeave the phone", "5 min");
-            Log.e(TAG, "Bloquear a: " + friend.toString());
-            gcm.execute(friend);
-        }catch(Exception ex){
-            Toast.makeText(getApplicationContext(), "There was an error", Toast.LENGTH_LONG).show();
+        if (actualChar>=0){
+            try {
+                //SendNotification gcm = new SendNotification(this, messageTextView.getText().toString()+"\nFrom: "+actualUser.getName(), "5 min");
+                SendNotification gcm = new SendNotification(this, messageTextView.getText().toString(), "5 min");
+                Log.e(TAG, "Bloquear a: " + friend.toString());gcm.execute(friend);
+
+            }catch(Exception ex){
+                Toast.makeText(getApplicationContext(), "There was an error", Toast.LENGTH_LONG).show();
+            }
+        }
+        else{
+            Toast.makeText(getApplicationContext(),"Only 30 or less characters please",Toast.LENGTH_LONG).show();
         }
     }
 }

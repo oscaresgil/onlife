@@ -54,9 +54,9 @@ public class GcmMessageHandler extends IntentService {
                         // Icono que tendra la notificacion
                         .setSmallIcon(R.drawable.icon)
                                 // Nombre de la notificacion (La que aparece en la barra)
-                        .setTicker("New Notification!")
+                        .setTicker("Someone Block You!")
                                 // Nombre de la notificacion (La que aparece en las notificaciones)
-                        .setContentTitle(msg[0])
+                        .setContentTitle("OnLife")
                         .setPriority(Notification.PRIORITY_HIGH)
                                 // Texto con el mensaje de la notificacion
                         .setContentText(msg[1]);

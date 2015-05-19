@@ -8,6 +8,11 @@
         app:showAsAction="always"
         android:title="@string/add_group"/>
     <item
+        android:id="@+id/searchContact"
+        android:icon="@drawable/ic_search_black_48dp"
+        app:showAsAction="always"
+        android:title="@string/search_friend"/>
+    <item
         android:id="@+id/refreshContacts"
         android:icon="@drawable/ic_refresh_black_48dp"
         app:showAsAction="always"

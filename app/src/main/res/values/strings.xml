@@ -18,5 +18,6 @@
     <string name="add_group">Add Group</string>
     <string name="exit">Exit without logout</string>
     <string name="new_group">New Group</string>
+    <string name="search_friend">Search Friend</string>
 
 </resources>

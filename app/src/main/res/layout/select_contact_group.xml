@@ -1,34 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:materialdesign="http://schemas.android.com/apk/res-auto"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:padding="6dip" >
+    android:layout_margin="5dp"
+    android:gravity="left">
 
     <ImageView
         android:id="@+id/avatar_friends"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"/>
+        android:layout_gravity="center"
+        android:layout_margin="5dp"/>
+
+    <com.gc.materialdesign.views.CheckBox
+        style="@style/AppTheme"
+        android:id="@+id/checkBox1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:background="@color/orange_light"
+        android:checked="false"
+        android:layout_gravity="center"/>
 
     <TextView
         style="@style/AppTheme"
         android:id="@+id/name_friend"
+        android:layout_gravity="center"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/checkBox1"
-        android:layout_alignBottom="@+id/checkBox1"
-        android:layout_toLeftOf="@+id/checkBox1"
-        android:layout_toRightOf="@+id/avatar_friends"/>
-
-    <CheckBox
-        style="@style/AppTheme"
-        android:id="@+id/checkBox1"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:focusable="false"
-        android:focusableInTouchMode="false"
-        android:text="CheckBox" />
+        android:layout_height="wrap_content"/>
 
 </LinearLayout>

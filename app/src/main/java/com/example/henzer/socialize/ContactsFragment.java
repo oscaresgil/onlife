@@ -43,6 +43,7 @@ import java.util.List;
  * Created by hp1 on 21-01-2015.
  */
 public class ContactsFragment extends ListFragment {
+    private Person actualUser;
     private List<Person> friends;
     private ContactsAdapter adapter;
 
@@ -61,6 +62,7 @@ public class ContactsFragment extends ListFragment {
         setHasOptionsMenu(false);
         View v = inflater.inflate(R.layout.contacts_view, container, false);
         FlipSettings settings = new FlipSettings.Builder().defaultPage(1).build();
+        actualUser = ((SessionData)getArguments().getSerializable("data")).getUser();
         friends = ((SessionData)getArguments().getSerializable("data")).getFriends();
 
         for(Person u: friends){
@@ -79,6 +81,7 @@ public class ContactsFragment extends ListFragment {
         Person user = (Person)getListAdapter().getItem(position);
         Intent i = new Intent(getActivity(),FriendActionActivity.class);
         i.putExtra("data",user);
+        i.putExtra("actualuser",actualUser);
         startActivity(i);
         getActivity().overridePendingTransition(R.animator.push_left, R.animator.push_right);
     }
@@ -86,6 +89,7 @@ public class ContactsFragment extends ListFragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         menu.getItem(R.id.addGroup).setVisible(false);
+        menu.getItem(R.id.searchContact).setVisible(true);
         menu.getItem(R.id.refreshContacts).setVisible(true);
         super.onCreateOptionsMenu(menu, inflater);
     }

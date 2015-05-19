@@ -88,6 +88,7 @@ public class GroupsFragment extends ListFragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         menu.findItem(R.id.addGroup).setVisible(true);
+        menu.findItem(R.id.searchContact).setVisible(false);
         menu.findItem(R.id.refreshContacts).setVisible(false);
         super.onCreateOptionsMenu(menu, inflater);
     }

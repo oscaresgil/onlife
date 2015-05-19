@@ -25,8 +25,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -38,6 +38,7 @@ import com.example.henzer.socialize.Controller.AddNewGroup;
 import com.example.henzer.socialize.Models.Group;
 import com.example.henzer.socialize.Models.Person;
 import com.example.henzer.socialize.Models.SessionData;
+import com.gc.materialdesign.views.CheckBox;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -60,7 +61,6 @@ public class GroupCreateInfActivity extends ActionBarActivity {
 
     private Uri mImageCaptureUri;
     private ImageButton avatarGroup;
-    private EditText groupName;
     private static final int PICK_FROM_CAMERA = 1;
     private static final int PICK_FROM_FILE = 2;
     private static final int PIC_CROP = 3;
@@ -163,6 +163,9 @@ public class GroupCreateInfActivity extends ActionBarActivity {
                         sessionData.getGroups().add(newG);
                         saveGroupInSession(newG);
                         GroupsFragment.addNewGroup(newG);
+                        InputMethodManager imm = (InputMethodManager)getSystemService(
+                                Context.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(nameNewGroup.getWindowToken(), 0);
                         finish();
                     }
                 } catch (InterruptedException e) {
@@ -176,9 +179,9 @@ public class GroupCreateInfActivity extends ActionBarActivity {
             else{
                 Toast.makeText(getApplicationContext(),"Name, Photo or Contacts not specified. Try Again",Toast.LENGTH_LONG).show();
             }
-        } else{
+        }
+        else{
             finish();
-            overridePendingTransition(R.animator.push_left, R.animator.push_right);
         }
         return super.onOptionsItemSelected(item);
     }
@@ -256,9 +259,9 @@ public class GroupCreateInfActivity extends ActionBarActivity {
                 intent.putExtra("crop", "true");
                 intent.putExtra("aspectX", 1);
                 intent.putExtra("aspectY", 1);
-                intent.putExtra("outputX", 256);
-                intent.putExtra("outputY", 256);
-                intent.putExtra("scale", false);
+                intent.putExtra("outputX", 250);
+                intent.putExtra("outputY", 250);
+                intent.putExtra("scale", true);
                 intent.putExtra("return-data", true);
 
                 Intent i = new Intent(intent);
@@ -344,15 +347,13 @@ public class GroupCreateInfActivity extends ActionBarActivity {
                 holder = new Holder();
                 holder.avatar = (ImageView) convertView.findViewById(R.id.avatar_friends);
                 holder.name = (TextView) convertView.findViewById(R.id.name_friend);
-                holder.check = (CheckBox) convertView.findViewById(R.id.checkBox1);
+                holder.check = (com.gc.materialdesign.views.CheckBox) convertView.findViewById(R.id.checkBox1);
                 convertView.setTag(holder);
-
-                holder.check.setOnClickListener( new View.OnClickListener() {
-                    public void onClick(View v) {
-                        CheckBox cb = (CheckBox) v ;
+                holder.check.setOncheckListener(new CheckBox.OnCheckListener() {
+                    @Override
+                    public void onCheck(CheckBox cb, boolean b) {
                         Person friend = (Person) cb.getTag();
-                        //Toast.makeText(getApplicationContext(), "Clicked on Checkbox: " + cb.getText() +" is " + cb.isChecked(),Toast.LENGTH_LONG).show();
-                        friend.setSelected(cb.isChecked());
+                        friend.setSelected(cb.isCheck());
                     }
                 });
             }
@@ -362,7 +363,7 @@ public class GroupCreateInfActivity extends ActionBarActivity {
 
             Person friend = friends.get(position);
             holder.avatar.setImageBitmap(cargarImagen(GroupCreateInfActivity.this,friend.getId()+""));
-            holder.check.setText(friend.getName());
+            holder.name.setText(friend.getName());
             holder.check.setSelected(friend.isSelected());
             holder.check.setTag(friend);
             return convertView;
@@ -371,7 +372,7 @@ public class GroupCreateInfActivity extends ActionBarActivity {
         private class Holder {
             ImageView avatar;
             TextView name;
-            CheckBox check;
+            com.gc.materialdesign.views.CheckBox check;
         }
     }
 
