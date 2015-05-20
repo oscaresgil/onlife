@@ -16,7 +16,7 @@
         android:id="@+id/refreshContacts"
         android:icon="@drawable/ic_refresh_black_48dp"
         app:showAsAction="always"
-        android:title="@string/add_group"/>
+        android:title="@string/refresh_contact"/>
     <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"

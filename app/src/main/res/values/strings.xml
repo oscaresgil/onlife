@@ -19,5 +19,12 @@
     <string name="exit">Exit without logout</string>
     <string name="new_group">New Group</string>
     <string name="search_friend">Search Friend</string>
+    <string name="no">No</string>
+    <string name="yes">Yes</string>
+    <string name="delete">Delete</string>
+    <string name="really_delete">Delete Group?</string>
+    <string name="refresh_contact">Refresh Contact</string>
+    <string name="title_dialog">Please Wait</string>
+    <string name="message_dialog">Loading Friends...</string>
 
 </resources>

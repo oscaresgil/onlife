@@ -13,6 +13,8 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -151,29 +153,33 @@ public class GroupCreateInfActivity extends ActionBarActivity {
             String state = "A";
 
             if (!name.equals("") && !path.equals("") && !friendsChecked.isEmpty()){
-                path = guardarImagen(getApplicationContext(), name, bitmap);
-                Group newG = new Group(0, name, selected, path, limit, state);
-                Log.e(TAG, newG.toString());
+                if (isNetworkAvailable()) {
+                    path = guardarImagen(getApplicationContext(), name, bitmap);
+                    Group newG = new Group(0, name, selected, path, limit, state);
+                    Log.e(TAG, newG.toString());
 
 
-                AddNewGroup addNewGroup = new AddNewGroup(GroupCreateInfActivity.this);
-                try {
-                    newG = addNewGroup.execute(newG).get();
-                    if (newG.getId() != -1) {
-                        sessionData.getGroups().add(newG);
-                        saveGroupInSession(newG);
-                        GroupsFragment.addNewGroup(newG);
-                        InputMethodManager imm = (InputMethodManager)getSystemService(
-                                Context.INPUT_METHOD_SERVICE);
-                        imm.hideSoftInputFromWindow(nameNewGroup.getWindowToken(), 0);
-                        finish();
+                    AddNewGroup addNewGroup = new AddNewGroup(GroupCreateInfActivity.this);
+                    try {
+                        newG = addNewGroup.execute(newG).get();
+                        if (newG.getId() != -1) {
+                            sessionData.getGroups().add(newG);
+                            saveGroupInSession(newG);
+                            GroupsFragment.addNewGroup(newG);
+                            InputMethodManager imm = (InputMethodManager) getSystemService(
+                                    Context.INPUT_METHOD_SERVICE);
+                            imm.hideSoftInputFromWindow(nameNewGroup.getWindowToken(), 0);
+                            finish();
+                        }
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                }else{
+                    Toast.makeText(this, "No connection", Toast.LENGTH_LONG).show();
                 }
             }
             else{
@@ -184,6 +190,13 @@ public class GroupCreateInfActivity extends ActionBarActivity {
             finish();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
     public void selectTypeImage(){

@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.text.Editable;
@@ -119,21 +121,37 @@ public class GroupActionActivity extends ActionBarActivity {
         else if(i == R.id.delete_group){
             GroupsFragment.removeGroup(group);
             finish();
-            overridePendingTransition(R.animator.push_left, R.animator.push_right);
+            //overridePendingTransition(R.animator.push_left, R.animator.push_right);
         }
         else {
             finish();
-            overridePendingTransition(R.animator.push_left, R.animator.push_right);
+            //overridePendingTransition(R.animator.push_left, R.animator.push_right);
         }
         return true;
     }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
     public void bloquear(View view){
-        try {
-            SendNotification gcm = new SendNotification(this, messageTextView.getText().toString(), "5 min");
-            Log.e(TAG, "Bloquear a: " + friendsInGroup.toString());
-            gcm.execute(friendsInGroup.toArray(new Person[friendsInGroup.size()]));
-        }catch(Exception ex){
-            Toast.makeText(getApplicationContext(), "There was an error", Toast.LENGTH_LONG).show();
+        if (isNetworkAvailable()) {
+            if (actualChar >= 0) {
+                try {
+                    SendNotification gcm = new SendNotification(this, messageTextView.getText().toString(), "5 min");
+                    Log.e(TAG, "Bloquear a: " + friendsInGroup.toString());
+                    gcm.execute(friendsInGroup.toArray(new Person[friendsInGroup.size()]));
+                } catch (Exception ex) {
+                    Toast.makeText(getApplicationContext(), "There was an error", Toast.LENGTH_LONG).show();
+                }
+            } else {
+                Toast.makeText(getApplicationContext(), "Only 30 or less characters please", Toast.LENGTH_LONG).show();
+            }
+        }else{
+            Toast.makeText(this, "No connection", Toast.LENGTH_LONG).show();
         }
     }
     private Bitmap cargarImagen(Context context, String name){

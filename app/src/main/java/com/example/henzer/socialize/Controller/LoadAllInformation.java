@@ -1,6 +1,5 @@
 package com.example.henzer.socialize.Controller;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -20,7 +19,7 @@ import java.util.List;
  * Created by Henzer on 01/05/2015.
  */
 public class LoadAllInformation extends AsyncTask<List<Person>, String, JSONObject>{
-    private ProgressDialog pDialog;
+    //private ProgressDialog pDialog;
     private Context context;
     private JSONParser jsonParser;
 
@@ -33,11 +32,11 @@ public class LoadAllInformation extends AsyncTask<List<Person>, String, JSONObje
     protected void onPreExecute(){
         super.onPreExecute();
         Log.e("MainActivity", "Mostrando el Progress Dialog");
-        pDialog = new ProgressDialog(context);
+        /*pDialog = new ProgressDialog(context);
         pDialog.setMessage("Loading Friends...");
         pDialog.setIndeterminate(false);
         pDialog.setCancelable(true);
-        pDialog.show();
+        pDialog.show();*/
     }
 
     @Override
@@ -82,7 +81,7 @@ public class LoadAllInformation extends AsyncTask<List<Person>, String, JSONObje
     @Override
     protected void onPostExecute(JSONObject param){
         Log.e("MainActivity", "Quitando el Progress Dialog");
-        pDialog.dismiss();
+        //pDialog.dismiss();
         String mensaje = null;
         try {
             mensaje = param.getString("message");

@@ -1,7 +1,9 @@
 package com.example.henzer.socialize;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -14,6 +16,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -66,6 +69,29 @@ public class GroupsFragment extends ListFragment {
         adapter = new GroupAdapter(getActivity(), R.layout.groups, groups);
         setListAdapter(adapter);
         adapter.notifyDataSetChanged();
+        getListView().setLongClickable(true);
+        getListView().setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                final Group actualGroup = groups.get(position);
+                Log.i("Entre a long click View", actualGroup.getName());
+                new AlertDialog.Builder(getActivity())
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .setTitle(R.string.delete)
+                        .setMessage(R.string.really_delete)
+                        .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                removeGroup(actualGroup);
+                                adapter.notifyDataSetChanged();
+                            }
+                        })
+                        .setNegativeButton(R.string.no, null)
+                        .show();
+
+                return true;
+            }
+        });
     }
 
     @Override
@@ -82,7 +108,7 @@ public class GroupsFragment extends ListFragment {
         intent.putExtra("data", (Serializable) group);
         intent.putExtra("name", group.getName());
         startActivity(intent);
-        getActivity().overridePendingTransition(R.animator.push_left, R.animator.push_right);
+        //getActivity().overridePendingTransition(R.animator.push_left, R.animator.push_right);
     }
 
     @Override
