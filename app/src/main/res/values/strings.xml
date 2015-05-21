@@ -26,5 +26,6 @@
     <string name="refresh_contact">Refresh Contact</string>
     <string name="title_dialog">Please Wait</string>
     <string name="message_dialog">Loading Friends...</string>
+    <string name="send_a_message">Send a message..</string>
 
 </resources>

@@ -79,6 +79,10 @@ public class HomeActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onBackPressed() {
+    }
+
     public void logout(MenuItem item) {
         SharedPreferences sharedpreferences = getSharedPreferences
                 (MainActivity.MyPREFERENCES, Context.MODE_PRIVATE);

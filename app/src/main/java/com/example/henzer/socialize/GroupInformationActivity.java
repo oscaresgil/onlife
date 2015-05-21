@@ -22,6 +22,9 @@ import android.widget.Toast;
 
 import com.example.henzer.socialize.BlockActivity.FriendActionActivity;
 import com.example.henzer.socialize.Models.Person;
+import com.r0adkll.slidr.Slidr;
+import com.r0adkll.slidr.model.SlidrConfig;
+import com.r0adkll.slidr.model.SlidrPosition;
 
 import java.io.File;
 import java.util.List;
@@ -36,6 +39,16 @@ public class GroupInformationActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        SlidrConfig config = new SlidrConfig.Builder()
+                .primaryColor(getResources().getColor(R.color.orange))
+                .secondaryColor(getResources().getColor(R.color.orange_light))
+                .position(SlidrPosition.LEFT)
+                .sensitivity(1f)
+                .build();
+
+        Slidr.attach(this, config);
+
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.orange_light)));
         actionBar.setTitle((Html.fromHtml("<b><font color=\"#000000\">" + "Information" + "</font></b>")));
@@ -69,6 +82,7 @@ public class GroupInformationActivity extends ActionBarActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         finish();
+        overridePendingTransition(R.animator.push_left_inverted, R.animator.push_right_inverted);
         return true;
     }
 

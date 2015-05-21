@@ -108,7 +108,7 @@ public class GroupsFragment extends ListFragment {
         intent.putExtra("data", (Serializable) group);
         intent.putExtra("name", group.getName());
         startActivity(intent);
-        //getActivity().overridePendingTransition(R.animator.push_left, R.animator.push_right);
+        getActivity().overridePendingTransition(R.animator.push_right, R.animator.push_left);
     }
 
     @Override
@@ -123,6 +123,7 @@ public class GroupsFragment extends ListFragment {
         Intent i = new Intent(getActivity(), GroupCreateInfActivity.class);
         i.putExtra("data", sessionData);
         startActivity(i);
+        getActivity().overridePendingTransition(R.animator.push_right, R.animator.push_left);
         return super.onOptionsItemSelected(item);
     }
 

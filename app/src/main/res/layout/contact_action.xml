@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_height="match_parent" android:layout_width="match_parent">
+    android:layout_height="match_parent" android:layout_width="match_parent"
+    android:background="@color/background_material_light">
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
 
         android:orientation="vertical"
         android:layout_width="match_parent"
@@ -44,23 +46,20 @@
             android:id="@+id/contactMessageText"
             android:focusableInTouchMode="true"
             android:clickable="false">
-            <TextView
-                style="@style/AppTheme"
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:text="Left: 30"
-                android:textColor="@color/black"
-                android:id="@+id/leftCharsContact"
-                android:layout_gravity="right"/>
-            <EditText
+            <com.rengwuxian.materialedittext.MaterialEditText
                 style="@style/BlockingMessage"
-                android:editable="true"
                 android:id="@+id/messageContact"
+                android:layout_margin="5dp"
                 android:layout_width="fill_parent"
-                android:layout_height="0dp"
-                android:layout_weight="3"
-                android:textAlignment="center" />
+                android:layout_height="match_parent"
+                android:textAlignment="center"
+                android:hint="@string/send_a_message"
+                app:met_baseColor="@color/black"
+                app:met_primaryColor="@color/orange_light"
+                app:met_errorColor="@color/red"
+                app:met_minCharacters="0"
+                app:met_maxCharacters="30"
+                app:met_hideUnderline="true"/>
         </LinearLayout>
         <com.gc.materialdesign.views.ButtonRectangle
             android:layout_width="150dp"

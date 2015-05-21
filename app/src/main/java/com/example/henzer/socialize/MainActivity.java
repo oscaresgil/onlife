@@ -230,25 +230,29 @@ public class MainActivity extends Activity{
     }
 
     public void loginWithFB(View view){
-        friends = new ArrayList<>();
-        if(AccessToken.getCurrentAccessToken()==null) {
-            try {
-                LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile", "user_friends", "email"));
-                loginFB.setText("Log out");
-            }catch(Exception ex){
-                Toast.makeText(this, "There was a problem.", Toast.LENGTH_SHORT).show();
+        if (isNetworkAvailable()) {
+            friends = new ArrayList<>();
+            if (AccessToken.getCurrentAccessToken() == null) {
+                try {
+                    LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile", "user_friends", "email"));
+                    loginFB.setText("Log out");
+                } catch (Exception ex) {
+                    Toast.makeText(this, "There was a problem.", Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                try {
+                    LoginManager.getInstance().logOut();
+                    loginFB.setText("Login with facebook");
+                    SharedPreferences sharedpreferences = getSharedPreferences(MainActivity.MyPREFERENCES, Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedpreferences.edit();
+                    editor.clear();
+                    editor.commit();
+                } catch (Exception ex) {
+                    Toast.makeText(this, "There was a problem.", Toast.LENGTH_SHORT).show();
+                }
             }
         }else{
-            try {
-                LoginManager.getInstance().logOut();
-                loginFB.setText("Login with facebook");
-                SharedPreferences sharedpreferences = getSharedPreferences(MainActivity.MyPREFERENCES, Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedpreferences.edit();
-                editor.clear();
-                editor.commit();
-            }catch(Exception ex){
-                Toast.makeText(this, "There was a problem.", Toast.LENGTH_SHORT).show();
-            }
+            Toast.makeText(this,"No connection",Toast.LENGTH_LONG).show();
         }
     }
 

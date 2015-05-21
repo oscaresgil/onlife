@@ -18,13 +18,16 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.henzer.socialize.Controller.SendNotification;
 import com.example.henzer.socialize.Models.Person;
 import com.example.henzer.socialize.R;
+import com.gc.materialdesign.views.ButtonRectangle;
+import com.r0adkll.slidr.Slidr;
+import com.r0adkll.slidr.model.SlidrConfig;
+import com.r0adkll.slidr.model.SlidrPosition;
+import com.rengwuxian.materialedittext.MaterialEditText;
 
 import java.io.File;
 
@@ -37,15 +40,24 @@ public class FriendActionActivity extends ActionBarActivity {
     public static final String TAG = "FriendActionActivity";
     private Person actualUser;
     private Person friend;
-    private EditText messageTextView;
-    private TextView charsLeft;
+    private MaterialEditText messageTextView;
     private int maximumChars = 30;
     private int actualChar = 0;
-    private com.gc.materialdesign.views.ButtonRectangle blockButton;
+    private ButtonRectangle blockButton;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        SlidrConfig config = new SlidrConfig.Builder()
+                .primaryColor(getResources().getColor(R.color.orange))
+                .secondaryColor(getResources().getColor(R.color.orange_light))
+                .position(SlidrPosition.LEFT)
+                .sensitivity(1f)
+                .build();
+
+        Slidr.attach(this, config);
+
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.orange_light)));
@@ -56,34 +68,36 @@ public class FriendActionActivity extends ActionBarActivity {
         friend = (Person)i.getSerializableExtra("data");
         actualUser = (Person) i.getSerializableExtra("actualuser");
 
-        blockButton = (com.gc.materialdesign.views.ButtonRectangle) findViewById(R.id.blockButtonContact);
-        charsLeft = (TextView) findViewById(R.id.leftCharsContact);
-        messageTextView = (EditText) findViewById(R.id.messageContact);
+        blockButton = (ButtonRectangle) findViewById(R.id.blockButtonContact);
+        messageTextView = (MaterialEditText) findViewById(R.id.messageContact);
         messageTextView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if(v.getId()==R.id.messageContact && !hasFocus) {
-                    InputMethodManager inputMethodManager = (InputMethodManager)  getSystemService(Activity.INPUT_METHOD_SERVICE);
-                    inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+                if (!hasFocus) {
+                    messageTextView.setFocusable(false);
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+                    imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
                 }
             }
         });
         messageTextView.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 actualChar = maximumChars - s.length();
-                if (actualChar<0){
+                if (actualChar < 0) {
                     blockButton.setClickable(false);
-                }
-                else{
+                } else {
                     blockButton.setClickable(true);
                 }
-                charsLeft.setText("Left: " + actualChar);
             }
+
             @Override
-            public void afterTextChanged(Editable s) {}
+            public void afterTextChanged(Editable s) {
+            }
         });
         actionBar.setTitle((Html.fromHtml("<b><font color=\"#000000\">" + friend.getName() + "</font></b>")));
         CircleImageView imageView = (CircleImageView) findViewById(R.id.avatar);
@@ -108,7 +122,7 @@ public class FriendActionActivity extends ActionBarActivity {
         InputMethodManager imm = (InputMethodManager)getSystemService(
                 Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(messageTextView.getWindowToken(), 0);
-        super.onBackPressed();
+        overridePendingTransition(R.animator.push_right_inverted, R.animator.push_left_inverted);
     }
 
     private boolean isNetworkAvailable() {
@@ -134,7 +148,10 @@ public class FriendActionActivity extends ActionBarActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         finish();
-        //overridePendingTransition(R.animator.push_left,R.animator.push_right);
+        InputMethodManager imm = (InputMethodManager)getSystemService(
+                Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(messageTextView.getWindowToken(), 0);
+        overridePendingTransition(R.animator.push_left_inverted, R.animator.push_right_inverted);
         return true;
     }
 

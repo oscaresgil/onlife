@@ -3,12 +3,10 @@
     android:layout_height="wrap_content"
     android:layout_width="56dp"
     android:minWidth="56dp">
-    <ProgressBar android:layout_width="32dp"
-        android:layout_height="32dp"
+    <ProgressBar
+        style="@style/IndeterminateProgress"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
         android:layout_gravity="center"
-        android:indeterminateTint="@color/black"
-        android:indeterminateTintMode="src_in"
-        android:indeterminate="true"
-        android:progressDrawable="@drawable/contactsprogress"
-        />
+        android:indeterminate="true" />
 </FrameLayout>

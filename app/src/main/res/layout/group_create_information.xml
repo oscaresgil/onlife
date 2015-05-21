@@ -3,6 +3,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/background_material_light"
     android:weightSum="1">
 
     <LinearLayout
@@ -16,13 +17,19 @@
             android:layout_height="138dp"
             android:src="@drawable/ic_crop_original_black_48dp"/>
 
-        <EditText
-            style="@style/AppTheme"
+        <com.rengwuxian.materialedittext.MaterialEditText
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            style="@style/BlockingMessage"
             android:id="@+id/nameNewGroup"
+            android:layout_margin="3dp"
             android:layout_width="fill_parent"
             android:layout_height="138dp"
             android:gravity="center"
-            android:enabled="true"/>
+            android:enabled="true"
+            app:met_baseColor="@color/black"
+            app:met_primaryColor="@color/orange_light"
+            app:met_errorColor="@color/red"
+            app:met_hideUnderline="true"/>
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"

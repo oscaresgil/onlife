@@ -24,4 +24,13 @@
         <item name="android:typeface">monospace</item>
     </style>
 
+    <style name="Theme.Slidr.Slidable" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+
+    <style name="IndeterminateProgress" parent="@android:style/Widget.ProgressBar">
+        <item name="android:indeterminateDrawable">@drawable/progress</item>
+    </style>
+
 </resources>

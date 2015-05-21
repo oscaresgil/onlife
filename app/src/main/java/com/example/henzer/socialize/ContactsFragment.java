@@ -54,6 +54,8 @@ public class ContactsFragment extends ListFragment {
     private ContactsAdapter adapter;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private Menu optionsMenu;
+    private View vLeft;
+    private View vRight;
 
     public static final String TAG = "ContactsFragment";
     public static ContactsFragment newInstance(Bundle arguments){
@@ -70,6 +72,7 @@ public class ContactsFragment extends ListFragment {
         super.onCreateView(inflater, container, savedInstanceState);
         setHasOptionsMenu(true);
         View v = inflater.inflate(R.layout.contacts_view, container, false);
+
         FlipSettings settings = new FlipSettings.Builder().defaultPage(1).build();
         actualUser = ((SessionData)getArguments().getSerializable("data")).getUser();
         friends = ((SessionData)getArguments().getSerializable("data")).getFriends();
@@ -131,9 +134,10 @@ public class ContactsFragment extends ListFragment {
             adapter.notifyDataSetChanged();
             //setRefreshActionButtonState(false);
         }
-        else{
+        else if (i==R.id.searchContact){
 
         }
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -170,6 +174,8 @@ public class ContactsFragment extends ListFragment {
             }
             new DownloadImageTask().execute(ids);
         }else{
+            mSwipeRefreshLayout.setRefreshing(false);
+            setRefreshActionButtonState(false);
             Toast.makeText(getActivity(), "No connection", Toast.LENGTH_LONG).show();
         }
     }
@@ -182,7 +188,7 @@ public class ContactsFragment extends ListFragment {
         i.putExtra("data",user);
         i.putExtra("actualuser", actualUser);
         startActivity(i);
-        //getActivity().overridePendingTransition(R.animator.push_left, R.animator.push_right);
+        getActivity().overridePendingTransition(R.animator.push_right, R.animator.push_left);
     }
 
     @Override
@@ -265,6 +271,7 @@ public class ContactsFragment extends ListFragment {
 
     class ContactsAdapter extends BaseFlipAdapter<Person> {
         private final int PAGES = 3;
+
         public ContactsAdapter(Context context, List<Person> items, FlipSettings settings) {
             super(context, items, settings);
         }
@@ -275,6 +282,8 @@ public class ContactsFragment extends ListFragment {
             if (view == null){
                 holder = new ContactsHolder();
                 view = getActivity().getLayoutInflater().inflate(R.layout.contacts, viewGroup, false);
+
+
                 holder.leftAvatar = (ImageView) view.findViewById(R.id.first_image);
                 holder.leftName = (TextView) view.findViewById(R.id.first_name);
                 holder.rightAvatar = (ImageView) view.findViewById(R.id.second_image);

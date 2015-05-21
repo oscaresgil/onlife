@@ -29,7 +29,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -41,6 +40,10 @@ import com.example.henzer.socialize.Models.Group;
 import com.example.henzer.socialize.Models.Person;
 import com.example.henzer.socialize.Models.SessionData;
 import com.gc.materialdesign.views.CheckBox;
+import com.r0adkll.slidr.Slidr;
+import com.r0adkll.slidr.model.SlidrConfig;
+import com.r0adkll.slidr.model.SlidrPosition;
+import com.rengwuxian.materialedittext.MaterialEditText;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -69,14 +72,23 @@ public class GroupCreateInfActivity extends ActionBarActivity {
 
     private Bitmap bitmap = null;
     private String path = "";
-    private EditText nameNewGroup;
+    private MaterialEditText nameNewGroup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        SlidrConfig config = new SlidrConfig.Builder()
+                .primaryColor(getResources().getColor(R.color.orange))
+                .secondaryColor(getResources().getColor(R.color.orange_light))
+                .position(SlidrPosition.LEFT)
+                .sensitivity(1f)
+                .build();
+
+        Slidr.attach(this, config);
+
         setContentView(R.layout.group_create_information);
-        nameNewGroup = (EditText)findViewById(R.id.nameNewGroup);
+        nameNewGroup = (com.rengwuxian.materialedittext.MaterialEditText)findViewById(R.id.nameNewGroup);
 
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
@@ -157,8 +169,6 @@ public class GroupCreateInfActivity extends ActionBarActivity {
                     path = guardarImagen(getApplicationContext(), name, bitmap);
                     Group newG = new Group(0, name, selected, path, limit, state);
                     Log.e(TAG, newG.toString());
-
-
                     AddNewGroup addNewGroup = new AddNewGroup(GroupCreateInfActivity.this);
                     try {
                         newG = addNewGroup.execute(newG).get();
@@ -170,6 +180,7 @@ public class GroupCreateInfActivity extends ActionBarActivity {
                                     Context.INPUT_METHOD_SERVICE);
                             imm.hideSoftInputFromWindow(nameNewGroup.getWindowToken(), 0);
                             finish();
+                            overridePendingTransition(R.animator.push_left_inverted, R.animator.push_right_inverted);
                         }
                     } catch (InterruptedException e) {
                         e.printStackTrace();
@@ -188,6 +199,7 @@ public class GroupCreateInfActivity extends ActionBarActivity {
         }
         else{
             finish();
+            overridePendingTransition(R.animator.push_left_inverted, R.animator.push_right_inverted);
         }
         return super.onOptionsItemSelected(item);
     }

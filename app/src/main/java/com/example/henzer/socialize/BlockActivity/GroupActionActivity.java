@@ -18,9 +18,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.henzer.socialize.Controller.SendNotification;
@@ -29,6 +27,11 @@ import com.example.henzer.socialize.GroupsFragment;
 import com.example.henzer.socialize.Models.Group;
 import com.example.henzer.socialize.Models.Person;
 import com.example.henzer.socialize.R;
+import com.gc.materialdesign.views.ButtonRectangle;
+import com.r0adkll.slidr.Slidr;
+import com.r0adkll.slidr.model.SlidrConfig;
+import com.r0adkll.slidr.model.SlidrPosition;
+import com.rengwuxian.materialedittext.MaterialEditText;
 
 import java.io.File;
 import java.io.Serializable;
@@ -43,15 +46,24 @@ public class GroupActionActivity extends ActionBarActivity {
     private ImageView avatar;
     private Group group;
     private List<Person> friendsInGroup;
-    private EditText messageTextView;
-    private TextView charsLeft;
+    private MaterialEditText messageTextView;
     private int maximumChars = 30;
     private int actualChar = 0;
-    private com.gc.materialdesign.views.ButtonRectangle blockButton;
+    private ButtonRectangle blockButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        SlidrConfig config = new SlidrConfig.Builder()
+                .primaryColor(getResources().getColor(R.color.orange))
+                .secondaryColor(getResources().getColor(R.color.orange_light))
+                .position(SlidrPosition.LEFT)
+                .sensitivity(1f)
+                .build();
+
+        Slidr.attach(this, config);
+
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.orange_light)));
@@ -69,13 +81,13 @@ public class GroupActionActivity extends ActionBarActivity {
         actionBar.setTitle((Html.fromHtml("<b><font color=\"#000000\">" + nameGroup + "</font></b>")));
 
 
-        blockButton = (com.gc.materialdesign.views.ButtonRectangle) findViewById(R.id.blockButtonGroup);
-        charsLeft = (TextView) findViewById(R.id.leftCharsGroup);
-        messageTextView = (EditText) findViewById(R.id.messageGroup);
+        blockButton = (ButtonRectangle) findViewById(R.id.blockButtonGroup);
+        messageTextView = (MaterialEditText) findViewById(R.id.messageGroup);
         messageTextView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if(!hasFocus) {
+                    messageTextView.setFocusable(false);
                     InputMethodManager imm =  (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
                 }
@@ -94,7 +106,6 @@ public class GroupActionActivity extends ActionBarActivity {
                 } else {
                     blockButton.setClickable(true);
                 }
-                charsLeft.setText("Left: " + actualChar);
             }
 
             @Override
@@ -117,15 +128,22 @@ public class GroupActionActivity extends ActionBarActivity {
             Intent intent = new Intent(this,GroupInformationActivity.class);
             intent.putExtra("data",(Serializable)friendsInGroup);
             startActivity(intent);
+            overridePendingTransition(R.animator.push_right, R.animator.push_left);
         }
         else if(i == R.id.delete_group){
             GroupsFragment.removeGroup(group);
+            InputMethodManager imm = (InputMethodManager)getSystemService(
+                    Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(messageTextView.getWindowToken(), 0);
             finish();
-            //overridePendingTransition(R.animator.push_left, R.animator.push_right);
+            overridePendingTransition(R.animator.push_left_inverted, R.animator.push_right_inverted);
         }
         else {
+            InputMethodManager imm = (InputMethodManager)getSystemService(
+                    Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(messageTextView.getWindowToken(), 0);
             finish();
-            //overridePendingTransition(R.animator.push_left, R.animator.push_right);
+            overridePendingTransition(R.animator.push_left_inverted, R.animator.push_right_inverted);
         }
         return true;
     }
