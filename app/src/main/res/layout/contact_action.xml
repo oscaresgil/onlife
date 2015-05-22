@@ -4,11 +4,12 @@
     android:background="@color/background_material_light">
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-
+        android:id="@+id/layout_contact"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:weightSum="1">
+        android:weightSum="1"
+        android:focusableInTouchMode="true">
 
         <RelativeLayout
             android:id="@+id/layoutImage"
@@ -53,6 +54,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="match_parent"
                 android:textAlignment="center"
+                android:inputType="textFilter"
                 android:hint="@string/send_a_message"
                 app:met_baseColor="@color/black"
                 app:met_primaryColor="@color/orange_light"
@@ -62,6 +64,7 @@
                 app:met_hideUnderline="true"/>
         </LinearLayout>
         <com.gc.materialdesign.views.ButtonRectangle
+            style="@style/BlockingMessage"
             android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:id="@+id/blockButtonContact"
@@ -72,6 +75,10 @@
             android:layout_marginBottom="20dp"
             android:textColor="@color/black"
             android:textColorHighlight="@color/black" />
-
+        <ScrollView
+            android:id="@+id/ScrollView01"
+            android:layout_height="fill_parent"
+            android:layout_width="fill_parent">
+        </ScrollView>
     </LinearLayout>
 </ScrollView>

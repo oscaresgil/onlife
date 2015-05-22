@@ -27,5 +27,6 @@
     <string name="title_dialog">Please Wait</string>
     <string name="message_dialog">Loading Friends...</string>
     <string name="send_a_message">Send a message..</string>
+    <string name="search_contact">Search in contacts..</string>
 
 </resources>

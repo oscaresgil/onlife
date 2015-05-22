@@ -24,7 +24,7 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@drawable/icon"
+        android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
         <activity
@@ -87,13 +87,12 @@
             android:name=".HomeActivity"
             android:launchMode="standard"
             android:label="@string/title_home_page"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:windowSoftInputMode="adjustResize|stateHidden"/>
+            android:configChanges="keyboardHidden|orientation|screenSize" />
         <activity android:name=".BlockActivity.FriendActionActivity"
             android:theme="@style/Theme.Slidr.Slidable"
             android:screenOrientation="portrait"
             android:label="@string/title_friend_page"
-            android:windowSoftInputMode="stateHidden|adjustResize"
+            android:windowSoftInputMode="adjustUnspecified"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:launchMode="standard"/>
         <activity android:name=".GroupCreateInfActivity"

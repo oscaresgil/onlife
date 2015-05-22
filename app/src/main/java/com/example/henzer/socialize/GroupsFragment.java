@@ -1,9 +1,7 @@
 package com.example.henzer.socialize;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.ContextWrapper;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -22,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.henzer.socialize.BlockActivity.GroupActionActivity;
 import com.example.henzer.socialize.Models.Group;
 import com.example.henzer.socialize.Models.SessionData;
@@ -74,20 +73,29 @@ public class GroupsFragment extends ListFragment {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 final Group actualGroup = groups.get(position);
-                Log.i("Entre a long click View", actualGroup.getName());
-                new AlertDialog.Builder(getActivity())
-                        .setIcon(android.R.drawable.ic_dialog_alert)
-                        .setTitle(R.string.delete)
-                        .setMessage(R.string.really_delete)
-                        .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+
+                new MaterialDialog.Builder(getActivity())
+                        .title(R.string.delete)
+                        .content(R.string.really_delete)
+                        .positiveText(R.string.yes)
+                        .positiveColorRes(R.color.orange_light)
+                        .negativeText(R.string.no)
+                        .negativeColorRes(R.color.red)
+                        .callback(new MaterialDialog.ButtonCallback() {
                             @Override
-                            public void onClick(DialogInterface dialog, int which) {
+                            public void onPositive(MaterialDialog dialog) {
                                 removeGroup(actualGroup);
                                 adapter.notifyDataSetChanged();
+                                dialog.dismiss();
+                                dialog.cancel();
+
+                                new MaterialDialog.Builder(getActivity())
+                                        .title("Group " + actualGroup.getName() + " deleted!")
+                                        .positiveText("OK")
+                                        .positiveColorRes(R.color.orange_light)
+                                        .show();
                             }
-                        })
-                        .setNegativeButton(R.string.no, null)
-                        .show();
+                        }).show();
 
                 return true;
             }

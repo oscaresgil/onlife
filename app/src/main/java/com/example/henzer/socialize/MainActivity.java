@@ -11,7 +11,6 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -370,20 +369,17 @@ public class MainActivity extends Activity{
 
     private class DownloadImageTask extends AsyncTask<String, Void, Void> {
 
-        com.afollestad.materialdialogs.MaterialDialog progressDialog;
+        MaterialDialog materialDialog;
 
         @Override
-        protected void onPreExecute() {
-            progressDialog = new MaterialDialog.Builder(MainActivity.this)
-                    .titleColorRes(R.color.black)
-                    .contentColorRes(R.color.black)
-                    .widgetColorRes(R.color.white)
-                    .dividerColor(Color.WHITE)
-                    .backgroundColorRes(R.color.orange_light)
-                    .title(R.string.title_dialog)
-                    .content(R.string.message_dialog)
-                    .progress(true, 0)
-                    .show();
+        protected void onPreExecute()
+        {
+            materialDialog = new MaterialDialog.Builder(MainActivity.this)
+                .title("Loading Friends..")
+                .content("Please wait..")
+                .progress(true,0)
+                .widgetColorRes(R.color.orange_light)
+                .show();
         }
 
         protected Void doInBackground(String... urls) {
@@ -416,8 +412,9 @@ public class MainActivity extends Activity{
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            if (progressDialog.isShowing())
-                progressDialog.dismiss();
+            if (materialDialog.isShowing()){
+                materialDialog.dismiss();
+            }
         }
     }
 

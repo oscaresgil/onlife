@@ -52,7 +52,7 @@ public class GcmMessageHandler extends IntentService {
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
                         // Icono que tendra la notificacion
-                        .setSmallIcon(R.drawable.icon)
+                        .setSmallIcon(R.drawable.ic_launcher)
                                 // Nombre de la notificacion (La que aparece en la barra)
                         .setTicker("Someone Block You!")
                                 // Nombre de la notificacion (La que aparece en las notificaciones)

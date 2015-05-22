@@ -12,6 +12,9 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ListFragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.ActionBarActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -19,6 +22,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -28,6 +32,7 @@ import android.widget.Toast;
 import com.example.henzer.socialize.BlockActivity.FriendActionActivity;
 import com.example.henzer.socialize.Models.Person;
 import com.example.henzer.socialize.Models.SessionData;
+import com.rengwuxian.materialedittext.MaterialEditText;
 import com.yalantis.flipviewpager.adapter.BaseFlipAdapter;
 import com.yalantis.flipviewpager.utils.FlipSettings;
 
@@ -43,6 +48,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -54,8 +60,13 @@ public class ContactsFragment extends ListFragment {
     private ContactsAdapter adapter;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private Menu optionsMenu;
-    private View vLeft;
-    private View vRight;
+
+    private MenuItem mSearchAction;
+    private MaterialEditText searchText;
+    private List<Person> friendsFiltred;
+    private boolean isSearchOpened = false;
+    private String mSearchQuery;
+
 
     public static final String TAG = "ContactsFragment";
     public static ContactsFragment newInstance(Bundle arguments){
@@ -73,10 +84,15 @@ public class ContactsFragment extends ListFragment {
         setHasOptionsMenu(true);
         View v = inflater.inflate(R.layout.contacts_view, container, false);
 
+        friendsFiltred = new ArrayList<>();
+
         FlipSettings settings = new FlipSettings.Builder().defaultPage(1).build();
         actualUser = ((SessionData)getArguments().getSerializable("data")).getUser();
         friends = ((SessionData)getArguments().getSerializable("data")).getFriends();
-        adapter =  new ContactsAdapter(getActivity(), friends, settings);
+        friendsFiltred.addAll(friends);
+
+        //friendsFiltred = friends;
+        adapter =  new ContactsAdapter(getActivity(), friendsFiltred, settings);
         setListAdapter(adapter);
         return v;
     }
@@ -88,9 +104,7 @@ public class ContactsFragment extends ListFragment {
         mSwipeRefreshLayout = (SwipeRefreshLayout) getActivity().findViewById(R.id.contacts_refresh_swipelayout);
         getListView().setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
-            public void onScrollStateChanged(AbsListView view, int scrollState) {
-            }
-
+            public void onScrollStateChanged(AbsListView view, int scrollState) {}
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
                 boolean enable = false;
@@ -118,11 +132,19 @@ public class ContactsFragment extends ListFragment {
     @Override
     public void onPause() {
         super.onPause();
+        isSearchOpened = true;
+        handleMenuSearch();
         if (mSwipeRefreshLayout!=null) {
             mSwipeRefreshLayout.setRefreshing(false);
             mSwipeRefreshLayout.destroyDrawingCache();
             mSwipeRefreshLayout.clearAnimation();
         }
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        mSearchAction = menu.findItem(R.id.searchContact);
+        super.onPrepareOptionsMenu(menu);
     }
 
     @Override
@@ -135,10 +157,84 @@ public class ContactsFragment extends ListFragment {
             //setRefreshActionButtonState(false);
         }
         else if (i==R.id.searchContact){
-
+            handleMenuSearch();
+            adapter.notifyDataSetChanged();
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public List<Person> performSearch(List<Person> actualFriends, String query){
+        String[] queryByWords = query.toLowerCase().split("\\s+");
+        List<Person> filtred = new ArrayList<>();
+        for (Person actual: actualFriends){
+            String content = (
+                    actual.getName()
+                    ).toLowerCase();
+
+            for (String word: queryByWords){
+                int numberOfMatches = queryByWords.length;
+                if (content.contains(word)){
+                    numberOfMatches--;
+                }
+                else{
+                    break;
+                }
+
+                if (numberOfMatches == 0){
+                    filtred.add(actual);
+                }
+
+            }
+        }
+        return filtred;
+    }
+
+    public void handleMenuSearch(){
+        android.support.v7.app.ActionBar actionBar = ((ActionBarActivity)getActivity()).getSupportActionBar();
+        if (isSearchOpened){
+            friendsFiltred.clear();
+            friendsFiltred.addAll(friends);
+            actionBar.setDisplayShowCustomEnabled(false);
+            actionBar.setDisplayShowTitleEnabled(true);
+
+            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(getActivity().getWindow().getCurrentFocus().getWindowToken(), 0);
+
+            mSearchAction.setIcon(getResources().getDrawable(R.drawable.ic_search_black_48dp));
+            isSearchOpened = false;
+        }
+        else{
+            actionBar.setDisplayShowCustomEnabled(true);
+            actionBar.setCustomView(R.layout.search_contact_bar);
+            actionBar.setDisplayShowTitleEnabled(false);
+
+            searchText = (MaterialEditText) actionBar.getCustomView().findViewById(R.id.search_contact_text);
+            searchText.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    mSearchQuery = searchText.getText().toString();
+                    friendsFiltred.clear();
+                    friendsFiltred.addAll(performSearch(friends, mSearchQuery));
+                    adapter.notifyDataSetChanged();
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                }
+            });
+            searchText.requestFocus();
+            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.showSoftInput(searchText, InputMethodManager.SHOW_IMPLICIT);
+
+            mSearchAction.setIcon(getResources().getDrawable(R.drawable.ic_close_black_48dp));
+
+            isSearchOpened = true;
+        }
     }
 
     public void setRefreshActionButtonState(final boolean refreshing) {
@@ -266,6 +362,7 @@ public class ContactsFragment extends ListFragment {
             mSwipeRefreshLayout.setRefreshing(false);
             setRefreshActionButtonState(false);
             adapter.notifyDataSetChanged();
+            Toast.makeText(getActivity(),"Contacts Refreshed",Toast.LENGTH_SHORT).show();
         }
     }
 

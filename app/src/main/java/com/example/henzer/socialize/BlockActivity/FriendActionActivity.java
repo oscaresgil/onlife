@@ -1,6 +1,5 @@
 package com.example.henzer.socialize.BlockActivity;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
@@ -16,8 +15,10 @@ import android.text.Html;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.example.henzer.socialize.Controller.SendNotification;
@@ -74,9 +75,11 @@ public class FriendActionActivity extends ActionBarActivity {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
+                    InputMethodManager imm = (InputMethodManager)getSystemService(
+                            Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(messageTextView.getWindowToken(), 0);
                     messageTextView.setFocusable(false);
-                    InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
-                    imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+                    messageTextView.clearFocus();
                 }
             }
         });
@@ -107,6 +110,14 @@ public class FriendActionActivity extends ActionBarActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        LinearLayout linearLayout = (LinearLayout) findViewById(R.id.layout_contact);
+        linearLayout.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+
+                return false;
+            }
+        });
     }
 
     @Override
@@ -119,10 +130,11 @@ public class FriendActionActivity extends ActionBarActivity {
 
     @Override
     public void onBackPressed() {
+        super.onBackPressed();
         InputMethodManager imm = (InputMethodManager)getSystemService(
                 Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(messageTextView.getWindowToken(), 0);
-        overridePendingTransition(R.animator.push_right_inverted, R.animator.push_left_inverted);
+        overridePendingTransition(R.animator.push_left_inverted, R.animator.push_right_inverted);
     }
 
     private boolean isNetworkAvailable() {

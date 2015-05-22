@@ -9,6 +9,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
 import android.text.Editable;
 import android.text.Html;
@@ -16,9 +17,11 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.example.henzer.socialize.Controller.SendNotification;
@@ -83,21 +86,23 @@ public class GroupActionActivity extends ActionBarActivity {
 
         blockButton = (ButtonRectangle) findViewById(R.id.blockButtonGroup);
         messageTextView = (MaterialEditText) findViewById(R.id.messageGroup);
+        final Handler handler = new Handler();
         messageTextView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if(!hasFocus) {
-                    messageTextView.setFocusable(false);
-                    InputMethodManager imm =  (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
-                }
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.showSoftInput(messageTextView, InputMethodManager.SHOW_IMPLICIT);
+                    }
+
+                }, 500000);
             }
         });
         messageTextView.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 actualChar = maximumChars - s.length();
@@ -107,12 +112,24 @@ public class GroupActionActivity extends ActionBarActivity {
                     blockButton.setClickable(true);
                 }
             }
-
             @Override
-            public void afterTextChanged(Editable s) {
-            }
+            public void afterTextChanged(Editable s) {}
         });
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        LinearLayout linearLayout = (LinearLayout) findViewById(R.id.layout_groups);
+        linearLayout.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(getWindow().getCurrentFocus().getWindowToken(), 0);
+                return false;
+            }
+        });
     }
 
     @Override

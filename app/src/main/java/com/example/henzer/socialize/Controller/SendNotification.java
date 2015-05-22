@@ -1,11 +1,12 @@
 package com.example.henzer.socialize.Controller;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.henzer.socialize.Models.Person;
+import com.example.henzer.socialize.R;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -16,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SendNotification extends AsyncTask<Person, String, Boolean>{
-    private ProgressDialog pDialog;
+    private MaterialDialog pDialog;
     private Context context;
     private JSONParser jsonParser;
     private String message;
@@ -32,11 +33,12 @@ public class SendNotification extends AsyncTask<Person, String, Boolean>{
     @Override
     protected void onPreExecute(){
         super.onPreExecute();
-        pDialog = new ProgressDialog(context);
-        pDialog.setMessage("Blocking...");
-        pDialog.setIndeterminate(false);
-        pDialog.setCancelable(true);
-        pDialog.show();
+        pDialog= new MaterialDialog.Builder(context)
+            .title("Blocking..")
+            .progress(true,0)
+            .backgroundColorRes(R.color.transparent)
+            .widgetColorRes(R.color.orange_light)
+            .show();
     }
 
     @Override
@@ -67,7 +69,16 @@ public class SendNotification extends AsyncTask<Person, String, Boolean>{
     @Override
     protected void onPostExecute(Boolean result){
         Log.e("MainActivity", "Quitando el Progress Dialog");
-        pDialog.dismiss();
+        if (pDialog.isShowing()){
+            pDialog.dismiss();
+        }
+
+        new MaterialDialog.Builder(context)
+                .title("Contact blocked!")
+                .positiveText("OK")
+                .positiveColorRes(R.color.orange_light)
+                .show();
+
     }
 }
 

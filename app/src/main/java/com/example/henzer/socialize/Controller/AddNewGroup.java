@@ -1,14 +1,15 @@
 package com.example.henzer.socialize.Controller;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.henzer.socialize.Models.Group;
 import com.example.henzer.socialize.Models.Person;
 import com.example.henzer.socialize.Models.SessionData;
+import com.example.henzer.socialize.R;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -22,7 +23,7 @@ import java.util.List;
  * Created by Henzer on 03/05/2015.
  */
 public class AddNewGroup extends AsyncTask<Group, String, Group> {
-    private ProgressDialog pDialog;
+    private MaterialDialog pDialog;
     private Context context;
     private JSONParser jsonParser;
     private String message;
@@ -37,11 +38,12 @@ public class AddNewGroup extends AsyncTask<Group, String, Group> {
     protected void onPreExecute(){
         super.onPreExecute();
         Log.e("MainActivity", "Mostrando el Progress Dialog");
-        pDialog = new ProgressDialog(context);
-        pDialog.setMessage("Save new group...");
-        pDialog.setIndeterminate(false);
-        pDialog.setCancelable(true);
-        pDialog.show();
+        pDialog = new MaterialDialog.Builder(context)
+            .title("Creating Group..")
+            .content("Please wait..")
+            .progress(true,0)
+            .widgetColorRes(R.color.orange_light)
+            .show();
     }
 
     @Override
