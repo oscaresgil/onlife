@@ -15,10 +15,8 @@ import android.text.Html;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.example.henzer.socialize.Controller.SendNotification;
@@ -110,14 +108,14 @@ public class FriendActionActivity extends ActionBarActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        LinearLayout linearLayout = (LinearLayout) findViewById(R.id.layout_contact);
+        /*LinearLayout linearLayout = (LinearLayout) findViewById(R.id.layout_contact);
         linearLayout.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
 
                 return false;
             }
-        });
+        });*/
     }
 
     @Override

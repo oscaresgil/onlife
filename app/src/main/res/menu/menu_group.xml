@@ -2,6 +2,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
+        android:id="@+id/searchCancelContact"
+        android:icon="@drawable/ic_close_black_48dp"
+        app:showAsAction="never"
+        android:title="@string/search_friend"/>
+    <item
         android:id="@+id/saveGroup_button"
         android:icon="@drawable/ic_done_black_48dp"
         android:title="@string/add_group"

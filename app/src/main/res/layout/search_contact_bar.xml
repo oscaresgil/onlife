@@ -15,7 +15,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:inputType="text|textFilter"
-        android:imeOptions="actionSearch"
+        android:imeOptions="actionSearch|flagNoEnterAction"
         app:met_baseColor="@color/black"
         app:met_primaryColor="@color/orange_light"
         app:met_hideUnderline="true"

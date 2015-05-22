@@ -92,7 +92,7 @@
             android:theme="@style/Theme.Slidr.Slidable"
             android:screenOrientation="portrait"
             android:label="@string/title_friend_page"
-            android:windowSoftInputMode="adjustUnspecified"
+            android:windowSoftInputMode="adjustPan"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:launchMode="standard"/>
         <activity android:name=".GroupCreateInfActivity"

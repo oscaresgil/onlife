@@ -63,6 +63,11 @@ public class GroupsFragment extends ListFragment {
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         adapter = new GroupAdapter(getActivity(), R.layout.groups, groups);
@@ -72,32 +77,32 @@ public class GroupsFragment extends ListFragment {
         getListView().setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                final Group actualGroup = groups.get(position);
+            final Group actualGroup = groups.get(position);
 
-                new MaterialDialog.Builder(getActivity())
-                        .title(R.string.delete)
-                        .content(R.string.really_delete)
-                        .positiveText(R.string.yes)
-                        .positiveColorRes(R.color.orange_light)
-                        .negativeText(R.string.no)
-                        .negativeColorRes(R.color.red)
-                        .callback(new MaterialDialog.ButtonCallback() {
-                            @Override
-                            public void onPositive(MaterialDialog dialog) {
-                                removeGroup(actualGroup);
-                                adapter.notifyDataSetChanged();
-                                dialog.dismiss();
-                                dialog.cancel();
+            new MaterialDialog.Builder(getActivity())
+                    .title(R.string.delete)
+                    .content(R.string.really_delete)
+                    .positiveText(R.string.yes)
+                    .positiveColorRes(R.color.orange_light)
+                    .negativeText(R.string.no)
+                    .negativeColorRes(R.color.red)
+                    .callback(new MaterialDialog.ButtonCallback() {
+                        @Override
+                        public void onPositive(MaterialDialog dialog) {
+                            removeGroup(actualGroup);
+                            adapter.notifyDataSetChanged();
+                            dialog.dismiss();
+                            dialog.cancel();
 
-                                new MaterialDialog.Builder(getActivity())
-                                        .title("Group " + actualGroup.getName() + " deleted!")
-                                        .positiveText("OK")
-                                        .positiveColorRes(R.color.orange_light)
-                                        .show();
-                            }
-                        }).show();
+                            new MaterialDialog.Builder(getActivity())
+                                    .title("Group " + actualGroup.getName() + " deleted!")
+                                    .positiveText("OK")
+                                    .positiveColorRes(R.color.orange_light)
+                                    .show();
+                        }
+                    }).show();
 
-                return true;
+            return true;
             }
         });
     }
@@ -123,7 +128,6 @@ public class GroupsFragment extends ListFragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         menu.findItem(R.id.addGroup).setVisible(true);
         menu.findItem(R.id.searchContact).setVisible(false);
-        menu.findItem(R.id.refreshContacts).setVisible(false);
         super.onCreateOptionsMenu(menu, inflater);
     }
     @Override

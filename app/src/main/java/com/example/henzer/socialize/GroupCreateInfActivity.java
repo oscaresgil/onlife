@@ -20,7 +20,9 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
+import android.text.Editable;
 import android.text.Html;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -28,9 +30,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -40,6 +44,7 @@ import com.example.henzer.socialize.Models.Group;
 import com.example.henzer.socialize.Models.Person;
 import com.example.henzer.socialize.Models.SessionData;
 import com.gc.materialdesign.views.CheckBox;
+import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.r0adkll.slidr.Slidr;
 import com.r0adkll.slidr.model.SlidrConfig;
 import com.r0adkll.slidr.model.SlidrPosition;
@@ -70,6 +75,13 @@ public class GroupCreateInfActivity extends ActionBarActivity {
     private static final int PICK_FROM_FILE = 2;
     private static final int PIC_CROP = 3;
 
+    private Menu myMenu;
+    private MenuItem mSearchAction;
+    private MaterialEditText searchText;
+    private List<Person> friendsFiltred;
+    private boolean isSearchOpened = false;
+    private String mSearchQuery;
+
     private Bitmap bitmap = null;
     private String path = "";
     private MaterialEditText nameNewGroup;
@@ -88,7 +100,6 @@ public class GroupCreateInfActivity extends ActionBarActivity {
         Slidr.attach(this, config);
 
         setContentView(R.layout.group_create_information);
-        nameNewGroup = (com.rengwuxian.materialedittext.MaterialEditText)findViewById(R.id.nameNewGroup);
 
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
@@ -96,16 +107,33 @@ public class GroupCreateInfActivity extends ActionBarActivity {
         actionBar.setTitle((Html.fromHtml("<b><font color=\"#000000\">" + getString(R.string.new_group) + "</font></b>")));
         actionBar.setHomeAsUpIndicator(R.drawable.ic_arrow_back_black_48dp);
 
+        (findViewById(R.id.search_button)).bringToFront();
+
         Intent i = getIntent();
         sessionData = (SessionData) i.getSerializableExtra("data");
         friends = sessionData.getFriends();
-        Log.i("Friends in Create Group",friends.toString());
+
+        friendsFiltred = new ArrayList<>();
+        friendsFiltred.addAll(friends);
+
+        nameNewGroup = (com.rengwuxian.materialedittext.MaterialEditText) findViewById(R.id.nameNewGroup);
+
+        final ListView listView = (ListView) findViewById(R.id.listView);
+        checkListAdapter = new CheckListAdapter(this, R.layout.select_contact_group, friendsFiltred);
+        listView.setAdapter(checkListAdapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (view != null) {
+                    CheckBox checkBox = (CheckBox) view.findViewById(R.id.checkBox1);
+                    Person actualFriend = (Person)checkBox.getTag();
+                    actualFriend.setSelected(!checkBox.isCheck());
+                    checkBox.setChecked(!checkBox.isCheck());
+                }
+            }
+        });
 
         selectTypeImage();
-
-        ListView listView = (ListView) findViewById(R.id.listView);
-        checkListAdapter = new CheckListAdapter(this,R.layout.select_contact_group,friends);
-        listView.setAdapter(checkListAdapter);
     }
 
     @Override
@@ -145,7 +173,14 @@ public class GroupCreateInfActivity extends ActionBarActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_group, menu);
+        this.myMenu = menu;
         return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        mSearchAction = menu.findItem(R.id.searchContact);
+        return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
@@ -202,6 +237,98 @@ public class GroupCreateInfActivity extends ActionBarActivity {
             overridePendingTransition(R.animator.push_left_inverted, R.animator.push_right_inverted);
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void search(View view){
+        handleMenuSearch();
+        checkListAdapter.notifyDataSetChanged();
+    }
+
+    public List<Person> performSearch(List<Person> actualFriends, String query){
+        String[] queryByWords = query.toLowerCase().split("\\s+");
+        List<Person> filtred = new ArrayList<>();
+        for (Person actual: actualFriends){
+            String content = (
+                    actual.getName()
+            ).toLowerCase();
+
+            for (String word: queryByWords){
+                int numberOfMatches = queryByWords.length;
+                if (content.contains(word)){
+                    numberOfMatches--;
+                }
+                else{
+                    break;
+                }
+
+                if (numberOfMatches == 0){
+                    filtred.add(actual);
+                }
+
+            }
+        }
+        return filtred;
+    }
+
+    public void handleMenuSearch(){
+        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
+        MenuItem savegroup = myMenu.findItem(R.id.saveGroup_button);
+        MenuItem search = myMenu.findItem(R.id.searchCancelContact);
+        FloatingActionButton searchButton = (FloatingActionButton) findViewById(R.id.search_button);
+
+        if (isSearchOpened){
+            LinearLayout mainLayout=(LinearLayout)this.findViewById(R.id.header);
+            mainLayout.setVisibility(LinearLayout.VISIBLE);
+
+            friendsFiltred.clear();
+            friendsFiltred.addAll(friends);
+            actionBar.setDisplayShowCustomEnabled(false);
+            actionBar.setDisplayShowTitleEnabled(true);
+
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(getWindow().getCurrentFocus().getWindowToken(), 0);
+
+            searchButton.setIconDrawable(getResources().getDrawable(R.drawable.ic_search_black_48dp));
+            search.setVisible(false);
+            savegroup.setVisible(true);
+            isSearchOpened = false;
+        }
+        else{
+            LinearLayout mainLayout=(LinearLayout)this.findViewById(R.id.header);
+            mainLayout.setVisibility(LinearLayout.GONE);
+            savegroup.setVisible(false);
+            search.setVisible(true);
+            actionBar.setDisplayShowCustomEnabled(true);
+            actionBar.setCustomView(R.layout.search_contact_bar);
+            actionBar.setDisplayShowTitleEnabled(false);
+
+            searchText = (MaterialEditText) actionBar.getCustomView().findViewById(R.id.search_contact_text);
+            searchText.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    mSearchQuery = searchText.getText().toString();
+                    friendsFiltred.clear();
+                    friendsFiltred.addAll(performSearch(friends, mSearchQuery));
+                    checkListAdapter.notifyDataSetChanged();
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                }
+            });
+            searchText.requestFocus();
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.showSoftInput(searchText, InputMethodManager.SHOW_IMPLICIT);
+
+            searchButton.bringToFront();
+            searchButton.setIconDrawable(getResources().getDrawable(R.drawable.ic_close_black_48dp));
+
+            isSearchOpened = true;
+        }
     }
 
     private boolean isNetworkAvailable() {
@@ -387,9 +514,10 @@ public class GroupCreateInfActivity extends ActionBarActivity {
             }
 
             Person friend = friends.get(position);
-            holder.avatar.setImageBitmap(cargarImagen(GroupCreateInfActivity.this,friend.getId()+""));
+            holder.avatar.setImageBitmap(cargarImagen(GroupCreateInfActivity.this, friend.getId() + ""));
             holder.name.setText(friend.getName());
             holder.check.setSelected(friend.isSelected());
+            holder.check.setChecked(friend.isSelected());
             holder.check.setTag(friend);
             return convertView;
 

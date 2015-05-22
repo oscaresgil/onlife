@@ -91,7 +91,6 @@ public class ContactsFragment extends ListFragment {
         friends = ((SessionData)getArguments().getSerializable("data")).getFriends();
         friendsFiltred.addAll(friends);
 
-        //friendsFiltred = friends;
         adapter =  new ContactsAdapter(getActivity(), friendsFiltred, settings);
         setListAdapter(adapter);
         return v;
@@ -109,11 +108,8 @@ public class ContactsFragment extends ListFragment {
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
                 boolean enable = false;
                 if (getListView() != null && getListView().getChildCount() > 0) {
-                    // check if the first item of the list is visible
                     boolean firstItemVisible = getListView().getFirstVisiblePosition() == 0;
-                    // check if the top of the first item is visible
                     boolean topOfFirstItemVisible = getListView().getChildAt(0).getTop() == 0;
-                    // enabling or disabling the refresh layout
                     enable = firstItemVisible && topOfFirstItemVisible;
                 }
                 mSwipeRefreshLayout.setEnabled(enable);
@@ -132,8 +128,6 @@ public class ContactsFragment extends ListFragment {
     @Override
     public void onPause() {
         super.onPause();
-        isSearchOpened = true;
-        handleMenuSearch();
         if (mSwipeRefreshLayout!=null) {
             mSwipeRefreshLayout.setRefreshing(false);
             mSwipeRefreshLayout.destroyDrawingCache();
@@ -151,12 +145,7 @@ public class ContactsFragment extends ListFragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
         Log.i("SI entre", "Logre entrar");
-        if (i == R.id.refreshContacts) {
-            refreshContact();
-            adapter.notifyDataSetChanged();
-            //setRefreshActionButtonState(false);
-        }
-        else if (i==R.id.searchContact){
+        if (i==R.id.searchContact){
             handleMenuSearch();
             adapter.notifyDataSetChanged();
         }
@@ -168,9 +157,7 @@ public class ContactsFragment extends ListFragment {
         String[] queryByWords = query.toLowerCase().split("\\s+");
         List<Person> filtred = new ArrayList<>();
         for (Person actual: actualFriends){
-            String content = (
-                    actual.getName()
-                    ).toLowerCase();
+            String content = (actual.getName()).toLowerCase();
 
             for (String word: queryByWords){
                 int numberOfMatches = queryByWords.length;
@@ -184,7 +171,6 @@ public class ContactsFragment extends ListFragment {
                 if (numberOfMatches == 0){
                     filtred.add(actual);
                 }
-
             }
         }
         return filtred;
@@ -237,24 +223,6 @@ public class ContactsFragment extends ListFragment {
         }
     }
 
-    public void setRefreshActionButtonState(final boolean refreshing) {
-        Log.i("Options Menu is null",(optionsMenu==null)+"");
-        if (optionsMenu != null) {
-            final MenuItem refreshItem = optionsMenu
-                    .findItem(R.id.refreshContacts);
-            Log.i("Refresh Item is null",(refreshItem==null)+"");
-            if (refreshItem != null) {
-                if (refreshing) {
-                    refreshItem.setActionView(R.layout.refresh_contacts_actionbarlayout);
-                } else {
-                    refreshItem.setActionView(null);
-                }
-            }
-        }
-        else{
-        }
-    }
-
     private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager
                 = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -271,7 +239,6 @@ public class ContactsFragment extends ListFragment {
             new DownloadImageTask().execute(ids);
         }else{
             mSwipeRefreshLayout.setRefreshing(false);
-            setRefreshActionButtonState(false);
             Toast.makeText(getActivity(), "No connection", Toast.LENGTH_LONG).show();
         }
     }
@@ -327,7 +294,6 @@ public class ContactsFragment extends ListFragment {
         @Override
         protected void onPreExecute() {
             mSwipeRefreshLayout.setRefreshing(true);
-            setRefreshActionButtonState(true);
         }
 
         protected Void doInBackground(String... urls) {
@@ -360,7 +326,6 @@ public class ContactsFragment extends ListFragment {
         @Override
         protected void onPostExecute(Void aVoid) {
             mSwipeRefreshLayout.setRefreshing(false);
-            setRefreshActionButtonState(false);
             adapter.notifyDataSetChanged();
             Toast.makeText(getActivity(),"Contacts Refreshed",Toast.LENGTH_SHORT).show();
         }

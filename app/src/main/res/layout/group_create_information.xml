@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_create_group"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -7,6 +8,7 @@
     android:weightSum="1">
 
     <LinearLayout
+        android:id="@+id/header"
         android:layout_width="match_parent"
         android:layout_height="156dp"
         android:weightSum="1">
@@ -32,12 +34,33 @@
             app:met_hideUnderline="true"/>
     </LinearLayout>
     <LinearLayout
+        android:layout_below="@id/header"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:divider="@color/black"/>
+    <com.getbase.floatingactionbutton.FloatingActionButton
+        xmlns:fab="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/search_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignBottom="@id/header"
+        android:layout_marginBottom="-20dp"
+        android:layout_marginRight="10dp"
+        android:onClick="search"
+        fab:fab_icon="@drawable/ic_search_black_48dp"
+        fab:fab_colorNormal="@color/orange_light"
+        fab:fab_colorPressed="@color/orange"/>
+    <LinearLayout
+        android:id="@+id/body"
+        android:layout_below="@id/header"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <ListView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:id="@+id/listView"
+            android:listSelector="@drawable/list_selector"
             android:layout_weight="1" />
     </LinearLayout>
-</LinearLayout>
+</RelativeLayout>

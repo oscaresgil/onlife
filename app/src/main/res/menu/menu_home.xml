@@ -13,11 +13,6 @@
         app:showAsAction="always"
         android:title="@string/search_friend"/>
     <item
-        android:id="@+id/refreshContacts"
-        android:icon="@drawable/ic_refresh_black_48dp"
-        app:showAsAction="always"
-        android:title="@string/refresh_contact"/>
-    <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"
         android:title="@string/action_settings"

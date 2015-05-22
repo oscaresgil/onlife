@@ -24,6 +24,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.henzer.socialize.Controller.SendNotification;
 import com.example.henzer.socialize.GroupInformationActivity;
 import com.example.henzer.socialize.GroupsFragment;
@@ -148,12 +149,37 @@ public class GroupActionActivity extends ActionBarActivity {
             overridePendingTransition(R.animator.push_right, R.animator.push_left);
         }
         else if(i == R.id.delete_group){
-            GroupsFragment.removeGroup(group);
-            InputMethodManager imm = (InputMethodManager)getSystemService(
-                    Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(messageTextView.getWindowToken(), 0);
-            finish();
-            overridePendingTransition(R.animator.push_left_inverted, R.animator.push_right_inverted);
+            new MaterialDialog.Builder(this)
+                .title(R.string.delete)
+                .content(R.string.really_delete)
+                .positiveText(R.string.yes)
+                .positiveColorRes(R.color.orange_light)
+                .negativeText(R.string.no)
+                .negativeColorRes(R.color.red)
+                .callback(new MaterialDialog.ButtonCallback() {
+                    @Override
+                    public void onPositive(MaterialDialog dialog) {
+                        GroupsFragment.removeGroup(group);
+                        dialog.dismiss();
+                        dialog.cancel();
+
+                        new MaterialDialog.Builder(GroupActionActivity.this)
+                            .title("Group " + group.getName() + " deleted!")
+                            .positiveText("OK")
+                            .positiveColorRes(R.color.orange_light)
+                            .callback(new MaterialDialog.ButtonCallback() {
+                                @Override
+                                public void onPositive(MaterialDialog dialog) {
+                                    InputMethodManager imm = (InputMethodManager)getSystemService(
+                                            Context.INPUT_METHOD_SERVICE);
+                                    imm.hideSoftInputFromWindow(messageTextView.getWindowToken(), 0);
+                                    finish();
+                                    overridePendingTransition(R.animator.push_left_inverted, R.animator.push_right_inverted);
+                                }
+                            })
+                            .show();
+                    }
+                }).show();
         }
         else {
             InputMethodManager imm = (InputMethodManager)getSystemService(
