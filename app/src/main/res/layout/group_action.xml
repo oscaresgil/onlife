@@ -1,83 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_height="match_parent" android:layout_width="match_parent"
+    android:layout_height="fill_parent" android:layout_width="fill_parent"
     android:background="@color/background_material_light">
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/layout_groups"
         android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" >
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:focusableInTouchMode="true" >
+        <de.hdodenhof.circleimageview.CircleImageView
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/avatar_group"
+            android:layout_width="250dp"
+            android:layout_height="250dp"
+            android:layout_centerInParent="true"
+            android:src="@drawable/ic_crop_original_black_48dp"
+            app:border_width="4dp"
+            app:border_color="@color/orange_light"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp" />
+
+        <RelativeLayout
+            style="@style/AppTheme"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:weightSum="1">
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.21">
-                <de.hdodenhof.circleimageview.CircleImageView
-                    xmlns:app="http://schemas.android.com/apk/res-auto"
-                    android:id="@+id/avatar_group"
-                    android:layout_width="150dp"
-                    android:layout_height="150dp"
-                    android:layout_centerInParent="true"
-                    android:src="@drawable/ic_crop_original_black_48dp"
-                    app:border_width="4dp"
-                    app:border_color="#5DFC0A"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginBottom="20dp" />
-            </RelativeLayout>
+            android:layout_height="wrap_content"
+            android:id="@+id/groupMessageText"
+            android:focusableInTouchMode="true"
+            android:clickable="false">
             <TextView
                 style="@style/FriendStyle"
-                android:id="@+id/availableText"
-                android:layout_width="142dp"
+                android:id="@+id/maxCharactersGroup"
+                android:layout_width="-50dp"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:text="Available"
-                android:enabled="false"
-                android:gravity="center" />
-
-            <LinearLayout
-                style="@style/AppTheme"
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="152dp"
-                android:layout_margin="10dp"
-                android:gravity="center"
-                android:id="@+id/groupMessageText"
-                android:focusableInTouchMode="true"
-                android:clickable="false">
-                <com.rengwuxian.materialedittext.MaterialEditText
-                    style="@style/BlockingMessage"
-                    android:layout_margin="5dp"
-                    android:id="@+id/messageGroup"
-                    android:layout_width="fill_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="3"
-                    android:textAlignment="center"
-                    android:hint="@string/send_a_message"
-                    app:met_baseColor="@color/black"
-                    app:met_primaryColor="@color/orange_light"
-                    app:met_errorColor="@color/red"
-                    app:met_minCharacters="0"
-                    app:met_maxCharacters="30"
-                    app:met_hideUnderline="true"/>
-            </LinearLayout>
-            <com.gc.materialdesign.views.ButtonRectangle
+                android:text="0/30"
+                android:layout_alignParentRight="true" />
+            <com.rengwuxian.materialedittext.MaterialEditText
                 style="@style/BlockingMessage"
-                android:layout_width="150dp"
-                android:layout_height="wrap_content"
-                android:id="@+id/blockButtonGroup"
-                android:layout_gravity="center_horizontal"
-                android:text="Block"
-                android:onClick="bloquear"
-                android:background="@color/orange_light"
-                android:layout_marginBottom="20dp"
-                android:textColor="@color/black"
-                android:textColorHighlight="@color/black" />
-        </LinearLayout>
+                android:id="@+id/messageGroup"
+                android:layout_margin="5dp"
+                android:layout_width="fill_parent"
+                android:layout_height="match_parent"
+                android:textAlignment="center"
+                android:inputType="textFilter"
+                android:hint="@string/send_a_message"
+                app:met_baseColor="@color/black"
+                app:met_primaryColor="@color/orange_light"
+                app:met_hideUnderline="true"/>
+        </RelativeLayout>
+        <com.gc.materialdesign.views.ButtonRectangle
+            style="@style/BlockingMessage"
+            android:layout_margin="10dp"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/blockButtonGroup"
+            android:layout_gravity="center_horizontal"
+            android:text="Block"
+            android:onClick="bloquear"
+            android:background="@color/orange_light"
+            android:layout_marginBottom="20dp"
+            android:textColor="@color/black"
+            android:textColorHighlight="@color/black" />
+        <ScrollView
+            android:layout_height="fill_parent"
+            android:layout_width="fill_parent"/>
     </LinearLayout>
 </ScrollView>

@@ -23,10 +23,6 @@ import com.facebook.login.LoginManager;
 public class HomeActivity extends ActionBarActivity {
     private SessionData sessionData;
 
-    public HomeActivity(){
-
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,6 +76,7 @@ public class HomeActivity extends ActionBarActivity {
 
     @Override
     public void onBackPressed() {
+        finish();
     }
 
     public void logout(MenuItem item) {

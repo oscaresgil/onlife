@@ -19,6 +19,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.support.v7.app.ActionBarActivity;
 import android.text.Editable;
 import android.text.Html;
@@ -37,7 +38,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.henzer.socialize.Controller.AddNewGroup;
 import com.example.henzer.socialize.Models.Group;
@@ -45,6 +45,7 @@ import com.example.henzer.socialize.Models.Person;
 import com.example.henzer.socialize.Models.SessionData;
 import com.gc.materialdesign.views.CheckBox;
 import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.kenny.snackbar.SnackBar;
 import com.r0adkll.slidr.Slidr;
 import com.r0adkll.slidr.model.SlidrConfig;
 import com.r0adkll.slidr.model.SlidrPosition;
@@ -184,6 +185,15 @@ public class GroupCreateInfActivity extends ActionBarActivity {
     }
 
     @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        InputMethodManager imm = (InputMethodManager)getSystemService(
+                Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(nameNewGroup.getWindowToken(), 0);
+        overridePendingTransition(R.animator.push_left_inverted, R.animator.push_right_inverted);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         List<Person> selected = new ArrayList();
         int i = item.getItemId();
@@ -225,11 +235,16 @@ public class GroupCreateInfActivity extends ActionBarActivity {
                         e.printStackTrace();
                     }
                 }else{
-                    Toast.makeText(this, "No connection", Toast.LENGTH_LONG).show();
+                    SnackBar.show(GroupCreateInfActivity.this, R.string.no_connection, R.string.change_connection, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            startActivity(new Intent(Settings.ACTION_WIRELESS_SETTINGS));
+                        }
+                    });
                 }
             }
             else{
-                Toast.makeText(getApplicationContext(),"Name, Photo or Contacts not specified. Try Again",Toast.LENGTH_LONG).show();
+                SnackBar.show(GroupCreateInfActivity.this,"Name, Photo or Contacts not specified. Try Again");
             }
         }
         else{
@@ -425,8 +440,7 @@ public class GroupCreateInfActivity extends ActionBarActivity {
         }
         catch(ActivityNotFoundException anfe){
             String errorMessage = "Whoops - your device doesn't support the crop action!";
-            Toast toast = Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT);
-            toast.show();
+            SnackBar.show(GroupCreateInfActivity.this, errorMessage);
         }
     }
 

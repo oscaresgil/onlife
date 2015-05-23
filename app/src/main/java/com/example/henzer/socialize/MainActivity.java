@@ -15,11 +15,11 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.henzer.socialize.BlockActivity.DeviceAdmin;
@@ -41,6 +41,7 @@ import com.facebook.Profile;
 import com.facebook.ProfileTracker;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
+import com.kenny.snackbar.SnackBar;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -202,7 +203,12 @@ public class MainActivity extends Activity{
         if (isNetworkAvailable()) {
             LoginManager.getInstance().registerCallback(callbackManager, facebookCallback);
         }else{
-            Toast.makeText(this,"No connection",Toast.LENGTH_LONG).show();
+            SnackBar.show(MainActivity.this, R.string.no_connection, R.string.change_connection, new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(new Intent(Settings.ACTION_WIRELESS_SETTINGS));
+                }
+            });
         }
     }
 
@@ -236,7 +242,7 @@ public class MainActivity extends Activity{
                     LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile", "user_friends", "email"));
                     loginFB.setText("Log out");
                 } catch (Exception ex) {
-                    Toast.makeText(this, "There was a problem.", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(this, "There was a problem.", Toast.LENGTH_SHORT).show();
                 }
             } else {
                 try {
@@ -247,11 +253,16 @@ public class MainActivity extends Activity{
                     editor.clear();
                     editor.commit();
                 } catch (Exception ex) {
-                    Toast.makeText(this, "There was a problem.", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(this, "There was a problem.", Toast.LENGTH_SHORT).show();
                 }
             }
         }else{
-            Toast.makeText(this,"No connection",Toast.LENGTH_LONG).show();
+            SnackBar.show(MainActivity.this, R.string.no_connection, R.string.change_connection, new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(new Intent(Settings.ACTION_WIRELESS_SETTINGS));
+                }
+            });
         }
     }
 
@@ -289,6 +300,7 @@ public class MainActivity extends Activity{
         Log.e("Methods", "I passed onResume()");
         if(AccessToken.getCurrentAccessToken()!=null){
             gotoHome();
+            finish();
         }
     }
     class nameComparator implements Comparator<Person> {
@@ -354,7 +366,7 @@ public class MainActivity extends Activity{
                         editor.commit();
                         gotoHome();
                     }else{
-                        Toast.makeText(MainActivity.this, mensaje, Toast.LENGTH_SHORT).show();
+                        SnackBar.show(MainActivity.this, mensaje);
                     }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -368,7 +380,6 @@ public class MainActivity extends Activity{
     }
 
     private class DownloadImageTask extends AsyncTask<String, Void, Void> {
-
         MaterialDialog materialDialog;
 
         @Override

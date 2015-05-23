@@ -5,6 +5,7 @@
     android:layout_height="wrap_content">
     <ListView
         android:id="@android:id/list"
+        android:isScrollContainer="false"
         android:divider="@color/transparent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">

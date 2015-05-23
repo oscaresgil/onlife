@@ -18,7 +18,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.henzer.socialize.BlockActivity.FriendActionActivity;
 import com.example.henzer.socialize.Models.Person;
@@ -69,9 +68,15 @@ public class GroupInformationActivity extends ActionBarActivity {
                 Intent intent = new Intent(GroupInformationActivity.this, FriendActionActivity.class);
                 intent.putExtra("data",friend);
                 startActivity(intent);
-                Toast.makeText(GroupInformationActivity.this, "Clicked on Friend " + friend.getName(), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(GroupInformationActivity.this, "Clicked on Friend " + friend.getName(), Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.animator.push_left_inverted, R.animator.push_right_inverted);
     }
 
     @Override

@@ -67,7 +67,7 @@ public class GcmMessageHandler extends IntentService {
         DevicePolicyManager mDPM =
                 (DevicePolicyManager)getSystemService(Context.DEVICE_POLICY_SERVICE);
         try {
-            Thread.sleep(5000);
+            Thread.sleep(2000);
         } catch (InterruptedException ex) {
         }
         mDPM.lockNow();

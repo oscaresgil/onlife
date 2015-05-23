@@ -10,6 +10,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.Settings;
 import android.support.v7.app.ActionBarActivity;
 import android.text.Editable;
 import android.text.Html;
@@ -22,7 +23,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.henzer.socialize.Controller.SendNotification;
@@ -32,6 +33,7 @@ import com.example.henzer.socialize.Models.Group;
 import com.example.henzer.socialize.Models.Person;
 import com.example.henzer.socialize.R;
 import com.gc.materialdesign.views.ButtonRectangle;
+import com.kenny.snackbar.SnackBar;
 import com.r0adkll.slidr.Slidr;
 import com.r0adkll.slidr.model.SlidrConfig;
 import com.r0adkll.slidr.model.SlidrPosition;
@@ -51,6 +53,7 @@ public class GroupActionActivity extends ActionBarActivity {
     private Group group;
     private List<Person> friendsInGroup;
     private MaterialEditText messageTextView;
+    private TextView maxCharsView;
     private int maximumChars = 30;
     private int actualChar = 0;
     private ButtonRectangle blockButton;
@@ -84,7 +87,7 @@ public class GroupActionActivity extends ActionBarActivity {
         friendsInGroup = group.getFriendsInGroup();
         actionBar.setTitle((Html.fromHtml("<b><font color=\"#000000\">" + nameGroup + "</font></b>")));
 
-
+        maxCharsView = (TextView) findViewById(R.id.maxCharactersGroup);
         blockButton = (ButtonRectangle) findViewById(R.id.blockButtonGroup);
         messageTextView = (MaterialEditText) findViewById(R.id.messageGroup);
         final Handler handler = new Handler();
@@ -108,15 +111,26 @@ public class GroupActionActivity extends ActionBarActivity {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 actualChar = maximumChars - s.length();
                 if (actualChar < 0) {
-                    blockButton.setClickable(false);
+                    maxCharsView.setTextColor(getResources().getColor(R.color.red));
+                    maxCharsView.setText(actualChar + "/" + maximumChars);
                 } else {
-                    blockButton.setClickable(true);
+                    maxCharsView.setTextColor(getResources().getColor(R.color.black));
+                    maxCharsView.setText(actualChar + "/" + maximumChars);
                 }
             }
             @Override
             public void afterTextChanged(Editable s) {}
         });
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        InputMethodManager imm = (InputMethodManager)getSystemService(
+                Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(messageTextView.getWindowToken(), 0);
+        overridePendingTransition(R.animator.push_left_inverted, R.animator.push_right_inverted);
     }
 
     @Override
@@ -206,13 +220,26 @@ public class GroupActionActivity extends ActionBarActivity {
                     Log.e(TAG, "Bloquear a: " + friendsInGroup.toString());
                     gcm.execute(friendsInGroup.toArray(new Person[friendsInGroup.size()]));
                 } catch (Exception ex) {
-                    Toast.makeText(getApplicationContext(), "There was an error", Toast.LENGTH_LONG).show();
+                    SnackBar.show(GroupActionActivity.this, R.string.error);
                 }
             } else {
-                Toast.makeText(getApplicationContext(), "Only 30 or less characters please", Toast.LENGTH_LONG).show();
+                SnackBar.show(GroupActionActivity.this, R.string.max_characters, R.string.change_text, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        messageTextView.requestFocus();
+                        InputMethodManager imm = (InputMethodManager) getSystemService(
+                                Context.INPUT_METHOD_SERVICE);
+                        imm.showSoftInput(messageTextView, 0);
+                    }
+                });
             }
         }else{
-            Toast.makeText(this, "No connection", Toast.LENGTH_LONG).show();
+            SnackBar.show(GroupActionActivity.this, R.string.no_connection, R.string.change_connection, new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(new Intent(Settings.ACTION_WIRELESS_SETTINGS));
+                }
+            });
         }
     }
     private Bitmap cargarImagen(Context context, String name){

@@ -25,9 +25,16 @@
     <string name="really_delete">Delete Group?</string>
     <string name="refresh_contact">Refresh Contact</string>
     <string name="title_dialog">Please Wait</string>
-    <string name="message_dialog">Loading Friends...</string>
+    <string name="message_dialog">Loading Friends..</string>
     <string name="send_a_message">Send a message..</string>
     <string name="search_contact">Search in contacts..</string>
     <string name="block">Block!</string>
+    <string name="no_connection">No Connection.</string>
+    <string name="error">There was an error.</string>
+    <string name="max_characters">Only 30 characters please.</string>
+    <string name="change_text">Change Text</string>
+    <string name="change_connection">Change Connection</string>
+    <string name="contacts_refreshed">Contacts Refreshed!</string>
+
 
 </resources>

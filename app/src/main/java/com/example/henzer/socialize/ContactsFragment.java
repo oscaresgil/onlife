@@ -9,6 +9,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ListFragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -27,11 +28,11 @@ import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.henzer.socialize.BlockActivity.FriendActionActivity;
 import com.example.henzer.socialize.Models.Person;
 import com.example.henzer.socialize.Models.SessionData;
+import com.kenny.snackbar.SnackBar;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.yalantis.flipviewpager.adapter.BaseFlipAdapter;
 import com.yalantis.flipviewpager.utils.FlipSettings;
@@ -133,6 +134,7 @@ public class ContactsFragment extends ListFragment {
             mSwipeRefreshLayout.destroyDrawingCache();
             mSwipeRefreshLayout.clearAnimation();
         }
+        //handleMenuSearch();
     }
 
     @Override
@@ -239,7 +241,12 @@ public class ContactsFragment extends ListFragment {
             new DownloadImageTask().execute(ids);
         }else{
             mSwipeRefreshLayout.setRefreshing(false);
-            Toast.makeText(getActivity(), "No connection", Toast.LENGTH_LONG).show();
+            SnackBar.show(getActivity(), R.string.no_connection, R.string.change_connection, new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(new Intent(Settings.ACTION_WIRELESS_SETTINGS));
+                }
+            });
         }
     }
 
@@ -285,7 +292,7 @@ public class ContactsFragment extends ListFragment {
             options.inPreferredConfig = Bitmap.Config.ARGB_8888;
             b = BitmapFactory.decodeFile(myPath.getAbsolutePath(), options);
         }catch (Exception e){e.printStackTrace();}
-        Log.i("IMAGE LOADED","PATH: "+myPath);
+        Log.i("IMAGE LOADED", "PATH: " + myPath);
         return b;
     }
 
@@ -327,15 +334,17 @@ public class ContactsFragment extends ListFragment {
         protected void onPostExecute(Void aVoid) {
             mSwipeRefreshLayout.setRefreshing(false);
             adapter.notifyDataSetChanged();
-            Toast.makeText(getActivity(),"Contacts Refreshed",Toast.LENGTH_SHORT).show();
+            SnackBar.show(getActivity(), R.string.contacts_refreshed);
         }
     }
 
     class ContactsAdapter extends BaseFlipAdapter<Person> {
         private final int PAGES = 3;
+        private Context context;
 
         public ContactsAdapter(Context context, List<Person> items, FlipSettings settings) {
             super(context, items, settings);
+            this.context = context;
         }
 
         @Override
@@ -344,7 +353,6 @@ public class ContactsFragment extends ListFragment {
             if (view == null){
                 holder = new ContactsHolder();
                 view = getActivity().getLayoutInflater().inflate(R.layout.contacts, viewGroup, false);
-
 
                 holder.leftAvatar = (ImageView) view.findViewById(R.id.first_image);
                 holder.leftName = (TextView) view.findViewById(R.id.first_name);

@@ -4,9 +4,10 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.henzer.socialize.Models.Person;
 import com.example.henzer.socialize.R;
+
+import net.steamcrafted.loadtoast.LoadToast;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -17,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SendNotification extends AsyncTask<Person, String, Boolean>{
-    private MaterialDialog pDialog;
+    private LoadToast toast;
     private Context context;
     private JSONParser jsonParser;
     private String message;
@@ -33,11 +34,11 @@ public class SendNotification extends AsyncTask<Person, String, Boolean>{
     @Override
     protected void onPreExecute(){
         super.onPreExecute();
-        pDialog= new MaterialDialog.Builder(context)
-            .title("Blocking..")
-            .progress(true,0)
-            .backgroundColorRes(R.color.transparent)
-            .widgetColorRes(R.color.orange_light)
+        toast = new LoadToast(context)
+            .setText("Blocking...")
+            .setTextColor(context.getResources().getColor(R.color.black))
+            .setTranslationY(100)
+            .setProgressColor(context.getResources().getColor(R.color.orange_light))
             .show();
     }
 
@@ -69,16 +70,7 @@ public class SendNotification extends AsyncTask<Person, String, Boolean>{
     @Override
     protected void onPostExecute(Boolean result){
         Log.e("MainActivity", "Quitando el Progress Dialog");
-        if (pDialog.isShowing()){
-            pDialog.dismiss();
-        }
-
-        new MaterialDialog.Builder(context)
-                .title("Contact blocked!")
-                .positiveText("OK")
-                .positiveColorRes(R.color.orange_light)
-                .show();
-
+        toast.success();
     }
 }
 
