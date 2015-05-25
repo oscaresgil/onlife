@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.support.v4.app.ListFragment;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -24,6 +24,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.henzer.socialize.BlockActivity.GroupActionActivity;
 import com.example.henzer.socialize.Models.Group;
 import com.example.henzer.socialize.Models.SessionData;
+import com.melnykov.fab.FloatingActionButton;
 
 import java.io.File;
 import java.io.Serializable;
@@ -32,10 +33,12 @@ import java.util.List;
 /**
  * Created by Boris on 01/05/2015.
  */
-public class GroupsFragment extends ListFragment {
+public class GroupsFragment extends Fragment {
     public static final String TAG = "GroupsFragment";
     private SessionData sessionData;
     private GroupAdapter adapter;
+    private ListView list;
+    private FloatingActionButton addGroupButton;
     private static List<Group> groups;
 
     public static GroupsFragment newInstance(Bundle arguments){
@@ -58,7 +61,16 @@ public class GroupsFragment extends ListFragment {
 
         groups = sessionData.getGroups();
         adapter = new GroupAdapter(getActivity(), R.layout.groups, groups);
-        setListAdapter(adapter);
+        list = (ListView)v.findViewById(R.id.list_group);
+        list.setAdapter(adapter);
+        addGroupButton = (FloatingActionButton) v.findViewById(R.id.addNewGroupButton);
+        addGroupButton.attachToListView(list);
+        addGroupButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addGroup(v);
+            }
+        });
         return v;
     }
 
@@ -71,38 +83,50 @@ public class GroupsFragment extends ListFragment {
     public void onResume() {
         super.onResume();
         adapter = new GroupAdapter(getActivity(), R.layout.groups, groups);
-        setListAdapter(adapter);
+        list.setAdapter(adapter);
         adapter.notifyDataSetChanged();
-        getListView().setLongClickable(true);
-        getListView().setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+        list.setLongClickable(true);
+        list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-            final Group actualGroup = groups.get(position);
+                final Group actualGroup = groups.get(position);
 
-            new MaterialDialog.Builder(getActivity())
-                    .title(R.string.delete)
-                    .content(R.string.really_delete)
-                    .positiveText(R.string.yes)
-                    .positiveColorRes(R.color.orange_light)
-                    .negativeText(R.string.no)
-                    .negativeColorRes(R.color.red)
-                    .callback(new MaterialDialog.ButtonCallback() {
-                        @Override
-                        public void onPositive(MaterialDialog dialog) {
-                            removeGroup(actualGroup);
-                            adapter.notifyDataSetChanged();
-                            dialog.dismiss();
-                            dialog.cancel();
+                new MaterialDialog.Builder(getActivity())
+                        .title(R.string.delete)
+                        .content(R.string.really_delete)
+                        .positiveText(R.string.yes)
+                        .positiveColorRes(R.color.orange_light)
+                        .negativeText(R.string.no)
+                        .negativeColorRes(R.color.red)
+                        .callback(new MaterialDialog.ButtonCallback() {
+                            @Override
+                            public void onPositive(MaterialDialog dialog) {
+                                removeGroup(actualGroup);
+                                adapter.notifyDataSetChanged();
+                                dialog.dismiss();
+                                dialog.cancel();
 
-                            new MaterialDialog.Builder(getActivity())
-                                    .title("Group " + actualGroup.getName() + " deleted!")
-                                    .positiveText("OK")
-                                    .positiveColorRes(R.color.orange_light)
-                                    .show();
-                        }
-                    }).show();
+                                new MaterialDialog.Builder(getActivity())
+                                        .title("Group " + actualGroup.getName() + " deleted!")
+                                        .positiveText("OK")
+                                        .positiveColorRes(R.color.orange_light)
+                                        .show();
+                            }
+                        }).show();
 
-            return true;
+                return true;
+            }
+        });
+
+        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Group group = groups.get(position);
+                Intent intent = new Intent(getActivity(), GroupActionActivity.class);
+                intent.putExtra("data", (Serializable) group);
+                intent.putExtra("name", group.getName());
+                startActivity(intent);
+                getActivity().overridePendingTransition(R.animator.push_right, R.animator.push_left);
             }
         });
     }
@@ -114,28 +138,21 @@ public class GroupsFragment extends ListFragment {
     }
 
     @Override
-    public void onListItemClick(ListView l, View v, int position, long id) {
-        super.onListItemClick(l, v, position, id);
-        Group group = groups.get(position);
-        Intent intent = new Intent(getActivity(),GroupActionActivity.class);
-        intent.putExtra("data", (Serializable) group);
-        intent.putExtra("name", group.getName());
-        startActivity(intent);
-        getActivity().overridePendingTransition(R.animator.push_right, R.animator.push_left);
-    }
-
-    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        menu.findItem(R.id.addGroup).setVisible(true);
+        //menu.findItem(R.id.addGroup).setVisible(true);
         menu.findItem(R.id.searchContact).setVisible(false);
         super.onCreateOptionsMenu(menu, inflater);
     }
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+
+    public void addGroup(View view){
         Intent i = new Intent(getActivity(), GroupCreateInfActivity.class);
         i.putExtra("data", sessionData);
         startActivity(i);
         getActivity().overridePendingTransition(R.animator.push_right, R.animator.push_left);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
         return super.onOptionsItemSelected(item);
     }
 

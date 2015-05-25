@@ -17,7 +17,7 @@
             android:id="@+id/imageView"
             android:layout_width="138dp"
             android:layout_height="138dp"
-            android:src="@drawable/ic_crop_original_black_48dp"/>
+            android:src="@drawable/ic_photo_camera_black_48dp"/>
 
         <com.rengwuxian.materialedittext.MaterialEditText
             xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -34,7 +34,7 @@
             app:met_errorColor="@color/red"
             app:met_hideUnderline="true"/>
     </LinearLayout>
-    <com.getbase.floatingactionbutton.FloatingActionButton
+    <com.melnykov.fab.FloatingActionButton
         xmlns:fab="http://schemas.android.com/apk/res-auto"
         android:id="@+id/search_button"
         android:layout_width="wrap_content"
@@ -44,7 +44,7 @@
         android:layout_marginBottom="-20dp"
         android:layout_marginRight="10dp"
         android:onClick="search"
-        fab:fab_icon="@drawable/ic_search_black_48dp"
+        android:src="@drawable/ic_ic_search_black_48dp"
         fab:fab_colorNormal="@color/orange_light"
         fab:fab_colorPressed="@color/orange"/>
     <LinearLayout

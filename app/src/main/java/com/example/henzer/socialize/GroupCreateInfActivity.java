@@ -46,7 +46,7 @@ import com.example.henzer.socialize.Models.Group;
 import com.example.henzer.socialize.Models.Person;
 import com.example.henzer.socialize.Models.SessionData;
 import com.gc.materialdesign.views.CheckBox;
-import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.melnykov.fab.FloatingActionButton;
 import com.kenny.snackbar.SnackBar;
 import com.r0adkll.slidr.Slidr;
 import com.r0adkll.slidr.model.SlidrConfig;
@@ -326,7 +326,7 @@ public class GroupCreateInfActivity extends ActionBarActivity {
             actionBar.setDisplayShowCustomEnabled(false);
             actionBar.setDisplayShowTitleEnabled(true);
 
-            searchButton.setIconDrawable(getResources().getDrawable(R.drawable.ic_search_black_48dp));
+            searchButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_ic_search_black_48dp));
             search.setVisible(false);
             savegroup.setVisible(true);
             isSearchOpened = false;
@@ -390,7 +390,7 @@ public class GroupCreateInfActivity extends ActionBarActivity {
             searchText.requestFocus();
 
             searchButton.bringToFront();
-            searchButton.setIconDrawable(getResources().getDrawable(R.drawable.ic_close_black_48dp));
+            searchButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_ic_close_black_48dp));
 
             isSearchOpened = true;
         }

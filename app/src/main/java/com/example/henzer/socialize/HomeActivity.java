@@ -55,7 +55,7 @@ public class HomeActivity extends ActionBarActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_home, menu);
-        menu.findItem(R.id.addGroup).setVisible(false);
+        //menu.findItem(R.id.addGroup).setVisible(false);
         return true;
     }
 
@@ -76,7 +76,6 @@ public class HomeActivity extends ActionBarActivity {
 
     @Override
     public void onBackPressed() {
-        finish();
     }
 
     public void logout(MenuItem item) {
