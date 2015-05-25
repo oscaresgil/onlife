@@ -3,6 +3,7 @@ package com.example.henzer.socialize;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -23,8 +24,13 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.henzer.socialize.BlockActivity.GroupActionActivity;
 import com.example.henzer.socialize.Models.Group;
+import com.example.henzer.socialize.Models.Person;
 import com.example.henzer.socialize.Models.SessionData;
 import com.melnykov.fab.FloatingActionButton;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.Serializable;
@@ -40,6 +46,7 @@ public class GroupsFragment extends Fragment {
     private ListView list;
     private FloatingActionButton addGroupButton;
     private static List<Group> groups;
+    private static SharedPreferences preferences;
 
     public static GroupsFragment newInstance(Bundle arguments){
         GroupsFragment myfragment = new GroupsFragment();
@@ -54,6 +61,7 @@ public class GroupsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
+        preferences = getActivity().getSharedPreferences(MainActivity.MyPREFERENCES, Context.MODE_PRIVATE);
         Log.e(TAG, "OnCreateView");
         setHasOptionsMenu(true);
         View v = inflater.inflate(R.layout.groups_view, container, false);
@@ -196,5 +204,46 @@ public class GroupsFragment extends Fragment {
                 groups.remove(i);
             }
         }
+        try {
+            saveInSession(groups);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
+    public static void saveInSession(List<Group> groups) throws JSONException {
+        SharedPreferences.Editor editor = preferences.edit();
+        JSONObject mySession = new JSONObject(preferences.getString("session", "{}"));
+        Log.e(TAG, mySession.toString());
+
+        JSONArray myGroups = new JSONArray();
+
+        for(Group group: groups) {
+            JSONObject obj = new JSONObject();
+            obj.put("id", group.getId());
+            obj.put("name", group.getName());
+            obj.put("photo", group.getNameImage());
+            obj.put("limit", group.getLimit());
+            obj.put("state", group.getState());
+
+            JSONArray arr = new JSONArray();
+            for (Person p : group.getFriendsInGroup()) {
+                JSONObject friend = new JSONObject();
+                friend.put("id", p.getId());
+                friend.put("id_phone", p.getId_phone());
+                friend.put("name", p.getName());
+                friend.put("photo", p.getPhoto());
+                friend.put("state", p.getState());
+                friend.put("background", p.getBackground());
+                arr.put(friend);
+            }
+            obj.put("people", arr);
+            myGroups.put(obj);
+        }
+        mySession.put("groups", myGroups);
+
+        Log.e(TAG, mySession.toString());
+        editor.putString("session", mySession.toString());
+        editor.commit();
+    }
+
 }

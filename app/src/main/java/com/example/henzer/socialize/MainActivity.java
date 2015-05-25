@@ -351,6 +351,7 @@ public class MainActivity extends Activity{
                         data.put("groups", new JSONArray());
                         editor.putString("session", data.toString());
                         editor.commit();
+
                         gotoHome();
                     }else{
                         SnackBar.show(MainActivity.this, mensaje);

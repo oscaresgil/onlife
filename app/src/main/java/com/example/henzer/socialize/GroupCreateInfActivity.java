@@ -227,6 +227,7 @@ public class GroupCreateInfActivity extends ActionBarActivity {
                         if (newG.getId() != -1) {
                             sessionData.getGroups().add(newG);
                             saveGroupInSession(newG);
+
                             GroupsFragment.addNewGroup(newG);
                             InputMethodManager imm = (InputMethodManager) getSystemService(
                                     Context.INPUT_METHOD_SERVICE);
