@@ -134,7 +134,6 @@ public class ContactsFragment extends ListFragment {
             mSwipeRefreshLayout.destroyDrawingCache();
             mSwipeRefreshLayout.clearAnimation();
         }
-        //handleMenuSearch();
     }
 
     @Override

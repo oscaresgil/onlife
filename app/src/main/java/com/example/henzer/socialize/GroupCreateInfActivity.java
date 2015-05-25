@@ -268,7 +268,6 @@ public class GroupCreateInfActivity extends ActionBarActivity {
 
     public void search(View view){
         handleMenuSearch();
-        checkListAdapter.notifyDataSetChanged();
     }
 
     public List<Person> performSearch(List<Person> actualFriends, String query){
@@ -323,6 +322,7 @@ public class GroupCreateInfActivity extends ActionBarActivity {
 
             friendsFiltred.clear();
             friendsFiltred.addAll(friends);
+            checkListAdapter.notifyDataSetChanged();
             actionBar.setDisplayShowCustomEnabled(false);
             actionBar.setDisplayShowTitleEnabled(true);
 

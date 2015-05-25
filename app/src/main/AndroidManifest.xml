@@ -88,6 +88,7 @@
             android:name=".HomeActivity"
             android:launchMode="standard"
             android:label="@string/title_home_page"
+            android:windowSoftInputMode="adjustNothing"
             android:configChanges="keyboardHidden|orientation|screenSize" />
         <activity android:name=".BlockActivity.FriendActionActivity"
             android:theme="@style/Theme.Slidr.Slidable"
