@@ -1,11 +1,10 @@
 package com.example.henzer.socialize;
 
-import android.app.AlertDialog;
+import android.animation.Animator;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.ContextWrapper;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ResolveInfo;
@@ -39,6 +38,9 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.simplelist.MaterialSimpleListAdapter;
+import com.afollestad.materialdialogs.simplelist.MaterialSimpleListItem;
 import com.example.henzer.socialize.Controller.AddNewGroup;
 import com.example.henzer.socialize.Models.Group;
 import com.example.henzer.socialize.Models.Person;
@@ -186,11 +188,16 @@ public class GroupCreateInfActivity extends ActionBarActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        InputMethodManager imm = (InputMethodManager)getSystemService(
-                Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(nameNewGroup.getWindowToken(), 0);
-        overridePendingTransition(R.animator.push_left_inverted, R.animator.push_right_inverted);
+        if (isSearchOpened){
+            handleMenuSearch();
+        }
+        else{
+            super.onBackPressed();
+            InputMethodManager imm = (InputMethodManager)getSystemService(
+                    Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(nameNewGroup.getWindowToken(), 0);
+            overridePendingTransition(R.animator.push_left_inverted, R.animator.push_right_inverted);
+        }
     }
 
     @Override
@@ -248,8 +255,13 @@ public class GroupCreateInfActivity extends ActionBarActivity {
             }
         }
         else{
-            finish();
-            overridePendingTransition(R.animator.push_left_inverted, R.animator.push_right_inverted);
+            if (isSearchOpened){
+                handleMenuSearch();
+            }
+            else {
+                finish();
+                overridePendingTransition(R.animator.push_left_inverted, R.animator.push_right_inverted);
+            }
         }
         return super.onOptionsItemSelected(item);
     }
@@ -291,30 +303,70 @@ public class GroupCreateInfActivity extends ActionBarActivity {
         MenuItem search = myMenu.findItem(R.id.searchCancelContact);
         FloatingActionButton searchButton = (FloatingActionButton) findViewById(R.id.search_button);
 
+        LinearLayout mainLayout = (LinearLayout)this.findViewById(R.id.header);
+        LinearLayout layout_friends = (LinearLayout) this.findViewById(R.id.body);
+
+        mainLayout.animate().setStartDelay(getResources().getInteger(R.integer.animation_search_contact_create));
+        layout_friends.animate().setStartDelay(getResources().getInteger(R.integer.animation_search_contact_create));
+        searchButton.animate().setStartDelay(getResources().getInteger(R.integer.animation_search_contact_create));
+        // http://stackoverflow.com/questions/19765938/show-and-hide-a-view-with-a-slide-up-down-animation
+
         if (isSearchOpened){
-            LinearLayout mainLayout=(LinearLayout)this.findViewById(R.id.header);
-            mainLayout.setVisibility(LinearLayout.VISIBLE);
+
+            InputMethodManager imm = (InputMethodManager)getSystemService(
+                    Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(searchText.getWindowToken(), 0);
+            imm.hideSoftInputFromWindow(nameNewGroup.getWindowToken(), 0);
+            mainLayout.animate().translationY(0).start();
+            searchButton.animate().translationY(0).start();
+            layout_friends.animate().translationY(0).start();
 
             friendsFiltred.clear();
             friendsFiltred.addAll(friends);
             actionBar.setDisplayShowCustomEnabled(false);
             actionBar.setDisplayShowTitleEnabled(true);
 
-            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(getWindow().getCurrentFocus().getWindowToken(), 0);
-
             searchButton.setIconDrawable(getResources().getDrawable(R.drawable.ic_search_black_48dp));
             search.setVisible(false);
             savegroup.setVisible(true);
             isSearchOpened = false;
-        }
-        else{
-            LinearLayout mainLayout=(LinearLayout)this.findViewById(R.id.header);
-            mainLayout.setVisibility(LinearLayout.GONE);
+        } else{
+            mainLayout.animate().translationY(-mainLayout.getHeight()).start();
+            searchButton.animate().translationY(-mainLayout.getHeight()+actionBar.getHeight()).start();
+            layout_friends.animate().translationY(-mainLayout.getHeight()).setListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+                    InputMethodManager imm = (InputMethodManager)getSystemService(
+                            Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(searchText.getWindowToken(), 0);
+                    imm.hideSoftInputFromWindow(nameNewGroup.getWindowToken(), 0);
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    InputMethodManager imm = (InputMethodManager)getSystemService(
+                            Context.INPUT_METHOD_SERVICE);
+                    imm.showSoftInput(searchText,0);
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animation) {
+                    InputMethodManager imm = (InputMethodManager)getSystemService(
+                            Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(searchText.getWindowToken(), 0);
+                    imm.hideSoftInputFromWindow(nameNewGroup.getWindowToken(), 0);
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animation) {
+                }
+            }).start();
+
             savegroup.setVisible(false);
             search.setVisible(true);
             actionBar.setDisplayShowCustomEnabled(true);
             actionBar.setCustomView(R.layout.search_contact_bar);
+            actionBar.setShowHideAnimationEnabled(true);
             actionBar.setDisplayShowTitleEnabled(false);
 
             searchText = (MaterialEditText) actionBar.getCustomView().findViewById(R.id.search_contact_text);
@@ -336,8 +388,6 @@ public class GroupCreateInfActivity extends ActionBarActivity {
                 }
             });
             searchText.requestFocus();
-            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.showSoftInput(searchText, InputMethodManager.SHOW_IMPLICIT);
 
             searchButton.bringToFront();
             searchButton.setIconDrawable(getResources().getDrawable(R.drawable.ic_close_black_48dp));
@@ -354,38 +404,50 @@ public class GroupCreateInfActivity extends ActionBarActivity {
     }
 
     public void selectTypeImage(){
-        final String [] items = new String [] {"From Camera", "From SD Card"};
-        ArrayAdapter<String> adapter = new ArrayAdapter<String> (this, android.R.layout.select_dialog_item,items);
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Select Image");
-        builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                if (which==0){
-                    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                    File file = new File(Environment.getExternalStorageDirectory(), "tmp_avatar_"+String.valueOf(System.currentTimeMillis()) + ".jpg");
-                    mImageCaptureUri = Uri.fromFile(file);
-                    try{
-                        intent.putExtra(MediaStore.EXTRA_OUTPUT, mImageCaptureUri);
-                        intent.putExtra("return-data",true);
-                        startActivityForResult(intent, PICK_FROM_CAMERA);
-                    } catch(Exception e){e.printStackTrace();}
-                    dialog.cancel();
-                }
-                else{
-                    Intent intent = new Intent();
-                    intent.setType("image/*");
-                    intent.setAction(Intent.ACTION_GET_CONTENT);
-                    startActivityForResult(Intent.createChooser(intent, "Complete action using"),PICK_FROM_FILE);
-                }
-            }
-        });
-        final AlertDialog dialog = builder.create();
+        MaterialSimpleListAdapter materialAdapter = new MaterialSimpleListAdapter(this);
+        materialAdapter.add(new MaterialSimpleListItem.Builder(this)
+                .content("From Camera")
+                .icon(R.drawable.ic_photo_camera_black_48dp)
+                .build());
+        materialAdapter.add(new MaterialSimpleListItem.Builder(this)
+                .content("From SD Card")
+                .icon(R.drawable.ic_sim_card_black_48dp)
+            .build());
+
+        final MaterialDialog.Builder materialDialog = new MaterialDialog.Builder(this)
+                .title("Select Image")
+                .titleColorRes(R.color.orange_light)
+                .adapter(materialAdapter, new MaterialDialog.ListCallback() {
+                    @Override
+                    public void onSelection(MaterialDialog materialDialog, View view, int which, CharSequence charSequence) {
+                        if (which == 0) {
+                            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                            File file = new File(Environment.getExternalStorageDirectory(), "tmp_avatar_" + String.valueOf(System.currentTimeMillis()) + ".jpg");
+                            mImageCaptureUri = Uri.fromFile(file);
+                            try {
+                                intent.putExtra(MediaStore.EXTRA_OUTPUT, mImageCaptureUri);
+                                intent.putExtra("return-data", true);
+                                startActivityForResult(intent, PICK_FROM_CAMERA);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            materialDialog.cancel();
+                        } else {
+                            Intent intent = new Intent();
+                            intent.setType("image/*");
+                            intent.setAction(Intent.ACTION_GET_CONTENT);
+                            startActivityForResult(Intent.createChooser(intent, "Complete action using"), PICK_FROM_FILE);
+                            materialDialog.cancel();
+                        }
+                    }
+            });
+
         avatarGroup = (ImageButton) findViewById(R.id.imageView);
         avatarGroup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dialog.show();
+                //dialog.show();
+                materialDialog.show();
             }
         });
     }

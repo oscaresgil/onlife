@@ -95,8 +95,8 @@ public class FriendActionActivity extends ActionBarActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                actualChar = maximumChars - s.length();
-                if (actualChar < 0) {
+                actualChar = s.length();
+                if (actualChar > 30) {
                     maxCharsView.setTextColor(getResources().getColor(R.color.red));
                     maxCharsView.setText(actualChar + "/" + maximumChars);
                 } else {
@@ -178,7 +178,7 @@ public class FriendActionActivity extends ActionBarActivity {
 
     public void bloquear(View view){
         if (isNetworkAvailable()) {
-            if (actualChar >= 0) {
+            if (actualChar <= 30) {
                 try {
                     //SendNotification gcm = new SendNotification(this, messageTextView.getText().toString()+"\nFrom: "+actualUser.getName(), "5 min");
                     SendNotification gcm = new SendNotification(this, messageTextView.getText().toString(), "5 min");

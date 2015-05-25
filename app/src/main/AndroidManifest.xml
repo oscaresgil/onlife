@@ -31,7 +31,7 @@
             android:name=".MainActivity"
             android:screenOrientation="portrait"
             android:label="@string/app_name"
-            android:windowSoftInputMode="adjustPan"
+            android:windowSoftInputMode="adjustNothing"
             android:configChanges="keyboardHidden|orientation|screenSize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -102,7 +102,7 @@
             android:launchMode="standard"
             android:label="@string/new_group"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:windowSoftInputMode="adjustResize|stateHidden"/>
+            android:windowSoftInputMode="adjustNothing|stateHidden"/>
         <activity android:name=".BlockActivity.GroupActionActivity"
             android:theme="@style/Theme.Slidr.Slidable"
             android:screenOrientation="portrait"

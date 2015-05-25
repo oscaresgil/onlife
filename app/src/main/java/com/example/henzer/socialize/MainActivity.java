@@ -266,18 +266,6 @@ public class MainActivity extends Activity{
         }
     }
 
-    /*public void lock(View view){
-        if (isAdminActive)
-            devicePolicyManager.lockNow();
-        Log.d("mDPM", devicePolicyManager.toString());
-    }*/
-
-    /*@Override
-    protected  void onDestroy(){
-        super.onDestroy();
-        //LoginManager.getInstance().logOut();
-    }*/
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -300,7 +288,6 @@ public class MainActivity extends Activity{
         Log.e("Methods", "I passed onResume()");
         if(AccessToken.getCurrentAccessToken()!=null){
             gotoHome();
-            finish();
         }
     }
     class nameComparator implements Comparator<Person> {

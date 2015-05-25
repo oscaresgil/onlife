@@ -28,16 +28,12 @@
             android:layout_height="138dp"
             android:gravity="center"
             android:enabled="true"
+            android:hint="@string/name_group"
             app:met_baseColor="@color/black"
             app:met_primaryColor="@color/orange_light"
             app:met_errorColor="@color/red"
             app:met_hideUnderline="true"/>
     </LinearLayout>
-    <LinearLayout
-        android:layout_below="@id/header"
-        android:layout_width="fill_parent"
-        android:layout_height="0dp"
-        android:divider="@color/black"/>
     <com.getbase.floatingactionbutton.FloatingActionButton
         xmlns:fab="http://schemas.android.com/apk/res-auto"
         android:id="@+id/search_button"

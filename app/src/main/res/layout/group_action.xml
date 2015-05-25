@@ -31,6 +31,7 @@
             android:clickable="false">
             <TextView
                 style="@style/FriendStyle"
+                android:layout_margin="5dp"
                 android:id="@+id/maxCharactersGroup"
                 android:layout_width="-50dp"
                 android:layout_height="wrap_content"
@@ -39,11 +40,13 @@
             <com.rengwuxian.materialedittext.MaterialEditText
                 style="@style/BlockingMessage"
                 android:id="@+id/messageGroup"
+                android:layout_below="@id/maxCharactersGroup"
                 android:layout_margin="5dp"
                 android:layout_width="fill_parent"
                 android:layout_height="match_parent"
                 android:textAlignment="center"
-                android:inputType="textFilter"
+                android:inputType="textMultiLine"
+                android:imeOptions="actionDone"
                 android:hint="@string/send_a_message"
                 app:met_baseColor="@color/black"
                 app:met_primaryColor="@color/orange_light"

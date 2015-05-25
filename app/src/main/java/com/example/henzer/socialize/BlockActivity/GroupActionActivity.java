@@ -54,6 +54,7 @@ public class GroupActionActivity extends ActionBarActivity {
     private List<Person> friendsInGroup;
     private MaterialEditText messageTextView;
     private TextView maxCharsView;
+    private int minimumChars = 0;
     private int maximumChars = 30;
     private int actualChar = 0;
     private ButtonRectangle blockButton;
@@ -109,8 +110,8 @@ public class GroupActionActivity extends ActionBarActivity {
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                actualChar = maximumChars - s.length();
-                if (actualChar < 0) {
+                actualChar = s.length();
+                if (actualChar > 30) {
                     maxCharsView.setTextColor(getResources().getColor(R.color.red));
                     maxCharsView.setText(actualChar + "/" + maximumChars);
                 } else {
@@ -214,7 +215,7 @@ public class GroupActionActivity extends ActionBarActivity {
 
     public void bloquear(View view){
         if (isNetworkAvailable()) {
-            if (actualChar >= 0) {
+            if (actualChar <= 30) {
                 try {
                     SendNotification gcm = new SendNotification(this, messageTextView.getText().toString(), "5 min");
                     Log.e(TAG, "Bloquear a: " + friendsInGroup.toString());

@@ -35,6 +35,7 @@
     <string name="change_text">Change Text</string>
     <string name="change_connection">Change Connection</string>
     <string name="contacts_refreshed">Contacts Refreshed!</string>
+    <string name="name_group">Change Group Name..</string>
 
 
 </resources>

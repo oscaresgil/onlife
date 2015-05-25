@@ -32,6 +32,7 @@
             android:clickable="false">
             <TextView
                 style="@style/FriendStyle"
+                android:layout_margin="5dp"
                 android:id="@+id/maxCharactersContact"
                 android:layout_width="-50dp"
                 android:layout_height="wrap_content"
@@ -43,9 +44,11 @@
                 android:id="@+id/messageContact"
                 android:layout_margin="5dp"
                 android:layout_width="fill_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:textAlignment="center"
-                android:inputType="textFilter"
+                android:maxLines="2"
+                android:imeOptions="actionSend"
+                android:inputType="textAutoCorrect|textCapSentences|textMultiLine"
                 android:hint="@string/send_a_message"
                 app:met_baseColor="@color/black"
                 app:met_primaryColor="@color/orange_light"
