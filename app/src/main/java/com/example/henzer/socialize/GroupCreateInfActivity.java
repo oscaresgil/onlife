@@ -218,29 +218,46 @@ public class GroupCreateInfActivity extends ActionBarActivity {
 
             if (!name.equals("") && !path.equals("") && !friendsChecked.isEmpty()){
                 if (isNetworkAvailable()) {
-                    path = guardarImagen(getApplicationContext(), name, bitmap);
-                    Group newG = new Group(0, name, selected, path, limit, state);
-                    Log.e(TAG, newG.toString());
-                    AddNewGroup addNewGroup = new AddNewGroup(GroupCreateInfActivity.this);
-                    try {
-                        newG = addNewGroup.execute(newG).get();
-                        if (newG.getId() != -1) {
-                            sessionData.getGroups().add(newG);
-                            saveGroupInSession(newG);
+                    if (GroupsFragment.alreadyGroup(name)){
+                        InputMethodManager imm = (InputMethodManager) getSystemService(
+                                Context.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(nameNewGroup.getWindowToken(), 0);
+                        SnackBar.show(GroupCreateInfActivity.this, R.string.already_group, R.string.change_name, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                nameNewGroup.requestFocus();
+                                InputMethodManager imm = (InputMethodManager)getSystemService(
+                                        Context.INPUT_METHOD_SERVICE);
+                                imm.showSoftInput(nameNewGroup,0);
+                            }
+                        });
+                    }
+                    else{
+                        path = guardarImagen(getApplicationContext(), name, bitmap);
+                        Group newG = new Group(0, name, selected, path, limit, state);
 
-                            GroupsFragment.addNewGroup(newG);
-                            InputMethodManager imm = (InputMethodManager) getSystemService(
-                                    Context.INPUT_METHOD_SERVICE);
-                            imm.hideSoftInputFromWindow(nameNewGroup.getWindowToken(), 0);
-                            finish();
-                            overridePendingTransition(R.animator.push_left_inverted, R.animator.push_right_inverted);
+                        Log.e(TAG, newG.toString());
+                        AddNewGroup addNewGroup = new AddNewGroup(GroupCreateInfActivity.this);
+                        try {
+                            newG = addNewGroup.execute(newG).get();
+                            if (newG.getId() != -1) {
+                                sessionData.getGroups().add(newG);
+                                saveGroupInSession(newG);
+
+                                GroupsFragment.addNewGroup(newG);
+                                InputMethodManager imm = (InputMethodManager) getSystemService(
+                                        Context.INPUT_METHOD_SERVICE);
+                                imm.hideSoftInputFromWindow(nameNewGroup.getWindowToken(), 0);
+                                finish();
+                                overridePendingTransition(R.animator.push_left_inverted, R.animator.push_right_inverted);
+                            }
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        } catch (ExecutionException e) {
+                            e.printStackTrace();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    } catch (ExecutionException e) {
-                        e.printStackTrace();
-                    } catch (JSONException e) {
-                        e.printStackTrace();
                     }
                 }else{
                     SnackBar.show(GroupCreateInfActivity.this, R.string.no_connection, R.string.change_connection, new View.OnClickListener() {
@@ -252,6 +269,9 @@ public class GroupCreateInfActivity extends ActionBarActivity {
                 }
             }
             else{
+                InputMethodManager imm = (InputMethodManager) getSystemService(
+                        Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(nameNewGroup.getWindowToken(), 0);
                 SnackBar.show(GroupCreateInfActivity.this,"Name, Photo or Contacts not specified. Try Again");
             }
         }
@@ -264,7 +284,7 @@ public class GroupCreateInfActivity extends ActionBarActivity {
                 overridePendingTransition(R.animator.push_left_inverted, R.animator.push_right_inverted);
             }
         }
-        return super.onOptionsItemSelected(item);
+        return true;
     }
 
     public void search(View view){

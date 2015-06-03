@@ -109,9 +109,7 @@ public class MainActivity extends Activity{
                     }catch(Exception e){
                         Log.e(TAG, e.getLocalizedMessage());
                     }
-                    // https://developers.facebook.com/docs/reference/android/current/class/GraphResponse/
-                  //  progressDialog = ProgressDialog.show(MainActivity.this,"Please Wait","Loading Friends",true);
-                   // progressDialog.setCancelable(true);
+
                     Bundle params = new Bundle();
                     params.putString("fields","id,name");
                     new GraphRequest(AccessToken.getCurrentAccessToken(), "/me/friends", params, HttpMethod.GET, new GraphRequest.Callback() {

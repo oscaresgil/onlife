@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+    <TextView
+        style="@style/BlockingMessage"
+        android:id="@+id/messageOnBlock"
+        android:layout_width="fill_parent"
+        android:gravity="center"
+        android:layout_height="35dp"
+        android:layout_marginTop="20dp"/>
+
+    <com.skyfishjy.library.RippleBackground
+        android:layout_below="@id/messageOnBlock"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/blockAnimation"
+        app:rb_color="@color/orange_light"
+        app:rb_radius="32dp"
+        app:rb_rippleAmount="5"
+        app:rb_duration="3000"
+        app:rb_scale="6">
+        <ImageView
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_centerInParent="true"
+            android:id="@+id/centerImage"
+            android:src="@drawable/ic_https_black_48dp"/>
+    </com.skyfishjy.library.RippleBackground>
+
+</RelativeLayout>

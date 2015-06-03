@@ -210,6 +210,14 @@ public class GroupsFragment extends Fragment {
             e.printStackTrace();
         }
     }
+    public static boolean alreadyGroup(String name){
+        for (Group g:groups){
+            if (g.getName().equals(name)){
+                return true;
+            }
+        }
+        return false;
+    }
     public static void saveInSession(List<Group> groups) throws JSONException {
         SharedPreferences.Editor editor = preferences.edit();
         JSONObject mySession = new JSONObject(preferences.getString("session", "{}"));
