@@ -1,11 +1,13 @@
 package com.example.henzer.socialize.BlockActivity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
+import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -14,7 +16,6 @@ import android.support.v7.app.ActionBarActivity;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -23,6 +24,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.henzer.socialize.Controller.SendNotification;
+import com.example.henzer.socialize.Adapters.GPSControl;
 import com.example.henzer.socialize.Models.Person;
 import com.example.henzer.socialize.R;
 import com.gc.materialdesign.views.ButtonRectangle;
@@ -31,6 +33,8 @@ import com.r0adkll.slidr.Slidr;
 import com.r0adkll.slidr.model.SlidrConfig;
 import com.r0adkll.slidr.model.SlidrPosition;
 import com.rengwuxian.materialedittext.MaterialEditText;
+
+import net.steamcrafted.loadtoast.LoadToast;
 
 import java.io.File;
 
@@ -169,23 +173,22 @@ public class FriendActionActivity extends ActionBarActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         finish();
-        InputMethodManager imm = (InputMethodManager)getSystemService(
+        InputMethodManager imm = (InputMethodManager) getSystemService(
                 Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(messageTextView.getWindowToken(), 0);
         overridePendingTransition(R.animator.push_left_inverted, R.animator.push_right_inverted);
         return true;
     }
 
-    public void bloquear(View view){
+    public void block(View view) {
         if (isNetworkAvailable()) {
             if (actualChar <= 30) {
                 try {
-                    //SendNotification gcm = new SendNotification(this, messageTextView.getText().toString()+"\nFrom: "+actualUser.getName(), "5 min");
-                    SendNotification gcm = new SendNotification(this, messageTextView.getText().toString(), "5 min");
-                    Log.e(TAG, "Bloquear a: " + friend.toString());
-                    gcm.execute(friend);
-
+                    new GPSControl(this,true,false).execute();
+                    getIntent().putExtra("name", actualUser.getName());
+                    getIntent().putExtra("message",messageTextView.getText().toString());
                 } catch (Exception ex) {
+                    ex.printStackTrace();
                     SnackBar.show(FriendActionActivity.this, R.string.error);
                 }
             } else {
@@ -193,13 +196,13 @@ public class FriendActionActivity extends ActionBarActivity {
                     @Override
                     public void onClick(View v) {
                         messageTextView.requestFocus();
-                        InputMethodManager imm = (InputMethodManager)getSystemService(
+                        InputMethodManager imm = (InputMethodManager) getSystemService(
                                 Context.INPUT_METHOD_SERVICE);
-                        imm.showSoftInput(messageTextView,0);
+                        imm.showSoftInput(messageTextView, 0);
                     }
                 });
             }
-        }else{
+        } else {
 
             SnackBar.show(FriendActionActivity.this, R.string.no_connection, R.string.change_connection, new View.OnClickListener() {
                 @Override
@@ -208,5 +211,15 @@ public class FriendActionActivity extends ActionBarActivity {
                 }
             });
         }
+    }
+
+    public static void blockContact(Context context, Location location, LoadToast toast){
+        SnackBar.show((Activity)context, location.getLatitude() + "," + location.getLongitude());
+
+        Person blockPerson = (Person)((Activity) context).getIntent().getSerializableExtra("data");
+        String name = ((Activity)context).getIntent().getStringExtra("name");
+        String message = ((Activity)context).getIntent().getStringExtra("message");
+        SendNotification gcm = new SendNotification(context, name, message, location.getLatitude(), location.getLongitude(), toast);
+        gcm.execute(blockPerson);
     }
 }

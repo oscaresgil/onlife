@@ -10,6 +10,7 @@ import android.text.Html;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.example.henzer.socialize.Adapters.SampleFragmentPagerAdapter;
 import com.example.henzer.socialize.Models.SessionData;
 import com.facebook.AccessToken;
 import com.facebook.Profile;
@@ -43,7 +44,7 @@ public class HomeActivity extends ActionBarActivity {
         slidingTabLayout.setCustomTabColorizer(new SlidingTabLayout.TabColorizer() {
             @Override
             public int getIndicatorColor(int position) {
-                return getResources().getColor(R.color.orange_light);    //define any color in xml resources and set it here, I have used white
+                return getResources().getColor(R.color.orange_light);
             }
         });
         // Center the tabs in the layout

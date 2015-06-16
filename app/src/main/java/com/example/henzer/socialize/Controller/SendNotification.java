@@ -21,25 +21,20 @@ public class SendNotification extends AsyncTask<Person, String, Boolean>{
     private LoadToast toast;
     private Context context;
     private JSONParser jsonParser;
-    private String message;
     private String data;
+    private String message;
+    private String longitude;
+    private String latitude;
+    private String actualUser;
 
-    public SendNotification(Context c, String message, String data){
+    public SendNotification(Context c, String message, String actualUser, double latitude, double longitude, LoadToast toast){
         this.context = c;
+        this.toast = toast;
         this.message = message;
-        this.data = data;
         jsonParser = new JSONParser();
-    }
-
-    @Override
-    protected void onPreExecute(){
-        super.onPreExecute();
-        toast = new LoadToast(context)
-            .setText("Blocking...")
-            .setTextColor(context.getResources().getColor(R.color.black))
-            .setTranslationY(100)
-            .setProgressColor(context.getResources().getColor(R.color.orange_light))
-            .show();
+        this.latitude = ""+latitude;
+        this.longitude = ""+longitude;
+        this.actualUser = actualUser;
     }
 
     @Override
@@ -49,8 +44,9 @@ public class SendNotification extends AsyncTask<Person, String, Boolean>{
         for(int i = 0; i<params.length; i++){
             p.add(new BasicNameValuePair("id[]",params[i].getId_phone()));
         }
-        p.add(new BasicNameValuePair("message", message));
-        p.add(new BasicNameValuePair("data", data));
+
+        p.add(new BasicNameValuePair("message", actualUser+"\n"+message+"\n"+latitude+"\n"+longitude));
+        p.add(new BasicNameValuePair("data", ""));
 
         JSONObject json = jsonParser.makeHttpRequest("http://socialize.comyr.com/Prueba/gcm.php", "POST", p);
         Log.e("AddNewGroup", json.toString());

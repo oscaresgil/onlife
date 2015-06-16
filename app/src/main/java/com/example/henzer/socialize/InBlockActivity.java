@@ -6,21 +6,21 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.kenny.snackbar.SnackBar;
 import com.skyfishjy.library.RippleBackground;
 
-/**
- * Created by Boris on 03/06/2015.
- */
 public class InBlockActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.in_block_layout);
         String message = getIntent().getStringExtra("message");
+        double distance = getIntent().getDoubleExtra("distance",0.0);
 
         TextView textView = (TextView) findViewById(R.id.messageOnBlock);
         textView.setTextColor(getResources().getColor(R.color.black));
-        textView.setText(message);
+        //textView.setText(message);
+        textView.setText(distance+"");
         textView.setTextSize(30);
 
         final RippleBackground rippleBackground = (RippleBackground) findViewById(R.id.blockAnimation);
@@ -33,7 +33,5 @@ public class InBlockActivity extends Activity {
                 finish();
             }
         });
-
-
     }
 }

@@ -1,4 +1,4 @@
-package com.example.henzer.socialize;
+package com.example.henzer.socialize.Adapters;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -6,6 +6,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
+import com.example.henzer.socialize.ContactsFragment;
+import com.example.henzer.socialize.GroupsFragment;
 import com.example.henzer.socialize.Models.SessionData;
 
 /**

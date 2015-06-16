@@ -1,11 +1,10 @@
 package com.example.henzer.socialize.BlockActivity;
 
+import android.app.Activity;
 import android.content.Context;
-import android.content.ContextWrapper;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
+import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -15,7 +14,6 @@ import android.support.v7.app.ActionBarActivity;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -27,6 +25,7 @@ import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.henzer.socialize.Controller.SendNotification;
+import com.example.henzer.socialize.Adapters.GPSControl;
 import com.example.henzer.socialize.GroupInformationActivity;
 import com.example.henzer.socialize.GroupsFragment;
 import com.example.henzer.socialize.Models.Group;
@@ -39,9 +38,12 @@ import com.r0adkll.slidr.model.SlidrConfig;
 import com.r0adkll.slidr.model.SlidrPosition;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
-import java.io.File;
+import net.steamcrafted.loadtoast.LoadToast;
+
 import java.io.Serializable;
 import java.util.List;
+
+import static com.example.henzer.socialize.Adapters.StaticMethods.cargarImagen;
 
 /**
  * Created by Boris on 02/05/2015.
@@ -50,11 +52,11 @@ public class GroupActionActivity extends ActionBarActivity {
     public static final String TAG = "GroupActionActivity";
     private String nameGroup;
     private ImageView avatar;
+    private Person actualUser;
     private Group group;
     private List<Person> friendsInGroup;
     private MaterialEditText messageTextView;
     private TextView maxCharsView;
-    private int minimumChars = 0;
     private int maximumChars = 30;
     private int actualChar = 0;
     private ButtonRectangle blockButton;
@@ -81,6 +83,7 @@ public class GroupActionActivity extends ActionBarActivity {
         Intent i = getIntent();
         nameGroup = i.getStringExtra("name");
         group = (Group) i.getSerializableExtra("data");
+        actualUser = (Person) i.getSerializableExtra("user");
 
         avatar = (ImageView) findViewById(R.id.avatar_group);
         avatar.setImageBitmap(cargarImagen(this, group.getName()));
@@ -217,9 +220,16 @@ public class GroupActionActivity extends ActionBarActivity {
         if (isNetworkAvailable()) {
             if (actualChar <= 30) {
                 try {
-                    SendNotification gcm = new SendNotification(this, messageTextView.getText().toString(), "5 min");
+                    //FALTAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+
+                    new GPSControl(this,false,true).execute();
+                    getIntent().putExtra("name", actualUser.getName());
+                    getIntent().putExtra("message",messageTextView.getText().toString());
+                    getIntent().putExtra("friendsgroup", (Serializable) friendsInGroup);
+
+                    /*SendNotification gcm = new SendNotification(this, messageTextView.getText().toString(),actualUser.getName(),0.0,0.0,null);
                     Log.e(TAG, "Bloquear a: " + friendsInGroup.toString());
-                    gcm.execute(friendsInGroup.toArray(new Person[friendsInGroup.size()]));
+                    gcm.execute(friendsInGroup.toArray(new Person[friendsInGroup.size()]));*/
                 } catch (Exception ex) {
                     SnackBar.show(GroupActionActivity.this, R.string.error);
                 }
@@ -243,17 +253,14 @@ public class GroupActionActivity extends ActionBarActivity {
             });
         }
     }
-    private Bitmap cargarImagen(Context context, String name){
-        ContextWrapper cw = new ContextWrapper(context);
-        File dirImages = cw.getDir("Profiles",Context.MODE_APPEND);
-        File myPath = new File(dirImages, name+".png");
-        Bitmap b = null;
-        try {
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-            b = BitmapFactory.decodeFile(myPath.getAbsolutePath(), options);
-        }catch (Exception e){e.printStackTrace();}
-        return b;
-    }
 
+    public static void blockGroup(Context context, Location location, LoadToast toast){
+        SnackBar.show((Activity)context, location.getLatitude() + "," + location.getLongitude());
+
+        List<Person> friendsInGroup = (List<Person>) ((Activity) context).getIntent().getSerializableExtra("friendsgroup");
+        String name = ((Activity)context).getIntent().getStringExtra("name");
+        String message = ((Activity)context).getIntent().getStringExtra("message");
+        SendNotification gcm = new SendNotification(context, name, message, location.getLatitude(), location.getLongitude(), toast);
+        gcm.execute(friendsInGroup.toArray(new Person[friendsInGroup.size()]));
+    }
 }

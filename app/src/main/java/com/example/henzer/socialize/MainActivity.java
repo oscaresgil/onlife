@@ -5,23 +5,17 @@ import android.app.ProgressDialog;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 
-import com.afollestad.materialdialogs.MaterialDialog;
+import com.example.henzer.socialize.Adapters.DownloadImageTask;
 import com.example.henzer.socialize.BlockActivity.DeviceAdmin;
 import com.example.henzer.socialize.Controller.LoadAllInformation;
 import com.example.henzer.socialize.GCMClient.GCMHelper;
@@ -29,7 +23,6 @@ import com.example.henzer.socialize.Models.Group;
 import com.example.henzer.socialize.Models.Person;
 import com.example.henzer.socialize.Models.SessionData;
 import com.facebook.AccessToken;
-import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -43,21 +36,11 @@ import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.kenny.snackbar.SnackBar;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.entity.BufferedHttpEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -65,6 +48,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+
+import static com.example.henzer.socialize.Adapters.StaticMethods.eliminarTilde;
+import static com.example.henzer.socialize.Adapters.StaticMethods.isNetworkAvailable;
 
 public class MainActivity extends Activity{
     // Este es el numero de proyecto para el Google Cloud Messaging (GCM). Este nunca cambia y es estatico.
@@ -77,15 +63,10 @@ public class MainActivity extends Activity{
 
     public static final String MyPREFERENCES = "MyPrefs";
     public static final String name = "nameKey";
-    public static final String pass = "passwordKey";
     private SharedPreferences sharedpreferences;
-    private EditText username, password;
 
     private Button loginFB;
     private CallbackManager callbackManager;
-    private ProfileTracker profileTracker;
-    private AccessTokenTracker tokenTracker;
-    private ProgressDialog pDialog;
 
     ComponentName myDeviceAdmin;
     DevicePolicyManager devicePolicyManager;
@@ -128,21 +109,24 @@ public class MainActivity extends Activity{
 
                                     // http://stackoverflow.com/questions/5841710/get-user-image-from-facebook-graph-api
                                     // http://stackoverflow.com/questions/23559736/android-skimagedecoderfactory-returned-null-error
-                                    //String path = "http://graph.facebook.com/"+id+"/picture?type=large";
                                     String path = "https://graph.facebook.com/" + id + "/picture?width=900&height=900";
-                                    //Bitmap img = null;
                                     URL pathURL = new URL(path);
-                                    //guardarImagen(MainActivity.this, id, new DownloadImageTask().execute(id).get());
 
                                     Log.i("Friend "+i,id+" = "+eliminarTilde(name));
                                     Log.i("Friend URL "+i,path.toString());
+
                                     Person contact = new Person(id, null, eliminarTilde(name), pathURL.toString(), "A");
                                     friends.add(contact);
                                 }
 
-                                new DownloadImageTask().execute(ids);
+                                new DownloadImageTask(MainActivity.this,null,true,null).execute(ids);
 
-                                Collections.sort(friends, new nameComparator());
+                                Collections.sort(friends, new Comparator<Person>() {
+                                    @Override
+                                    public int compare(Person person1, Person person2) {
+                                        return person1.getName().compareTo(person2.getName());
+                                    }
+                                });
                                 Log.i("ACTUAL USER",userLogin.toString());
                                 Log.i("ACTUAL FRIENDS", friends.toString());
                                 GetGCM();
@@ -198,7 +182,7 @@ public class MainActivity extends Activity{
         loginFB = (Button) findViewById(R.id.loginFB);
 
         callbackManager = CallbackManager.Factory.create();
-        if (isNetworkAvailable()) {
+        if (isNetworkAvailable(MainActivity.this)) {
             LoginManager.getInstance().registerCallback(callbackManager, facebookCallback);
         }else{
             SnackBar.show(MainActivity.this, R.string.no_connection, R.string.change_connection, new View.OnClickListener() {
@@ -210,30 +194,8 @@ public class MainActivity extends Activity{
         }
     }
 
-    public String eliminarTilde(String input) {
-        String output = input;
-        for (int i=0; i<output.length(); i++){
-            if ((int)output.charAt(i) == 237){
-                output = output.replace(output.charAt(i),'i');
-            }
-            else if((int)output.charAt(i) == 243){
-                output = output.replace(output.charAt(i),'o');
-            }
-            else if((int)output.charAt(i) == 250){
-                output = output.replace(output.charAt(i),'u');
-            }
-            else if((int)output.charAt(i) == 225){
-                output = output.replace(output.charAt(i),'a');
-            }
-            else if((int)output.charAt(i) == 233){
-                output = output.replace(output.charAt(i),'e');
-            }
-        }
-        return output;
-    }
-
     public void loginWithFB(View view){
-        if (isNetworkAvailable()) {
+        if (isNetworkAvailable(MainActivity.this)) {
             friends = new ArrayList<>();
             if (AccessToken.getCurrentAccessToken() == null) {
                 try {
@@ -287,27 +249,6 @@ public class MainActivity extends Activity{
         if(AccessToken.getCurrentAccessToken()!=null){
             gotoHome();
         }
-    }
-    class nameComparator implements Comparator<Person> {
-        @Override
-        public int compare(Person person1, Person person2) {
-            return person1.getName().compareTo(person2.getName());
-        }
-    }
-
-    private String guardarImagen(Context context, String name, Bitmap image){
-        ContextWrapper cw = new ContextWrapper(context);
-        File dirImages = cw.getDir("Profiles", Context.MODE_PRIVATE);
-        File myPath = new File(dirImages, name+".png");
-
-        FileOutputStream fos = null;
-        try{
-            fos = new FileOutputStream(myPath);
-            image.compress(Bitmap.CompressFormat.PNG, 90, fos);
-            fos.flush();
-        }catch (Exception e){e.printStackTrace();}
-        Log.i("IMAGE SAVED","PATH: "+myPath);
-        return myPath.getAbsolutePath();
     }
 
     private void GetGCM() {
@@ -365,62 +306,6 @@ public class MainActivity extends Activity{
         }.execute();
     }
 
-    private class DownloadImageTask extends AsyncTask<String, Void, Void> {
-        MaterialDialog materialDialog;
-
-        @Override
-        protected void onPreExecute()
-        {
-            materialDialog = new MaterialDialog.Builder(MainActivity.this)
-                .title("Loading Friends..")
-                .content("Please wait..")
-                .progress(true,0)
-                .widgetColorRes(R.color.orange_light)
-                .show();
-        }
-
-        protected Void doInBackground(String... urls) {
-            try {
-                for (String userID: urls){
-                    Log.i("Actual BackGround User",userID);
-                    String urlStr = "https://graph.facebook.com/" + userID + "/picture?width=700&height=700";
-
-                    HttpClient client = new DefaultHttpClient();
-                    HttpGet request = new HttpGet(urlStr);
-                    HttpResponse response;
-                    try {
-                        response = (HttpResponse)client.execute(request);
-                        HttpEntity entity = response.getEntity();
-                        BufferedHttpEntity bufferedEntity = new BufferedHttpEntity(entity);
-                        InputStream inputStream = bufferedEntity.getContent();
-                        guardarImagen(MainActivity.this,userID,BitmapFactory.decodeStream(inputStream));
-                    } catch (ClientProtocolException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }
-                }
-            }catch(Exception e){e.printStackTrace();}
-            return null;
-        }
-
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            if (materialDialog.isShowing()){
-                materialDialog.dismiss();
-            }
-        }
-    }
-
-    private boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
-    }
 
     private void gotoHome(){
         SharedPreferences prefe=getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);

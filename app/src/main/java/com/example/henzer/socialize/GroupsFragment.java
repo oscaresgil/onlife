@@ -133,6 +133,7 @@ public class GroupsFragment extends Fragment {
                 Intent intent = new Intent(getActivity(), GroupActionActivity.class);
                 intent.putExtra("data", (Serializable) group);
                 intent.putExtra("name", group.getName());
+                intent.putExtra("user", sessionData.getUser());
                 startActivity(intent);
                 getActivity().overridePendingTransition(R.animator.push_right, R.animator.push_left);
             }

@@ -62,7 +62,7 @@
             android:id="@+id/blockButtonContact"
             android:layout_gravity="center_horizontal"
             android:text="Block"
-            android:onClick="bloquear"
+            android:onClick="block"
             android:background="@color/orange_light"
             android:layout_marginBottom="20dp"
             android:textColor="@color/black"

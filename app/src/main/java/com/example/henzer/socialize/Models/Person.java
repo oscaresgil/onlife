@@ -13,6 +13,7 @@ public class Person implements Serializable{
     private String state;
     private int background;
     private boolean selected;
+    private boolean deleted=true;
 
     public Person() {
     }
@@ -79,6 +80,14 @@ public class Person implements Serializable{
 
     public void setSelected(boolean selected) {
         this.selected = selected;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 
     @Override

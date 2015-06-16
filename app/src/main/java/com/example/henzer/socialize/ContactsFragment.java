@@ -29,9 +29,15 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.example.henzer.socialize.Adapters.ContactsAdapter;
+import com.example.henzer.socialize.Adapters.DownloadImageTask;
+import com.example.henzer.socialize.Adapters.FacebookFriendRequest;
 import com.example.henzer.socialize.BlockActivity.FriendActionActivity;
 import com.example.henzer.socialize.Models.Person;
 import com.example.henzer.socialize.Models.SessionData;
+import com.facebook.AccessToken;
+import com.facebook.GraphRequest;
+import com.facebook.HttpMethod;
 import com.kenny.snackbar.SnackBar;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.yalantis.flipviewpager.adapter.BaseFlipAdapter;
@@ -52,6 +58,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.example.henzer.socialize.Adapters.StaticMethods.guardarImagen;
+
 /**
  * Created by hp1 on 21-01-2015.
  */
@@ -67,7 +75,6 @@ public class ContactsFragment extends ListFragment {
     private List<Person> friendsFiltred;
     private boolean isSearchOpened = false;
     private String mSearchQuery;
-
 
     public static final String TAG = "ContactsFragment";
     public static ContactsFragment newInstance(Bundle arguments){
@@ -94,6 +101,7 @@ public class ContactsFragment extends ListFragment {
 
         adapter =  new ContactsAdapter(getActivity(), friendsFiltred, settings);
         setListAdapter(adapter);
+
         return v;
     }
 
@@ -124,6 +132,7 @@ public class ContactsFragment extends ListFragment {
                 refreshContact();
             }
         });
+
     }
 
     @Override
@@ -236,7 +245,12 @@ public class ContactsFragment extends ListFragment {
             for (int i=0; i<friends.size(); i++){
                 ids[i] = friends.get(i).getId();
             }
-            new DownloadImageTask().execute(ids);
+            new DownloadImageTask(getActivity(),mSwipeRefreshLayout,false,adapter).execute(ids);
+            /*FacebookFriendRequest fbRequest = new FacebookFriendRequest(getActivity(),actualUser,friends,adapter);
+            Bundle params = new Bundle();
+            params.putString("fields","id,name");
+            new GraphRequest(AccessToken.getCurrentAccessToken(), "/me/friends", params, HttpMethod.GET, fbRequest).executeAsync();
+            adapter.notifyDataSetChanged();*/
         }else{
             mSwipeRefreshLayout.setRefreshing(false);
             SnackBar.show(getActivity(), R.string.no_connection, R.string.change_connection, new View.OnClickListener() {
@@ -263,123 +277,5 @@ public class ContactsFragment extends ListFragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         this.optionsMenu = menu;
         //super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    private String guardarImagen(Context context, String name, Bitmap image){
-        ContextWrapper cw = new ContextWrapper(context);
-        File dirImages = cw.getDir("Profiles",Context.MODE_PRIVATE);
-        File myPath = new File(dirImages, name+".png");
-
-        FileOutputStream fos = null;
-        try{
-            fos = new FileOutputStream(myPath);
-            image.compress(Bitmap.CompressFormat.PNG, 90, fos);
-            fos.flush();
-        }catch (Exception e){e.printStackTrace();}
-        Log.i("IMAGE SAVED","PATH: "+myPath);
-        return myPath.getAbsolutePath();
-    }
-
-    private Bitmap cargarImagen(Context context, String name){
-        ContextWrapper cw = new ContextWrapper(context);
-        File dirImages = cw.getDir("Profiles",Context.MODE_APPEND);
-        File myPath = new File(dirImages, name+".png");
-        Bitmap b = null;
-        try {
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-            b = BitmapFactory.decodeFile(myPath.getAbsolutePath(), options);
-        }catch (Exception e){e.printStackTrace();}
-        Log.i("IMAGE LOADED", "PATH: " + myPath);
-        return b;
-    }
-
-    private class DownloadImageTask extends AsyncTask<String, Void, Void> {
-
-        @Override
-        protected void onPreExecute() {
-            mSwipeRefreshLayout.setRefreshing(true);
-        }
-
-        protected Void doInBackground(String... urls) {
-            try {
-                for (String userID: urls){
-                    Log.i("Actual BackGround User",userID);
-                    String urlStr = "https://graph.facebook.com/" + userID + "/picture?width=700&height=700";
-
-                    HttpClient client = new DefaultHttpClient();
-                    HttpGet request = new HttpGet(urlStr);
-                    HttpResponse response;
-                    try {
-                        response = (HttpResponse)client.execute(request);
-                        HttpEntity entity = response.getEntity();
-                        BufferedHttpEntity bufferedEntity = new BufferedHttpEntity(entity);
-                        InputStream inputStream = bufferedEntity.getContent();
-                        guardarImagen(getActivity(),userID,BitmapFactory.decodeStream(inputStream));
-                    } catch (ClientProtocolException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }
-                }
-            }catch(Exception e){e.printStackTrace();}
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            mSwipeRefreshLayout.setRefreshing(false);
-            adapter.notifyDataSetChanged();
-            SnackBar.show(getActivity(), R.string.contacts_refreshed);
-        }
-    }
-
-    class ContactsAdapter extends BaseFlipAdapter<Person> {
-        private final int PAGES = 3;
-        private Context context;
-
-        public ContactsAdapter(Context context, List<Person> items, FlipSettings settings) {
-            super(context, items, settings);
-            this.context = context;
-        }
-
-        @Override
-        public View getPage(int i, View view, ViewGroup viewGroup, Person userData, Person userData2) {
-            final ContactsHolder holder;
-            if (view == null){
-                holder = new ContactsHolder();
-                view = getActivity().getLayoutInflater().inflate(R.layout.contacts, viewGroup, false);
-
-                holder.leftAvatar = (ImageView) view.findViewById(R.id.first_image);
-                holder.leftName = (TextView) view.findViewById(R.id.first_name);
-                holder.rightAvatar = (ImageView) view.findViewById(R.id.second_image);
-                holder.rightName = (TextView) view.findViewById(R.id.second_name);
-                view.setTag(holder);
-            }
-            else{
-                holder = (ContactsHolder) view.getTag();
-            }
-            holder.leftAvatar.setImageBitmap(cargarImagen(getActivity(), userData.getId()));
-            holder.leftName.setText(userData.getName());
-            if (userData2 !=null){
-                holder.rightAvatar.setImageBitmap(cargarImagen(getActivity(), userData2.getId()));
-                holder.rightName.setText(userData2.getName());
-            }
-            return view;
-        }
-
-        @Override
-        public int getPagesCount() {
-            return PAGES;
-        }
-    }
-
-    class ContactsHolder{
-        ImageView leftAvatar;
-        ImageView rightAvatar;
-        TextView leftName;
-        TextView rightName;
     }
 }

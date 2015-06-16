@@ -21,7 +21,7 @@ android {
 
 repositories {
     mavenCentral()
-    maven { url 'https://dl.bintray.com/kennyc1012/maven' }
+    maven { url 'https://dl.bintray.com/kennyc1012/maven'}
 }
 
 dependencies {
@@ -42,3 +42,4 @@ dependencies {
     compile 'com.kennyc:snackbar:2.5'
     compile 'com.skyfishjy.ripplebackground:library:1.0.1'
 }
+
