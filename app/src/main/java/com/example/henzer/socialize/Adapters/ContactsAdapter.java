@@ -14,7 +14,7 @@ import com.yalantis.flipviewpager.utils.FlipSettings;
 
 import java.util.List;
 
-import static com.example.henzer.socialize.Adapters.StaticMethods.cargarImagen;
+import static com.example.henzer.socialize.Adapters.StaticMethods.loadImage;
 
 public class ContactsAdapter extends BaseFlipAdapter<Person> {
     private final int PAGES = 3;
@@ -41,10 +41,10 @@ public class ContactsAdapter extends BaseFlipAdapter<Person> {
         else{
             holder = (ContactsHolder) view.getTag();
         }
-        holder.leftAvatar.setImageBitmap(cargarImagen(context, userData.getId()));
+        holder.leftAvatar.setImageBitmap(loadImage(context, userData.getId()));
         holder.leftName.setText(userData.getName());
         if (userData2 !=null){
-            holder.rightAvatar.setImageBitmap(cargarImagen(context, userData2.getId()));
+            holder.rightAvatar.setImageBitmap(loadImage(context, userData2.getId()));
             holder.rightName.setText(userData2.getName());
         }
         else{

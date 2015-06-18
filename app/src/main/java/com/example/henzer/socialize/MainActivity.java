@@ -49,7 +49,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-import static com.example.henzer.socialize.Adapters.StaticMethods.eliminarTilde;
+import static com.example.henzer.socialize.Adapters.StaticMethods.deleteAccent;
 import static com.example.henzer.socialize.Adapters.StaticMethods.isNetworkAvailable;
 
 public class MainActivity extends Activity{
@@ -112,10 +112,10 @@ public class MainActivity extends Activity{
                                     String path = "https://graph.facebook.com/" + id + "/picture?width=900&height=900";
                                     URL pathURL = new URL(path);
 
-                                    Log.i("Friend "+i,id+" = "+eliminarTilde(name));
+                                    Log.i("Friend "+i,id+" = "+ deleteAccent(name));
                                     Log.i("Friend URL "+i,path.toString());
 
-                                    Person contact = new Person(id, null, eliminarTilde(name), pathURL.toString(), "A");
+                                    Person contact = new Person(id, null, deleteAccent(name), pathURL.toString(), "A");
                                     friends.add(contact);
                                 }
 
@@ -319,7 +319,7 @@ public class MainActivity extends Activity{
             for(int i = 0; i<fr.length(); i++){
                 JSONObject f = fr.getJSONObject(i);
                 System.out.println(f.getString("name"));
-                friend = new Person(f.getString("id"), f.getString("id_phone"), eliminarTilde(f.getString("name")), f.getString("photo"), f.getString("state"));
+                friend = new Person(f.getString("id"), f.getString("id_phone"), deleteAccent(f.getString("name")), f.getString("photo"), f.getString("state"));
                 Log.i("FRIEND AFTER CLOSING",friend.toString());
                 friends.add(friend);
             }
@@ -340,6 +340,7 @@ public class MainActivity extends Activity{
             }
             SessionData s = new SessionData(userLogin,friends,groups);
             Intent i = new Intent(MainActivity.this,HomeActivity.class);
+            //Intent i = new Intent(MainActivity.this,ChooseFriendActivity.class);
             Log.i("DATA",s.toString());
             i.putExtra("data",s);
             startActivity(i);

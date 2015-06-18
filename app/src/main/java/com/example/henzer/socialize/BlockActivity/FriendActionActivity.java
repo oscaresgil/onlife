@@ -2,14 +2,9 @@ package com.example.henzer.socialize.BlockActivity;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.ContextWrapper;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v7.app.ActionBarActivity;
@@ -20,14 +15,14 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.LinearLayout;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.example.henzer.socialize.Controller.SendNotification;
 import com.example.henzer.socialize.Adapters.GPSControl;
+import com.example.henzer.socialize.Controller.SendNotification;
 import com.example.henzer.socialize.Models.Person;
 import com.example.henzer.socialize.R;
-import com.gc.materialdesign.views.ButtonRectangle;
 import com.kenny.snackbar.SnackBar;
 import com.r0adkll.slidr.Slidr;
 import com.r0adkll.slidr.model.SlidrConfig;
@@ -36,9 +31,8 @@ import com.rengwuxian.materialedittext.MaterialEditText;
 
 import net.steamcrafted.loadtoast.LoadToast;
 
-import java.io.File;
-
-import de.hdodenhof.circleimageview.CircleImageView;
+import static com.example.henzer.socialize.Adapters.StaticMethods.isNetworkAvailable;
+import static com.example.henzer.socialize.Adapters.StaticMethods.loadImage;
 
 /**
  * Created by Boris on 01/05/2015.
@@ -51,34 +45,38 @@ public class FriendActionActivity extends ActionBarActivity {
     private TextView maxCharsView;
     private int maximumChars = 30;
     private int actualChar = 0;
-    private ButtonRectangle blockButton;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        Intent i = getIntent();
+        friend = (Person)i.getSerializableExtra("data");
+        actualUser = (Person) i.getSerializableExtra("actualuser");
+
         SlidrConfig config = new SlidrConfig.Builder()
                 .primaryColor(getResources().getColor(R.color.orange))
                 .secondaryColor(getResources().getColor(R.color.orange_light))
                 .position(SlidrPosition.LEFT)
-                .sensitivity(1f)
+                .sensitivity(2f)
                 .build();
 
         Slidr.attach(this, config);
 
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.orange_light)));
         actionBar.setHomeAsUpIndicator(R.drawable.ic_arrow_back_black_48dp);
+        actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.orange_light)));
+        actionBar.setTitle((Html.fromHtml("<b><font color=\""+getResources().getColor(R.color.black)+"\">" + friend.getName()+ "</font></b>")));
+
         setContentView(R.layout.contact_action);
 
-        Intent i = getIntent();
-        friend = (Person)i.getSerializableExtra("data");
-        actualUser = (Person) i.getSerializableExtra("actualuser");
+        ImageView picture = (ImageView) findViewById(R.id.PictureContact);
+        picture.setImageBitmap(loadImage(this, friend.getId()));
+        picture.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
         maxCharsView = (TextView) findViewById(R.id.maxCharactersContact);
-
-        blockButton = (ButtonRectangle) findViewById(R.id.blockButtonContact);
         messageTextView = (MaterialEditText) findViewById(R.id.messageContact);
         messageTextView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -113,15 +111,12 @@ public class FriendActionActivity extends ActionBarActivity {
             public void afterTextChanged(Editable s) {
             }
         });
-        actionBar.setTitle((Html.fromHtml("<b><font color=\"#000000\">" + friend.getName() + "</font></b>")));
-        CircleImageView imageView = (CircleImageView) findViewById(R.id.avatar);
-        imageView.setImageBitmap(cargarImagen(this,friend.getId()+""));
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        LinearLayout linearLayout = (LinearLayout) findViewById(R.id.layout_contact);
+        RelativeLayout linearLayout = (RelativeLayout) findViewById(R.id.layout_contact);
         linearLayout.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -150,26 +145,6 @@ public class FriendActionActivity extends ActionBarActivity {
         overridePendingTransition(R.animator.push_left_inverted, R.animator.push_right_inverted);
     }
 
-    private boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
-    }
-
-    private Bitmap cargarImagen(Context context, String name){
-        ContextWrapper cw = new ContextWrapper(context);
-        File dirImages = cw.getDir("Profiles",Context.MODE_APPEND);
-        File myPath = new File(dirImages, name+".png");
-        Bitmap b = null;
-        try {
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-            b = BitmapFactory.decodeFile(myPath.getAbsolutePath(), options);
-        }catch (Exception e){e.printStackTrace();}
-        return b;
-    }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         finish();
@@ -181,7 +156,7 @@ public class FriendActionActivity extends ActionBarActivity {
     }
 
     public void block(View view) {
-        if (isNetworkAvailable()) {
+        if (isNetworkAvailable(this)) {
             if (actualChar <= 30) {
                 try {
                     new GPSControl(this,true,false).execute();
@@ -219,7 +194,9 @@ public class FriendActionActivity extends ActionBarActivity {
         Person blockPerson = (Person)((Activity) context).getIntent().getSerializableExtra("data");
         String name = ((Activity)context).getIntent().getStringExtra("name");
         String message = ((Activity)context).getIntent().getStringExtra("message");
-        SendNotification gcm = new SendNotification(context, name, message, location.getLatitude(), location.getLongitude(), toast);
+        //String image = ((Activity)context).getIntent().getStringExtra("imagetosend");        Log.e("Image",image);
+        //SendNotification gcm = new SendNotification(context, name, message, location.getLatitude(), location.getLongitude(),image, toast);
+        SendNotification gcm = new SendNotification(context, name, message, location.getLatitude(), location.getLongitude(),toast);
         gcm.execute(blockPerson);
     }
 }

@@ -25,7 +25,7 @@ import java.util.List;
  */
 public class StaticMethods {
 
-    public static Bitmap cargarImagen(Context context, String name){
+    public static Bitmap loadImage(Context context, String name){
         ContextWrapper cw = new ContextWrapper(context);
         File dirImages = cw.getDir("Profiles",Context.MODE_APPEND);
         File myPath = new File(dirImages, name+".png");
@@ -39,7 +39,7 @@ public class StaticMethods {
         return b;
     }
 
-    public static String guardarImagen(Context context, String name, Bitmap image){
+    public static String saveImage(Context context, String name, Bitmap image){
         ContextWrapper cw = new ContextWrapper(context);
         File dirImages = cw.getDir("Profiles",Context.MODE_PRIVATE);
         File myPath = new File(dirImages, name+".png");
@@ -60,7 +60,7 @@ public class StaticMethods {
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
-    public static String eliminarTilde(String input) {
+    public static String deleteAccent(String input) {
         String output = input;
         for (int i=0; i<output.length(); i++){
             if ((int)output.charAt(i) == 237){
@@ -88,8 +88,7 @@ public class StaticMethods {
         context.sendBroadcast(intent);
 
         String provider = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
-        if (! provider.contains("gps"))
-        { //if gps is disabled
+        if (! provider.contains("gps")) { //if gps is disabled
             final Intent poke = new Intent();
             poke.setClassName("com.android.settings", "com.android.settings.widget.SettingsAppWidgetProvider");
             poke.addCategory(Intent.CATEGORY_ALTERNATIVE);

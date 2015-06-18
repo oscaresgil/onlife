@@ -41,5 +41,6 @@ dependencies {
     compile 'net.steamcrafted:load-toast:1.0.6'
     compile 'com.kennyc:snackbar:2.5'
     compile 'com.skyfishjy.ripplebackground:library:1.0.1'
+    compile 'com.jpardogo.listbuddies:library:1.1.1'
 }
 

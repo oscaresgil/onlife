@@ -70,6 +70,10 @@ public class GPSControl extends AsyncTask<Void,Void,Void> implements LocationLis
     protected void onPostExecute(Void loc) {
         super.onPostExecute(loc);
 
+        if (location==null){
+            location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+        }
+
         turnGPSOff(context);
         if (blockFriend){
             FriendActionActivity.blockContact(context,location,toast);

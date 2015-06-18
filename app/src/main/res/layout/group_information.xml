@@ -11,11 +11,19 @@
         android:textStyle="bold" />
 
     <ListView
-        android:id="@+id/friendInGroupList"
+        android:id="@+id/friendInGroupListSimple"
         android:layout_width="match_parent"
         android:layout_marginRight="20dp"
         android:layout_height="match_parent"
-        android:layout_marginLeft="20dp">
+        android:layout_marginLeft="20dp"
+        android:visibility="gone">
     </ListView>
+
+    <com.jpardogo.listbuddies.lib.views.ListBuddiesLayout
+        xmlns:listbuddies="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/friendInGroupList"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"/>
 
 </LinearLayout>

@@ -4,15 +4,21 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <TableRow>
-        <ImageView
-            android:id="@+id/avatar_friend_in_group"
-            android:layout_height="50dp"
-            android:layout_width="50dp"/>
-        <TextView
-            style="@style/AppTheme"
-            android:id="@+id/name_group"
-            android:gravity="center"
-            android:layout_width="wrap_content"
-            android:layout_height="50dp"/>
+        <RelativeLayout>
+            <ImageView
+                android:id="@+id/avatar_friend_in_group"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:scaleType="centerCrop"/>
+            <!--TextView
+                style="@style/AppTheme"
+                android:layout_margin="10dp"
+                android:id="@+id/name_group"
+                android:gravity="center"
+                android:layout_alignParentBottom="true"
+                android:layout_centerInParent="true"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"/-->
+        </RelativeLayout>
     </TableRow>
 </TableLayout>

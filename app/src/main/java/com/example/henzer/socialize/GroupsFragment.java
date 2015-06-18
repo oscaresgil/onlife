@@ -191,7 +191,10 @@ public class GroupsFragment extends Fragment {
             View rowView = inflater.inflate(R.layout.groups, null, true);
             TextView text = (TextView) rowView.findViewById(R.id.name_group);
             ImageView image = (ImageView) rowView.findViewById(R.id.image_group);
-            image.setImageBitmap(cargarImagen(getContext(),objects.get(position).getName()));
+            Bitmap b = cargarImagen(getContext(),objects.get(position).getName());
+            b = Bitmap.createBitmap(b,(b.getWidth()/2)-150,(b.getHeight()/2)-150,300,300);
+            image.setImageBitmap(b);
+            image.setScaleType(ImageView.ScaleType.CENTER_CROP);
             text.setText(objects.get(position).getName());
             return rowView;
         }

@@ -21,6 +21,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -43,7 +44,7 @@ import net.steamcrafted.loadtoast.LoadToast;
 import java.io.Serializable;
 import java.util.List;
 
-import static com.example.henzer.socialize.Adapters.StaticMethods.cargarImagen;
+import static com.example.henzer.socialize.Adapters.StaticMethods.loadImage;
 
 /**
  * Created by Boris on 02/05/2015.
@@ -86,7 +87,8 @@ public class GroupActionActivity extends ActionBarActivity {
         actualUser = (Person) i.getSerializableExtra("user");
 
         avatar = (ImageView) findViewById(R.id.avatar_group);
-        avatar.setImageBitmap(cargarImagen(this, group.getName()));
+        avatar.setImageBitmap(loadImage(this, group.getName()));
+        avatar.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
         friendsInGroup = group.getFriendsInGroup();
         actionBar.setTitle((Html.fromHtml("<b><font color=\"#000000\">" + nameGroup + "</font></b>")));
@@ -140,7 +142,7 @@ public class GroupActionActivity extends ActionBarActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        LinearLayout linearLayout = (LinearLayout) findViewById(R.id.layout_groups);
+        RelativeLayout linearLayout = (RelativeLayout) findViewById(R.id.layout_groups);
         linearLayout.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -216,7 +218,7 @@ public class GroupActionActivity extends ActionBarActivity {
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
-    public void bloquear(View view){
+    public void block(View view){
         if (isNetworkAvailable()) {
             if (actualChar <= 30) {
                 try {

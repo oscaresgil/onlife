@@ -63,6 +63,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import static com.example.henzer.socialize.Adapters.StaticMethods.isNetworkAvailable;
+import static com.example.henzer.socialize.Adapters.StaticMethods.loadImage;
+import static com.example.henzer.socialize.Adapters.StaticMethods.saveImage;
+
 /**
  * Created by Boris on 02/05/2015.
  */
@@ -97,7 +101,7 @@ public class GroupCreateInfActivity extends ActionBarActivity {
                 .primaryColor(getResources().getColor(R.color.orange))
                 .secondaryColor(getResources().getColor(R.color.orange_light))
                 .position(SlidrPosition.LEFT)
-                .sensitivity(1f)
+                .sensitivity(5f)
                 .build();
 
         Slidr.attach(this, config);
@@ -217,7 +221,7 @@ public class GroupCreateInfActivity extends ActionBarActivity {
             String state = "A";
 
             if (!name.equals("") && !path.equals("") && !friendsChecked.isEmpty()){
-                if (isNetworkAvailable()) {
+                if (isNetworkAvailable(this)) {
                     if (GroupsFragment.alreadyGroup(name)){
                         InputMethodManager imm = (InputMethodManager) getSystemService(
                                 Context.INPUT_METHOD_SERVICE);
@@ -233,7 +237,7 @@ public class GroupCreateInfActivity extends ActionBarActivity {
                         });
                     }
                     else{
-                        path = guardarImagen(getApplicationContext(), name, bitmap);
+                        path = saveImage(getApplicationContext(), name, bitmap);
                         Group newG = new Group(0, name, selected, path, limit, state);
 
                         Log.e(TAG, newG.toString());
@@ -417,13 +421,6 @@ public class GroupCreateInfActivity extends ActionBarActivity {
         }
     }
 
-    private boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
-    }
-
     public void selectTypeImage(){
         MaterialSimpleListAdapter materialAdapter = new MaterialSimpleListAdapter(this);
         materialAdapter.add(new MaterialSimpleListItem.Builder(this)
@@ -473,20 +470,6 @@ public class GroupCreateInfActivity extends ActionBarActivity {
         });
     }
 
-    private Bitmap cargarImagen(Context context, String name){
-        ContextWrapper cw = new ContextWrapper(context);
-        File dirImages = cw.getDir("Profiles",Context.MODE_APPEND);
-        File myPath = new File(dirImages, name+".png");
-        Bitmap b = null;
-        try {
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-            b = BitmapFactory.decodeFile(myPath.getAbsolutePath(), options);
-        }catch (Exception e){e.printStackTrace();}
-        b = Bitmap.createScaledBitmap(b, 60, 60, false);
-        return b;
-    }
-
     public String getRealPathFromURI(Uri contentUri){
         String [] proj      = {MediaStore.Images.Media.DATA};
         Cursor cursor       = managedQuery( contentUri, proj, null, null,null);
@@ -509,8 +492,8 @@ public class GroupCreateInfActivity extends ActionBarActivity {
                 intent.putExtra("crop", "true");
                 intent.putExtra("aspectX", 1);
                 intent.putExtra("aspectY", 1);
-                intent.putExtra("outputX", 250);
-                intent.putExtra("outputY", 250);
+                intent.putExtra("outputX", 500);
+                intent.putExtra("outputY", 500);
                 intent.putExtra("scale", true);
                 intent.putExtra("return-data", true);
 
@@ -563,21 +546,6 @@ public class GroupCreateInfActivity extends ActionBarActivity {
         editor.commit();
     }
 
-    private String guardarImagen(Context context, String name, Bitmap image){
-        ContextWrapper cw = new ContextWrapper(context);
-        File dirImages = cw.getDir("Profiles",Context.MODE_PRIVATE);
-        File myPath = new File(dirImages, name+".png");
-
-        FileOutputStream fos = null;
-        try{
-            fos = new FileOutputStream(myPath);
-            image.compress(Bitmap.CompressFormat.PNG, 90, fos);
-            fos.flush();
-        }catch (Exception e){e.printStackTrace();}
-        Log.i("IMAGE SAVED","PATH: "+myPath);
-        return myPath.getAbsolutePath();
-    }
-
     private class CheckListAdapter extends ArrayAdapter<Person> {
         private List<Person> friends;
 
@@ -611,7 +579,9 @@ public class GroupCreateInfActivity extends ActionBarActivity {
             }
 
             Person friend = friends.get(position);
-            holder.avatar.setImageBitmap(cargarImagen(GroupCreateInfActivity.this, friend.getId() + ""));
+            Bitmap b = loadImage(GroupCreateInfActivity.this, friend.getId() + "");
+            //b = Bitmap.createBitmap(b,(b.getWidth()/2)-150,(b.getHeight()/2)-150,300,300);
+            holder.avatar.setImageBitmap(b);
             holder.name.setText(friend.getName());
             holder.check.setSelected(friend.isSelected());
             holder.check.setChecked(friend.isSelected());

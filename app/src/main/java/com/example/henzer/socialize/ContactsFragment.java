@@ -1,13 +1,9 @@
 package com.example.henzer.socialize;
 
 import android.content.Context;
-import android.content.ContextWrapper;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
@@ -25,40 +21,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
-import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.example.henzer.socialize.Adapters.ContactsAdapter;
 import com.example.henzer.socialize.Adapters.DownloadImageTask;
-import com.example.henzer.socialize.Adapters.FacebookFriendRequest;
 import com.example.henzer.socialize.BlockActivity.FriendActionActivity;
 import com.example.henzer.socialize.Models.Person;
 import com.example.henzer.socialize.Models.SessionData;
-import com.facebook.AccessToken;
-import com.facebook.GraphRequest;
-import com.facebook.HttpMethod;
 import com.kenny.snackbar.SnackBar;
 import com.rengwuxian.materialedittext.MaterialEditText;
-import com.yalantis.flipviewpager.adapter.BaseFlipAdapter;
 import com.yalantis.flipviewpager.utils.FlipSettings;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.entity.BufferedHttpEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.henzer.socialize.Adapters.StaticMethods.guardarImagen;
+import static com.example.henzer.socialize.Adapters.StaticMethods.isNetworkAvailable;
 
 /**
  * Created by hp1 on 21-01-2015.
@@ -104,6 +81,8 @@ public class ContactsFragment extends ListFragment {
 
         return v;
     }
+
+
 
     @Override
     public void onResume() {
@@ -232,15 +211,8 @@ public class ContactsFragment extends ListFragment {
         }
     }
 
-    private boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
-    }
-
     public void refreshContact(){
-        if (isNetworkAvailable()) {
+        if (isNetworkAvailable(getActivity())) {
             String[] ids = new String[friends.size()];
             for (int i=0; i<friends.size(); i++){
                 ids[i] = friends.get(i).getId();
@@ -278,4 +250,6 @@ public class ContactsFragment extends ListFragment {
         this.optionsMenu = menu;
         //super.onCreateOptionsMenu(menu, inflater);
     }
+
+
 }

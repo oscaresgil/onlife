@@ -1,6 +1,5 @@
 package com.example.henzer.socialize.Adapters;
 
-import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 
@@ -16,7 +15,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import static com.example.henzer.socialize.Adapters.StaticMethods.eliminarTilde;
+import static com.example.henzer.socialize.Adapters.StaticMethods.deleteAccent;
 
 public class FacebookFriendRequest implements GraphRequest.Callback {
 
@@ -51,10 +50,10 @@ public class FacebookFriendRequest implements GraphRequest.Callback {
                     String path = "https://graph.facebook.com/" + id + "/picture?width=900&height=900";
                     URL pathURL = new URL(path);
 
-                    Log.i("Friend " + i, id + " = " + eliminarTilde(name));
+                    Log.i("Friend " + i, id + " = " + deleteAccent(name));
                     Log.i("Friend URL " + i, path.toString());
 
-                    Person contact = new Person(id, null, eliminarTilde(name), pathURL.toString(), "A");
+                    Person contact = new Person(id, null, deleteAccent(name), pathURL.toString(), "A");
                     contact.setDeleted(false);
                     friends.add(contact);
                 }

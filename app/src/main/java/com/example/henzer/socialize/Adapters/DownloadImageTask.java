@@ -22,7 +22,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import java.io.IOException;
 import java.io.InputStream;
 
-import static com.example.henzer.socialize.Adapters.StaticMethods.guardarImagen;
+import static com.example.henzer.socialize.Adapters.StaticMethods.saveImage;
 
 public class DownloadImageTask extends AsyncTask<String, Void, Void> {
 
@@ -69,7 +69,7 @@ public class DownloadImageTask extends AsyncTask<String, Void, Void> {
                     HttpEntity entity = response.getEntity();
                     BufferedHttpEntity bufferedEntity = new BufferedHttpEntity(entity);
                     InputStream inputStream = bufferedEntity.getContent();
-                    guardarImagen(context,userID, BitmapFactory.decodeStream(inputStream));
+                    saveImage(context, userID, BitmapFactory.decodeStream(inputStream));
                 } catch (ClientProtocolException e) {
                     e.printStackTrace();
                 } catch (IOException e) {
