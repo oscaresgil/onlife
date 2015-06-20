@@ -44,5 +44,6 @@ dependencies {
     compile 'com.jpardogo.listbuddies:library:1.1.1'
     compile 'ca.barrenechea.header-decor:header-decor:0.2.2'
     compile 'com.squareup.picasso:picasso:2.5.2'
+    compile 'se.emilsjolander:android-flipview:1.1.0'
 }
 

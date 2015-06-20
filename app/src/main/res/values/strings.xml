@@ -39,6 +39,9 @@
     <string name="already_group">Group already created!</string>
     <string name="change_name">Change the name!</string>
     <string name="select_friend">Select Friends</string>
+    <string name="options">Options</string>
+    <string name="gps_option">GPS</string>
+    <string name="select_friends_option">Select Friends</string>
 
 
 </resources>

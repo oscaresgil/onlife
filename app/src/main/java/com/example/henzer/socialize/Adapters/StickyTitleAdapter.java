@@ -1,10 +1,12 @@
 package com.example.henzer.socialize.Adapters;
 
 import android.content.Context;
+import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -12,26 +14,31 @@ import android.widget.TextView;
 import com.example.henzer.socialize.Models.Person;
 import com.example.henzer.socialize.R;
 import com.gc.materialdesign.views.CheckBox;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 import ca.barrenechea.widget.recyclerview.decoration.StickyHeaderAdapter;
 
 import static com.example.henzer.socialize.Adapters.StaticMethods.loadImage;
+import static com.example.henzer.socialize.Adapters.StaticMethods.loadImagePath;
 
-public class StickyTitleAdapter  extends RecyclerView.Adapter<StickyTitleAdapter.ViewHolder> implements
-        StickyHeaderAdapter<StickyTitleAdapter.HeaderHolder> {
+public class StickyTitleAdapter  extends RecyclerView.Adapter<StickyTitleAdapter.ViewHolder> implements StickyHeaderAdapter<StickyTitleAdapter.HeaderHolder> {
 
     private RecyclerView recyclerView;
     private LayoutInflater mInflater;
     private Context context;
-private List<Person> friends;
+    private List<Person> friends;
+    private FlipListener listener;
+    private Animation animation1;
 
-    public StickyTitleAdapter(Context context,RecyclerView recyclerView, List<Person> friends) {
+    public StickyTitleAdapter(Context context,RecyclerView recyclerView, List<Person> friends, FlipListener listener, Animation animation1) {
         mInflater = LayoutInflater.from(context);
         this.context = context;
         this.recyclerView = recyclerView;
         this.friends = friends;
+        this.animation1 = animation1;
+        this.listener = listener;
     }
 
     @Override
@@ -44,6 +51,12 @@ private List<Person> friends;
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int i) {
         viewHolder.textView.setText(friends.get(i).getName());
+        if (friends.get(i).isSelected()){
+            viewHolder.imageView.setImageBitmap(BitmapFactory.decodeResource(context.getResources(),R.drawable.ic_launcher));
+        }
+        else{
+            viewHolder.imageView.setImageBitmap(loadImage(context, friends.get(i).getId()));
+        }
         try {
             viewHolder.imageView.setImageBitmap(loadImage(context, friends.get(i).getId()));
         }catch (Exception e){
@@ -107,6 +120,13 @@ private List<Person> friends;
             CheckBox checkBox = (CheckBox)v.findViewById(R.id.checkBox1);
             checkBox.setChecked(!checkBox.isCheck());
             friends.get(item).setSelected(!checkBox.isCheck());
+
+            ImageView avatar = (ImageView) v.findViewById(R.id.avatar_friends);
+            listener.setFriend(friends.get(item));
+            listener.setView(avatar);
+            avatar.clearAnimation();
+            avatar.setAnimation(animation1);
+            avatar.startAnimation(animation1);
         }
     }
 }

@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -25,6 +26,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -33,16 +36,16 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.simplelist.MaterialSimpleListAdapter;
 import com.afollestad.materialdialogs.simplelist.MaterialSimpleListItem;
+import com.example.henzer.socialize.Adapters.FlipListener;
 import com.example.henzer.socialize.Controller.AddNewGroup;
 import com.example.henzer.socialize.Models.Group;
 import com.example.henzer.socialize.Models.Person;
 import com.example.henzer.socialize.Models.SessionData;
-//import com.franlopez.flipcheckbox.FlipCheckBox;
-//import com.franlopez.flipcheckbox.OnFlipCheckedChangeListener;
 import com.gc.materialdesign.views.CheckBox;
 import com.kenny.snackbar.SnackBar;
 import com.melnykov.fab.FloatingActionButton;
@@ -60,6 +63,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+
+import se.emilsjolander.flipview.FlipView;
+import se.emilsjolander.flipview.OverFlipMode;
 
 import static com.example.henzer.socialize.Adapters.StaticMethods.isNetworkAvailable;
 import static com.example.henzer.socialize.Adapters.StaticMethods.loadImage;
@@ -92,6 +98,11 @@ public class GroupCreateInfActivity extends ActionBarActivity {
     private String path = "";
     private MaterialEditText nameNewGroup;
 
+    private Animation animation1;
+    private Animation animation2;
+    private boolean isBackImageShowing=true;
+    private FlipListener listener;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -104,6 +115,14 @@ public class GroupCreateInfActivity extends ActionBarActivity {
                 .build();
 
         Slidr.attach(this, config);
+
+        listener = new FlipListener(GroupCreateInfActivity.this);
+        animation1 = AnimationUtils.loadAnimation(this,R.anim.flip_left_out);
+        animation1.setAnimationListener(listener);
+        animation2 = AnimationUtils.loadAnimation(this,R.anim.flip_left_in);
+        animation2.setAnimationListener(listener);
+        listener.setAnimation1(animation1);
+        listener.setAnimation2(animation2);
 
         setContentView(R.layout.group_create_information);
 
@@ -135,11 +154,19 @@ public class GroupCreateInfActivity extends ActionBarActivity {
                     Person actualFriend = (Person)checkBox.getTag();
                     actualFriend.setSelected(!checkBox.isCheck());
                     checkBox.setChecked(!checkBox.isCheck());
+
+                    ImageView avatar = (ImageView) view.findViewById(R.id.avatar_friends);
+                    listener.setFriend(friends.get(position));
+                    listener.setView(avatar);
+                    avatar.clearAnimation();
+                    avatar.setAnimation(animation1);
+                    avatar.startAnimation(animation1);
                 }
             }
         });
 
         selectTypeImage();
+
     }
 
     @Override
@@ -346,7 +373,7 @@ public class GroupCreateInfActivity extends ActionBarActivity {
 
             friendsFiltred.clear();
             friendsFiltred.addAll(friends);
-            checkListAdapter.notifyDataSetChanged();
+            //checkListAdapter.notifyDataSetChanged();
             actionBar.setDisplayShowCustomEnabled(false);
             actionBar.setDisplayShowTitleEnabled(true);
 
@@ -354,6 +381,7 @@ public class GroupCreateInfActivity extends ActionBarActivity {
             search.setVisible(false);
             savegroup.setVisible(true);
             isSearchOpened = false;
+
         } else{
             mainLayout.animate().translationY(-mainLayout.getHeight()).start();
             searchButton.animate().translationY(-mainLayout.getHeight()+actionBar.getHeight()).start();
@@ -554,7 +582,7 @@ public class GroupCreateInfActivity extends ActionBarActivity {
         }
 
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
+        public View getView(final int position, View convertView, ViewGroup parent) {
             final Holder holder;
             if (convertView == null) {
                 LayoutInflater inflater = getLayoutInflater();
@@ -578,7 +606,12 @@ public class GroupCreateInfActivity extends ActionBarActivity {
             }
 
             Person friend = friends.get(position);
-            Picasso.with(GroupCreateInfActivity.this).load(loadImagePath(GroupCreateInfActivity.this,friend.getId())).resize(400,400).into(holder.avatar);
+            if (friend.isSelected()){
+                holder.avatar.setImageBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.ic_launcher));
+            }
+            else{
+                Picasso.with(GroupCreateInfActivity.this).load(loadImagePath(GroupCreateInfActivity.this,friend.getId())).resize(400,400).into(holder.avatar);
+            }
             holder.check.setSelected(friend.isSelected());
             holder.check.setChecked(friend.isSelected());
             holder.check.setTag(friend);
@@ -592,20 +625,5 @@ public class GroupCreateInfActivity extends ActionBarActivity {
             TextView name;
         }
     }
-
-    /*private class OnCheckedChangeListener implements OnFlipCheckedChangeListener {
-
-
-        final Person f;
-
-        public OnCheckedChangeListener(Person f) {
-            this.f = f;
-        }
-
-        @Override
-        public void onCheckedChanged(FlipCheckBox flipCardView,boolean isChecked) {
-            f.setSelected(isChecked);
-        }
-    }*/
 
 }

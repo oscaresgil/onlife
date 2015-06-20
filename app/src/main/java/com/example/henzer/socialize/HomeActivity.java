@@ -1,6 +1,7 @@
 package com.example.henzer.socialize;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -9,12 +10,20 @@ import android.support.v7.app.ActionBarActivity;
 import android.text.Html;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.simplelist.MaterialSimpleListAdapter;
+import com.afollestad.materialdialogs.simplelist.MaterialSimpleListItem;
 import com.example.henzer.socialize.Adapters.SampleFragmentPagerAdapter;
+import com.example.henzer.socialize.Models.Person;
 import com.example.henzer.socialize.Models.SessionData;
 import com.facebook.AccessToken;
 import com.facebook.Profile;
 import com.facebook.login.LoginManager;
+
+import java.util.List;
 
 
 /**
@@ -77,6 +86,43 @@ public class HomeActivity extends ActionBarActivity {
 
     @Override
     public void onBackPressed() {
+    }
+
+    public void settings(MenuItem item){
+        MaterialSimpleListAdapter materialAdapter = new MaterialSimpleListAdapter(this);
+        materialAdapter.add(new MaterialSimpleListItem.Builder(this)
+                .content(R.string.gps_option)
+                .icon(R.drawable.ic_launcher)
+                .build());
+        materialAdapter.add(new MaterialSimpleListItem.Builder(this)
+                .content(R.string.select_friends_option)
+                .icon(R.drawable.ic_launcher)
+                .build());
+        MaterialDialog.Builder materialDialog = new MaterialDialog.Builder(this)
+                .title(R.string.options)
+                .titleColorRes(R.color.orange_light)
+                .adapter(materialAdapter, new MaterialDialog.ListCallback() {
+                    @Override
+                    public void onSelection(MaterialDialog materialDialog, View view, int which, CharSequence charSequence) {
+                        if (which == 0) {
+                            Toast.makeText(HomeActivity.this, "GPS Selected", Toast.LENGTH_SHORT).show();
+                        } else if (which == 1) {
+                            List<Person> friends = sessionData.getFriends();
+                            for (Person f: friends){
+                                f.setSelected(true);
+                            }
+                            Intent intent = new Intent(HomeActivity.this, SelectContactsActivity.class);
+                            intent.putExtra("data", sessionData);
+                            startActivity(intent);
+                            materialDialog.cancel();
+                            friends = sessionData.getFriends();
+                            for (Person f: friends){
+                                f.setSelected(false);
+                            }
+                        }
+                    }
+                });
+        materialDialog.show();
     }
 
     public void logout(MenuItem item) {

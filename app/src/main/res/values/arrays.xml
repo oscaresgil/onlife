@@ -4,4 +4,8 @@
         <item>From Camera</item>
         <item>From SD Card</item>
     </string-array>
+    <string-array name="settings_array">
+        <item>GPS</item>
+        <item>Friends</item>
+    </string-array>
 </resources>
