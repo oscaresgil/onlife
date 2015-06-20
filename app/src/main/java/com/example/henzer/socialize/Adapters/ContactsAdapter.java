@@ -41,11 +41,14 @@ public class ContactsAdapter extends BaseFlipAdapter<Person> {
         else{
             holder = (ContactsHolder) view.getTag();
         }
+        //Picasso.with(context).load(loadImagePath(context,userData.getId())).into(holder.leftAvatar);
         holder.leftAvatar.setImageBitmap(loadImage(context, userData.getId()));
         holder.leftName.setText(userData.getName());
         if (userData2 !=null){
             holder.rightAvatar.setImageBitmap(loadImage(context, userData2.getId()));
+            //Picasso.with(context).load(loadImagePath(context,userData2.getId())).into(holder.rightAvatar);
             holder.rightName.setText(userData2.getName());
+            view.findViewById(R.id.secondContact).setVisibility(View.VISIBLE);
         }
         else{
             view.findViewById(R.id.secondContact).setVisibility(View.INVISIBLE);

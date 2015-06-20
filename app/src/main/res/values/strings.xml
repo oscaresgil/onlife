@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Socialize</string>
+    <string name="app_name">OnLife</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
     <string name="Username">Username</string>
@@ -38,6 +38,7 @@
     <string name="name_group">Change Group Name..</string>
     <string name="already_group">Group already created!</string>
     <string name="change_name">Change the name!</string>
+    <string name="select_friend">Select Friends</string>
 
 
 </resources>

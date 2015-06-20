@@ -5,7 +5,6 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.example.henzer.socialize.Models.Person;
-import com.example.henzer.socialize.R;
 
 import net.steamcrafted.loadtoast.LoadToast;
 

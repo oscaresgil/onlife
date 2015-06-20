@@ -14,6 +14,7 @@ public class Person implements Serializable{
     private int background;
     private boolean selected;
     private boolean deleted=true;
+    private boolean pictureStatus=true;
 
     public Person() {
     }

@@ -20,13 +20,12 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.example.henzer.socialize.Controller.SendNotification;
 import com.example.henzer.socialize.Adapters.GPSControl;
+import com.example.henzer.socialize.Controller.SendNotification;
 import com.example.henzer.socialize.GroupInformationActivity;
 import com.example.henzer.socialize.GroupsFragment;
 import com.example.henzer.socialize.Models.Group;

@@ -1,9 +1,6 @@
 package com.example.henzer.socialize.Models;
 
-import com.example.henzer.socialize.Models.Person;
-
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 /**

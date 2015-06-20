@@ -4,16 +4,12 @@ import android.animation.Animator;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -45,26 +41,29 @@ import com.example.henzer.socialize.Controller.AddNewGroup;
 import com.example.henzer.socialize.Models.Group;
 import com.example.henzer.socialize.Models.Person;
 import com.example.henzer.socialize.Models.SessionData;
+//import com.franlopez.flipcheckbox.FlipCheckBox;
+//import com.franlopez.flipcheckbox.OnFlipCheckedChangeListener;
 import com.gc.materialdesign.views.CheckBox;
-import com.melnykov.fab.FloatingActionButton;
 import com.kenny.snackbar.SnackBar;
+import com.melnykov.fab.FloatingActionButton;
 import com.r0adkll.slidr.Slidr;
 import com.r0adkll.slidr.model.SlidrConfig;
 import com.r0adkll.slidr.model.SlidrPosition;
 import com.rengwuxian.materialedittext.MaterialEditText;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import static com.example.henzer.socialize.Adapters.StaticMethods.isNetworkAvailable;
 import static com.example.henzer.socialize.Adapters.StaticMethods.loadImage;
+import static com.example.henzer.socialize.Adapters.StaticMethods.loadImagePath;
 import static com.example.henzer.socialize.Adapters.StaticMethods.saveImage;
 
 /**
@@ -563,8 +562,8 @@ public class GroupCreateInfActivity extends ActionBarActivity {
 
                 holder = new Holder();
                 holder.avatar = (ImageView) convertView.findViewById(R.id.avatar_friends);
-                holder.name = (TextView) convertView.findViewById(R.id.name_friend);
                 holder.check = (com.gc.materialdesign.views.CheckBox) convertView.findViewById(R.id.checkBox1);
+                holder.name = (TextView) convertView.findViewById(R.id.name_friend);
                 convertView.setTag(holder);
                 holder.check.setOncheckListener(new CheckBox.OnCheckListener() {
                     @Override
@@ -579,21 +578,34 @@ public class GroupCreateInfActivity extends ActionBarActivity {
             }
 
             Person friend = friends.get(position);
-            Bitmap b = loadImage(GroupCreateInfActivity.this, friend.getId() + "");
-            //b = Bitmap.createBitmap(b,(b.getWidth()/2)-150,(b.getHeight()/2)-150,300,300);
-            holder.avatar.setImageBitmap(b);
-            holder.name.setText(friend.getName());
+            Picasso.with(GroupCreateInfActivity.this).load(loadImagePath(GroupCreateInfActivity.this,friend.getId())).resize(400,400).into(holder.avatar);
             holder.check.setSelected(friend.isSelected());
             holder.check.setChecked(friend.isSelected());
             holder.check.setTag(friend);
+            holder.name.setText(friend.getName());
             return convertView;
 
         }
         private class Holder {
             ImageView avatar;
-            TextView name;
             com.gc.materialdesign.views.CheckBox check;
+            TextView name;
         }
     }
+
+    /*private class OnCheckedChangeListener implements OnFlipCheckedChangeListener {
+
+
+        final Person f;
+
+        public OnCheckedChangeListener(Person f) {
+            this.f = f;
+        }
+
+        @Override
+        public void onCheckedChanged(FlipCheckBox flipCardView,boolean isChecked) {
+            f.setSelected(isChecked);
+        }
+    }*/
 
 }

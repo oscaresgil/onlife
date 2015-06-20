@@ -2,8 +2,6 @@ package com.example.henzer.socialize;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
@@ -52,6 +50,8 @@ public class ContactsFragment extends ListFragment {
     private List<Person> friendsFiltred;
     private boolean isSearchOpened = false;
     private String mSearchQuery;
+
+    private static boolean typeUrl = false;
 
     public static final String TAG = "ContactsFragment";
     public static ContactsFragment newInstance(Bundle arguments){
@@ -217,7 +217,7 @@ public class ContactsFragment extends ListFragment {
             for (int i=0; i<friends.size(); i++){
                 ids[i] = friends.get(i).getId();
             }
-            new DownloadImageTask(getActivity(),mSwipeRefreshLayout,false,adapter).execute(ids);
+            new DownloadImageTask(getActivity(),mSwipeRefreshLayout,false,adapter,friends).execute(typeUrl);
             /*FacebookFriendRequest fbRequest = new FacebookFriendRequest(getActivity(),actualUser,friends,adapter);
             Bundle params = new Bundle();
             params.putString("fields","id,name");
@@ -251,5 +251,8 @@ public class ContactsFragment extends ListFragment {
         //super.onCreateOptionsMenu(menu, inflater);
     }
 
+    public static void setTypeUrl(boolean tUrl){
+        typeUrl = tUrl;
+    }
 
 }

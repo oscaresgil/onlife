@@ -6,14 +6,12 @@ import android.content.ContextWrapper;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.provider.Settings;
 import android.util.Log;
 
-import com.example.henzer.socialize.Controller.SendNotification;
 import com.example.henzer.socialize.Models.Person;
 
 import java.io.File;
@@ -37,6 +35,22 @@ public class StaticMethods {
         }catch (Exception e){e.printStackTrace();}
         Log.i("IMAGE LOADED", "PATH: " + myPath);
         return b;
+    }
+
+    public static Person[] setArrayPersonList(List<Person> f){
+        Person[] persons = new Person[f.size()];
+        for (int i=0; i<f.size(); i++){
+            persons[i] = f.get(i);
+        }
+        return persons;
+    }
+
+    public static File loadImagePath(Context context, String id){
+        ContextWrapper cw = new ContextWrapper(context);
+        File dirImages = cw.getDir("Profiles",Context.MODE_APPEND);
+        File myPath = new File(dirImages, id+".png");
+        Log.i("IMAGE LOADED DIR", "PATH: " + myPath.getAbsolutePath());
+        return myPath;
     }
 
     public static String saveImage(Context context, String name, Bitmap image){

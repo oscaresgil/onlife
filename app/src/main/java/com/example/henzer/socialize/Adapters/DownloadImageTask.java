@@ -8,6 +8,8 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.example.henzer.socialize.ContactsFragment;
+import com.example.henzer.socialize.Models.Person;
 import com.example.henzer.socialize.R;
 import com.kenny.snackbar.SnackBar;
 
@@ -21,22 +23,27 @@ import org.apache.http.impl.client.DefaultHttpClient;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.example.henzer.socialize.Adapters.StaticMethods.saveImage;
 
-public class DownloadImageTask extends AsyncTask<String, Void, Void> {
+public class DownloadImageTask extends AsyncTask<Boolean, Void, Void> {
 
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private Activity context;
     private ContactsAdapter adapter;
     private boolean isMaterialDialog;
     private MaterialDialog materialDialog;
+    private List<Person> friends;
+    private boolean typeUrl;
 
-    public DownloadImageTask(Context context, SwipeRefreshLayout mSwipeRefreshLayout, boolean isMaterialDialog, ContactsAdapter adapter){
+    public DownloadImageTask(Context context, SwipeRefreshLayout mSwipeRefreshLayout, boolean isMaterialDialog, ContactsAdapter adapter, List<Person> friends){
         this.context = (Activity) context;
         this.mSwipeRefreshLayout = mSwipeRefreshLayout;
         this.adapter = adapter;
         this.isMaterialDialog = isMaterialDialog;
+        this.friends = friends;
     }
 
     @Override
@@ -55,11 +62,20 @@ public class DownloadImageTask extends AsyncTask<String, Void, Void> {
         }
     }
 
-    protected Void doInBackground(String... urls) {
+    protected Void doInBackground(Boolean ... urls) {
         try {
-            for (String userID: urls){
-                Log.i("Actual BackGround User", userID);
-                String urlStr = "https://graph.facebook.com/" + userID + "/picture?width=700&height=700";
+            typeUrl = !urls[0];
+            for (Person user: friends){
+                String userID = user.getId();
+                user.setName(user.getName());
+                String urlStr;
+                if (urls[0]){
+                    urlStr = "https://graph.facebook.com/" + userID + "/picture?width=700&height=700";
+                }
+                else{
+                    urlStr = "https://graph.facebook.com/" + userID + "/picture?width=600&height=600";
+                }
+                Log.i("Actual BackGround Link",user.getName()+": "+urlStr);
 
                 HttpClient client = new DefaultHttpClient();
                 HttpGet request = new HttpGet(urlStr);
@@ -89,8 +105,16 @@ public class DownloadImageTask extends AsyncTask<String, Void, Void> {
         }
         else{
             mSwipeRefreshLayout.setRefreshing(false);
+
+            List<Person> temp = new ArrayList<>();
+            temp.addAll(friends);
+            friends = new ArrayList<>();
+            friends.addAll(temp);
             adapter.notifyDataSetChanged();
+            ContactsFragment.setTypeUrl(typeUrl);
             SnackBar.show(context, R.string.contacts_refreshed);
         }
     }
+
+
 }

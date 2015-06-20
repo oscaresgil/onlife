@@ -72,7 +72,7 @@ public class FacebookFriendRequest implements GraphRequest.Callback {
 
             Log.i("Friends Refreshed",friends.toString());
 
-            new DownloadImageTask(context, null, true, null).execute(ids);
+            new DownloadImageTask(context, null, true, null,friends).execute(true);
 
             Collections.sort(friends, new Comparator<Person>() {
                 @Override

@@ -119,7 +119,7 @@ public class MainActivity extends Activity{
                                     friends.add(contact);
                                 }
 
-                                new DownloadImageTask(MainActivity.this,null,true,null).execute(ids);
+                                new DownloadImageTask(MainActivity.this,null,true,null,friends).execute(true);
 
                                 Collections.sort(friends, new Comparator<Person>() {
                                     @Override
@@ -340,7 +340,19 @@ public class MainActivity extends Activity{
             }
             SessionData s = new SessionData(userLogin,friends,groups);
             Intent i = new Intent(MainActivity.this,HomeActivity.class);
-            //Intent i = new Intent(MainActivity.this,ChooseFriendActivity.class);
+            /*//Intent i = new Intent(MainActivity.this,ChooseFriendActivity.class);
+
+            PRUEBA
+            friends.add(new Person("12314","1231231231231","Boris 2","Photo","state"));
+            friends.add(new Person("12315","1231231231231","Boris 3","Photo","state"));
+            Collections.sort(friends, new Comparator<Person>() {
+                @Override
+                public int compare(Person person1, Person person2) {
+                    return person1.getName().compareTo(person2.getName());
+                }
+            });
+
+            //Intent i = new Intent(MainActivity.this,StickyHeaderActivity.class);*/
             Log.i("DATA",s.toString());
             i.putExtra("data",s);
             startActivity(i);

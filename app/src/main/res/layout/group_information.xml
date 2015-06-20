@@ -20,10 +20,9 @@
     </ListView>
 
     <com.jpardogo.listbuddies.lib.views.ListBuddiesLayout
-        xmlns:listbuddies="http://schemas.android.com/apk/res-auto"
         android:id="@+id/friendInGroupList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
 </LinearLayout>

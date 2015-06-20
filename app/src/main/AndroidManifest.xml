@@ -96,7 +96,7 @@
             android:launchMode="standard"
             android:label="Blocked!"
             android:configChanges="keyboardHidden|orientation|screenSize" />
-        <activity android:name=".ChooseFriendActivity"
+        <activity android:name=".StickyHeaderActivity"
             android:screenOrientation="portrait"
             android:launchMode="standard"
             android:label="Choose Friends"
