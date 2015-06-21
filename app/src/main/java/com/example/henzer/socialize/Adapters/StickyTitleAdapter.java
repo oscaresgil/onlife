@@ -51,16 +51,11 @@ public class StickyTitleAdapter  extends RecyclerView.Adapter<StickyTitleAdapter
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int i) {
         viewHolder.textView.setText(friends.get(i).getName());
-        if (friends.get(i).isSelected()){
-            viewHolder.imageView.setImageBitmap(BitmapFactory.decodeResource(context.getResources(),R.drawable.ic_launcher));
+        if (!friends.get(i).isHomeSelected()){
+            viewHolder.imageView.setImageBitmap(BitmapFactory.decodeResource(context.getResources(),R.drawable.ic_navigation_check));
         }
         else{
             viewHolder.imageView.setImageBitmap(loadImage(context, friends.get(i).getId()));
-        }
-        try {
-            viewHolder.imageView.setImageBitmap(loadImage(context, friends.get(i).getId()));
-        }catch (Exception e){
-            viewHolder.imageView.setImageBitmap(null);
         }
     }
 
@@ -119,11 +114,12 @@ public class StickyTitleAdapter  extends RecyclerView.Adapter<StickyTitleAdapter
             int item = recyclerView.getChildAdapterPosition(v);
             CheckBox checkBox = (CheckBox)v.findViewById(R.id.checkBox1);
             checkBox.setChecked(!checkBox.isCheck());
-            friends.get(item).setSelected(!checkBox.isCheck());
+            friends.get(item).setSelected(!friends.get(item).isSelected());
 
             ImageView avatar = (ImageView) v.findViewById(R.id.avatar_friends);
             listener.setFriend(friends.get(item));
             listener.setView(avatar);
+            listener.setHome(true);
             avatar.clearAnimation();
             avatar.setAnimation(animation1);
             avatar.startAnimation(animation1);

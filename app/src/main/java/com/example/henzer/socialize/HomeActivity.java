@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
 import android.text.Html;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -86,6 +87,7 @@ public class HomeActivity extends ActionBarActivity {
 
     @Override
     public void onBackPressed() {
+        moveTaskToBack(true);
     }
 
     public void settings(MenuItem item){
@@ -107,17 +109,21 @@ public class HomeActivity extends ActionBarActivity {
                         if (which == 0) {
                             Toast.makeText(HomeActivity.this, "GPS Selected", Toast.LENGTH_SHORT).show();
                         } else if (which == 1) {
+
                             List<Person> friends = sessionData.getFriends();
                             for (Person f: friends){
-                                f.setSelected(true);
+                                f.setSelected(false);
                             }
+
                             Intent intent = new Intent(HomeActivity.this, SelectContactsActivity.class);
                             intent.putExtra("data", sessionData);
                             startActivity(intent);
                             materialDialog.cancel();
+
                             friends = sessionData.getFriends();
                             for (Person f: friends){
                                 f.setSelected(false);
+                                Log.i("Friend Home Selected", f.isHomeSelected() + "");
                             }
                         }
                     }

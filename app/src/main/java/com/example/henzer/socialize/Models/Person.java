@@ -14,7 +14,7 @@ public class Person implements Serializable{
     private int background;
     private boolean selected;
     private boolean deleted=true;
-    private boolean pictureStatus=true;
+    private boolean homeSelected=false;
 
     public Person() {
     }
@@ -25,6 +25,14 @@ public class Person implements Serializable{
         this.name = name;
         this.photo = photo;
         this.state = state;
+    }
+
+    public boolean isHomeSelected() {
+        return homeSelected;
+    }
+
+    public void setHomeSelected(boolean homeSelected) {
+        this.homeSelected = homeSelected;
     }
 
     public String getId() {

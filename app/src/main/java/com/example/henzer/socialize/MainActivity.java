@@ -116,6 +116,8 @@ public class MainActivity extends Activity{
                                     Log.i("Friend URL "+i,path.toString());
 
                                     Person contact = new Person(id, null, deleteAccent(name), pathURL.toString(), "A");
+                                    //Hay que eliminarlo luego
+                                    contact.setHomeSelected(true);
                                     friends.add(contact);
                                 }
 

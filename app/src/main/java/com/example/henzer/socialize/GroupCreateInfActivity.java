@@ -158,6 +158,7 @@ public class GroupCreateInfActivity extends ActionBarActivity {
                     ImageView avatar = (ImageView) view.findViewById(R.id.avatar_friends);
                     listener.setFriend(friends.get(position));
                     listener.setView(avatar);
+                    listener.setHome(false);
                     avatar.clearAnimation();
                     avatar.setAnimation(animation1);
                     avatar.startAnimation(animation1);
@@ -235,8 +236,7 @@ public class GroupCreateInfActivity extends ActionBarActivity {
         List<Person> selected = new ArrayList();
         int i = item.getItemId();
         if (i == R.id.saveGroup_button) {
-            List<Person> friendsChecked = checkListAdapter.friends;
-            for (Person userData: friendsChecked){
+            for (Person userData: friends){
                 if (userData.isSelected()) {
                     Log.i("User is Checked", userData.getName());
                     selected.add(userData);
@@ -246,7 +246,7 @@ public class GroupCreateInfActivity extends ActionBarActivity {
             int limit = 30;
             String state = "A";
 
-            if (!name.equals("") && !path.equals("") && !friendsChecked.isEmpty()){
+            if (!name.equals("") && !path.equals("") && !selected.isEmpty()){
                 if (isNetworkAvailable(this)) {
                     if (GroupsFragment.alreadyGroup(name)){
                         InputMethodManager imm = (InputMethodManager) getSystemService(
@@ -607,7 +607,7 @@ public class GroupCreateInfActivity extends ActionBarActivity {
 
             Person friend = friends.get(position);
             if (friend.isSelected()){
-                holder.avatar.setImageBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.ic_launcher));
+                holder.avatar.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.ic_navigation_check));
             }
             else{
                 Picasso.with(GroupCreateInfActivity.this).load(loadImagePath(GroupCreateInfActivity.this,friend.getId())).resize(400,400).into(holder.avatar);

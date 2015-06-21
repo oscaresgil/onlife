@@ -18,12 +18,16 @@ public class FlipListener implements Animation.AnimationListener{
     private Context context;
     private Person f;
     private ImageView imageButton;
-    private boolean isShowingBack;
     private Animation animation1;
     private Animation animation2;
+    private boolean home;
 
     public FlipListener(Context context){
         this.context = context;
+    }
+
+    public void setHome(boolean home) {
+        this.home = home;
     }
 
     public void setFriend(Person f){
@@ -49,21 +53,35 @@ public class FlipListener implements Animation.AnimationListener{
 
     @Override
     public void onAnimationEnd(Animation animation) {
-        Log.i("AnimationsEqual", (animation == animation1) + "");
-        Log.i("BackImageShowing",isShowingBack+"");
-        if (animation == animation1){
-            if (!f.isSelected()){
-                imageButton.setImageBitmap(loadImage(context, f.getId()));
+        if (home) {
+            if (animation == animation1) {
+                if (!f.isHomeSelected()) {
+                    imageButton.setImageBitmap(loadImage(context, f.getId()));
+                } else {
+                    imageButton.setImageBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_navigation_check));
+                }
+                imageButton.clearAnimation();
+                imageButton.setAnimation(animation2);
+                imageButton.startAnimation(animation2);
+            } else {
+                f.setHomeSelected(!f.isHomeSelected());
             }
-            else{
-                imageButton.setImageBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_launcher));
-            }
-            imageButton.clearAnimation();
-            imageButton.setAnimation(animation2);
-            imageButton.startAnimation(animation2);
         }
         else{
-            isShowingBack=!isShowingBack;
+            if (animation == animation1){
+                if (!f.isSelected()){
+                    imageButton.setImageBitmap(loadImage(context, f.getId()));
+                }
+                else{
+                    imageButton.setImageBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_navigation_check));
+                }
+                imageButton.clearAnimation();
+                imageButton.setAnimation(animation2);
+                imageButton.startAnimation(animation2);
+            }
+            else{
+                f.setDeleted(!f.isSelected());
+            }
         }
     }
 
