@@ -61,7 +61,7 @@
                     android:textAlignment="center"
                     android:imeOptions="actionDone"
                     android:singleLine="true"
-                    android:hint="@string/send_a_message"
+                    android:hint="@string/send_a_message_bar"
                     app:met_baseColor="@color/black"
                     app:met_primaryColor="@color/orange_light"
                     app:met_hideUnderline="true"

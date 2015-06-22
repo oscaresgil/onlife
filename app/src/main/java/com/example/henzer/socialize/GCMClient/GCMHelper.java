@@ -7,9 +7,8 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 public final class GCMHelper {
-
-    static GoogleCloudMessaging gcm = null;
-    static Context context = null;
+    private static GoogleCloudMessaging gcm = null;
+    private static Context context = null;
 
     public GCMHelper(Context context) {
         this.context = context;

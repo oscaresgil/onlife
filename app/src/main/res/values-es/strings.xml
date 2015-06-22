@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">OnLife</string>
+
+    <string name="distance">Distancia</string>
+    <string name="blocking">Bloqueando</string>
+    <string name="group">Grupo</string>
+
+    <string name="device_admin">Autorización de Pantalla OnLife</string>
+    <string name="device_admin_description">Esto permite que tu telefono pueda bloquearse</string>
+    <string name="facebook_app_id">781334441987917</string>
+    <string name="login_facebook">Ingresar con Facebook</string>
+    <string name="action_logout">Salir</string>
+
+    <string name="notification_someone_block_you">Alguien te ha bloqueado!</string>
+
+    <string name="action_settings">Ajustes</string>
+    <string name="settings_options">Opciones</string>
+    <string name="settings_option_gps">GPS</string>
+    <string name="settings_option_select_friends">Seleccionar Amigos</string>
+
+    <string name="tab_contacts">Contactos</string>
+    <string name="button_search_friend">Buscar Amigo</string>
+    <string name="search_contact_bar">Busca en Contactos..</string>
+    <string name="tab_groups">Grupos</string>
+
+    <string name="title_activity_information">Información</string>
+    <string name="friends_in_group">Amigos en el Grupo</string>
+
+    <string name="title_activity_new_group">Nuevo Grupo</string>
+    <string name="button_add_group">Agregar Grupo</string>
+    <string name="photo_select_image">Selecciona Imagen</string>
+    <string name="photo_option_camera">Desde Cámara</string>
+    <string name="photo_option_sd">Desde SD</string>
+    <string name="pick_image">Elige la Imagen</string>
+    <string name="not_supported_image_crop">Whoops - tu dispositivo no es apto para cortar imagenes!</string>
+
+    <string name="no">No</string>
+    <string name="yes">Si</string>
+    <string name="ok">Ok</string>
+    <string name="cancel">Cancelar</string>
+    <string name="delete">Eliminar</string>
+    <string name="deleted">Eliminado</string>
+    <string name="really_delete">¿Estás Seguro?</string>
+    <string name="refresh_contact">Actualizar Contactos</string>
+
+    <string name="dialog_title_loading_friends">Por favor espera</string>
+    <string name="dialog_message_loading_friends">Cargando Amigos..</string>
+    <string name="dialog_message_loading_information_friends">Cargando informacion de los amigos..</string>
+    <string name="dialog_title_creating_group">Creando Grupo</string>
+
+    <string name="group_name">Cambia el nombre del Grupo..</string>
+    <string name="group_already">Grupo ya estaba creado!</string>
+
+    <string name="send_a_message_bar">Envía un mensaje..</string>
+    <string name="message_max_characters">Solo 30 caracteres por favor</string>
+    <string name="button_change_text_message">Cambia el mensaje</string>
+    <string name="button_block">Bloquear!</string>
+
+    <string name="no_connection">No hay Conexión.</string>
+    <string name="error">Hubo un error.</string>
+    <string name="button_change_connection">Cambiar Conexión</string>
+    <string name="button_group_change_name">Cambiar nombre del Grupo</string>
+    <string name="toast_contacts_refreshed">Contactos Actualizados!</string>
+    <string name="toast_group_not_yet_created">Nombre, Foto o Contactos no especificados. Intenta de nuevo</string>
+
+    <string name="select_friend">Selecciona tus amigos</string>
+
+</resources>

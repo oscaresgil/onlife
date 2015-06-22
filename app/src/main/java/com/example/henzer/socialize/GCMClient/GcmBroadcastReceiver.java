@@ -8,8 +8,7 @@ import android.support.v4.content.WakefulBroadcastReceiver;
 
 public class GcmBroadcastReceiver extends WakefulBroadcastReceiver {
 
-    @Override
-    public void onReceive(Context context, Intent intent) {
+    @Override public void onReceive(Context context, Intent intent) {
         //Determina explicitamente que GcmMessageHandler hara el intent
         ComponentName comp = new ComponentName(context.getPackageName(), GcmMessageHandler.class.getName());
         // Inicia el servicio, manteniendo el dispositivo prendido cuando es lanzado el intent

@@ -11,9 +11,6 @@ import org.json.JSONObject;
 
 import java.util.List;
 
-/**
- * Created by Henzer on 19/05/2015.
- */
 public class SessionData {
     private SharedPreferences preferences;
     private static SessionData instance;

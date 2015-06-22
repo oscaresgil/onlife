@@ -7,7 +7,7 @@
         android:gravity="center"
         android:layout_width="fill_parent"
         android:layout_height="50dp"
-        android:text="Friends in Group"
+        android:text="@string/friends_in_group"
         android:textStyle="bold" />
 
     <ListView

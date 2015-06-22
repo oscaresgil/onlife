@@ -7,22 +7,22 @@ import android.app.admin.DevicePolicyManager;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
+import android.media.RingtoneManager;
 import android.os.Bundle;
 import android.os.Looper;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
-import com.example.henzer.socialize.Adapters.GPSControl;
-import com.example.henzer.socialize.InBlockActivity;
+import com.example.henzer.socialize.BlockActivity.ActivityInBlock;
+import com.example.henzer.socialize.Tasks.TaskGPS;
 import com.example.henzer.socialize.R;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
-import static com.example.henzer.socialize.Adapters.StaticMethods.distFrom;
+import static com.example.henzer.socialize.Controller.StaticMethods.distFrom;
 
 
 public class GcmMessageHandler extends IntentService {
     private NotificationManager myNotificationManager;
-
     private static Looper looper;
     private String user, message;
     private double distance;
@@ -35,8 +35,7 @@ public class GcmMessageHandler extends IntentService {
         super.onCreate();
     }
 
-    @Override
-    protected void onHandleIntent(Intent intent) {
+    @Override protected void onHandleIntent(Intent intent) {
         Bundle extras = intent.getExtras();
 
         GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(this);
@@ -44,20 +43,25 @@ public class GcmMessageHandler extends IntentService {
 
         String messageS = extras.getString("message");
         String[] dataP = messageS.split("\n");
-        for (String d: dataP){
-            System.out.println("DATAA "+d);
-        }
-        user = dataP[0];
-        message = dataP[1];
+
+        Log.i("Length",dataP.length+"");
+        Log.i("0",dataP[0]);
+        Log.i("1",dataP[1]);
+        Log.i("2",dataP[2]);
+        Log.i("3",dataP[3]);
+
+        message = dataP[0];
+        user = dataP[1];
+
         looper = Looper.myLooper();
         if (looper==null){
             Looper.prepare();
         }
-        GPSControl gpsControl = new GPSControl(this,false,false);
-        gpsControl.execute();
+        TaskGPS taskGps = new TaskGPS(this,false,false);
+        taskGps.execute();
 
         looper.loop();
-        Location location = gpsControl.getLocation();
+        Location location = taskGps.getLocation();
 
         double latitude = Double.parseDouble(dataP[2]);
         double longitude = Double.parseDouble(dataP[3]);
@@ -68,7 +72,7 @@ public class GcmMessageHandler extends IntentService {
         Log.e("Distance", distFrom(latitude, longitude, latitudeBlocked, longitudeBlocked)+"");
 
         if (distance<150){
-            onMessage(this, intent);
+            onMessage(this);
             GcmBroadcastReceiver.completeWakefulIntent(intent);
         }
     }
@@ -79,23 +83,26 @@ public class GcmMessageHandler extends IntentService {
         }
     }
 
-    protected void onMessage(Context context, Intent intent) {
+    protected void onMessage(Context context) {
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
-                        // Icono que tendra la notificacion
                         .setSmallIcon(R.drawable.ic_launcher)
-                                // Nombre de la notificacion (La que aparece en la barra)
-                        .setTicker("Someone Block You!")
-                                // Nombre de la notificacion (La que aparece en las notificaciones)
-                        .setContentTitle("OnLife")
+                        .setTicker(getResources().getString(R.string.notification_someone_block_you))
+                        .setContentTitle(user)
+                        .setVibrate(new long[]{ 1000, 1000 })
                         .setPriority(Notification.PRIORITY_HIGH)
-                                // Texto con el mensaje de la notificacion
+                        .setWhen(System.currentTimeMillis())
+                        .setLights(getResources().getColor(R.color.orange_light), 3000, 3000)
+                        .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
                         .setContentText(message);
+
         myNotificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
         myNotificationManager.notify(0, mBuilder.build());
-        Intent i = new Intent(context, InBlockActivity.class);
+
+        Intent i = new Intent(context, ActivityInBlock.class);
+        i.putExtra("user",user);
         i.putExtra("message",message);
         i.putExtra("distance",distance);
         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

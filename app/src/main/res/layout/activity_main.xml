@@ -21,7 +21,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="45dp"
             android:onClick="loginWithFB"
-            android:text="@string/LoginFB"
+            android:text="@string/login_facebook"
             android:background="@color/com_facebook_button_background_color"
             android:textColor="@color/com_facebook_share_button_text_color"
             android:paddingLeft="10dp"

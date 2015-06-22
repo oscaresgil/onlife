@@ -28,7 +28,7 @@
             android:layout_height="138dp"
             android:gravity="center"
             android:enabled="true"
-            android:hint="@string/name_group"
+            android:hint="@string/group_name"
             app:met_baseColor="@color/black"
             app:met_primaryColor="@color/orange_light"
             app:met_errorColor="@color/red"

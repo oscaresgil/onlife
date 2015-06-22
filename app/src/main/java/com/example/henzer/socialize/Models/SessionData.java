@@ -3,9 +3,6 @@ package com.example.henzer.socialize.Models;
 import java.io.Serializable;
 import java.util.List;
 
-/**
- * Created by Boris on 30/04/2015.
- */
 public class SessionData implements Serializable{
     private Person user;
     private List<Person> friends;
@@ -36,12 +33,8 @@ public class SessionData implements Serializable{
     public List<Group> getGroups() {
         return groups;
     }
-    public void setGroups(List<Group> groups) {
-        this.groups = groups;
-    }
 
-    @Override
-    public String toString() {
+    @Override public String toString() {
         return "SessionData{" +
                 "user=" + user +
                 ", friends=" + friends +

@@ -2,9 +2,6 @@ package com.example.henzer.socialize.Models;
 
 import java.io.Serializable;
 
-/**
- * Created by Henzer on 01/05/2015.
- */
 public class Person implements Serializable{
     private String id;
     private String id_phone;
@@ -99,8 +96,7 @@ public class Person implements Serializable{
         this.deleted = deleted;
     }
 
-    @Override
-    public String toString() {
+    @Override public String toString() {
         return "Person{" +
                 "id=" + id +
                 ", id_phone='" + id_phone + '\'' +

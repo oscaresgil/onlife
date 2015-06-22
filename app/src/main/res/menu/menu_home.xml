@@ -2,16 +2,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".HomeActivity">
-    <!--item
-        android:id="@+id/addGroup"
-        android:icon="@drawable/ic_add_circle_outline_black_48dp"
-        app:showAsAction="always"
-        android:title="@string/add_group"/-->
     <item
         android:id="@+id/searchContact"
         android:icon="@drawable/ic_ic_search_black_48dp"
         app:showAsAction="always"
-        android:title="@string/search_friend"/>
+        android:title="@string/button_search_friend"/>
     <item
         android:id="@+id/action_settings"
         android:title="@string/action_settings"
@@ -19,12 +14,7 @@
         app:showAsAction="never" />
     <item
         android:id="@+id/logout"
-        android:title="@string/logout"
+        android:title="@string/action_logout"
         android:onClick="logout"
-        app:showAsAction="never"/>
-    <item
-        android:id="@+id/exit"
-        android:title="@string/exit"
-        android:onClick="exit"
         app:showAsAction="never"/>
 </menu>
