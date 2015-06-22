@@ -83,6 +83,7 @@ public class StaticMethods {
     }
 
     public static void turnGPSOn(Context context){
+        //context.startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
         Intent intent = new Intent("android.location.GPS_ENABLED_CHANGE");
         intent.putExtra("enabled", true);
         context.sendBroadcast(intent);

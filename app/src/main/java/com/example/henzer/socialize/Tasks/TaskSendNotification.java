@@ -43,6 +43,7 @@ public class TaskSendNotification extends AsyncTask<Person, String, Boolean>{
         List<NameValuePair> p = new ArrayList<>();
         for(int i = 0; i<params.length; i++){
             p.add(new BasicNameValuePair("id[]",params[i].getId_phone()));
+            Log.i("IDPHONE",params[i].getId_phone());
         }
 
         p.add(new BasicNameValuePair("message", actualUser+"\n"+message+"\n"+latitude+"\n"+longitude));

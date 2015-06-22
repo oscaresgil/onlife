@@ -71,10 +71,10 @@ public class GcmMessageHandler extends IntentService {
         distance = distFrom(latitude, longitude, latitudeBlocked, longitudeBlocked);
         Log.e("Distance", distFrom(latitude, longitude, latitudeBlocked, longitudeBlocked)+"");
 
-        if (distance<150){
+        //if (distance<150){
             onMessage(this);
             GcmBroadcastReceiver.completeWakefulIntent(intent);
-        }
+        //}
     }
 
     public static void stopLoop(){

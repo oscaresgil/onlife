@@ -40,7 +40,7 @@ public class TaskGPS extends AsyncTask<Void,Void,Void> implements LocationListen
 
     @Override protected void onPreExecute() {
         super.onPreExecute();
-        turnGPSOn(context);
+        //turnGPSOn(context);
         if (blockFriend || blockGroup) {
             toast = new LoadToast(context)
                     .setText(context.getResources().getString(R.string.blocking))
@@ -68,7 +68,7 @@ public class TaskGPS extends AsyncTask<Void,Void,Void> implements LocationListen
             location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
         }
 
-        turnGPSOff(context);
+        //turnGPSOff(context);
         if (blockFriend){
             ActivityFriendBlock.blockContact(context, location, toast);
         }
