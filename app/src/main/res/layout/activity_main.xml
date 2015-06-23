@@ -7,25 +7,24 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <ImageView
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:id="@+id/logo"
+            android:id="@+id/ActivityMain_ImageViewLogo"
             android:layout_width="fill_parent"
-            android:layout_height="250dp"
+            android:layout_height="@dimen/activity_main_height_logo"
+            android:layout_margin="@dimen/activity_main_logo_margin"
             android:src="@drawable/logo_home_page"/>
         <Button
-            android:id="@+id/loginFB"
-            android:layout_below="@+id/logo"
+            android:id="@+id/ActivityMain_ButtonLoginFb"
+            android:layout_below="@id/ActivityMain_ImageViewLogo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_margin="@dimen/activity_main_button_fb_margin"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="45dp"
             android:onClick="loginWithFB"
             android:text="@string/login_facebook"
             android:background="@color/com_facebook_button_background_color"
             android:textColor="@color/com_facebook_share_button_text_color"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp" />
+            android:paddingLeft="@dimen/activity_main_button_fb_padding"
+            android:paddingRight="@dimen/activity_main_button_fb_padding" />
     </RelativeLayout>
 
 </RelativeLayout>

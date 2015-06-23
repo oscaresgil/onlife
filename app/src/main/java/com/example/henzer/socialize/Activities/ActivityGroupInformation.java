@@ -100,7 +100,7 @@ public class ActivityGroupInformation extends ActionBarActivity {
             });
         }
         else{
-            adapter = new GroupAdapter(this, R.layout.friends_in_group_simple, friendsInGroup);
+            adapter = new GroupAdapter(this, R.layout.layout_friends_in_group_simple, friendsInGroup);
             listView = (ListView) findViewById(R.id.friendInGroupListSimple);
             listView.setVisibility(View.VISIBLE);
             listView.setAdapter(adapter);
@@ -166,8 +166,8 @@ public class ActivityGroupInformation extends ActionBarActivity {
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             LayoutInflater inflater = ((Activity)context).getLayoutInflater();
-            View rowView = inflater.inflate(R.layout.friends_in_group, null, true);
-            ImageView avatar = (ImageView) rowView.findViewById(R.id.avatar_friend_in_group);
+            View rowView = inflater.inflate(R.layout.layout_friends_in_group, null, true);
+            ImageView avatar = (ImageView) rowView.findViewById(R.id.LayoutFriendsInGroup_ImageViewContact);
             avatar.setScaleType(ImageView.ScaleType.CENTER_CROP);
             avatar.setImageBitmap(loadImage(ActivityGroupInformation.this, getItem(position).getId()));
             return rowView;
@@ -190,8 +190,8 @@ public class ActivityGroupInformation extends ActionBarActivity {
         public View getView(int position, View convertView, ViewGroup parent) {
             LayoutInflater inflater = ((Activity)context).getLayoutInflater();
             View rowView = inflater.inflate(resource, null, true);
-            ImageView avatar = (ImageView) rowView.findViewById(R.id.avatar_friend_in_group);
-            TextView text = (TextView) rowView.findViewById(R.id.name_group);
+            ImageView avatar = (ImageView) rowView.findViewById(R.id.LayoutFriendsInGroup_ImageViewContact);
+            TextView text = (TextView) rowView.findViewById(R.id.LayoutFriendsInGroup_TextViewName);
             avatar.setImageBitmap(loadImage(ActivityGroupInformation.this, objects.get(position).getId()));
             text.setText(objects.get(position).getName());
             return rowView;

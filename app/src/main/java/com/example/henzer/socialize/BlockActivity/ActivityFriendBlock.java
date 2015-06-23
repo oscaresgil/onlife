@@ -65,14 +65,14 @@ public class ActivityFriendBlock extends ActionBarActivity {
         actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.orange_light)));
         actionBar.setTitle((Html.fromHtml("<b><font color=\""+getResources().getColor(R.color.black)+"\">" + friend.getName()+ "</font></b>")));
 
-        setContentView(R.layout.contact_action);
+        setContentView(R.layout.activity_friend_block);
 
-        ImageView picture = (ImageView) findViewById(R.id.PictureContact);
+        ImageView picture = (ImageView) findViewById(R.id.ActivityFriendBlock_ImageViewContact);
         picture.setImageBitmap(loadImage(this, friend.getId()));
         picture.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
-        maxCharsView = (TextView) findViewById(R.id.maxCharactersContact);
-        messageTextView = (MaterialEditText) findViewById(R.id.messageContact);
+        maxCharsView = (TextView) findViewById(R.id.ActivityFriendBlock_TextViewMaxCharacters);
+        messageTextView = (MaterialEditText) findViewById(R.id.ActivityFriendBlock_EditTextMessage);
         messageTextView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -111,7 +111,7 @@ public class ActivityFriendBlock extends ActionBarActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        RelativeLayout linearLayout = (RelativeLayout) findViewById(R.id.layout_contact);
+        RelativeLayout linearLayout = (RelativeLayout) findViewById(R.id.ActivityFriendBlock_RelativeLayoutContact);
         linearLayout.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {

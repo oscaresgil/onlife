@@ -174,7 +174,7 @@ public class FragmentGroups extends Fragment {
         public View getView(int position, View convertView, ViewGroup parent) {
             LayoutInflater inflater = getActivity().getLayoutInflater();
             View rowView = inflater.inflate(R.layout.groups, null, true);
-            TextView text = (TextView) rowView.findViewById(R.id.name_group);
+            TextView text = (TextView) rowView.findViewById(R.id.LayoutFriendsInGroup_TextViewName);
             ImageView image = (ImageView) rowView.findViewById(R.id.image_group);
             Bitmap b = loadImage(getContext(), objects.get(position).getName());
             b = Bitmap.createBitmap(b,(b.getWidth()/2)-150,(b.getHeight()/2)-150,300,300);

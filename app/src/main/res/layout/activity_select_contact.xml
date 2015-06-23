@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <TextView
+        style="@style/FriendStyle"
+        android:id="@+id/ActivitySelectContact_TextViewSelectFriends"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/select_friend"
+        android:gravity="center"
+        android:layout_margin="@dimen/activity_select_contact_textview_select_contacts_margin"/>
+    <FrameLayout
+        android:layout_below="@id/ActivitySelectContact_TextViewSelectFriends"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/ActivitySelectContact_RecyclerViewList"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:clipToPadding="false"
+            android:paddingBottom="@dimen/activity_select_contact_recyclerview_padding_vertical"
+            android:paddingLeft="@dimen/activity_select_contact_recyclerview_padding_horizontal"
+            android:paddingRight="@dimen/activity_select_contact_recyclerview_padding_horizontal"
+            android:paddingTop="@dimen/activity_select_contact_recyclerview_padding_vertical"/>
+        <com.melnykov.fab.FloatingActionButton xmlns:fab="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/ActivitySelectContact_ButtonOk"
+            android:layout_alignParentRight="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|right"
+            android:layout_margin="@dimen/activity_select_contact_button_ok_margin"
+            android:src="@drawable/ic_done_black_48dp"
+            fab:fab_colorNormal="@color/orange_light"
+            fab:fab_colorPressed="@color/orange" />
+    </FrameLayout>
+</RelativeLayout>

@@ -29,12 +29,12 @@ public class AdapterContacts extends BaseFlipAdapter<Person> {
         final ContactsHolder holder;
         if (view == null){
             holder = new ContactsHolder();
-            view = context.getLayoutInflater().inflate(R.layout.contacts, viewGroup, false);
+            view = context.getLayoutInflater().inflate(R.layout.layout_contact, viewGroup, false);
 
-            holder.leftAvatar = (ImageView) view.findViewById(R.id.first_image);
-            holder.leftName = (TextView) view.findViewById(R.id.first_name);
-            holder.rightAvatar = (ImageView) view.findViewById(R.id.second_image);
-            holder.rightName = (TextView) view.findViewById(R.id.second_name);
+            holder.leftAvatar = (ImageView) view.findViewById(R.id.LayoutContact_ImageViewLeft);
+            holder.leftName = (TextView) view.findViewById(R.id.LayoutContact_TextViewNameLeft);
+            holder.rightAvatar = (ImageView) view.findViewById(R.id.LayoutContact_ImageViewRight);
+            holder.rightName = (TextView) view.findViewById(R.id.LayoutContact_TextViewNameRight);
             view.setTag(holder);
         }
         else{
@@ -46,10 +46,10 @@ public class AdapterContacts extends BaseFlipAdapter<Person> {
         if (userData2 !=null){
             holder.rightAvatar.setImageBitmap(loadImage(context, userData2.getId()));
             holder.rightName.setText(userData2.getName());
-            view.findViewById(R.id.secondContact).setVisibility(View.VISIBLE);
+            view.findViewById(R.id.LayoutContact_LinearLayoutRightContact).setVisibility(View.VISIBLE);
         }
         else{
-            view.findViewById(R.id.secondContact).setVisibility(View.INVISIBLE);
+            view.findViewById(R.id.LayoutContact_LinearLayoutRightContact).setVisibility(View.INVISIBLE);
         }
 
         return view;

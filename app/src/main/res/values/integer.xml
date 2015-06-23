@@ -2,4 +2,9 @@
 <resources>
     <integer name="animation_search_contact_create">1000</integer>
     <integer name="flip_animation_time">100</integer>
+
+    <integer name="layout_contact_linearlayout_main_weight_sum">2</integer>
+    <integer name="layout_contact_linearlayout_left_contact_weight_sum">1</integer>
+    <integer name="layout_contact_imageview_weight">5</integer>
+    <integer name="layout_contact_textview_weight">1</integer>
 </resources>

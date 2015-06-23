@@ -177,7 +177,7 @@ public class ActivityMain extends Activity{
         FacebookSdk.sdkInitialize(this.getApplicationContext());
 
         setContentView(R.layout.activity_main);
-        loginFB = (Button) findViewById(R.id.loginFB);
+        loginFB = (Button) findViewById(R.id.ActivityMain_ButtonLoginFb);
 
         callbackManager = CallbackManager.Factory.create();
         if (isNetworkAvailable(ActivityMain.this)) {

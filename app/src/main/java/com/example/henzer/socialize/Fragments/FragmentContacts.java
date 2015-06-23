@@ -65,7 +65,7 @@ public class FragmentContacts extends ListFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         setHasOptionsMenu(true);
-        View v = inflater.inflate(R.layout.contacts_view, container, false);
+        View v = inflater.inflate(R.layout.fragment_contacts, container, false);
 
         friendsFiltred = new ArrayList<>();
 
@@ -86,7 +86,7 @@ public class FragmentContacts extends ListFragment {
     public void onResume() {
         super.onResume();
 
-        mSwipeRefreshLayout = (SwipeRefreshLayout) getActivity().findViewById(R.id.contacts_refresh_swipelayout);
+        mSwipeRefreshLayout = (SwipeRefreshLayout) getActivity().findViewById(R.id.FragmentContacts_SwipeRefreshLayout);
         getListView().setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {}

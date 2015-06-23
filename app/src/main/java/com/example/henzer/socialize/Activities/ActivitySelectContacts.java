@@ -34,12 +34,12 @@ public class ActivitySelectContacts extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_recycler_view_title);
+        setContentView(R.layout.activity_select_contact);
 
         sessionData = (SessionData)getIntent().getExtras().getSerializable("data");
         friends = sessionData.getFriends();
 
-        mList = (RecyclerView) findViewById(R.id.list);
+        mList = (RecyclerView) findViewById(R.id.ActivitySelectContact_RecyclerViewList);
         mList.setHasFixedSize(true);
         mList.setLayoutManager(new LinearLayoutManager(this));
         mList.addItemDecoration(new DividerDecoration(this));
@@ -60,7 +60,7 @@ public class ActivitySelectContacts extends Activity {
         listener.setAnimation1(animation1);
         listener.setAnimation2(animation2);
 
-        FloatingActionButton chooseContact = (FloatingActionButton) findViewById(R.id.okButton);
+        FloatingActionButton chooseContact = (FloatingActionButton) findViewById(R.id.ActivitySelectContact_ButtonOk);
         chooseContact.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
