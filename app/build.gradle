@@ -45,7 +45,6 @@ dependencies {
     compile 'ca.barrenechea.header-decor:header-decor:0.2.2'
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'se.emilsjolander:android-flipview:1.1.0'
-    compile 'com.github.medyo:fancybuttons:1.3@aar'
     compile 'com.android.support:recyclerview-v7:22.2.0'
 }
 

@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.example.henzer.socialize.Adapters.AdapterContacts;
 import com.example.henzer.socialize.BlockActivity.ActivityFriendBlock;
@@ -234,12 +235,16 @@ public class FragmentContacts extends ListFragment {
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
-        Person user = (Person)getListAdapter().getItem(position);
-        Intent i = new Intent(getActivity(),ActivityFriendBlock.class);
-        i.putExtra("data",user);
-        i.putExtra("actualuser", actualUser);
-        startActivity(i);
-        getActivity().overridePendingTransition(R.animator.push_right, R.animator.push_left);
+        if (!mSwipeRefreshLayout.isRefreshing()){
+            Person user = (Person)getListAdapter().getItem(position);
+            Intent i = new Intent(getActivity(),ActivityFriendBlock.class);
+            i.putExtra("data",user);
+            i.putExtra("actualuser", actualUser);
+            startActivity(i);
+            getActivity().overridePendingTransition(R.animator.push_right, R.animator.push_left);
+        }else{
+            Toast.makeText(getActivity(),getResources().getString(R.string.toast_wait_until_contacts_refreshed),Toast.LENGTH_SHORT).show();
+        }
     }
 
     public static void setTypeUrl(boolean tUrl){

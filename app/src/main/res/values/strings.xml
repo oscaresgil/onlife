@@ -63,6 +63,7 @@
     <string name="button_change_connection">Change Connection</string>
     <string name="button_group_change_name">Change group name!</string>
     <string name="toast_contacts_refreshed">Contacts Refreshed!</string>
+    <string name="toast_wait_until_contacts_refreshed">Wait! Contacts are refreshing..</string>
     <string name="toast_group_not_yet_created">Name, Photo or Contacts not specified. Try Again</string>
 
     <string name="select_friend">Select Friends</string>

@@ -14,16 +14,19 @@ import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.example.henzer.socialize.Tasks.TaskSendNotification;
-import com.example.henzer.socialize.Tasks.TaskGPS;
 import com.example.henzer.socialize.Models.Person;
 import com.example.henzer.socialize.R;
+import com.example.henzer.socialize.Tasks.TaskGPS;
+import com.example.henzer.socialize.Tasks.TaskSendNotification;
 import com.kenny.snackbar.SnackBar;
+import com.melnykov.fab.FloatingActionButton;
 import com.r0adkll.slidr.Slidr;
 import com.r0adkll.slidr.model.SlidrConfig;
 import com.r0adkll.slidr.model.SlidrPosition;
@@ -35,12 +38,13 @@ import static com.example.henzer.socialize.Controller.StaticMethods.isNetworkAva
 import static com.example.henzer.socialize.Controller.StaticMethods.loadImage;
 
 public class ActivityFriendBlock extends ActionBarActivity {
-    public static final String TAG = "FriendActionActivity";
+    public static final String TAG = "ActivityFriendBlock";
     private Person actualUser;
     private Person friend;
     private MaterialEditText messageTextView;
     private TextView maxCharsView;
     private int maximumChars = 30, actualChar = 0;
+    private FloatingActionButton fab;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -66,6 +70,11 @@ public class ActivityFriendBlock extends ActionBarActivity {
         actionBar.setTitle((Html.fromHtml("<b><font color=\""+getResources().getColor(R.color.black)+"\">" + friend.getName()+ "</font></b>")));
 
         setContentView(R.layout.activity_friend_block);
+
+        fab = (FloatingActionButton) findViewById(R.id.ActivityFriendBlock_ButtonBlock);
+        Animation blinkAnim = AnimationUtils.loadAnimation(ActivityFriendBlock.this,R.anim.blink);
+        fab.startAnimation(blinkAnim);
+        fab.bringToFront();
 
         ImageView picture = (ImageView) findViewById(R.id.ActivityFriendBlock_ImageViewContact);
         picture.setImageBitmap(loadImage(this, friend.getId()));
@@ -106,6 +115,8 @@ public class ActivityFriendBlock extends ActionBarActivity {
             public void afterTextChanged(Editable s) {
             }
         });
+
+
     }
 
     @Override
@@ -154,9 +165,7 @@ public class ActivityFriendBlock extends ActionBarActivity {
         if (isNetworkAvailable(this)) {
             if (actualChar <= 30) {
                 try {
-                    new TaskGPS(this,true,false).execute();
-                    getIntent().putExtra("name", actualUser.getName());
-                    getIntent().putExtra("message",messageTextView.getText().toString());
+                    new TaskGPS(this,TAG).execute();
                 } catch (Exception ex) {
                     ex.printStackTrace();
                     SnackBar.show(ActivityFriendBlock.this, R.string.error);
@@ -183,13 +192,10 @@ public class ActivityFriendBlock extends ActionBarActivity {
         }
     }
 
-    public static void blockContact(Context context, Location location, LoadToast toast){
-        SnackBar.show((Activity)context, location.getLatitude() + "," + location.getLongitude());
-
-        Person blockPerson = (Person)((Activity) context).getIntent().getSerializableExtra("data");
-        String name = ((Activity)context).getIntent().getStringExtra("name");
-        String message = ((Activity)context).getIntent().getStringExtra("message");
-        TaskSendNotification gcm = new TaskSendNotification(context, name, message, location.getLatitude(), location.getLongitude(),toast);
-        gcm.execute(blockPerson);
+    public void blockContact(Location location, LoadToast toast){
+        SnackBar.show(ActivityFriendBlock.this, location.getLatitude() + "," + location.getLongitude());
+        TaskSendNotification gcm = new TaskSendNotification(ActivityFriendBlock.this, actualUser.getName(), messageTextView.getText().toString(), location.getLatitude(), location.getLongitude(),toast);
+        gcm.execute(friend);
     }
+
 }

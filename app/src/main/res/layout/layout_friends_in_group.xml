@@ -4,13 +4,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <TableRow>
-        <RelativeLayout>
-            <ImageView
-                android:id="@+id/LayoutFriendsInGroup_ImageViewContact"
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:adjustViewBounds="true"
-                android:scaleType="centerCrop"/>
-        </RelativeLayout>
+        <ImageView
+            android:id="@+id/LayoutFriendsInGroup_ImageViewContact"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:adjustViewBounds="true"
+            android:layout_gravity="center"
+            android:scaleType="centerCrop"/>
     </TableRow>
 </TableLayout>

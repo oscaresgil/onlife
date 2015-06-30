@@ -94,11 +94,11 @@ public class ActivityHome extends ActionBarActivity {
         MaterialSimpleListAdapter materialAdapter = new MaterialSimpleListAdapter(this);
         materialAdapter.add(new MaterialSimpleListItem.Builder(this)
                 .content(R.string.settings_option_gps)
-                .icon(R.drawable.ic_launcher)
+                .icon(R.drawable.ic_device_gps_fixed)
                 .build());
         materialAdapter.add(new MaterialSimpleListItem.Builder(this)
                 .content(R.string.settings_option_select_friends)
-                .icon(R.drawable.ic_launcher)
+                .icon(R.drawable.ic_social_group_add)
                 .build());
         MaterialDialog.Builder materialDialog = new MaterialDialog.Builder(this)
                 .title(R.string.settings_options)

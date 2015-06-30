@@ -2,13 +2,18 @@ package com.example.henzer.socialize.Adapters;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.henzer.socialize.Models.Person;
 import com.example.henzer.socialize.R;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
 import com.yalantis.flipviewpager.adapter.BaseFlipAdapter;
 import com.yalantis.flipviewpager.utils.FlipSettings;
 
@@ -40,7 +45,6 @@ public class AdapterContacts extends BaseFlipAdapter<Person> {
         else{
             holder = (ContactsHolder) view.getTag();
         }
-
         holder.leftAvatar.setImageBitmap(loadImage(context, userData.getId()));
         holder.leftName.setText(userData.getName());
         if (userData2 !=null){
@@ -51,7 +55,6 @@ public class AdapterContacts extends BaseFlipAdapter<Person> {
         else{
             view.findViewById(R.id.LayoutContact_LinearLayoutRightContact).setVisibility(View.INVISIBLE);
         }
-
         return view;
     }
 

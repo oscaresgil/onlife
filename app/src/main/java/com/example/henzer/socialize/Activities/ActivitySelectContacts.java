@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -15,6 +16,10 @@ import com.example.henzer.socialize.Listeners.ListenerFlipCheckbox;
 import com.example.henzer.socialize.Models.Person;
 import com.example.henzer.socialize.Models.SessionData;
 import com.example.henzer.socialize.R;
+import com.example.henzer.socialize.Tasks.TaskFacebookFriendRequest;
+import com.facebook.AccessToken;
+import com.facebook.GraphRequest;
+import com.facebook.HttpMethod;
 import com.melnykov.fab.FloatingActionButton;
 
 import java.util.List;
@@ -24,10 +29,12 @@ import ca.barrenechea.widget.recyclerview.decoration.StickyHeaderDecoration;
 
 public class ActivitySelectContacts extends Activity {
 
+    private final String TAG = "ActivitySelectContacts";
     private StickyHeaderDecoration decor;
     private RecyclerView mList;
     private SessionData sessionData;
     private List<Person> friends;
+    private List<Person> allFriends;
     private Animation animation1,animation2;
     private ListenerFlipCheckbox listener;
 
@@ -64,19 +71,41 @@ public class ActivitySelectContacts extends Activity {
         chooseContact.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
             }
         });
         chooseContact.attachToRecyclerView(mList);
-        setAdapterAndDecor(mList);
+        Bundle params = new Bundle();
+        params.putString("fields","id,name");
+        new GraphRequest(AccessToken.getCurrentAccessToken(),"/me/friends",params, HttpMethod.GET, new TaskFacebookFriendRequest(ActivitySelectContacts.this,TAG)).executeAsync();
     }
 
-    protected void setAdapterAndDecor(RecyclerView list) {
-        AdapterStickyTitle adapter = new AdapterStickyTitle(this,list,friends,listener,animation1);
+    public void setAdapterAndDecor() {
+        AdapterStickyTitle adapter = new AdapterStickyTitle(this,mList,allFriends,listener,animation1);
         decor = new StickyHeaderDecoration(adapter);
 
-        list.setAdapter(adapter);
-        list.addItemDecoration(decor, 1);
+        mList.setAdapter(adapter);
+        mList.addItemDecoration(decor, 1);
     }
 
+    public void setAllFriends(List<Person> allFriends) {
+        this.allFriends = allFriends;
+        for (Person f: this.allFriends){
+            if (isSelected(f.getId())){
+                f.setHomeSelected(true);
+            }
+            else{
+                f.setHomeSelected(false);
+            }
+        }
+        Log.i("AllFriends", allFriends.toString());
+    }
+
+    public boolean isSelected(String id){
+        for (Person f: friends){
+            if (f.getId().equals(id)){
+                return f.isHomeSelected();
+            }
+        }
+        return false;
+    }
 }

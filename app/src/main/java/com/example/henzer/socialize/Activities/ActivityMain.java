@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.Button;
 
 import com.example.henzer.socialize.R;
+import com.example.henzer.socialize.Tasks.TaskFacebookFriendRequest;
 import com.example.henzer.socialize.Tasks.TaskLoadAllInformation;
 import com.example.henzer.socialize.Tasks.TaskImageDownload;
 import com.example.henzer.socialize.BlockActivity.DeviceAdmin;
@@ -54,7 +55,7 @@ import static com.example.henzer.socialize.Controller.StaticMethods.isNetworkAva
 
 public class ActivityMain extends Activity{
     private static final String PROJECT_NUMBER = "194566212765";
-    public static final String TAG = "MainActivity";
+    public static final String TAG = "ActivityMain";
     private static final int ACTIVATION_REQUEST = 47;
     public static final String MyPREFERENCES = "MyPrefs";
     public static final String name = "nameKey";
@@ -89,49 +90,7 @@ public class ActivityMain extends Activity{
 
                     Bundle params = new Bundle();
                     params.putString("fields","id,name");
-                    new GraphRequest(AccessToken.getCurrentAccessToken(), "/me/friends", params, HttpMethod.GET, new GraphRequest.Callback() {
-                        @Override
-                        public void onCompleted(GraphResponse response) {
-                            try {
-                                JSONObject objectResponse = response.getJSONObject();
-                                JSONArray objectData = (JSONArray) objectResponse.get("data");
-                                String [] ids = new String[objectData.length()];
-                                Log.i("DATA", objectData.toString());
-                                for (int i=0; i<objectData.length(); i++){
-                                    JSONObject objectUser = (JSONObject) objectData.get(i);
-                                    String id = (String) objectUser.get("id");
-                                    ids[i] = id;
-                                    String name = (String) objectUser.get("name");
-
-                                    // http://stackoverflow.com/questions/5841710/get-user-image-from-facebook-graph-api
-                                    // http://stackoverflow.com/questions/23559736/android-skimagedecoderfactory-returned-null-error
-                                    String path = "https://graph.facebook.com/" + id + "/picture?width=900&height=900";
-                                    URL pathURL = new URL(path);
-
-                                    Log.i("Friend "+i,id+" = "+ deleteAccent(name));
-                                    Log.i("Friend URL "+i,path.toString());
-
-                                    Person contact = new Person(id, null, deleteAccent(name), pathURL.toString(), "A");
-                                    //Hay que eliminarlo luego
-                                    contact.setHomeSelected(true);
-                                    friends.add(contact);
-                                }
-
-                                new TaskImageDownload(ActivityMain.this,null,true,null,friends).execute(true);
-
-                                Collections.sort(friends, new Comparator<Person>() {
-                                    @Override
-                                    public int compare(Person person1, Person person2) {
-                                        return person1.getName().compareTo(person2.getName());
-                                    }
-                                });
-                                Log.i("ACTUAL USER",userLogin.toString());
-                                Log.i("ACTUAL FRIENDS", friends.toString());
-                                GetGCM();
-                                //progressDialog.dismiss();
-                            }catch(Exception e){e.printStackTrace();}
-                        }
-                    }).executeAsync();
+                    new GraphRequest(AccessToken.getCurrentAccessToken(),"/me/friends",params,HttpMethod.GET, new TaskFacebookFriendRequest(ActivityMain.this,TAG)).executeAsync();
                     mProfileTracker.stopTracking();
                 }
             };
@@ -249,7 +208,7 @@ public class ActivityMain extends Activity{
         }
     }
 
-    private void GetGCM() {
+    public void GetGCM() {
         new AsyncTask<Void, Void, String>() {
             @Override
             protected String doInBackground(Void... params) {
@@ -358,5 +317,8 @@ public class ActivityMain extends Activity{
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+    public void setFriends(List<Person> friendsNew){
+        friends = friendsNew;
     }
 }

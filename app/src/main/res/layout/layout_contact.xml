@@ -4,7 +4,7 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:weightSum="@integer/layout_contact_linearlayout_main_weight_sum">
-    <LinearLayout
+    <!--LinearLayout
         android:id="@+id/LayoutContact_LinearLayoutLeftContact"
         android:orientation="vertical"
         android:layout_width="match_parent"
@@ -18,7 +18,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
-
                 <de.hdodenhof.circleimageview.CircleImageView
                     xmlns:app="http://schemas.android.com/apk/res-auto"
                     android:id="@+id/LayoutContact_ImageViewLeft"
@@ -31,7 +30,7 @@
                 <TextView
                     style="@style/FriendStyle"
                     android:id="@+id/LayoutContact_TextViewNameLeft"
-                    android:layout_width="match_parent"
+                    android:layout_width="fill_parent"
                     android:layout_height="@dimen/layout_contact_textview_contact_height"
                     android:layout_weight="@integer/layout_contact_textview_weight"
                     android:gravity="center"/>
@@ -73,6 +72,69 @@
                     android:gravity="center"/>
 
             </LinearLayout>
+        </android.support.v7.widget.CardView>
+    </LinearLayout-->
+
+    <LinearLayout
+        android:id="@+id/LayoutContact_LinearLayoutLeftContact"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/layout_contact_linearlayout_margin"
+        android:layout_weight="@integer/layout_contact_linearlayout_left_contact_weight_sum">
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <ImageView
+                android:id="@+id/LayoutContact_ImageViewLeft"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:scaleType="centerCrop"/>
+
+            <TextView
+                style="@style/FriendStyle"
+                android:layout_below="@id/LayoutContact_ImageViewLeft"
+                android:id="@+id/LayoutContact_TextViewNameLeft"
+                android:layout_width="fill_parent"
+                android:layout_height="48dp"
+                android:padding="16dp"
+                android:layout_gravity="bottom"
+                android:layout_alignParentBottom="true"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:background="@color/black_transparent"/>
+
+        </android.support.v7.widget.CardView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/LayoutContact_LinearLayoutRightContact"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/layout_contact_linearlayout_margin"
+        android:layout_weight="@integer/layout_contact_linearlayout_left_contact_weight_sum">
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <ImageView
+                android:id="@+id/LayoutContact_ImageViewRight"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:scaleType="centerCrop"/>
+
+            <TextView
+                style="@style/FriendStyle"
+                android:layout_below="@id/LayoutContact_ImageViewRight"
+                android:id="@+id/LayoutContact_TextViewNameRight"
+                android:layout_width="fill_parent"
+                android:layout_height="48dp"
+                android:padding="16dp"
+                android:layout_gravity="bottom"
+                android:layout_alignParentBottom="true"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:background="@color/black_transparent"/>
         </android.support.v7.widget.CardView>
     </LinearLayout>
 

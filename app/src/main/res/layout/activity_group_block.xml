@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_height="fill_parent" android:layout_width="fill_parent"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_height="fill_parent"
+    android:layout_width="fill_parent"
     android:background="@color/background_material_light"
     android:id="@+id/scroll_group">
 
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+    <RelativeLayout
         android:id="@+id/layout_groups"
         android:orientation="vertical"
         android:layout_width="fill_parent"
@@ -15,11 +15,23 @@
         <ImageView
             android:id="@+id/avatar_group"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="fill_parent"
             android:scaleType="centerCrop"
             android:background="@color/black"
             android:adjustViewBounds="true"/>
-
+        <com.melnykov.fab.FloatingActionButton
+            xmlns:fab="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/ActivityGroupBlock_ButtonBlock"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_alignBottom="@id/avatar_group"
+            android:layout_marginBottom="-20dp"
+            android:layout_marginRight="10dp"
+            android:onClick="block"
+            android:src="@drawable/ic_action_lock_outline"
+            fab:fab_colorNormal="@color/orange_light"
+            fab:fab_colorPressed="@color/orange"/>
         <android.support.v7.widget.CardView
             android:id="@+id/ActivityFriendBlock_CardViewMessage"
             android:layout_below="@id/avatar_group"
@@ -75,7 +87,7 @@
             </RelativeLayout>
         </android.support.v7.widget.CardView>
 
-        <com.gc.materialdesign.views.ButtonRectangle
+        <!--com.gc.materialdesign.views.ButtonRectangle
             android:id="@+id/blockButtonGroup"
             android:layout_below="@id/ActivityFriendBlock_CardViewMessage"
             android:layout_margin="10dp"
@@ -88,7 +100,7 @@
             android:background="@color/orange_light"
             android:layout_marginBottom="20dp"
             android:textColor="@color/black"
-            android:textColorHighlight="@color/black" />
+            android:textColorHighlight="@color/black" /-->
 
     </RelativeLayout>
 </ScrollView>

@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/ActivityFriendBlock_ScrollViewMain"
-    android:layout_height="fill_parent"
-    android:layout_width="fill_parent"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
     android:background="@color/background_material_light">
 
     <RelativeLayout
@@ -15,11 +16,23 @@
         <ImageView
             android:id="@+id/ActivityFriendBlock_ImageViewContact"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="fill_parent"
             android:scaleType="centerCrop"
             android:background="@color/black"
             android:adjustViewBounds="true"/>
-
+        <com.melnykov.fab.FloatingActionButton
+            xmlns:fab="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/ActivityFriendBlock_ButtonBlock"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_alignBottom="@id/ActivityFriendBlock_ImageViewContact"
+            android:layout_marginBottom="-20dp"
+            android:layout_marginRight="10dp"
+            android:onClick="block"
+            android:src="@drawable/ic_action_lock_outline"
+            fab:fab_colorNormal="@color/orange_light"
+            fab:fab_colorPressed="@color/orange"/>
         <android.support.v7.widget.CardView
             android:id="@+id/ActivityFriendBlock_CardViewMessage"
             android:layout_below="@id/ActivityFriendBlock_ImageViewContact"
@@ -69,7 +82,7 @@
             </RelativeLayout>
         </android.support.v7.widget.CardView>
 
-        <mehdi.sakout.fancybuttons.FancyButton xmlns:fancy="http://schemas.android.com/apk/res-auto"
+        <!--mehdi.sakout.fancybuttons.FancyButton xmlns:fancy="http://schemas.android.com/apk/res-auto"
             style="@style/BlockMessagesStyle"
             android:id="@+id/ActivityFriendBlock_ButtonBlock"
             android:layout_below="@id/ActivityFriendBlock_CardViewMessage"
@@ -90,6 +103,6 @@
             fancy:fb_radius="@dimen/activity_friend_block_button_block_radius"
             fancy:fb_text="@string/button_block"
             fancy:fb_textColor="@color/black"
-            fancy:fb_textSize="@dimen/activity_friend_block_button_block_text_size"/>
+            fancy:fb_textSize="@dimen/activity_friend_block_button_block_text_size"/-->
     </RelativeLayout>
 </ScrollView>

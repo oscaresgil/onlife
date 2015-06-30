@@ -18,6 +18,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -32,6 +34,7 @@ import com.example.henzer.socialize.Models.Group;
 import com.example.henzer.socialize.Models.Person;
 import com.example.henzer.socialize.R;
 import com.kenny.snackbar.SnackBar;
+import com.melnykov.fab.FloatingActionButton;
 import com.r0adkll.slidr.Slidr;
 import com.r0adkll.slidr.model.SlidrConfig;
 import com.r0adkll.slidr.model.SlidrPosition;
@@ -45,7 +48,7 @@ import java.util.List;
 import static com.example.henzer.socialize.Controller.StaticMethods.loadImage;
 
 public class ActivityGroupBlock extends ActionBarActivity {
-    public static final String TAG = "GroupActionActivity";
+    public static final String TAG = "ActivityGroupBlock";
     private String nameGroup;
     private int maximumChars = 30, actualChar = 0;
 
@@ -56,6 +59,7 @@ public class ActivityGroupBlock extends ActionBarActivity {
     private ImageView avatar;
     private TextView maxCharsView;
     private MaterialEditText messageTextView;
+    private FloatingActionButton fab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,7 +78,12 @@ public class ActivityGroupBlock extends ActionBarActivity {
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.orange_light)));
         actionBar.setHomeAsUpIndicator(R.drawable.ic_arrow_back_black_48dp);
-        setContentView(R.layout.group_action);
+        setContentView(R.layout.activity_group_block);
+
+        fab = (FloatingActionButton) findViewById(R.id.ActivityGroupBlock_ButtonBlock);
+        Animation blinkAnim = AnimationUtils.loadAnimation(ActivityGroupBlock.this, R.anim.blink);
+        fab.startAnimation(blinkAnim);
+        fab.bringToFront();
 
         Intent i = getIntent();
         nameGroup = i.getStringExtra("name");
@@ -121,7 +130,8 @@ public class ActivityGroupBlock extends ActionBarActivity {
             @Override
             public void afterTextChanged(Editable s) {}
         });
-
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.ActivityGroupBlock_ButtonBlock);
+        fab.bringToFront();
     }
 
     @Override
@@ -217,10 +227,7 @@ public class ActivityGroupBlock extends ActionBarActivity {
         if (isNetworkAvailable()) {
             if (actualChar <= 30) {
                 try {
-                    new TaskGPS(this,false,true).execute();
-                    getIntent().putExtra("name", actualUser.getName());
-                    getIntent().putExtra("message",messageTextView.getText().toString());
-                    getIntent().putExtra("friendsgroup", (Serializable) friendsInGroup);
+                    new TaskGPS(this,TAG).execute();
                 } catch (Exception ex) {
                     SnackBar.show(ActivityGroupBlock.this, R.string.error);
                 }
@@ -245,13 +252,9 @@ public class ActivityGroupBlock extends ActionBarActivity {
         }
     }
 
-    public static void blockGroup(Context context, Location location, LoadToast toast){
-        SnackBar.show((Activity)context, location.getLatitude() + "," + location.getLongitude());
-
-        List<Person> friendsInGroup = (List<Person>) ((Activity) context).getIntent().getSerializableExtra("friendsgroup");
-        String name = ((Activity)context).getIntent().getStringExtra("name");
-        String message = ((Activity)context).getIntent().getStringExtra("message");
-        TaskSendNotification gcm = new TaskSendNotification(context, name, message, location.getLatitude(), location.getLongitude(), toast);
+    public void blockGroup(Location location, LoadToast toast){
+        SnackBar.show(ActivityGroupBlock.this, location.getLatitude() + "," + location.getLongitude());
+        TaskSendNotification gcm = new TaskSendNotification(ActivityGroupBlock.this, actualUser.getName(), messageTextView.getText().toString(), location.getLatitude(), location.getLongitude(), toast);
         gcm.execute(friendsInGroup.toArray(new Person[friendsInGroup.size()]));
     }
 }

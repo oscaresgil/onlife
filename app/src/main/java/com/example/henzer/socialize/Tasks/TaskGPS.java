@@ -30,18 +30,16 @@ public class TaskGPS extends AsyncTask<Void,Void,Void> implements LocationListen
     private Context context;
     private Location location;
     private LocationManager locationManager;
-    private boolean blockFriend,blockGroup;
+    private String TAG;
 
-    public TaskGPS(Context context, boolean blockFriend, boolean blockGroup){
+    public TaskGPS(Context context, String TAG){
         this.context = context;
-        this.blockFriend = blockFriend;
-        this.blockGroup = blockGroup;
+        this.TAG = TAG;
     }
 
     @Override protected void onPreExecute() {
         super.onPreExecute();
-        //turnGPSOn(context);
-        if (blockFriend || blockGroup) {
+        if (!TAG.equals("GcmMessageHandler")) {
             toast = new LoadToast(context)
                     .setText(context.getResources().getString(R.string.blocking))
                     .setTextColor(context.getResources().getColor(R.color.black))
@@ -63,20 +61,21 @@ public class TaskGPS extends AsyncTask<Void,Void,Void> implements LocationListen
 
     @Override protected void onPostExecute(Void loc) {
         super.onPostExecute(loc);
-
         if (location==null){
             location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
         }
 
-        //turnGPSOff(context);
-        if (blockFriend){
-            ActivityFriendBlock.blockContact(context, location, toast);
+        if (TAG.equals("ActivityFriendBlock")){
+            ActivityFriendBlock activityFriendBlock = (ActivityFriendBlock) context;
+            activityFriendBlock.blockContact(location,toast);
         }
-        else if(blockGroup){
-            ActivityGroupBlock.blockGroup(context, location, toast);
+        else if(TAG.equals("ActivityGroupBlock")){
+            ActivityGroupBlock activityGroupBlock = (ActivityGroupBlock) context;
+            activityGroupBlock.blockGroup(location,toast);
         }
         else{
-            GcmMessageHandler.stopLoop();
+            GcmMessageHandler messageHandler = (GcmMessageHandler) context;
+            messageHandler.setLocation(location);
         }
     }
 

@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- http://stackoverflow.com/questions/11285961/how-to-make-a-background-transparent-20-in-android -->
     <color name="orange_transparent">#ffd740</color>
     <color name="orange_light">#ffc107</color>
+    <color name="orange_light_transparent">#1Affc107</color>
     <color name="orange">#ff5500</color>
     <color name="white">#ffffff</color>
+    <color name="white_transparent">#4Dffffff</color>
     <color name="transparent">#00000000</color>
     <color name="date_color">#999999</color>
     <color name="black">#000000</color>
+    <color name="black_transparent">#4D000000</color>
     <color name="gray">#999999</color>
     <color name="red">#ff0000</color>
     <color name="blue">#0066cc</color>
