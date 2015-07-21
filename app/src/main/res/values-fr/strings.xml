@@ -56,6 +56,7 @@
     <string name="message_max_characters">Seuls 30 caractères S\'il vous plaît</string>
     <string name="button_change_text_message">Changer texte</string>
     <string name="button_block">Bloc!</string>
+    <string name="blocked_here">bloqué ici..</string>
 
     <string name="no_connection">Pas De Connection.</string>
     <string name="error">Il y avait une erreur.</string>
@@ -66,5 +67,7 @@
     <string name="toast_group_not_yet_created">Nom, photo ou contacts non précisés. Essaye Encore</string>
 
     <string name="select_friend">Sélectionnez amis</string>
+    <string name="show_location">Afficher ami Emplacement</string>
+    <string name="getting_actual_position">Obtenir Position</string>
 
 </resources>

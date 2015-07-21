@@ -28,6 +28,7 @@ public class GcmMessageHandler extends IntentService {
     private NotificationManager myNotificationManager;
     private Looper looper;
     private String user, message;
+    private double latitude, longitude;
     private double distance;
     private String[] dataP;
 
@@ -60,11 +61,10 @@ public class GcmMessageHandler extends IntentService {
     }
 
     public void setLocation(Location location){
-        double latitude = Double.parseDouble(dataP[2]);
-        double longitude = Double.parseDouble(dataP[3]);
+        latitude = Double.parseDouble(dataP[2]);
+        longitude = Double.parseDouble(dataP[3]);
         double latitudeBlocked = location.getLatitude();
         double longitudeBlocked = location.getLongitude();
-
         distance = distFrom(latitude, longitude, latitudeBlocked, longitudeBlocked);
         Log.e("Distance", distFrom(latitude, longitude, latitudeBlocked, longitudeBlocked)+"");
 
@@ -95,6 +95,8 @@ public class GcmMessageHandler extends IntentService {
         i.putExtra("user",user);
         i.putExtra("message",message);
         i.putExtra("distance",distance);
+        i.putExtra("latitude",latitude);
+        i.putExtra("longitude",longitude);
         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         DevicePolicyManager mDPM =
                 (DevicePolicyManager)getSystemService(Context.DEVICE_POLICY_SERVICE);

@@ -1,23 +1,36 @@
 package com.example.henzer.socialize.BlockActivity;
 
+
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.henzer.socialize.Activities.ActivityGoogleMaps;
 import com.example.henzer.socialize.R;
 import com.skyfishjy.library.RippleBackground;
 
-public class ActivityInBlock extends Activity {
+import java.text.DecimalFormat;
+
+public class ActivityInBlock extends Activity{
+
+    private String user;
+    private double latitude;
+    private double longitude;
+    private double distance;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.in_block_layout);
 
-        String user = getIntent().getStringExtra("user");
+        user = getIntent().getStringExtra("user");
+        latitude = getIntent().getDoubleExtra("latitude",0.0);
+        longitude = getIntent().getDoubleExtra("longitude",0.0);
         String message = getIntent().getStringExtra("message");
-        double distance = getIntent().getDoubleExtra("distance",0.0);
+        distance = getIntent().getDoubleExtra("distance",0.0);
 
         TextView userView = (TextView) findViewById(R.id.userName);
         TextView messageView = (TextView) findViewById(R.id.messageOnBlock);
@@ -25,7 +38,8 @@ public class ActivityInBlock extends Activity {
 
         userView.setText(user);
         messageView.setText("\""+message+"\"");
-        distanceView.setText(getResources().getString(R.string.distance)+" "+distance+"m");
+        DecimalFormat df = new DecimalFormat("#.###");
+        distanceView.setText(getResources().getString(R.string.distance)+" "+df.format(distance)+"m");
 
         final RippleBackground rippleBackground = (RippleBackground) findViewById(R.id.blockAnimation);
         rippleBackground.startRippleAnimation();
@@ -37,5 +51,12 @@ public class ActivityInBlock extends Activity {
                 finish();
             }
         });
+    }
+    public void showLocation(View v){
+        Intent i = new Intent(ActivityInBlock.this, ActivityGoogleMaps.class);
+        i.putExtra("user",user);
+        i.putExtra("longitude",longitude);
+        i.putExtra("latitude",latitude);
+        startActivity(i);
     }
 }

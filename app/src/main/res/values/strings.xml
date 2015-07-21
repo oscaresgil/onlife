@@ -9,6 +9,7 @@
     <string name="device_admin">Lockscreen OnLife Authorization</string>
     <string name="device_admin_description">This allow your phone to be locked</string>
     <string name="facebook_app_id">781334441987917</string>
+    <string name="gps_app_id">AIzaSyBMo260wxpPNsCHle_ynoMUx4sju9W76LY</string>
     <string name="login_facebook">Login with Facebook</string>
     <string name="action_logout">Logout</string>
 
@@ -57,6 +58,7 @@
     <string name="message_max_characters">Only 30 characters please</string>
     <string name="button_change_text_message">Change Text</string>
     <string name="button_block">Block!</string>
+    <string name="blocked_here">blocked here..</string>
 
     <string name="no_connection">No Connection.</string>
     <string name="error">There was an error.</string>
@@ -67,5 +69,7 @@
     <string name="toast_group_not_yet_created">Name, Photo or Contacts not specified. Try Again</string>
 
     <string name="select_friend">Select Friends</string>
+    <string name="show_location">Show Friend Location</string>
+    <string name="getting_actual_position">Getting Position</string>
 
 </resources>
