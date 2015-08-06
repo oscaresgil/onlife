@@ -13,8 +13,8 @@ import android.widget.Toast;
 
 import com.example.henzer.socialize.Adapters.AdapterStickyTitle;
 import com.example.henzer.socialize.Listeners.ListenerFlipCheckbox;
-import com.example.henzer.socialize.Models.Person;
-import com.example.henzer.socialize.Models.SessionData;
+import com.example.henzer.socialize.Models.ModelPerson;
+import com.example.henzer.socialize.Models.ModelSessionData;
 import com.example.henzer.socialize.R;
 import com.example.henzer.socialize.Tasks.TaskFacebookFriendRequest;
 import com.facebook.AccessToken;
@@ -32,9 +32,9 @@ public class ActivitySelectContacts extends Activity {
     private final String TAG = "ActivitySelectContacts";
     private StickyHeaderDecoration decor;
     private RecyclerView mList;
-    private SessionData sessionData;
-    private List<Person> friends;
-    private List<Person> allFriends;
+    private ModelSessionData modelSessionData;
+    private List<ModelPerson> friends;
+    private List<ModelPerson> allFriends;
     private Animation animation1,animation2;
     private ListenerFlipCheckbox listener;
 
@@ -43,8 +43,8 @@ public class ActivitySelectContacts extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_contact);
 
-        sessionData = (SessionData)getIntent().getExtras().getSerializable("data");
-        friends = sessionData.getFriends();
+        modelSessionData = (ModelSessionData)getIntent().getExtras().getSerializable("data");
+        friends = modelSessionData.getFriends();
 
         mList = (RecyclerView) findViewById(R.id.ActivitySelectContact_RecyclerViewList);
         mList.setHasFixedSize(true);
@@ -87,9 +87,9 @@ public class ActivitySelectContacts extends Activity {
         mList.addItemDecoration(decor, 1);
     }
 
-    public void setAllFriends(List<Person> allFriends) {
+    public void setAllFriends(List<ModelPerson> allFriends) {
         this.allFriends = allFriends;
-        for (Person f: this.allFriends){
+        for (ModelPerson f: this.allFriends){
             if (isSelected(f.getId())){
                 f.setHomeSelected(true);
             }
@@ -101,7 +101,7 @@ public class ActivitySelectContacts extends Activity {
     }
 
     public boolean isSelected(String id){
-        for (Person f: friends){
+        for (ModelPerson f: friends){
             if (f.getId().equals(id)){
                 return f.isHomeSelected();
             }

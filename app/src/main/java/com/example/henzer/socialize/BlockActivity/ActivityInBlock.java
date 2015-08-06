@@ -24,7 +24,7 @@ public class ActivityInBlock extends Activity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.in_block_layout);
+        setContentView(R.layout.activity_in_block);
 
         user = getIntent().getStringExtra("user");
         latitude = getIntent().getDoubleExtra("latitude",0.0);
@@ -32,18 +32,18 @@ public class ActivityInBlock extends Activity{
         String message = getIntent().getStringExtra("message");
         distance = getIntent().getDoubleExtra("distance",0.0);
 
-        TextView userView = (TextView) findViewById(R.id.userName);
-        TextView messageView = (TextView) findViewById(R.id.messageOnBlock);
-        TextView distanceView = (TextView) findViewById(R.id.distance);
+        TextView userView = (TextView) findViewById(R.id.ActivityInBlock_TextViewUser);
+        TextView messageView = (TextView) findViewById(R.id.ActivityInBlock_TextViewMessage);
+        TextView distanceView = (TextView) findViewById(R.id.ActivityInBlock_TextViewDistance);
 
         userView.setText(user);
         messageView.setText("\""+message+"\"");
         DecimalFormat df = new DecimalFormat("#.###");
         distanceView.setText(getResources().getString(R.string.distance)+" "+df.format(distance)+"m");
 
-        final RippleBackground rippleBackground = (RippleBackground) findViewById(R.id.blockAnimation);
+        final RippleBackground rippleBackground = (RippleBackground) findViewById(R.id.ActivityInBlock_BlockAnimation);
         rippleBackground.startRippleAnimation();
-        ImageView imageView = (ImageView) findViewById(R.id.centerImage);
+        ImageView imageView = (ImageView) findViewById(R.id.ActivityInBlock_ImageBlock);
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

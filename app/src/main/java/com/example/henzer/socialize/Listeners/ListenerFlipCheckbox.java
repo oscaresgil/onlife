@@ -5,14 +5,14 @@ import android.graphics.BitmapFactory;
 import android.view.animation.Animation;
 import android.widget.ImageView;
 
-import com.example.henzer.socialize.Models.Person;
+import com.example.henzer.socialize.Models.ModelPerson;
 import com.example.henzer.socialize.R;
 
 import static com.example.henzer.socialize.Controller.StaticMethods.loadImage;
 
 public class ListenerFlipCheckbox implements Animation.AnimationListener{
     private Context context;
-    private Person f;
+    private ModelPerson f;
     private ImageView imageButton;
     private Animation animation1,animation2;
     private boolean home;
@@ -25,7 +25,7 @@ public class ListenerFlipCheckbox implements Animation.AnimationListener{
         this.home = home;
     }
 
-    public void setFriend(Person f){
+    public void setFriend(ModelPerson f){
         this.f = f;
     }
 

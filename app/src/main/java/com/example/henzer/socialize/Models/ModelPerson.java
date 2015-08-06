@@ -2,7 +2,7 @@ package com.example.henzer.socialize.Models;
 
 import java.io.Serializable;
 
-public class Person implements Serializable{
+public class ModelPerson implements Serializable{
     private String id;
     private String id_phone;
     private String name;
@@ -13,10 +13,10 @@ public class Person implements Serializable{
     private boolean deleted=true;
     private boolean homeSelected=false;
 
-    public Person() {
+    public ModelPerson() {
     }
 
-    public Person(String id, String id_phone, String name, String photo, String state) {
+    public ModelPerson(String id, String id_phone, String name, String photo, String state) {
         this.id = id;
         this.id_phone = id_phone;
         this.name = name;

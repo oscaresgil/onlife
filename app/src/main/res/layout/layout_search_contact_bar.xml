@@ -10,7 +10,7 @@
         style="@style/BlockingMessage"
         android:gravity="left"
         android:layout_gravity="center"
-        android:id="@+id/search_contact_text"
+        android:id="@+id/LayoutSearchContactBar_EditTextSearch"
         android:hint="@string/search_contact_bar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

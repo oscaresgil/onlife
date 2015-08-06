@@ -14,22 +14,20 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
+import com.example.henzer.socialize.GCMClient.GcmHelper;
+import com.example.henzer.socialize.Models.ModelPerson;
 import com.example.henzer.socialize.R;
 import com.example.henzer.socialize.Tasks.TaskFacebookFriendRequest;
 import com.example.henzer.socialize.Tasks.TaskLoadAllInformation;
-import com.example.henzer.socialize.Tasks.TaskImageDownload;
-import com.example.henzer.socialize.BlockActivity.DeviceAdmin;
-import com.example.henzer.socialize.GCMClient.GCMHelper;
-import com.example.henzer.socialize.Models.Group;
-import com.example.henzer.socialize.Models.Person;
-import com.example.henzer.socialize.Models.SessionData;
+import com.example.henzer.socialize.Controller.DeviceAdmin;
+import com.example.henzer.socialize.Models.ModelGroup;
+import com.example.henzer.socialize.Models.ModelSessionData;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
-import com.facebook.GraphResponse;
 import com.facebook.HttpMethod;
 import com.facebook.Profile;
 import com.facebook.ProfileTracker;
@@ -42,11 +40,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -61,8 +56,8 @@ public class ActivityMain extends Activity{
     public static final String name = "nameKey";
     private SharedPreferences sharedpreferences;
 
-    private List<Person> friends = new ArrayList();
-    private Person userLogin;
+    private List<ModelPerson> friends = new ArrayList();
+    private ModelPerson userLogin;
 
     private Button loginFB;
     private CallbackManager callbackManager;
@@ -83,7 +78,7 @@ public class ActivityMain extends Activity{
                     Log.i("PROFILE: ",Profile.getCurrentProfile().getName());
                     Profile profile = Profile.getCurrentProfile();
                     try {
-                        userLogin = new Person(profile.getId(), null, profile.getName(), "http://graph.facebook.com/" + profile.getId() + "/picture?type=large", "A");
+                        userLogin = new ModelPerson(profile.getId(), null, profile.getName(), "http://graph.facebook.com/" + profile.getId() + "/picture?type=large", "A");
                     }catch(Exception e){
                         Log.e(TAG, e.getLocalizedMessage());
                     }
@@ -214,7 +209,7 @@ public class ActivityMain extends Activity{
             protected String doInBackground(Void... params) {
                 String msg = "";
                 try {
-                    GCMHelper gcmRegistrationHelper = new GCMHelper(getApplicationContext());
+                    GcmHelper gcmRegistrationHelper = new GcmHelper(getApplicationContext());
                     String gcmRegID = gcmRegistrationHelper.GCMRegister(PROJECT_NUMBER);
                     msg = gcmRegID;
                     Log.i("GCM", gcmRegID);
@@ -231,7 +226,7 @@ public class ActivityMain extends Activity{
                 //AddNewUser addNewUser = new AddNewUser(MainActivity.this);
                 userLogin.setId_phone(idMSG);
                 TaskLoadAllInformation load = new TaskLoadAllInformation(ActivityMain.this);
-                List<Person> enviados = new ArrayList();
+                List<ModelPerson> enviados = new ArrayList();
                 enviados.add(userLogin);
                 enviados.addAll(friends);
                 JSONObject data = null;
@@ -244,7 +239,7 @@ public class ActivityMain extends Activity{
                     if(error == false){
                         sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
                         Editor editor = sharedpreferences.edit();
-                        data.put("groups", new JSONArray());
+                        data.put("activity_groups", new JSONArray());
                         editor.putString("session", data.toString());
                         editor.commit();
 
@@ -270,32 +265,32 @@ public class ActivityMain extends Activity{
             JSONObject mySession = new JSONObject(prefe.getString("session", ""));
             JSONObject me = mySession.getJSONObject("me");
             JSONArray fr = mySession.getJSONArray("friends");
-            userLogin = new Person(me.getString("id"), me.getString("id_phone"), me.getString("name"), me.getString("photo"), me.getString("state"));
+            userLogin = new ModelPerson(me.getString("id"), me.getString("id_phone"), me.getString("name"), me.getString("photo"), me.getString("state"));
             friends = new ArrayList();
-            Person friend = null;
+            ModelPerson friend = null;
             for(int i = 0; i<fr.length(); i++){
                 JSONObject f = fr.getJSONObject(i);
                 System.out.println(f.getString("name"));
-                friend = new Person(f.getString("id"), f.getString("id_phone"), deleteAccent(f.getString("name")), f.getString("photo"), f.getString("state"));
+                friend = new ModelPerson(f.getString("id"), f.getString("id_phone"), deleteAccent(f.getString("name")), f.getString("photo"), f.getString("state"));
                 Log.i("FRIEND AFTER CLOSING",friend.toString());
                 friends.add(friend);
             }
-            List<Group> groups = new ArrayList();
-            if(mySession.getJSONArray("groups")!=null){
-                JSONArray myGroups = mySession.getJSONArray("groups");
+            List<ModelGroup> modelGroups = new ArrayList();
+            if(mySession.getJSONArray("activity_groups")!=null){
+                JSONArray myGroups = mySession.getJSONArray("activity_groups");
                 for(int i = 0; i<myGroups.length(); i++){
                     JSONObject element = myGroups.getJSONObject(i);
                     JSONArray people = element.getJSONArray("people");
-                    List<Person> peop = new ArrayList();
+                    List<ModelPerson> peop = new ArrayList();
                     for(int j=0; j<people.length(); j++){
                         JSONObject per = people.getJSONObject(j);
-                        peop.add(new Person(per.getString("id"), per.getString("id_phone"), per.getString("name"), per.getString("photo"), per.getString("state")));
+                        peop.add(new ModelPerson(per.getString("id"), per.getString("id_phone"), per.getString("name"), per.getString("photo"), per.getString("state")));
                     }
-                    Group g = new Group(element.getInt("id"), element.getString("name"), peop, element.getString("photo"), element.getInt("limit"), element.getString("state"));
-                    groups.add(g);
+                    ModelGroup g = new ModelGroup(element.getInt("id"), element.getString("name"), peop, element.getString("photo"), element.getInt("limit"), element.getString("state"));
+                    modelGroups.add(g);
                 }
             }
-            SessionData s = new SessionData(userLogin,friends,groups);
+            ModelSessionData s = new ModelSessionData(userLogin,friends, modelGroups);
             Intent i = new Intent(ActivityMain.this,ActivityHome.class);
             /*//Intent i = new Intent(MainActivity.this,ChooseFriendActivity.class);
 
@@ -318,7 +313,7 @@ public class ActivityMain extends Activity{
             e.printStackTrace();
         }
     }
-    public void setFriends(List<Person> friendsNew){
+    public void setFriends(List<ModelPerson> friendsNew){
         friends = friendsNew;
     }
 }

@@ -1,6 +1,5 @@
 package com.example.henzer.socialize.BlockActivity;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
@@ -21,7 +20,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.example.henzer.socialize.Models.Person;
+import com.example.henzer.socialize.Models.ModelPerson;
 import com.example.henzer.socialize.R;
 import com.example.henzer.socialize.Tasks.TaskGPS;
 import com.example.henzer.socialize.Tasks.TaskSendNotification;
@@ -39,8 +38,8 @@ import static com.example.henzer.socialize.Controller.StaticMethods.loadImage;
 
 public class ActivityFriendBlock extends ActionBarActivity {
     public static final String TAG = "ActivityFriendBlock";
-    private Person actualUser;
-    private Person friend;
+    private ModelPerson actualUser;
+    private ModelPerson friend;
     private MaterialEditText messageTextView;
     private TextView maxCharsView;
     private int maximumChars = 30, actualChar = 0;
@@ -51,8 +50,8 @@ public class ActivityFriendBlock extends ActionBarActivity {
         super.onCreate(savedInstanceState);
 
         Intent i = getIntent();
-        friend = (Person)i.getSerializableExtra("data");
-        actualUser = (Person) i.getSerializableExtra("actualuser");
+        friend = (ModelPerson)i.getSerializableExtra("data");
+        actualUser = (ModelPerson) i.getSerializableExtra("actualuser");
 
         SlidrConfig config = new SlidrConfig.Builder()
                 .primaryColor(getResources().getColor(R.color.orange))

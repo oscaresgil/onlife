@@ -6,11 +6,11 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
-public final class GCMHelper {
+public final class GcmHelper {
     private static GoogleCloudMessaging gcm = null;
     private static Context context = null;
 
-    public GCMHelper(Context context) {
+    public GcmHelper(Context context) {
         this.context = context;
     }
 

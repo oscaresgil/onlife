@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/LayoutContact_LinearLayoutMain"
+    android:id="@+id/ActivityGroups_LayoutMain"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
     <LinearLayout
@@ -20,7 +20,7 @@
                 <de.hdodenhof.circleimageview.CircleImageView
                     xmlns:app="http://schemas.android.com/apk/res-auto"
                     app:border_color="@color/transparent"
-                    android:id="@+id/image_group"
+                    android:id="@+id/ActivityGroups_CircleImageViewGroup"
                     android:layout_width="fill_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="3"
@@ -28,7 +28,7 @@
                     android:layout_gravity="center"/>
                 <TextView
                     style="@style/AppTheme"
-                    android:id="@+id/LayoutFriendsInGroup_TextViewName"
+                    android:id="@+id/ActivityGroups_TextViewGroupName"
                     android:layout_width="fill_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="2"

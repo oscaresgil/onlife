@@ -18,7 +18,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.henzer.socialize.BlockActivity.ActivityFriendBlock;
-import com.example.henzer.socialize.Models.Person;
+import com.example.henzer.socialize.Models.ModelPerson;
 import com.example.henzer.socialize.R;
 import com.jpardogo.listbuddies.lib.adapters.CircularLoopAdapter;
 import com.jpardogo.listbuddies.lib.views.ListBuddiesLayout;
@@ -35,9 +35,9 @@ public class ActivityGroupInformation extends ActionBarActivity {
     private ListBuddiesLayout listViewBuddy;
     private ListView listView;
 
-    private Person userData;
+    private ModelPerson userData;
     private GroupAdapter adapter;
-    private List<Person> friendsInGroup;
+    private List<ModelPerson> friendsInGroup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,15 +57,15 @@ public class ActivityGroupInformation extends ActionBarActivity {
         actionBar.setTitle((Html.fromHtml("<b><font color=\"#000000\">" + getResources().getString(R.string.title_activity_information) + "</font></b>")));
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setHomeAsUpIndicator(R.drawable.ic_arrow_back_black_48dp);
-        setContentView(R.layout.group_information);
+        setContentView(R.layout.activity_group_information);
 
         Intent i = getIntent();
-        friendsInGroup = (List<Person>) i.getSerializableExtra("data");
-        userData = (Person) i.getSerializableExtra("user");
+        friendsInGroup = (List<ModelPerson>) i.getSerializableExtra("data");
+        userData = (ModelPerson) i.getSerializableExtra("user");
 
         if (friendsInGroup.size()>=4){
-            final List<Person> friends1 = new ArrayList<>();
-            final List<Person> friends2 = new ArrayList<>();
+            final List<ModelPerson> friends1 = new ArrayList<>();
+            final List<ModelPerson> friends2 = new ArrayList<>();
             for (int it=0; it<friendsInGroup.size(); it++){
                 if (it<(friendsInGroup.size() /2)){
                     friends1.add(friendsInGroup.get(it));
@@ -77,13 +77,13 @@ public class ActivityGroupInformation extends ActionBarActivity {
 
             Adapter adapter1 = new Adapter(this,friends1);
             Adapter adapter2 = new Adapter(this,friends2);
-            listViewBuddy = (ListBuddiesLayout) findViewById(R.id.friendInGroupList);
+            listViewBuddy = (ListBuddiesLayout) findViewById(R.id.ActivityGroupInformation_ListNonSimpleFriend);
             listViewBuddy.setVisibility(View.VISIBLE);
             listViewBuddy.setAdapters(adapter1,adapter2);
             listViewBuddy.setOnItemClickListener(new ListBuddiesLayout.OnBuddyItemClickListener() {
                 @Override
                 public void onBuddyItemClicked(AdapterView<?> adapterView, View view, int i, int i2, long l) {
-                    Person friend;
+                    ModelPerson friend;
                     if (i==0){
                         friend = friends1.get(i2);
                     }
@@ -101,13 +101,13 @@ public class ActivityGroupInformation extends ActionBarActivity {
         }
         else{
             adapter = new GroupAdapter(this, R.layout.layout_friends_in_group_simple, friendsInGroup);
-            listView = (ListView) findViewById(R.id.friendInGroupListSimple);
+            listView = (ListView) findViewById(R.id.ActivityGroupInformation_ListSimpleFriend);
             listView.setVisibility(View.VISIBLE);
             listView.setAdapter(adapter);
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    Person friend = friendsInGroup.get(position);
+                    ModelPerson friend = friendsInGroup.get(position);
                     Intent intent = new Intent(ActivityGroupInformation.this, ActivityFriendBlock.class);
                     intent.putExtra("data",friend);
                     intent.putExtra("actualuser",userData);
@@ -146,9 +146,9 @@ public class ActivityGroupInformation extends ActionBarActivity {
 
     class Adapter extends CircularLoopAdapter{
         private Context context;
-        private List<Person> objects;
+        private List<ModelPerson> objects;
 
-        public Adapter(Context context, List<Person> objects) {
+        public Adapter(Context context, List<ModelPerson> objects) {
             this.objects = objects;
             this.context = context;
         }
@@ -159,7 +159,7 @@ public class ActivityGroupInformation extends ActionBarActivity {
         }
 
         @Override
-        public Person getItem(int position) {
+        public ModelPerson getItem(int position) {
             return objects.get(getCircularPosition(position));
         }
 
@@ -174,12 +174,12 @@ public class ActivityGroupInformation extends ActionBarActivity {
         }
     }
 
-    class GroupAdapter extends ArrayAdapter<Person> {
-        private List<Person> objects;
+    class GroupAdapter extends ArrayAdapter<ModelPerson> {
+        private List<ModelPerson> objects;
         private int resource;
         private Context context;
 
-        public GroupAdapter(Context context, int resource, List<Person> objects) {
+        public GroupAdapter(Context context, int resource, List<ModelPerson> objects) {
             super(context, resource, objects);
             this.objects = objects;
             this.resource = resource;
@@ -191,7 +191,7 @@ public class ActivityGroupInformation extends ActionBarActivity {
             LayoutInflater inflater = ((Activity)context).getLayoutInflater();
             View rowView = inflater.inflate(resource, null, true);
             ImageView avatar = (ImageView) rowView.findViewById(R.id.LayoutFriendsInGroup_ImageViewContact);
-            TextView text = (TextView) rowView.findViewById(R.id.LayoutFriendsInGroup_TextViewName);
+            TextView text = (TextView) rowView.findViewById(R.id.ActivityGroups_TextViewGroupName);
             avatar.setImageBitmap(loadImage(ActivityGroupInformation.this, objects.get(position).getId()));
             text.setText(objects.get(position).getName());
             return rowView;

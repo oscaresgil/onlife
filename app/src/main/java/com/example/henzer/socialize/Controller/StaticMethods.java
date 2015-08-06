@@ -10,13 +10,9 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.provider.Settings;
-import android.util.Log;
-
-import com.example.henzer.socialize.Models.Person;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.util.List;
 
 public class StaticMethods {
 

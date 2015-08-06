@@ -5,7 +5,7 @@ import android.util.Log;
 
 import com.example.henzer.socialize.Activities.ActivityMain;
 import com.example.henzer.socialize.Activities.ActivitySelectContacts;
-import com.example.henzer.socialize.Models.Person;
+import com.example.henzer.socialize.Models.ModelPerson;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 
@@ -23,7 +23,7 @@ import static com.example.henzer.socialize.Controller.StaticMethods.deleteAccent
 public class TaskFacebookFriendRequest implements GraphRequest.Callback {
     private Context context;
     private String TAG;
-    private List<Person> friends;
+    private List<ModelPerson> friends;
 
     public TaskFacebookFriendRequest(Context context, String TAG){
         this.context = context;
@@ -51,7 +51,7 @@ public class TaskFacebookFriendRequest implements GraphRequest.Callback {
                 Log.i("Friend "+i,id+" = "+ deleteAccent(name));
                 Log.i("Friend URL "+i,path.toString());
 
-                Person contact = new Person(id, null, deleteAccent(name), pathURL.toString(), "A");
+                ModelPerson contact = new ModelPerson(id, null, deleteAccent(name), pathURL.toString(), "A");
                 //Hay que eliminarlo luego
                 contact.setHomeSelected(true);
                 friends.add(contact);
@@ -59,10 +59,10 @@ public class TaskFacebookFriendRequest implements GraphRequest.Callback {
 
             new TaskImageDownload(context,null,true,null,friends).execute(true);
 
-            Collections.sort(friends, new Comparator<Person>() {
+            Collections.sort(friends, new Comparator<ModelPerson>() {
                 @Override
-                public int compare(Person person1, Person person2) {
-                    return person1.getName().compareTo(person2.getName());
+                public int compare(ModelPerson modelPerson1, ModelPerson modelPerson2) {
+                    return modelPerson1.getName().compareTo(modelPerson2.getName());
                 }
             });
 

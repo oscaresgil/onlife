@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background_material_light">
     <TextView
@@ -11,7 +12,7 @@
         android:textStyle="bold" />
 
     <ListView
-        android:id="@+id/friendInGroupListSimple"
+        android:id="@+id/ActivityGroupInformation_ListSimpleFriend"
         android:layout_width="match_parent"
         android:layout_marginRight="20dp"
         android:layout_height="match_parent"
@@ -20,7 +21,7 @@
     </ListView>
 
     <com.jpardogo.listbuddies.lib.views.ListBuddiesLayout
-        android:id="@+id/friendInGroupList"
+        android:id="@+id/ActivityGroupInformation_ListNonSimpleFriend"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone" />

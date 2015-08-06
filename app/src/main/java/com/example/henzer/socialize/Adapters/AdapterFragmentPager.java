@@ -8,13 +8,13 @@ import android.support.v4.app.FragmentPagerAdapter;
 
 import com.example.henzer.socialize.Fragments.FragmentContacts;
 import com.example.henzer.socialize.Fragments.FragmentGroups;
-import com.example.henzer.socialize.Models.SessionData;
+import com.example.henzer.socialize.Models.ModelSessionData;
 import com.example.henzer.socialize.R;
 
 public class AdapterFragmentPager extends FragmentPagerAdapter {
     final int PAGE_COUNT = 2;
     private String tabTitles[];
-    private SessionData sessionData;
+    private ModelSessionData modelSessionData;
 
     public AdapterFragmentPager(FragmentManager fm, Context context) {
         super(fm);
@@ -27,7 +27,7 @@ public class AdapterFragmentPager extends FragmentPagerAdapter {
 
     @Override public Fragment getItem(int position) {
         Bundle arguments = new Bundle();
-        arguments.putSerializable("data", sessionData);
+        arguments.putSerializable("data", modelSessionData);
         if (position==0) {
             return FragmentContacts.newInstance(arguments);
         }
@@ -40,7 +40,7 @@ public class AdapterFragmentPager extends FragmentPagerAdapter {
         return tabTitles[position];
     }
 
-    public void setSessionData(SessionData sessionData) {
-        this.sessionData = sessionData;
+    public void setModelSessionData(ModelSessionData modelSessionData) {
+        this.modelSessionData = modelSessionData;
     }
 }

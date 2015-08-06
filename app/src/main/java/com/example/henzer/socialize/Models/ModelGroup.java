@@ -3,15 +3,15 @@ package com.example.henzer.socialize.Models;
 import java.io.Serializable;
 import java.util.List;
 
-public class Group implements Serializable {
+public class ModelGroup implements Serializable {
     private int id;
     private String name;
-    private List<Person> friendsInGroup;
+    private List<ModelPerson> friendsInGroup;
     private String nameImage;
     private int limit;
     private String state;
 
-    public Group(int id, String name, List<Person> friendsInGroup, String nameImage, int limit, String state) {
+    public ModelGroup(int id, String name, List<ModelPerson> friendsInGroup, String nameImage, int limit, String state) {
         this.id = id;
         this.name = name;
         this.friendsInGroup = friendsInGroup;
@@ -48,7 +48,7 @@ public class Group implements Serializable {
         this.name = name;
     }
 
-    public List<Person> getFriendsInGroup() {
+    public List<ModelPerson> getFriendsInGroup() {
         return friendsInGroup;
     }
 

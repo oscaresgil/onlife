@@ -2,8 +2,8 @@ package com.example.henzer.socialize.Controller;
 import android.content.SharedPreferences;
 import android.util.Log;
 
-import com.example.henzer.socialize.Models.Group;
-import com.example.henzer.socialize.Models.Person;
+import com.example.henzer.socialize.Models.ModelGroup;
+import com.example.henzer.socialize.Models.ModelPerson;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -27,7 +27,7 @@ public class SessionData {
     }
 
 
-    public void saveInSession(List<Group> groups) throws JSONException {
+    public void saveInSession(List<ModelGroup> modelGroups) throws JSONException {
         SharedPreferences.Editor editor = preferences.edit();
 
         JSONObject mySession = new JSONObject(preferences.getString("session", "{}"));
@@ -35,16 +35,16 @@ public class SessionData {
 
         JSONArray myGroups = new JSONArray();
 
-        for(Group group: groups) {
+        for(ModelGroup modelGroup : modelGroups) {
             JSONObject obj = new JSONObject();
-            obj.put("id", group.getId());
-            obj.put("name", group.getName());
-            obj.put("photo", group.getNameImage());
-            obj.put("limit", group.getLimit());
-            obj.put("state", group.getState());
+            obj.put("id", modelGroup.getId());
+            obj.put("name", modelGroup.getName());
+            obj.put("photo", modelGroup.getNameImage());
+            obj.put("limit", modelGroup.getLimit());
+            obj.put("state", modelGroup.getState());
 
             JSONArray arr = new JSONArray();
-            for (Person p : group.getFriendsInGroup()) {
+            for (ModelPerson p : modelGroup.getFriendsInGroup()) {
                 JSONObject friend = new JSONObject();
                 friend.put("id", p.getId());
                 friend.put("id_phone", p.getId_phone());
@@ -57,7 +57,7 @@ public class SessionData {
             obj.put("people", arr);
             myGroups.put(obj);
         }
-        mySession.put("groups", myGroups);
+        mySession.put("activity_groups", myGroups);
 
         Log.e(TAG, mySession.toString());
         editor.putString("session", mySession.toString());

@@ -6,7 +6,7 @@
 
     <TextView
         style="@style/BlockMessagesStyle"
-        android:id="@+id/userName"
+        android:id="@+id/ActivityInBlock_TextViewUser"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
@@ -14,8 +14,8 @@
         android:textColor="@color/black"/>
     <TextView
         style="@style/FriendStyle"
-        android:id="@+id/messageOnBlock"
-        android:layout_below="@id/userName"
+        android:id="@+id/ActivityInBlock_TextViewMessage"
+        android:layout_below="@id/ActivityInBlock_TextViewUser"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
@@ -23,8 +23,8 @@
         android:textColor="@color/black"/>
     <TextView
         style="@style/FriendStyle"
-        android:id="@+id/distance"
-        android:layout_below="@id/messageOnBlock"
+        android:id="@+id/ActivityInBlock_TextViewDistance"
+        android:layout_below="@id/ActivityInBlock_TextViewMessage"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
@@ -33,19 +33,19 @@
 
     <Button
         android:layout_centerHorizontal="true"
-        android:layout_below="@id/distance"
-        android:id="@+id/showLocationButton"
+        android:layout_below="@id/ActivityInBlock_TextViewDistance"
+        android:id="@+id/ActivityInBlock_ButtonShowLocation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/show_location"
         android:onClick="showLocation"/>
 
     <com.skyfishjy.library.RippleBackground
-        android:layout_below="@id/showLocationButton"
+        android:layout_below="@id/ActivityInBlock_ButtonShowLocation"
         android:layout_margin="5dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/blockAnimation"
+        android:id="@+id/ActivityInBlock_BlockAnimation"
         app:rb_color="@color/orange_light"
         app:rb_radius="32dp"
         app:rb_rippleAmount="5"
@@ -55,7 +55,7 @@
             android:layout_width="64dp"
             android:layout_height="64dp"
             android:layout_centerInParent="true"
-            android:id="@+id/centerImage"
+            android:id="@+id/ActivityInBlock_ImageBlock"
             android:src="@drawable/ic_https_black_48dp"/>
     </com.skyfishjy.library.RippleBackground>
 

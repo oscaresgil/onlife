@@ -12,7 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.henzer.socialize.Listeners.ListenerFlipCheckbox;
-import com.example.henzer.socialize.Models.Person;
+import com.example.henzer.socialize.Models.ModelPerson;
 import com.example.henzer.socialize.R;
 import com.gc.materialdesign.views.CheckBox;
 
@@ -26,11 +26,11 @@ public class AdapterStickyTitle extends RecyclerView.Adapter<AdapterStickyTitle.
     private RecyclerView recyclerView;
     private LayoutInflater mInflater;
     private Context context;
-    private List<Person> friends;
+    private List<ModelPerson> friends;
     private ListenerFlipCheckbox listener;
     private Animation animation1;
 
-    public AdapterStickyTitle(Context context, RecyclerView recyclerView, List<Person> friends, ListenerFlipCheckbox listener, Animation animation1) {
+    public AdapterStickyTitle(Context context, RecyclerView recyclerView, List<ModelPerson> friends, ListenerFlipCheckbox listener, Animation animation1) {
         mInflater = LayoutInflater.from(context);
         this.context = context;
         this.recyclerView = recyclerView;
@@ -40,7 +40,7 @@ public class AdapterStickyTitle extends RecyclerView.Adapter<AdapterStickyTitle.
     }
 
     @Override public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        View view = mInflater.inflate(R.layout.select_contact_group, viewGroup, false);
+        View view = mInflater.inflate(R.layout.layout_select_contact_group, viewGroup, false);
         view.setOnClickListener(new OnClick(recyclerView));
         return new ViewHolder(view);
     }
@@ -64,7 +64,7 @@ public class AdapterStickyTitle extends RecyclerView.Adapter<AdapterStickyTitle.
     }
 
     @Override public HeaderHolder onCreateHeaderViewHolder(ViewGroup parent) {
-        View view = mInflater.inflate(R.layout.header_test_title, parent, false);
+        View view = mInflater.inflate(R.layout.textview_header_title, parent, false);
         return new HeaderHolder(view);
     }
 
@@ -81,9 +81,9 @@ public class AdapterStickyTitle extends RecyclerView.Adapter<AdapterStickyTitle.
             super(itemView);
 
             LinearLayout linearLayout = (LinearLayout) itemView;
-            imageView = (ImageView) linearLayout.findViewById(R.id.avatar_friends);
-            checkBox = (CheckBox) linearLayout.findViewById(R.id.checkBox1);
-            textView = (TextView) linearLayout.findViewById(R.id.name_friend);
+            imageView = (ImageView) linearLayout.findViewById(R.id.LayoutSelectContactGroup_ImageViewFriend);
+            checkBox = (CheckBox) linearLayout.findViewById(R.id.LayoutSelectContactGroup_CheckBoxContact);
+            textView = (TextView) linearLayout.findViewById(R.id.LayoutSelectContactGroup_TextViewNameFriend);
         }
     }
 
@@ -104,11 +104,11 @@ public class AdapterStickyTitle extends RecyclerView.Adapter<AdapterStickyTitle.
         @Override
         public void onClick(View v) {
             int item = recyclerView.getChildAdapterPosition(v);
-            CheckBox checkBox = (CheckBox)v.findViewById(R.id.checkBox1);
+            CheckBox checkBox = (CheckBox)v.findViewById(R.id.LayoutSelectContactGroup_CheckBoxContact);
             checkBox.setChecked(!checkBox.isCheck());
             friends.get(item).setSelected(!friends.get(item).isSelected());
 
-            ImageView avatar = (ImageView) v.findViewById(R.id.avatar_friends);
+            ImageView avatar = (ImageView) v.findViewById(R.id.LayoutSelectContactGroup_ImageViewFriend);
             listener.setFriend(friends.get(item));
             listener.setView(avatar);
             listener.setHome(true);

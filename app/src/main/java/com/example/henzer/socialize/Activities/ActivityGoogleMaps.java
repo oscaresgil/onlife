@@ -1,7 +1,9 @@
 package com.example.henzer.socialize.Activities;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -12,7 +14,6 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -46,15 +47,15 @@ public class ActivityGoogleMaps extends Activity  implements OnMapReadyCallback 
         MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        LinearLayout layout = (LinearLayout) findViewById(R.id.menu_in_map);
-        ButtonIcon closeB = (ButtonIcon) findViewById(R.id.close_button);
-        closeB.setDrawableIcon(getResources().getDrawable(R.drawable.ic_content_clear));
-        closeB.setRippleColor(getResources().getColor(R.color.orange_light));
-        closeB.setDrawingCacheBackgroundColor(getResources().getColor(R.color.orange_light));
+        LinearLayout layout = (LinearLayout) findViewById(R.id.ActivityGoogleMaps_LayoutMenu);
+        ButtonIcon friendB = (ButtonIcon) findViewById(R.id.ActivityGoogleMaps_ButtonFriendLocation);
+        friendB.setDrawableIcon(getResources().getDrawable(R.drawable.ic_social_person));
         ButtonIcon homeB = (ButtonIcon) findViewById(R.id.home_button);
         homeB.setDrawableIcon(getResources().getDrawable(R.drawable.ic_action_home));
-        homeB.setRippleColor(getResources().getColor(R.color.orange_light));
-        homeB.setDrawingCacheBackgroundColor(getResources().getColor(R.color.orange_light));
+        ButtonIcon directionB = (ButtonIcon) findViewById(R.id.direction_button);
+        directionB.setDrawableIcon(getResources().getDrawable(R.drawable.ic_maps_directions_car));
+        ButtonIcon closeB = (ButtonIcon) findViewById(R.id.close_button);
+        closeB.setDrawableIcon(getResources().getDrawable(R.drawable.ic_content_clear));
         layout.bringToFront();
     }
 
@@ -88,6 +89,7 @@ public class ActivityGoogleMaps extends Activity  implements OnMapReadyCallback 
             @Override
             public void onMyLocationChange(Location location) {
                 toast.success();
+
                 myLoc = new LatLng(location.getLatitude(), location.getLongitude());
                 double distance2 = distFrom(latitude, longitude, location.getLatitude(), location.getLongitude());
                 if (Math.abs(distance - distance2) > 5){
@@ -98,6 +100,19 @@ public class ActivityGoogleMaps extends Activity  implements OnMapReadyCallback 
             }
         });
     }
+    public void getDirection(View v){
+        //http://maps.google.com/maps/api/directions/json?origin=latitude,longitude&destination=latitude,longitude&sensor=false
+        //LatLng newLatLng = new LatLng(myLoc.latitude*30,myLoc.longitude*30);
+        /*map.addPolyline(new PolylineOptions()
+                .add(myLoc)
+                .add(newLatLng)
+                .color(getResources().getColor(R.color.orange_light)));*/
+        //16.638823 , -88.784187
+        Uri gmmIntentUri = Uri.parse("http://maps.google.com/maps/?saddr="+myLoc.latitude+","+myLoc.longitude+"&daddr=14.626441,-89.985352");
+        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+        startActivity(mapIntent);
+    }
+    public void getFriend(View v){ map.moveCamera(CameraUpdateFactory.newLatLngZoom(loc,15)); }
     public void getHome(View v){
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(myLoc,15));
     }

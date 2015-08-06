@@ -7,9 +7,8 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.henzer.socialize.Controller.JSONParser;
-import com.example.henzer.socialize.Models.Group;
-import com.example.henzer.socialize.Models.Person;
-import com.example.henzer.socialize.Models.SessionData;
+import com.example.henzer.socialize.Models.ModelGroup;
+import com.example.henzer.socialize.Models.ModelPerson;
 import com.example.henzer.socialize.R;
 
 import org.apache.http.NameValuePair;
@@ -20,7 +19,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TaskAddNewGroup extends AsyncTask<Group, String, Group> {
+public class TaskAddNewGroup extends AsyncTask<ModelGroup, String, ModelGroup> {
     private MaterialDialog pDialog;
     private Context context;
     private JSONParser jsonParser;
@@ -44,8 +43,8 @@ public class TaskAddNewGroup extends AsyncTask<Group, String, Group> {
     }
 
     @Override
-    protected Group doInBackground(Group... params) {
-        Group n = params[0];
+    protected ModelGroup doInBackground(ModelGroup... params) {
+        ModelGroup n = params[0];
 
         //Parametros a enviar
         List<NameValuePair> p = new ArrayList<>();
@@ -55,8 +54,8 @@ public class TaskAddNewGroup extends AsyncTask<Group, String, Group> {
         p.add(new BasicNameValuePair("limit", n.getLimit() + ""));
         p.add(new BasicNameValuePair("state", n.getState()));
 
-        for(Person person: n.getFriendsInGroup()){
-            p.add(new BasicNameValuePair("idPeople[]", person.getId()));
+        for(ModelPerson modelPerson : n.getFriendsInGroup()){
+            p.add(new BasicNameValuePair("idPeople[]", modelPerson.getId()));
         }
 
         JSONObject json = jsonParser.makeHttpRequest("http://socialize.comyr.com/Prueba/group.php", "POST", p);
@@ -78,7 +77,7 @@ public class TaskAddNewGroup extends AsyncTask<Group, String, Group> {
     }
 
     @Override
-    protected void onPostExecute(Group newG){
+    protected void onPostExecute(ModelGroup newG){
         Log.e("MainActivity", "Quitando el Progress Dialog");
         pDialog.dismiss();
         Toast.makeText(context, message, Toast.LENGTH_LONG).show();

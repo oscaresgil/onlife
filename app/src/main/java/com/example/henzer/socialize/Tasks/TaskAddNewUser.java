@@ -6,7 +6,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.example.henzer.socialize.Controller.JSONParser;
-import com.example.henzer.socialize.Models.Person;
+import com.example.henzer.socialize.Models.ModelPerson;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * Created by Henzer on 01/05/2015.
  */
-public class TaskAddNewUser extends AsyncTask<Person, Person, Boolean> {
+public class TaskAddNewUser extends AsyncTask<ModelPerson, ModelPerson, Boolean> {
     private ProgressDialog pDialog;
     private Context context;
     private JSONParser jsonParser;
@@ -40,8 +40,8 @@ public class TaskAddNewUser extends AsyncTask<Person, Person, Boolean> {
     }
 
     @Override
-    protected Boolean doInBackground(Person... params) {
-        Person n = params[0];
+    protected Boolean doInBackground(ModelPerson... params) {
+        ModelPerson n = params[0];
         //Parametros a enviar
         List<NameValuePair> p = new ArrayList<>();
         p.add(new BasicNameValuePair("tag", "newUser"));

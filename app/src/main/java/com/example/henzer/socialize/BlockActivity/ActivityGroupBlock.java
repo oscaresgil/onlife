@@ -1,6 +1,5 @@
 package com.example.henzer.socialize.BlockActivity;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
@@ -28,10 +27,10 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.henzer.socialize.Activities.ActivityGroupInformation;
 import com.example.henzer.socialize.Fragments.FragmentGroups;
+import com.example.henzer.socialize.Models.ModelPerson;
 import com.example.henzer.socialize.Tasks.TaskSendNotification;
 import com.example.henzer.socialize.Tasks.TaskGPS;
-import com.example.henzer.socialize.Models.Group;
-import com.example.henzer.socialize.Models.Person;
+import com.example.henzer.socialize.Models.ModelGroup;
 import com.example.henzer.socialize.R;
 import com.kenny.snackbar.SnackBar;
 import com.melnykov.fab.FloatingActionButton;
@@ -52,9 +51,9 @@ public class ActivityGroupBlock extends ActionBarActivity {
     private String nameGroup;
     private int maximumChars = 30, actualChar = 0;
 
-    private Person actualUser;
-    private Group group;
-    private List<Person> friendsInGroup;
+    private ModelPerson actualUser;
+    private ModelGroup modelGroup;
+    private List<ModelPerson> friendsInGroup;
 
     private ImageView avatar;
     private TextView maxCharsView;
@@ -87,18 +86,18 @@ public class ActivityGroupBlock extends ActionBarActivity {
 
         Intent i = getIntent();
         nameGroup = i.getStringExtra("name");
-        group = (Group) i.getSerializableExtra("data");
-        actualUser = (Person) i.getSerializableExtra("user");
+        modelGroup = (ModelGroup) i.getSerializableExtra("data");
+        actualUser = (ModelPerson) i.getSerializableExtra("user");
 
-        avatar = (ImageView) findViewById(R.id.avatar_group);
-        avatar.setImageBitmap(loadImage(this, group.getName()));
+        avatar = (ImageView) findViewById(R.id.ActivityGroupBlock_ImageViewAvatarGroup);
+        avatar.setImageBitmap(loadImage(this, modelGroup.getName()));
         avatar.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
-        friendsInGroup = group.getFriendsInGroup();
+        friendsInGroup = modelGroup.getFriendsInGroup();
         actionBar.setTitle((Html.fromHtml("<b><font color=\"#000000\">" + nameGroup + "</font></b>")));
 
-        maxCharsView = (TextView) findViewById(R.id.maxCharactersGroup);
-        messageTextView = (MaterialEditText) findViewById(R.id.messageGroup);
+        maxCharsView = (TextView) findViewById(R.id.ActivityGroupBlock_TextViewMaxCharacter);
+        messageTextView = (MaterialEditText) findViewById(R.id.ActivityGroupBlock_EditTextMessage);
         final Handler handler = new Handler();
         messageTextView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -146,7 +145,7 @@ public class ActivityGroupBlock extends ActionBarActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        RelativeLayout linearLayout = (RelativeLayout) findViewById(R.id.layout_groups);
+        RelativeLayout linearLayout = (RelativeLayout) findViewById(R.id.ActivityGroupBlock_LayoutMain);
         linearLayout.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -184,12 +183,12 @@ public class ActivityGroupBlock extends ActionBarActivity {
                 .callback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onPositive(MaterialDialog dialog) {
-                        FragmentGroups.removeGroup(group);
+                        FragmentGroups.removeGroup(modelGroup);
                         dialog.dismiss();
                         dialog.cancel();
 
                         new MaterialDialog.Builder(ActivityGroupBlock.this)
-                            .title("Group " + group.getName() + " deleted!")
+                            .title("Group " + modelGroup.getName() + " deleted!")
                             .positiveText(R.string.yes)
                             .positiveColorRes(R.color.orange_light)
                             .callback(new MaterialDialog.ButtonCallback() {
@@ -255,6 +254,6 @@ public class ActivityGroupBlock extends ActionBarActivity {
     public void blockGroup(Location location, LoadToast toast){
         SnackBar.show(ActivityGroupBlock.this, location.getLatitude() + "," + location.getLongitude());
         TaskSendNotification gcm = new TaskSendNotification(ActivityGroupBlock.this, actualUser.getName(), messageTextView.getText().toString(), location.getLatitude(), location.getLongitude(), toast);
-        gcm.execute(friendsInGroup.toArray(new Person[friendsInGroup.size()]));
+        gcm.execute(friendsInGroup.toArray(new ModelPerson[friendsInGroup.size()]));
     }
 }

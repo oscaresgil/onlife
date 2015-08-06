@@ -19,8 +19,8 @@ import com.afollestad.materialdialogs.simplelist.MaterialSimpleListAdapter;
 import com.afollestad.materialdialogs.simplelist.MaterialSimpleListItem;
 import com.example.henzer.socialize.Adapters.AdapterFragmentPager;
 import com.example.henzer.socialize.Layouts.LayoutSlidingTab;
-import com.example.henzer.socialize.Models.Person;
-import com.example.henzer.socialize.Models.SessionData;
+import com.example.henzer.socialize.Models.ModelPerson;
+import com.example.henzer.socialize.Models.ModelSessionData;
 import com.example.henzer.socialize.R;
 import com.facebook.AccessToken;
 import com.facebook.Profile;
@@ -34,25 +34,25 @@ import java.util.List;
  */
 
 public class ActivityHome extends ActionBarActivity {
-    private SessionData sessionData;
+    private ModelSessionData modelSessionData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.home_page);
-        sessionData = (SessionData)getIntent().getExtras().getSerializable("data");
+        setContentView(R.layout.activity_home);
+        modelSessionData = (ModelSessionData)getIntent().getExtras().getSerializable("data");
 
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.orange_light)));
         getSupportActionBar().setTitle((Html.fromHtml("<b><font color=\"#000000\">" + getString(R.string.app_name) + "</font></b>")));
 
         // Get the ViewPager and set it's PagerAdapter so that it can display items
-        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
+        ViewPager viewPager = (ViewPager) findViewById(R.id.ActivityHome_ViewPager);
         AdapterFragmentPager pgAdapter = new AdapterFragmentPager(getSupportFragmentManager(), ActivityHome.this);
-        pgAdapter.setSessionData(sessionData);
+        pgAdapter.setModelSessionData(modelSessionData);
 
         viewPager.setAdapter(pgAdapter);
         // Give the SlidingTabLayout the ViewPager
-        LayoutSlidingTab layoutSlidingTab = (LayoutSlidingTab) findViewById(R.id.sliding_tabs);
+        LayoutSlidingTab layoutSlidingTab = (LayoutSlidingTab) findViewById(R.id.ActivityHome_SlindingTabs);
         layoutSlidingTab.setCustomTabColorizer(new LayoutSlidingTab.TabColorizer() {
             @Override
             public int getIndicatorColor(int position) {
@@ -110,18 +110,18 @@ public class ActivityHome extends ActionBarActivity {
                             Toast.makeText(ActivityHome.this, "GPS Selected", Toast.LENGTH_SHORT).show();
                         } else if (which == 1) {
 
-                            List<Person> friends = sessionData.getFriends();
-                            for (Person f: friends){
+                            List<ModelPerson> friends = modelSessionData.getFriends();
+                            for (ModelPerson f: friends){
                                 f.setSelected(false);
                             }
 
                             Intent intent = new Intent(ActivityHome.this, ActivitySelectContacts.class);
-                            intent.putExtra("data", sessionData);
+                            intent.putExtra("data", modelSessionData);
                             startActivity(intent);
                             materialDialog.cancel();
 
-                            friends = sessionData.getFriends();
-                            for (Person f: friends){
+                            friends = modelSessionData.getFriends();
+                            for (ModelPerson f: friends){
                                 f.setSelected(false);
                                 Log.i("Friend Home Selected", f.isHomeSelected() + "");
                             }

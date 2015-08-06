@@ -2,18 +2,13 @@ package com.example.henzer.socialize.Adapters;
 
 import android.app.Activity;
 import android.content.Context;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.henzer.socialize.Models.Person;
+import com.example.henzer.socialize.Models.ModelPerson;
 import com.example.henzer.socialize.R;
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
 import com.yalantis.flipviewpager.adapter.BaseFlipAdapter;
 import com.yalantis.flipviewpager.utils.FlipSettings;
 
@@ -21,16 +16,16 @@ import java.util.List;
 
 import static com.example.henzer.socialize.Controller.StaticMethods.loadImage;
 
-public class AdapterContacts extends BaseFlipAdapter<Person> {
+public class AdapterContacts extends BaseFlipAdapter<ModelPerson> {
     private final int PAGES = 3;
     private Activity context;
 
-    public AdapterContacts(Context context, List<Person> items, FlipSettings settings) {
+    public AdapterContacts(Context context, List<ModelPerson> items, FlipSettings settings) {
         super(context, items, settings);
         this.context = (Activity)context;
     }
 
-    @Override public View getPage(int i, View view, ViewGroup viewGroup, Person userData, Person userData2) {
+    @Override public View getPage(int i, View view, ViewGroup viewGroup, ModelPerson userData, ModelPerson userData2) {
         final ContactsHolder holder;
         if (view == null){
             holder = new ContactsHolder();

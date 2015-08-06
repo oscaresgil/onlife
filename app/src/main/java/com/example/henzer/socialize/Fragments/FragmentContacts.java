@@ -22,10 +22,10 @@ import android.widget.Toast;
 
 import com.example.henzer.socialize.Adapters.AdapterContacts;
 import com.example.henzer.socialize.BlockActivity.ActivityFriendBlock;
+import com.example.henzer.socialize.Models.ModelPerson;
 import com.example.henzer.socialize.R;
 import com.example.henzer.socialize.Tasks.TaskImageDownload;
-import com.example.henzer.socialize.Models.Person;
-import com.example.henzer.socialize.Models.SessionData;
+import com.example.henzer.socialize.Models.ModelSessionData;
 import com.kenny.snackbar.SnackBar;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.yalantis.flipviewpager.utils.FlipSettings;
@@ -39,14 +39,14 @@ import static com.example.henzer.socialize.Controller.StaticMethods.isNetworkAva
  * Created by hp1 on 21-01-2015.
  */
 public class FragmentContacts extends ListFragment {
-    private Person actualUser;
-    private List<Person> friends;
+    private ModelPerson actualUser;
+    private List<ModelPerson> friends;
     private AdapterContacts adapter;
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
     private MenuItem mSearchAction;
     private MaterialEditText searchText;
-    private List<Person> friendsFiltred;
+    private List<ModelPerson> friendsFiltred;
     private boolean isSearchOpened = false;
     private String mSearchQuery;
 
@@ -71,8 +71,8 @@ public class FragmentContacts extends ListFragment {
         friendsFiltred = new ArrayList<>();
 
         FlipSettings settings = new FlipSettings.Builder().defaultPage(1).build();
-        actualUser = ((SessionData)getArguments().getSerializable("data")).getUser();
-        friends = ((SessionData)getArguments().getSerializable("data")).getFriends();
+        actualUser = ((ModelSessionData)getArguments().getSerializable("data")).getUser();
+        friends = ((ModelSessionData)getArguments().getSerializable("data")).getFriends();
         friendsFiltred.addAll(friends);
 
         adapter =  new AdapterContacts(getActivity(), friendsFiltred, settings);
@@ -140,10 +140,10 @@ public class FragmentContacts extends ListFragment {
         return super.onOptionsItemSelected(item);
     }
 
-    public List<Person> performSearch(List<Person> actualFriends, String query){
+    public List<ModelPerson> performSearch(List<ModelPerson> actualFriends, String query){
         String[] queryByWords = query.toLowerCase().split("\\s+");
-        List<Person> filtred = new ArrayList<>();
-        for (Person actual: actualFriends){
+        List<ModelPerson> filtred = new ArrayList<>();
+        for (ModelPerson actual: actualFriends){
             String content = (actual.getName()).toLowerCase();
 
             for (String word: queryByWords){
@@ -178,10 +178,10 @@ public class FragmentContacts extends ListFragment {
         }
         else{
             actionBar.setDisplayShowCustomEnabled(true);
-            actionBar.setCustomView(R.layout.search_contact_bar);
+            actionBar.setCustomView(R.layout.layout_search_contact_bar);
             actionBar.setDisplayShowTitleEnabled(false);
 
-            searchText = (MaterialEditText) actionBar.getCustomView().findViewById(R.id.search_contact_text);
+            searchText = (MaterialEditText) actionBar.getCustomView().findViewById(R.id.LayoutSearchContactBar_EditTextSearch);
             searchText.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -236,7 +236,7 @@ public class FragmentContacts extends ListFragment {
     public void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
         if (!mSwipeRefreshLayout.isRefreshing()){
-            Person user = (Person)getListAdapter().getItem(position);
+            ModelPerson user = (ModelPerson)getListAdapter().getItem(position);
             Intent i = new Intent(getActivity(),ActivityFriendBlock.class);
             i.putExtra("data",user);
             i.putExtra("actualuser", actualUser);

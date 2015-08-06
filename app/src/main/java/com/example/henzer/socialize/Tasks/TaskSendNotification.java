@@ -5,7 +5,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.example.henzer.socialize.Controller.JSONParser;
-import com.example.henzer.socialize.Models.Person;
+import com.example.henzer.socialize.Models.ModelPerson;
 
 import net.steamcrafted.loadtoast.LoadToast;
 
@@ -17,7 +17,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TaskSendNotification extends AsyncTask<Person, String, Boolean>{
+public class TaskSendNotification extends AsyncTask<ModelPerson, String, Boolean>{
     private LoadToast toast;
     private Context context;
     private JSONParser jsonParser;
@@ -38,7 +38,7 @@ public class TaskSendNotification extends AsyncTask<Person, String, Boolean>{
     }
 
     @Override
-    protected Boolean doInBackground(Person... params) {
+    protected Boolean doInBackground(ModelPerson... params) {
         //Parametros a enviar
         List<NameValuePair> p = new ArrayList<>();
         for(int i = 0; i<params.length; i++){

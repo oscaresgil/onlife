@@ -1,4 +1,4 @@
-package com.example.henzer.socialize.BlockActivity;
+package com.example.henzer.socialize.Controller;
 
 import android.app.admin.DeviceAdminReceiver;
 import android.content.Context;

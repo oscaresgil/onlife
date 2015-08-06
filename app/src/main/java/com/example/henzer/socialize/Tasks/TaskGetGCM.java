@@ -6,8 +6,8 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.example.henzer.socialize.GCMClient.GCMHelper;
-import com.example.henzer.socialize.Models.Person;
+import com.example.henzer.socialize.GCMClient.GcmHelper;
+import com.example.henzer.socialize.Models.ModelPerson;
 import com.kenny.snackbar.SnackBar;
 
 import org.json.JSONArray;
@@ -26,11 +26,11 @@ public class TaskGetGCM extends AsyncTask<Void, Void, String> {
     private static final String TAG = "GetGCM";
     public static final String MyPREFERENCES = "MyPrefs";
     private Context context;
-    private Person userLogin;
-    private List<Person> friends;
+    private ModelPerson userLogin;
+    private List<ModelPerson> friends;
     private SharedPreferences sharedPreferences;
 
-    public TaskGetGCM(Context context, Person userLogin, List<Person> friends, SharedPreferences sharedPreferences){
+    public TaskGetGCM(Context context, ModelPerson userLogin, List<ModelPerson> friends, SharedPreferences sharedPreferences){
         this.context = context;
         this.userLogin = userLogin;
         this.friends = friends;
@@ -41,7 +41,7 @@ public class TaskGetGCM extends AsyncTask<Void, Void, String> {
     protected String doInBackground(Void... params) {
         String msg = "";
         try {
-            GCMHelper gcmRegistrationHelper = new GCMHelper(context);
+            GcmHelper gcmRegistrationHelper = new GcmHelper(context);
             String gcmRegID = gcmRegistrationHelper.GCMRegister(PROJECT_NUMBER);
             msg = gcmRegID;
             Log.i("GCM", gcmRegID);
@@ -58,7 +58,7 @@ public void onPostExecute(String idMSG) {
         //AddNewUser addNewUser = new AddNewUser(MainActivity.this);
         userLogin.setId_phone(idMSG);
         TaskLoadAllInformation load = new TaskLoadAllInformation(context);
-        List<Person> enviados = new ArrayList();
+        List<ModelPerson> enviados = new ArrayList();
         enviados.add(userLogin);
         enviados.addAll(friends);
         JSONObject data = null;
@@ -71,7 +71,7 @@ public void onPostExecute(String idMSG) {
             if(error == false){
                 sharedPreferences = context.getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPreferences.edit();
-                data.put("groups", new JSONArray());
+                data.put("activity_groups", new JSONArray());
                 editor.putString("session", data.toString());
                 editor.commit();
 

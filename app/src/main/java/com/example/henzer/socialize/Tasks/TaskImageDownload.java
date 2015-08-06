@@ -9,7 +9,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.henzer.socialize.Adapters.AdapterContacts;
 import com.example.henzer.socialize.Fragments.FragmentContacts;
-import com.example.henzer.socialize.Models.Person;
+import com.example.henzer.socialize.Models.ModelPerson;
 import com.example.henzer.socialize.R;
 import com.kenny.snackbar.SnackBar;
 
@@ -33,10 +33,10 @@ public class TaskImageDownload extends AsyncTask<Boolean, Void, Void> {
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private AdapterContacts adapter;
     private MaterialDialog materialDialog;
-    private List<Person> friends;
+    private List<ModelPerson> friends;
     private boolean typeUrl,isMaterialDialog;
 
-    public TaskImageDownload(Context context, SwipeRefreshLayout mSwipeRefreshLayout, boolean isMaterialDialog, AdapterContacts adapter, List<Person> friends){
+    public TaskImageDownload(Context context, SwipeRefreshLayout mSwipeRefreshLayout, boolean isMaterialDialog, AdapterContacts adapter, List<ModelPerson> friends){
         this.context = (Activity) context;
         this.mSwipeRefreshLayout = mSwipeRefreshLayout;
         this.adapter = adapter;
@@ -62,7 +62,7 @@ public class TaskImageDownload extends AsyncTask<Boolean, Void, Void> {
     protected Void doInBackground(Boolean ... urls) {
         try {
             typeUrl = !urls[0];
-            for (Person user: friends){
+            for (ModelPerson user: friends){
                 String userID = user.getId();
                 user.setName(user.getName());
                 String urlStr = "https://graph.facebook.com/" + userID + "/picture?width=700&height=700";
@@ -95,7 +95,7 @@ public class TaskImageDownload extends AsyncTask<Boolean, Void, Void> {
         else{
             mSwipeRefreshLayout.setRefreshing(false);
 
-            List<Person> temp = new ArrayList<>();
+            List<ModelPerson> temp = new ArrayList<>();
             temp.addAll(friends);
             friends = new ArrayList<>();
             friends.addAll(temp);

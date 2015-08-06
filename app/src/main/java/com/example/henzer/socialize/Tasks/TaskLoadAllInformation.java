@@ -7,7 +7,7 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.henzer.socialize.Controller.JSONParser;
-import com.example.henzer.socialize.Models.Person;
+import com.example.henzer.socialize.Models.ModelPerson;
 import com.example.henzer.socialize.R;
 
 import org.apache.http.NameValuePair;
@@ -18,7 +18,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TaskLoadAllInformation extends AsyncTask<List<Person>, String, JSONObject>{
+public class TaskLoadAllInformation extends AsyncTask<List<ModelPerson>, String, JSONObject>{
     private MaterialDialog materialDialog;
     private Context context;
     private JSONParser jsonParser;
@@ -40,8 +40,8 @@ public class TaskLoadAllInformation extends AsyncTask<List<Person>, String, JSON
                 .show();
     }
 
-    @Override protected JSONObject doInBackground(List<Person>... params) {
-        Person me = params[0].get(0);
+    @Override protected JSONObject doInBackground(List<ModelPerson>... params) {
+        ModelPerson me = params[0].get(0);
 
         List<NameValuePair> p = new ArrayList<>();
         p.add(new BasicNameValuePair("tag", "newUser"));
