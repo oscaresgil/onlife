@@ -1,6 +1,7 @@
 package com.example.henzer.socialize.Activities;
 
 import android.animation.Animator;
+import android.app.ActivityGroup;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
@@ -31,6 +32,7 @@ import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -66,6 +68,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import static com.example.henzer.socialize.Controller.StaticMethods.isNetworkAvailable;
+import static com.example.henzer.socialize.Controller.StaticMethods.loadImage;
 import static com.example.henzer.socialize.Controller.StaticMethods.loadImagePath;
 import static com.example.henzer.socialize.Controller.StaticMethods.saveImage;
 
@@ -87,6 +90,8 @@ public class ActivityGroupCreateInformation extends ActionBarActivity {
     private List<ModelPerson> friendsFiltred;
     private boolean isSearchOpened = false;
     private String mSearchQuery;
+    private FloatingActionButton searchButton;
+    private android.support.v7.app.ActionBar actionBar;
 
     private Bitmap bitmap = null;
     private String path = "";
@@ -117,11 +122,13 @@ public class ActivityGroupCreateInformation extends ActionBarActivity {
 
         setContentView(R.layout.activity_group_create_information);
 
-        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
+        actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.orange_light)));
         actionBar.setTitle((Html.fromHtml("<b><font color=\"#000000\">" + getString(R.string.title_activity_new_group) + "</font></b>")));
         actionBar.setHomeAsUpIndicator(R.drawable.ic_arrow_back_black_48dp);
+
+        searchButton = (FloatingActionButton) findViewById(R.id.search_button);
 
         (findViewById(R.id.search_button)).bringToFront();
 
@@ -147,7 +154,7 @@ public class ActivityGroupCreateInformation extends ActionBarActivity {
                     checkBox.setChecked(!checkBox.isCheck());
 
                     ImageView avatar = (ImageView) view.findViewById(R.id.LayoutSelectContactGroup_ImageViewFriend);
-                    listener.setFriend(friends.get(position));
+                    listener.setFriend(actualFriend);
                     listener.setView(avatar);
                     listener.setHome(false);
                     avatar.clearAnimation();
@@ -219,6 +226,7 @@ public class ActivityGroupCreateInformation extends ActionBarActivity {
                     Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(nameNewGroup.getWindowToken(), 0);
             overridePendingTransition(R.animator.push_left_inverted, R.animator.push_right_inverted);
+            actionBar.setIcon(getResources().getDrawable(R.drawable.ic_arrow_back_black_48dp));
         }
     }
 
@@ -339,13 +347,12 @@ public class ActivityGroupCreateInformation extends ActionBarActivity {
     }
 
     public void handleMenuSearch(){
-        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         MenuItem savegroup = myMenu.findItem(R.id.saveGroup_button);
         MenuItem search = myMenu.findItem(R.id.searchCancelContact);
         FloatingActionButton searchButton = (FloatingActionButton) findViewById(R.id.search_button);
 
         LinearLayout mainLayout = (LinearLayout)this.findViewById(R.id.header);
-        LinearLayout layout_friends = (LinearLayout) this.findViewById(R.id.body);
+        final FrameLayout layout_friends = (FrameLayout) this.findViewById(R.id.body);
 
         mainLayout.animate().setStartDelay(getResources().getInteger(R.integer.animation_search_contact_create));
         layout_friends.animate().setStartDelay(getResources().getInteger(R.integer.animation_search_contact_create));
@@ -358,13 +365,15 @@ public class ActivityGroupCreateInformation extends ActionBarActivity {
                     Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(searchText.getWindowToken(), 0);
             imm.hideSoftInputFromWindow(nameNewGroup.getWindowToken(), 0);
-            mainLayout.animate().translationY(0).start();
+            mainLayout.setVisibility(View.VISIBLE);
+            searchButton.setVisibility(View.VISIBLE);
+            /*mainLayout.animate().translationY(0).start();
             searchButton.animate().translationY(0).start();
-            layout_friends.animate().translationY(0).start();
+            layout_friends.animate().translationY(0).start();*/
 
             friendsFiltred.clear();
             friendsFiltred.addAll(friends);
-            //checkListAdapter.notifyDataSetChanged();
+            checkListAdapter.notifyDataSetChanged();
             actionBar.setDisplayShowCustomEnabled(false);
             actionBar.setDisplayShowTitleEnabled(true);
 
@@ -374,45 +383,20 @@ public class ActivityGroupCreateInformation extends ActionBarActivity {
             isSearchOpened = false;
 
         } else{
-            mainLayout.animate().translationY(-mainLayout.getHeight()).start();
-            searchButton.animate().translationY(-mainLayout.getHeight()+actionBar.getHeight()).start();
-            layout_friends.animate().translationY(-mainLayout.getHeight()).setListener(new Animator.AnimatorListener() {
-                @Override
-                public void onAnimationStart(Animator animation) {
-                    InputMethodManager imm = (InputMethodManager)getSystemService(
-                            Context.INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow(searchText.getWindowToken(), 0);
-                    imm.hideSoftInputFromWindow(nameNewGroup.getWindowToken(), 0);
-                }
-
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    InputMethodManager imm = (InputMethodManager)getSystemService(
-                            Context.INPUT_METHOD_SERVICE);
-                    imm.showSoftInput(searchText,0);
-                }
-
-                @Override
-                public void onAnimationCancel(Animator animation) {
-                    InputMethodManager imm = (InputMethodManager)getSystemService(
-                            Context.INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow(searchText.getWindowToken(), 0);
-                    imm.hideSoftInputFromWindow(nameNewGroup.getWindowToken(), 0);
-                }
-
-                @Override
-                public void onAnimationRepeat(Animator animation) {
-                }
-            }).start();
+            mainLayout.setVisibility(View.GONE);
+            searchButton.setVisibility(View.GONE);
 
             savegroup.setVisible(false);
             search.setVisible(true);
             actionBar.setDisplayShowCustomEnabled(true);
             actionBar.setCustomView(R.layout.layout_search_contact_bar);
+
             actionBar.setShowHideAnimationEnabled(true);
             actionBar.setDisplayShowTitleEnabled(false);
+            actionBar.setIcon(getResources().getDrawable(R.drawable.ic_ic_close_black_48dp));
 
             searchText = (MaterialEditText) actionBar.getCustomView().findViewById(R.id.LayoutSearchContactBar_EditTextSearch);
+            searchText.setVisibility(View.VISIBLE);
             searchText.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -431,6 +415,8 @@ public class ActivityGroupCreateInformation extends ActionBarActivity {
                 }
             });
             searchText.requestFocus();
+            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.showSoftInput(searchText,0);
 
             searchButton.bringToFront();
             searchButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_ic_close_black_48dp));
@@ -601,7 +587,7 @@ public class ActivityGroupCreateInformation extends ActionBarActivity {
                 holder.avatar.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.ic_navigation_check));
             }
             else{
-                Picasso.with(ActivityGroupCreateInformation.this).load(loadImagePath(ActivityGroupCreateInformation.this,friend.getId())).resize(400,400).into(holder.avatar);
+                holder.avatar.setImageBitmap(loadImage(ActivityGroupCreateInformation.this,friend.getId()));
             }
             holder.check.setSelected(friend.isSelected());
             holder.check.setChecked(friend.isSelected());

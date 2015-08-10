@@ -43,4 +43,6 @@ public class AdapterFragmentPager extends FragmentPagerAdapter {
     public void setModelSessionData(ModelSessionData modelSessionData) {
         this.modelSessionData = modelSessionData;
     }
+
+
 }

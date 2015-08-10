@@ -81,8 +81,6 @@ public class FragmentContacts extends ListFragment {
         return v;
     }
 
-
-
     @Override
     public void onResume() {
         super.onResume();
@@ -182,6 +180,7 @@ public class FragmentContacts extends ListFragment {
             actionBar.setDisplayShowTitleEnabled(false);
 
             searchText = (MaterialEditText) actionBar.getCustomView().findViewById(R.id.LayoutSearchContactBar_EditTextSearch);
+            searchText.setVisibility(View.VISIBLE);
             searchText.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
