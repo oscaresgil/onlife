@@ -67,7 +67,7 @@ public class FragmentGroups extends Fragment {
         modelSessionData = (ModelSessionData) getArguments().getSerializable("data");
 
         modelGroups = modelSessionData.getModelGroups();
-        adapter = new GroupAdapter(getActivity(), R.layout.activity_groups, modelGroups);
+        adapter = new GroupAdapter(getActivity(), R.layout.layout_groups, modelGroups);
         list = (ListView)v.findViewById(R.id.FragmentGroups_ListGroup);
         list.setAdapter(adapter);
         addGroupButton = (FloatingActionButton) v.findViewById(R.id.FragmentGroup_ButtonAddGroup);
@@ -89,7 +89,7 @@ public class FragmentGroups extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        adapter = new GroupAdapter(getActivity(), R.layout.activity_groups, modelGroups);
+        adapter = new GroupAdapter(getActivity(), R.layout.layout_groups, modelGroups);
         list.setAdapter(adapter);
         adapter.notifyDataSetChanged();
         list.setLongClickable(true);
@@ -173,9 +173,9 @@ public class FragmentGroups extends Fragment {
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             LayoutInflater inflater = getActivity().getLayoutInflater();
-            View rowView = inflater.inflate(R.layout.activity_groups, null, true);
-            TextView text = (TextView) rowView.findViewById(R.id.ActivityGroups_TextViewGroupName);
-            ImageView image = (ImageView) rowView.findViewById(R.id.ActivityGroups_CircleImageViewGroup);
+            View rowView = inflater.inflate(R.layout.layout_groups, null, true);
+            TextView text = (TextView) rowView.findViewById(R.id.LayoutGroups_TextViewGroupName);
+            ImageView image = (ImageView) rowView.findViewById(R.id.LayoutGroups_CircleImageViewGroup);
             Bitmap b = loadImage(getContext(), objects.get(position).getName());
             b = Bitmap.createBitmap(b,(b.getWidth()/2)-150,(b.getHeight()/2)-150,300,300);
             image.setImageBitmap(b);

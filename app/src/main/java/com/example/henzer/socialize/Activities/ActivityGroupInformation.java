@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.example.henzer.socialize.Adapters.AdapterGroup;
 import com.example.henzer.socialize.BlockActivity.ActivityFriendBlock;
 import com.example.henzer.socialize.Models.ModelPerson;
 import com.example.henzer.socialize.R;
@@ -26,7 +27,6 @@ import com.r0adkll.slidr.Slidr;
 import com.r0adkll.slidr.model.SlidrConfig;
 import com.r0adkll.slidr.model.SlidrPosition;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.henzer.socialize.Controller.StaticMethods.loadImage;
@@ -36,7 +36,7 @@ public class ActivityGroupInformation extends ActionBarActivity {
     private ListView listView;
 
     private ModelPerson userData;
-    private GroupAdapter adapter;
+    private AdapterGroup adapter;
     private List<ModelPerson> friendsInGroup;
 
     @Override
@@ -63,7 +63,7 @@ public class ActivityGroupInformation extends ActionBarActivity {
         friendsInGroup = (List<ModelPerson>) i.getSerializableExtra("data");
         userData = (ModelPerson) i.getSerializableExtra("user");
 
-        if (friendsInGroup.size()>=4){
+        /*if (friendsInGroup.size()>=4){
             final List<ModelPerson> friends1 = new ArrayList<>();
             final List<ModelPerson> friends2 = new ArrayList<>();
             for (int it=0; it<friendsInGroup.size(); it++){
@@ -99,23 +99,23 @@ public class ActivityGroupInformation extends ActionBarActivity {
                 }
             });
         }
-        else{
-            adapter = new GroupAdapter(this, R.layout.layout_friends_in_group_simple, friendsInGroup);
-            listView = (ListView) findViewById(R.id.ActivityGroupInformation_ListSimpleFriend);
-            listView.setVisibility(View.VISIBLE);
-            listView.setAdapter(adapter);
-            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    ModelPerson friend = friendsInGroup.get(position);
-                    Intent intent = new Intent(ActivityGroupInformation.this, ActivityFriendBlock.class);
-                    intent.putExtra("data",friend);
-                    intent.putExtra("actualuser",userData);
-                    startActivity(intent);
-                    overridePendingTransition(R.animator.push_right, R.animator.push_left);
-                }
-            });
-        }
+        else{*/
+
+        //adapter = new GroupAdapter(this, R.layout.layout_friends_in_group_simple, friendsInGroup);
+        /*listView = (ListView) findViewById(R.id.ActivityGroupInformation_ListSimpleFriend);
+        listView.setAdapter(adapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                ModelPerson friend = friendsInGroup.get(position);
+                Intent intent = new Intent(ActivityGroupInformation.this, ActivityFriendBlock.class);
+                intent.putExtra("data",friend);
+                intent.putExtra("actualuser",userData);
+                startActivity(intent);
+                overridePendingTransition(R.animator.push_right, R.animator.push_left);
+            }
+        });*/
+        //}
     }
 
     @Override
@@ -170,30 +170,6 @@ public class ActivityGroupInformation extends ActionBarActivity {
             ImageView avatar = (ImageView) rowView.findViewById(R.id.LayoutFriendsInGroup_ImageViewContact);
             avatar.setScaleType(ImageView.ScaleType.CENTER_CROP);
             avatar.setImageBitmap(loadImage(ActivityGroupInformation.this, getItem(position).getId()));
-            return rowView;
-        }
-    }
-
-    class GroupAdapter extends ArrayAdapter<ModelPerson> {
-        private List<ModelPerson> objects;
-        private int resource;
-        private Context context;
-
-        public GroupAdapter(Context context, int resource, List<ModelPerson> objects) {
-            super(context, resource, objects);
-            this.objects = objects;
-            this.resource = resource;
-            this.context = context;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            LayoutInflater inflater = ((Activity)context).getLayoutInflater();
-            View rowView = inflater.inflate(resource, null, true);
-            ImageView avatar = (ImageView) rowView.findViewById(R.id.LayoutFriendsInGroup_ImageViewContact);
-            TextView text = (TextView) rowView.findViewById(R.id.ActivityGroups_TextViewGroupName);
-            avatar.setImageBitmap(loadImage(ActivityGroupInformation.this, objects.get(position).getId()));
-            text.setText(objects.get(position).getName());
             return rowView;
         }
     }

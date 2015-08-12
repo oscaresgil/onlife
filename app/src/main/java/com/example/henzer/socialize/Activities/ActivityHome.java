@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
@@ -22,17 +23,15 @@ import com.example.henzer.socialize.Layouts.LayoutSlidingTab;
 import com.example.henzer.socialize.Models.ModelPerson;
 import com.example.henzer.socialize.Models.ModelSessionData;
 import com.example.henzer.socialize.R;
+import com.example.henzer.socialize.Tasks.TaskSendNotification;
 import com.facebook.AccessToken;
 import com.facebook.Profile;
 import com.facebook.login.LoginManager;
 import com.kenny.snackbar.SnackBar;
 
+import net.steamcrafted.loadtoast.LoadToast;
+
 import java.util.List;
-
-
-/**
- * Created by Oscar on 4/26/2015.
- */
 
 public class ActivityHome extends ActionBarActivity {
     private ModelSessionData modelSessionData;
@@ -144,5 +143,11 @@ public class ActivityHome extends ActionBarActivity {
             Profile.setCurrentProfile(null);
         }
         ActivityHome.this.finish();
+    }
+
+    public void blockContact(Location location, LoadToast toast, ModelPerson actualUser, ModelPerson friend){
+        SnackBar.show(ActivityHome.this, location.getLatitude() + "," + location.getLongitude());
+        TaskSendNotification gcm = new TaskSendNotification(ActivityHome.this, actualUser.getName(), location.getLatitude(), location.getLongitude(),toast);
+        gcm.execute(friend);
     }
 }

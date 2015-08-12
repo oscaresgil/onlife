@@ -1,7 +1,5 @@
 package com.example.henzer.socialize.Activities;
 
-import android.animation.Animator;
-import android.app.ActivityGroup;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
@@ -10,7 +8,6 @@ import android.content.SharedPreferences;
 import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -22,33 +19,30 @@ import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.simplelist.MaterialSimpleListAdapter;
 import com.afollestad.materialdialogs.simplelist.MaterialSimpleListItem;
+import com.example.henzer.socialize.Adapters.AdapterCheckList;
 import com.example.henzer.socialize.Fragments.FragmentGroups;
-import com.example.henzer.socialize.Models.ModelPerson;
-import com.example.henzer.socialize.R;
-import com.example.henzer.socialize.Tasks.TaskAddNewGroup;
 import com.example.henzer.socialize.Listeners.ListenerFlipCheckbox;
 import com.example.henzer.socialize.Models.ModelGroup;
+import com.example.henzer.socialize.Models.ModelPerson;
 import com.example.henzer.socialize.Models.ModelSessionData;
+import com.example.henzer.socialize.R;
+import com.example.henzer.socialize.Tasks.TaskAddNewGroup;
 import com.gc.materialdesign.views.CheckBox;
 import com.kenny.snackbar.SnackBar;
 import com.melnykov.fab.FloatingActionButton;
@@ -56,7 +50,6 @@ import com.r0adkll.slidr.Slidr;
 import com.r0adkll.slidr.model.SlidrConfig;
 import com.r0adkll.slidr.model.SlidrPosition;
 import com.rengwuxian.materialedittext.MaterialEditText;
-import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -68,14 +61,12 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import static com.example.henzer.socialize.Controller.StaticMethods.isNetworkAvailable;
-import static com.example.henzer.socialize.Controller.StaticMethods.loadImage;
-import static com.example.henzer.socialize.Controller.StaticMethods.loadImagePath;
 import static com.example.henzer.socialize.Controller.StaticMethods.saveImage;
 
 public class ActivityGroupCreateInformation extends ActionBarActivity {
     private ModelSessionData modelSessionData;
     private List<ModelPerson> friends;
-    private CheckListAdapter checkListAdapter;
+    private AdapterCheckList adapterCheckList;
     public static final String TAG ="GroupCreateInfActivity";
 
     private Uri mImageCaptureUri;
@@ -85,12 +76,10 @@ public class ActivityGroupCreateInformation extends ActionBarActivity {
     private static final int PIC_CROP = 3;
 
     private Menu myMenu;
-    private MenuItem mSearchAction;
     private MaterialEditText searchText;
     private List<ModelPerson> friendsFiltred;
     private boolean isSearchOpened = false;
     private String mSearchQuery;
-    private FloatingActionButton searchButton;
     private android.support.v7.app.ActionBar actionBar;
 
     private Bitmap bitmap = null;
@@ -128,8 +117,6 @@ public class ActivityGroupCreateInformation extends ActionBarActivity {
         actionBar.setTitle((Html.fromHtml("<b><font color=\"#000000\">" + getString(R.string.title_activity_new_group) + "</font></b>")));
         actionBar.setHomeAsUpIndicator(R.drawable.ic_arrow_back_black_48dp);
 
-        searchButton = (FloatingActionButton) findViewById(R.id.search_button);
-
         (findViewById(R.id.search_button)).bringToFront();
 
         Intent i = getIntent();
@@ -142,8 +129,8 @@ public class ActivityGroupCreateInformation extends ActionBarActivity {
         nameNewGroup = (com.rengwuxian.materialedittext.MaterialEditText) findViewById(R.id.nameNewGroup);
 
         final ListView listView = (ListView) findViewById(R.id.listView);
-        checkListAdapter = new CheckListAdapter(this, R.layout.layout_select_contact_group, friendsFiltred);
-        listView.setAdapter(checkListAdapter);
+        adapterCheckList = new AdapterCheckList(this, R.layout.layout_select_contact_group, friendsFiltred);
+        listView.setAdapter(adapterCheckList);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -210,12 +197,6 @@ public class ActivityGroupCreateInformation extends ActionBarActivity {
     }
 
     @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        mSearchAction = menu.findItem(R.id.searchContact);
-        return super.onPrepareOptionsMenu(menu);
-    }
-
-    @Override
     public void onBackPressed() {
         if (isSearchOpened){
             handleMenuSearch();
@@ -235,6 +216,10 @@ public class ActivityGroupCreateInformation extends ActionBarActivity {
         List<ModelPerson> selected = new ArrayList();
         int i = item.getItemId();
         if (i == R.id.saveGroup_button) {
+            InputMethodManager imm = (InputMethodManager)getSystemService(
+                    Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(nameNewGroup.getWindowToken(), 0);
+
             for (ModelPerson userData: friends){
                 if (userData.isSelected()) {
                     Log.i("User is Checked", userData.getName());
@@ -248,9 +233,6 @@ public class ActivityGroupCreateInformation extends ActionBarActivity {
             if (!name.equals("") && !path.equals("") && !selected.isEmpty()){
                 if (isNetworkAvailable(this)) {
                     if (FragmentGroups.alreadyGroup(name)){
-                        InputMethodManager imm = (InputMethodManager) getSystemService(
-                                Context.INPUT_METHOD_SERVICE);
-                        imm.hideSoftInputFromWindow(nameNewGroup.getWindowToken(), 0);
                         SnackBar.show(ActivityGroupCreateInformation.this, R.string.group_already, R.string.button_group_change_name, new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -274,9 +256,6 @@ public class ActivityGroupCreateInformation extends ActionBarActivity {
                                 saveGroupInSession(newG);
 
                                 FragmentGroups.addNewGroup(newG);
-                                InputMethodManager imm = (InputMethodManager) getSystemService(
-                                        Context.INPUT_METHOD_SERVICE);
-                                imm.hideSoftInputFromWindow(nameNewGroup.getWindowToken(), 0);
                                 finish();
                                 overridePendingTransition(R.animator.push_left_inverted, R.animator.push_right_inverted);
                             }
@@ -298,9 +277,6 @@ public class ActivityGroupCreateInformation extends ActionBarActivity {
                 }
             }
             else{
-                InputMethodManager imm = (InputMethodManager) getSystemService(
-                        Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(nameNewGroup.getWindowToken(), 0);
                 SnackBar.show(ActivityGroupCreateInformation.this,getResources().getString(R.string.toast_group_not_yet_created));
             }
         }
@@ -367,13 +343,10 @@ public class ActivityGroupCreateInformation extends ActionBarActivity {
             imm.hideSoftInputFromWindow(nameNewGroup.getWindowToken(), 0);
             mainLayout.setVisibility(View.VISIBLE);
             searchButton.setVisibility(View.VISIBLE);
-            /*mainLayout.animate().translationY(0).start();
-            searchButton.animate().translationY(0).start();
-            layout_friends.animate().translationY(0).start();*/
 
             friendsFiltred.clear();
             friendsFiltred.addAll(friends);
-            checkListAdapter.notifyDataSetChanged();
+            adapterCheckList.notifyDataSetChanged();
             actionBar.setDisplayShowCustomEnabled(false);
             actionBar.setDisplayShowTitleEnabled(true);
 
@@ -407,7 +380,7 @@ public class ActivityGroupCreateInformation extends ActionBarActivity {
                     mSearchQuery = searchText.getText().toString();
                     friendsFiltred.clear();
                     friendsFiltred.addAll(performSearch(friends, mSearchQuery));
-                    checkListAdapter.notifyDataSetChanged();
+                    adapterCheckList.notifyDataSetChanged();
                 }
 
                 @Override
@@ -522,7 +495,7 @@ public class ActivityGroupCreateInformation extends ActionBarActivity {
         JSONObject mySession = new JSONObject(prefe.getString("session", "{}"));
         Log.e(TAG, mySession.toString());
 
-        JSONArray myGroups = mySession.getJSONArray("groups");
+        JSONArray myGroups = mySession.getJSONArray("activity_groups");
 
         JSONObject obj = new JSONObject();
         obj.put("id", modelGroup.getId());
@@ -549,58 +522,4 @@ public class ActivityGroupCreateInformation extends ActionBarActivity {
         editor.putString("session", mySession.toString());
         editor.commit();
     }
-
-    private class CheckListAdapter extends ArrayAdapter<ModelPerson> {
-        private List<ModelPerson> friends;
-
-        public CheckListAdapter(Context context, int textViewResourceId, List<ModelPerson> friends) {
-            super(context, textViewResourceId, friends);
-            this.friends = friends;
-        }
-
-        @Override
-        public View getView(final int position, View convertView, ViewGroup parent) {
-            final Holder holder;
-            if (convertView == null) {
-                LayoutInflater inflater = getLayoutInflater();
-                convertView = inflater.inflate(R.layout.layout_select_contact_group, parent, false);
-
-                holder = new Holder();
-                holder.avatar = (ImageView) convertView.findViewById(R.id.LayoutSelectContactGroup_ImageViewFriend);
-                holder.check = (com.gc.materialdesign.views.CheckBox) convertView.findViewById(R.id.LayoutSelectContactGroup_CheckBoxContact);
-                holder.name = (TextView) convertView.findViewById(R.id.LayoutSelectContactGroup_TextViewNameFriend);
-                convertView.setTag(holder);
-                holder.check.setOncheckListener(new CheckBox.OnCheckListener() {
-                    @Override
-                    public void onCheck(CheckBox cb, boolean b) {
-                        ModelPerson friend = (ModelPerson) cb.getTag();
-                        friend.setSelected(cb.isCheck());
-                    }
-                });
-            }
-            else {
-                holder = (Holder) convertView.getTag();
-            }
-
-            ModelPerson friend = friends.get(position);
-            if (friend.isSelected()){
-                holder.avatar.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.ic_navigation_check));
-            }
-            else{
-                holder.avatar.setImageBitmap(loadImage(ActivityGroupCreateInformation.this,friend.getId()));
-            }
-            holder.check.setSelected(friend.isSelected());
-            holder.check.setChecked(friend.isSelected());
-            holder.check.setTag(friend);
-            holder.name.setText(friend.getName());
-            return convertView;
-
-        }
-        private class Holder {
-            ImageView avatar;
-            com.gc.materialdesign.views.CheckBox check;
-            TextView name;
-        }
-    }
-
 }

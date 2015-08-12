@@ -1,5 +1,6 @@
 package com.example.henzer.socialize.Tasks;
 
+import android.app.Activity;
 import android.content.Context;
 import android.location.Address;
 import android.location.Geocoder;
@@ -10,10 +11,14 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Looper;
 import android.util.Log;
+import android.widget.GridView;
 
+import com.example.henzer.socialize.Activities.ActivityHome;
 import com.example.henzer.socialize.BlockActivity.ActivityFriendBlock;
 import com.example.henzer.socialize.BlockActivity.ActivityGroupBlock;
+import com.example.henzer.socialize.Fragments.FragmentContacts;
 import com.example.henzer.socialize.GCMClient.GcmMessageHandler;
+import com.example.henzer.socialize.Models.ModelPerson;
 import com.example.henzer.socialize.R;
 
 import net.steamcrafted.loadtoast.LoadToast;
@@ -32,9 +37,18 @@ public class TaskGPS extends AsyncTask<Void,Void,Void> implements LocationListen
     private LocationManager locationManager;
     private String TAG;
 
+    private ModelPerson actualUser;
+    private ModelPerson friend;
+
     public TaskGPS(Context context, String TAG){
         this.context = context;
         this.TAG = TAG;
+    }
+    public TaskGPS(Context context, String TAG, ModelPerson actualUser, ModelPerson friend){
+        this.context = context;
+        this.TAG = TAG;
+        this.actualUser = actualUser;
+        this.friend = friend;
     }
 
     @Override protected void onPreExecute() {
@@ -72,6 +86,11 @@ public class TaskGPS extends AsyncTask<Void,Void,Void> implements LocationListen
         else if(TAG.equals("ActivityGroupBlock")){
             ActivityGroupBlock activityGroupBlock = (ActivityGroupBlock) context;
             activityGroupBlock.blockGroup(location,toast);
+        }
+        else if(TAG.equals("ContactsFragment")){
+            ActivityHome homeActivity = (ActivityHome) context;
+            homeActivity.blockContact(location,toast,actualUser,friend);
+
         }
         else{
             GcmMessageHandler messageHandler = (GcmMessageHandler) context;

@@ -12,7 +12,7 @@
             android:layout_width="@dimen/layout_friends_in_group_simple_height"/>
         <TextView
             style="@style/FriendStyle"
-            android:id="@+id/ActivityGroups_TextViewGroupName"
+            android:id="@+id/LayoutGroups_TextViewGroupName"
             android:layout_margin="@dimen/layout_friends_in_group_simple_textview_name_margin"
             android:layout_height="@dimen/layout_friends_in_group_simple_height"
             android:layout_width="wrap_content"

@@ -4,6 +4,8 @@ package com.example.henzer.socialize.BlockActivity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.DragEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -49,6 +51,30 @@ public class ActivityInBlock extends Activity{
             public void onClick(View v) {
                 rippleBackground.startRippleAnimation();
                 finish();
+            }
+        });
+        rippleBackground.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                rippleBackground.startRippleAnimation();
+                finish();
+                return false;
+            }
+        });
+        rippleBackground.setOnDragListener(new View.OnDragListener() {
+            @Override
+            public boolean onDrag(View v, DragEvent event) {
+                rippleBackground.startRippleAnimation();
+                finish();
+                return false;
+            }
+        });
+        imageView.setOnDragListener(new View.OnDragListener() {
+            @Override
+            public boolean onDrag(View v, DragEvent event) {
+                rippleBackground.startRippleAnimation();
+                finish();
+                return false;
             }
         });
     }

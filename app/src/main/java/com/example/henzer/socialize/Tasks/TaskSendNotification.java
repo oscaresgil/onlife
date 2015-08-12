@@ -21,8 +21,7 @@ public class TaskSendNotification extends AsyncTask<ModelPerson, String, Boolean
     private LoadToast toast;
     private Context context;
     private JSONParser jsonParser;
-    private String data;
-    private String message;
+    private String message="";
     private String longitude;
     private String latitude;
     private String actualUser;
@@ -35,6 +34,14 @@ public class TaskSendNotification extends AsyncTask<ModelPerson, String, Boolean
         this.latitude = ""+latitude;
         this.longitude = ""+longitude;
         this.actualUser = actualUser;
+    }
+    public TaskSendNotification(Context c, String actualUser, double latitude, double longitude, LoadToast toast){
+        this.context = c;
+        this.toast = toast;
+        jsonParser = new JSONParser();
+        this.latitude = ""+latitude;
+        this.longitude = ""+longitude;
+        this.message = actualUser;
     }
 
     @Override

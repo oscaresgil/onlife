@@ -2,6 +2,7 @@ package com.example.henzer.socialize.BlockActivity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.net.ConnectivityManager;
@@ -13,6 +14,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -21,9 +23,13 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.henzer.socialize.Adapters.AdapterGroup;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.henzer.socialize.Activities.ActivityGroupInformation;
 import com.example.henzer.socialize.Fragments.FragmentGroups;
@@ -34,6 +40,14 @@ import com.example.henzer.socialize.Models.ModelGroup;
 import com.example.henzer.socialize.R;
 import com.kenny.snackbar.SnackBar;
 import com.melnykov.fab.FloatingActionButton;
+import com.mingle.entity.MenuEntity;
+import com.mingle.sweetpick.BlurEffect;
+import com.mingle.sweetpick.CustomDelegate;
+import com.mingle.sweetpick.Delegate;
+import com.mingle.sweetpick.DimEffect;
+import com.mingle.sweetpick.RecyclerViewDelegate;
+import com.mingle.sweetpick.SweetSheet;
+import com.mingle.sweetpick.ViewPagerDelegate;
 import com.r0adkll.slidr.Slidr;
 import com.r0adkll.slidr.model.SlidrConfig;
 import com.r0adkll.slidr.model.SlidrPosition;
@@ -42,6 +56,7 @@ import com.rengwuxian.materialedittext.MaterialEditText;
 import net.steamcrafted.loadtoast.LoadToast;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.henzer.socialize.Controller.StaticMethods.loadImage;
@@ -50,6 +65,9 @@ public class ActivityGroupBlock extends ActionBarActivity {
     public static final String TAG = "ActivityGroupBlock";
     private String nameGroup;
     private int maximumChars = 30, actualChar = 0;
+
+    private RelativeLayout rl;
+    private SweetSheet sweetSheet;
 
     private ModelPerson actualUser;
     private ModelGroup modelGroup;
@@ -131,6 +149,9 @@ public class ActivityGroupBlock extends ActionBarActivity {
         });
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.ActivityGroupBlock_ButtonBlock);
         fab.bringToFront();
+
+        rl = (RelativeLayout) findViewById(R.id.ActivityGroupBlock_LayoutMain);
+        sweetSheet = new SweetSheet(rl);
     }
 
     @Override
@@ -166,11 +187,52 @@ public class ActivityGroupBlock extends ActionBarActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
         if (i == R.id.information_button){
-            Intent intent = new Intent(this,ActivityGroupInformation.class);
+            if (!sweetSheet.isShow()) {
+                List<MenuEntity> menuEntities = new ArrayList<>();
+                for (int j = 0; j < friendsInGroup.size() + 1; j++) {
+                    MenuEntity menuEntity = new MenuEntity();
+                    if (j == 0) {
+                        menuEntity.title = getResources().getString(R.string.friends_in_group)+":";
+                        menuEntity.icon = getResources().getDrawable(R.drawable.ic_perm_identity_black_48dp);
+                    } else {
+                        ModelPerson f = friendsInGroup.get(j-1);
+                        menuEntity.title = f.getName();
+                        menuEntity.icon = new BitmapDrawable(getResources(), loadImage(this, f.getId()));
+                    }
+                    menuEntities.add(menuEntity);
+                }
+                sweetSheet.setMenuList(menuEntities);
+
+                sweetSheet.setDelegate(new RecyclerViewDelegate(true));
+                sweetSheet.setBackgroundEffect(new DimEffect(0.8f));
+                sweetSheet.setOnMenuItemClickListener(new SweetSheet.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onItemClick(int position, MenuEntity menuEntity1) {
+                        if (position!=0) {
+                            ModelPerson friend = friendsInGroup.get(position-1);
+                            Intent intent = new Intent(ActivityGroupBlock.this, ActivityFriendBlock.class);
+                            intent.putExtra("data", friend);
+                            intent.putExtra("actualuser", actualUser);
+                            startActivity(intent);
+                            overridePendingTransition(R.animator.push_right, R.animator.push_left);
+                            return true;
+                        }
+                        else{
+                            return false;
+                        }
+                    }
+                });
+                sweetSheet.toggle();
+            }
+            else{
+                sweetSheet.dismiss();
+            }
+
+            /*Intent intent = new Intent(this,ActivityGroupInformation.class);
             intent.putExtra("data",(Serializable)friendsInGroup);
             intent.putExtra("user",actualUser);
             startActivity(intent);
-            overridePendingTransition(R.animator.push_right, R.animator.push_left);
+            overridePendingTransition(R.animator.push_right, R.animator.push_left);*/
         }
         else if(i == R.id.delete_group){
             new MaterialDialog.Builder(this)

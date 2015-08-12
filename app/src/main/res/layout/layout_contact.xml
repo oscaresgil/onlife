@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/ActivityGroups_LayoutMain"
+    android:id="@+id/LayoutGroups_LayoutMain"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:weightSum="@integer/layout_contact_linearlayout_main_weight_sum">
@@ -78,8 +78,10 @@
     <LinearLayout
         android:id="@+id/LayoutContact_LinearLayoutLeftContact"
         android:orientation="vertical"
-        android:layout_width="match_parent"
+        android:layout_gravity="center"
+        android:gravity="center"
         android:layout_height="match_parent"
+        android:layout_width="match_parent"
         android:layout_margin="@dimen/layout_contact_linearlayout_margin"
         android:layout_weight="@integer/layout_contact_linearlayout_left_contact_weight_sum">
         <android.support.v7.widget.CardView
@@ -107,7 +109,7 @@
         </android.support.v7.widget.CardView>
     </LinearLayout>
 
-    <LinearLayout
+    <!--LinearLayout
         android:id="@+id/LayoutContact_LinearLayoutRightContact"
         android:orientation="vertical"
         android:layout_width="match_parent"
@@ -136,6 +138,6 @@
                 android:textSize="16sp"
                 android:background="@color/black_transparent"/>
         </android.support.v7.widget.CardView>
-    </LinearLayout>
+    </LinearLayout-->
 
 </LinearLayout>

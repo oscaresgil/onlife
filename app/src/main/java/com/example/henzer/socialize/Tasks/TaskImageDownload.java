@@ -7,7 +7,7 @@ import android.os.AsyncTask;
 import android.support.v4.widget.SwipeRefreshLayout;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.example.henzer.socialize.Adapters.AdapterContacts;
+import com.example.henzer.socialize.Adapters.AdapterContact;
 import com.example.henzer.socialize.Fragments.FragmentContacts;
 import com.example.henzer.socialize.Models.ModelPerson;
 import com.example.henzer.socialize.R;
@@ -31,12 +31,12 @@ import static com.example.henzer.socialize.Controller.StaticMethods.saveImage;
 public class TaskImageDownload extends AsyncTask<Boolean, Void, Void> {
     private Activity context;
     private SwipeRefreshLayout mSwipeRefreshLayout;
-    private AdapterContacts adapter;
+    private AdapterContact adapter;
     private MaterialDialog materialDialog;
     private List<ModelPerson> friends;
     private boolean typeUrl,isMaterialDialog;
 
-    public TaskImageDownload(Context context, SwipeRefreshLayout mSwipeRefreshLayout, boolean isMaterialDialog, AdapterContacts adapter, List<ModelPerson> friends){
+    public TaskImageDownload(Context context, SwipeRefreshLayout mSwipeRefreshLayout, boolean isMaterialDialog, AdapterContact adapter, List<ModelPerson> friends){
         this.context = (Activity) context;
         this.mSwipeRefreshLayout = mSwipeRefreshLayout;
         this.adapter = adapter;

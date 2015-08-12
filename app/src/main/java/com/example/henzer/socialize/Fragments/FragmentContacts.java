@@ -2,10 +2,12 @@ package com.example.henzer.socialize.Fragments;
 
 import android.content.Context;
 import android.content.Intent;
+import android.location.Location;
+import android.nfc.Tag;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ListFragment;
+import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.text.Editable;
@@ -17,32 +19,39 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
-import android.widget.ListView;
+import android.widget.AdapterView;
+import android.widget.GridView;
 import android.widget.Toast;
 
-import com.example.henzer.socialize.Adapters.AdapterContacts;
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.example.henzer.socialize.Adapters.AdapterContact;
 import com.example.henzer.socialize.BlockActivity.ActivityFriendBlock;
 import com.example.henzer.socialize.Models.ModelPerson;
 import com.example.henzer.socialize.R;
+import com.example.henzer.socialize.Tasks.TaskGPS;
 import com.example.henzer.socialize.Tasks.TaskImageDownload;
 import com.example.henzer.socialize.Models.ModelSessionData;
+import com.example.henzer.socialize.Tasks.TaskSendNotification;
 import com.kenny.snackbar.SnackBar;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.yalantis.flipviewpager.utils.FlipSettings;
+
+import net.steamcrafted.loadtoast.LoadToast;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.henzer.socialize.Controller.StaticMethods.isNetworkAvailable;
 
-/**
- * Created by hp1 on 21-01-2015.
- */
-public class FragmentContacts extends ListFragment {
+public class FragmentContacts extends Fragment {
+    public static final String TAG = "ContactsFragment";
+
     private ModelPerson actualUser;
     private List<ModelPerson> friends;
-    private AdapterContacts adapter;
+    private AdapterContact adapter;
     private SwipeRefreshLayout mSwipeRefreshLayout;
+
+    private GridView gridView;
 
     private MenuItem mSearchAction;
     private MaterialEditText searchText;
@@ -52,7 +61,6 @@ public class FragmentContacts extends ListFragment {
 
     private static boolean typeUrl = false;
 
-    public static final String TAG = "ContactsFragment";
     public static FragmentContacts newInstance(Bundle arguments){
         FragmentContacts myfragment = new FragmentContacts();
         if(arguments !=null){
@@ -70,13 +78,65 @@ public class FragmentContacts extends ListFragment {
 
         friendsFiltred = new ArrayList<>();
 
-        FlipSettings settings = new FlipSettings.Builder().defaultPage(1).build();
         actualUser = ((ModelSessionData)getArguments().getSerializable("data")).getUser();
         friends = ((ModelSessionData)getArguments().getSerializable("data")).getFriends();
         friendsFiltred.addAll(friends);
 
-        adapter =  new AdapterContacts(getActivity(), friendsFiltred, settings);
-        setListAdapter(adapter);
+        adapter = new AdapterContact(getActivity(),friendsFiltred);
+        gridView = (GridView) v.findViewById(R.id.FragmentContacts_GridView);
+        gridView.setAdapter(adapter);
+        gridView.setSelector(R.drawable.list_selector);
+        gridView.setLongClickable(true);
+
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (!mSwipeRefreshLayout.isRefreshing()){
+                    ModelPerson user = (ModelPerson)gridView.getItemAtPosition(position);
+                    Intent i = new Intent(getActivity(),ActivityFriendBlock.class);
+                    i.putExtra("data",user);
+                    i.putExtra("actualuser", actualUser);
+                    startActivity(i);
+                    getActivity().overridePendingTransition(R.animator.push_right, R.animator.push_left);
+                }else{
+                    Toast.makeText(getActivity(),getResources().getString(R.string.toast_wait_until_contacts_refreshed),Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        gridView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
+                if (!mSwipeRefreshLayout.isRefreshing() && isNetworkAvailable(getActivity())){
+                    new MaterialDialog.Builder(getActivity())
+                            .title(R.string.button_block)
+                            .content(R.string.really_delete)
+                            .positiveText(R.string.yes)
+                            .positiveColorRes(R.color.orange_light)
+                            .negativeText(R.string.no)
+                            .negativeColorRes(R.color.red)
+                            .callback(new MaterialDialog.ButtonCallback() {
+                                @Override
+                                public void onPositive(MaterialDialog dialog) {
+                                    new TaskGPS(getActivity(),TAG,actualUser,(ModelPerson)gridView.getItemAtPosition(position)).execute();
+                                    dialog.dismiss();
+                                    dialog.cancel();
+                                }
+                            }).show();
+                }else if(!isNetworkAvailable(getActivity())){
+                    SnackBar.show(getActivity(), R.string.no_connection, R.string.button_change_connection, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            startActivity(new Intent(Settings.ACTION_WIRELESS_SETTINGS));
+                        }
+                    });
+                }
+                else{
+                    Toast.makeText(getActivity(),getResources().getString(R.string.toast_wait_until_contacts_refreshed),Toast.LENGTH_SHORT).show();
+                }
+                return false;
+            }
+        });
 
         return v;
     }
@@ -86,15 +146,17 @@ public class FragmentContacts extends ListFragment {
         super.onResume();
 
         mSwipeRefreshLayout = (SwipeRefreshLayout) getActivity().findViewById(R.id.FragmentContacts_SwipeRefreshLayout);
-        getListView().setOnScrollListener(new AbsListView.OnScrollListener() {
+        gridView.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
-            public void onScrollStateChanged(AbsListView view, int scrollState) {}
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+            }
+
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
                 boolean enable = false;
-                if (getListView() != null && getListView().getChildCount() > 0) {
-                    boolean firstItemVisible = getListView().getFirstVisiblePosition() == 0;
-                    boolean topOfFirstItemVisible = getListView().getChildAt(0).getTop() == 0;
+                if (gridView != null && gridView.getChildCount() > 0) {
+                    boolean firstItemVisible = gridView.getFirstVisiblePosition() == 0;
+                    boolean topOfFirstItemVisible = gridView.getChildAt(0).getTop() == 0;
                     enable = firstItemVisible && topOfFirstItemVisible;
                 }
                 mSwipeRefreshLayout.setEnabled(enable);
@@ -228,21 +290,6 @@ public class FragmentContacts extends ListFragment {
                     startActivity(new Intent(Settings.ACTION_WIRELESS_SETTINGS));
                 }
             });
-        }
-    }
-
-    @Override
-    public void onListItemClick(ListView l, View v, int position, long id) {
-        super.onListItemClick(l, v, position, id);
-        if (!mSwipeRefreshLayout.isRefreshing()){
-            ModelPerson user = (ModelPerson)getListAdapter().getItem(position);
-            Intent i = new Intent(getActivity(),ActivityFriendBlock.class);
-            i.putExtra("data",user);
-            i.putExtra("actualuser", actualUser);
-            startActivity(i);
-            getActivity().overridePendingTransition(R.animator.push_right, R.animator.push_left);
-        }else{
-            Toast.makeText(getActivity(),getResources().getString(R.string.toast_wait_until_contacts_refreshed),Toast.LENGTH_SHORT).show();
         }
     }
 
