@@ -29,6 +29,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.henzer.socialize.Adapters.AdapterContact;
 import com.example.henzer.socialize.Adapters.AdapterGroup;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.henzer.socialize.Activities.ActivityGroupInformation;
@@ -189,21 +190,21 @@ public class ActivityGroupBlock extends ActionBarActivity {
         if (i == R.id.information_button){
             if (!sweetSheet.isShow()) {
                 List<MenuEntity> menuEntities = new ArrayList<>();
-                for (int j = 0; j < friendsInGroup.size() + 1; j++) {
+                for (int j = 0; j < friendsInGroup.size(); j++) {
                     MenuEntity menuEntity = new MenuEntity();
-                    if (j == 0) {
-                        menuEntity.title = getResources().getString(R.string.friends_in_group)+":";
-                        menuEntity.icon = getResources().getDrawable(R.drawable.ic_perm_identity_black_48dp);
-                    } else {
-                        ModelPerson f = friendsInGroup.get(j-1);
-                        menuEntity.title = f.getName();
-                        menuEntity.icon = new BitmapDrawable(getResources(), loadImage(this, f.getId()));
-                    }
+                    ModelPerson f = friendsInGroup.get(j);
+                    menuEntity.title = f.getName();
+                    menuEntity.icon = new BitmapDrawable(getResources(), loadImage(this, f.getId()));
                     menuEntities.add(menuEntity);
                 }
                 sweetSheet.setMenuList(menuEntities);
 
-                sweetSheet.setDelegate(new RecyclerViewDelegate(true));
+                if (android.os.Build.VERSION.SDK_INT > android.os.Build.VERSION_CODES.JELLY_BEAN) {
+                    sweetSheet.setDelegate(new RecyclerViewDelegate(true));
+                }
+                else{
+                    sweetSheet.setDelegate(new RecyclerViewDelegate(false));
+                }
                 sweetSheet.setBackgroundEffect(new DimEffect(0.8f));
                 sweetSheet.setOnMenuItemClickListener(new SweetSheet.OnMenuItemClickListener() {
                     @Override

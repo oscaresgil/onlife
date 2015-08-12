@@ -260,8 +260,11 @@ public class ActivityMain extends Activity{
 
 
     private void gotoHome(){
+        Log.e("Methods","I passed gotoHome()");
         SharedPreferences prefe=getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
         try {
+            Log.e("Prefe",prefe.toString());
+            Log.e("Prefe.string",prefe.getString("session",""));
             JSONObject mySession = new JSONObject(prefe.getString("session", ""));
             JSONObject me = mySession.getJSONObject("me");
             JSONArray fr = mySession.getJSONArray("friends");

@@ -1,12 +1,15 @@
 package com.example.henzer.socialize.Fragments;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -28,6 +31,7 @@ import com.example.henzer.socialize.Models.ModelPerson;
 import com.example.henzer.socialize.Models.ModelSessionData;
 import com.example.henzer.socialize.R;
 import com.melnykov.fab.FloatingActionButton;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -37,6 +41,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import static com.example.henzer.socialize.Controller.StaticMethods.loadImage;
+import static com.example.henzer.socialize.Controller.StaticMethods.loadImagePath;
 
 public class FragmentGroups extends Fragment {
     public static final String TAG = "GroupsFragment";
@@ -176,9 +181,13 @@ public class FragmentGroups extends Fragment {
             View rowView = inflater.inflate(R.layout.layout_groups, null, true);
             TextView text = (TextView) rowView.findViewById(R.id.LayoutGroups_TextViewGroupName);
             ImageView image = (ImageView) rowView.findViewById(R.id.LayoutGroups_CircleImageViewGroup);
-            Bitmap b = loadImage(getContext(), objects.get(position).getName());
-            b = Bitmap.createBitmap(b,(b.getWidth()/2)-150,(b.getHeight()/2)-150,300,300);
-            image.setImageBitmap(b);
+
+            Display display = getActivity().getWindowManager().getDefaultDisplay();
+            Point size = new Point();
+            display.getSize(size);
+            int width = size.x/4;
+
+            Picasso.with(getActivity()).load(loadImagePath(getContext(),objects.get(position).getName())).resize(width,width).into(image);
             image.setScaleType(ImageView.ScaleType.CENTER_CROP);
             text.setText(objects.get(position).getName());
             return rowView;
