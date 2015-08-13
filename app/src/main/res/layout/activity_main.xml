@@ -12,6 +12,14 @@
             android:layout_height="@dimen/activity_main_height_logo"
             android:layout_margin="@dimen/activity_main_logo_margin"
             android:src="@drawable/logo_home_page"/>
+        <com.facebook.login.widget.LoginButton
+            android:id="@+id/login_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="30dp"
+            android:layout_marginBottom="30dp"
+            android:onClick="loginWithFB"/>
         <Button
             android:id="@+id/ActivityMain_ButtonLoginFb"
             android:layout_below="@id/ActivityMain_ImageViewLogo"

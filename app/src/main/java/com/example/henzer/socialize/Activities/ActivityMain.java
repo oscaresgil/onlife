@@ -100,8 +100,7 @@ public class ActivityMain extends Activity{
         @Override
         public void onError(FacebookException e) {
             e.printStackTrace();
-            Log.d("Login","Login Error");
-            Log.e("MainActivity", e.getLocalizedMessage());
+            SnackBar.show(ActivityMain.this, R.string.no_server);
         }
     };
 

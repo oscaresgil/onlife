@@ -15,7 +15,6 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.example.henzer.socialize.BlockActivity.ActivityInBlock;
-import com.example.henzer.socialize.Tasks.TaskGPS;
 import com.example.henzer.socialize.R;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
@@ -56,8 +55,8 @@ public class GcmMessageHandler extends IntentService {
         if (looper==null){
             Looper.prepare();
         }
-        TaskGPS taskGps = new TaskGPS(this,TAG);
-        taskGps.execute();
+//        TaskGPS taskGps = new TaskGPS(this,TAG);
+//        taskGps.execute();
     }
 
     public void setLocation(Location location){
