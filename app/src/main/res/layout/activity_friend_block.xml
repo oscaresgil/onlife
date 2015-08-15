@@ -4,7 +4,8 @@
     android:id="@+id/ActivityFriendBlock_ScrollViewMain"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
-    android:background="@color/background_material_light">
+    android:background="@color/background_material_light"
+    android:animateLayoutChanges="true">
 
     <RelativeLayout
         android:id="@+id/ActivityFriendBlock_RelativeLayoutContact"
@@ -31,6 +32,19 @@
             android:layout_marginRight="10dp"
             android:onClick="block"
             android:src="@drawable/ic_action_lock_outline"
+            fab:fab_colorNormal="@color/orange_light"
+            fab:fab_colorPressed="@color/orange"/>
+        <com.melnykov.fab.FloatingActionButton
+            xmlns:fab="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/ActivityFriendBlock_ButtonEmoticon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/ActivityFriendBlock_ButtonBlock"
+            android:layout_alignBottom="@id/ActivityFriendBlock_ImageViewContact"
+            android:layout_marginBottom="-20dp"
+            android:layout_marginRight="10dp"
+            android:onClick="emoji"
+            android:src="@drawable/ic_editor_insert_emoticon"
             fab:fab_colorNormal="@color/orange_light"
             fab:fab_colorPressed="@color/orange"/>
         <android.support.v7.widget.CardView
@@ -81,6 +95,18 @@
                     app:met_hideUnderline="true"/>
             </RelativeLayout>
         </android.support.v7.widget.CardView>
+
+        <GridView
+            android:background="@color/white"
+            android:layout_below="@id/ActivityFriendBlock_CardViewMessage"
+            android:layout_width="fill_parent"
+            android:layout_height="150dp"
+            android:numColumns="3"
+            android:layout_margin="10dp"
+            android:gravity="center"
+            android:id="@+id/ActivityFriendBlock_GridLayout"
+            android:visibility="gone">
+        </GridView>
 
         <!--mehdi.sakout.fancybuttons.FancyButton xmlns:fancy="http://schemas.android.com/apk/res-auto"
             style="@style/BlockMessagesStyle"

@@ -1,7 +1,9 @@
 package com.example.henzer.socialize.BlockActivity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.os.Bundle;
@@ -10,33 +12,44 @@ import android.support.v7.app.ActionBarActivity;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
+import android.view.Display;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.example.henzer.socialize.Adapters.AdapterEmoticon;
 import com.example.henzer.socialize.Models.ModelPerson;
 import com.example.henzer.socialize.R;
 import com.example.henzer.socialize.Tasks.TaskGPS;
 import com.example.henzer.socialize.Tasks.TaskSendNotification;
 import com.kenny.snackbar.SnackBar;
+import com.manuelpeinado.fadingactionbar.FadingActionBarHelper;
 import com.melnykov.fab.FloatingActionButton;
 import com.r0adkll.slidr.Slidr;
 import com.r0adkll.slidr.model.SlidrConfig;
 import com.r0adkll.slidr.model.SlidrPosition;
 import com.rengwuxian.materialedittext.MaterialEditText;
+import com.squareup.picasso.Picasso;
 
 import net.steamcrafted.loadtoast.LoadToast;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static com.example.henzer.socialize.Controller.StaticMethods.isNetworkAvailable;
 import static com.example.henzer.socialize.Controller.StaticMethods.loadImage;
+import static com.example.henzer.socialize.Controller.StaticMethods.loadImagePath;
 
-public class ActivityFriendBlock extends ActionBarActivity {
+//public class ActivityFriendBlock extends ActionBarActivity {
+public class ActivityFriendBlock extends Activity {
     public static final String TAG = "ActivityFriendBlock";
     private ModelPerson actualUser;
     private ModelPerson friend;
@@ -44,6 +57,8 @@ public class ActivityFriendBlock extends ActionBarActivity {
     private TextView maxCharsView;
     private int maximumChars = 30, actualChar = 0;
     private FloatingActionButton fab;
+    private FloatingActionButton fabEmoji;
+    private GridView gridView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -62,18 +77,25 @@ public class ActivityFriendBlock extends ActionBarActivity {
 
         Slidr.attach(this, config);
 
-        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
+        FadingActionBarHelper helper = new FadingActionBarHelper().actionBarBackground(new ColorDrawable(R.color.orange_light)).headerLayout(R.layout.header_test).contentLayout(R.layout.activity_friend_block);
+        setContentView(helper.createView(this));
+        helper.initActionBar(this);
+
+        /*android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setHomeAsUpIndicator(R.drawable.ic_arrow_back_black_48dp);
         actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.orange_light)));
-        actionBar.setTitle((Html.fromHtml("<b><font color=\""+getResources().getColor(R.color.black)+"\">" + friend.getName()+ "</font></b>")));
-
+        actionBar.setTitle((Html.fromHtml("<b><font color=\""+getResources().getColor(R.color.black)+"\">" + friend.getName()+ "</font></b>")));*/
         setContentView(R.layout.activity_friend_block);
 
         fab = (FloatingActionButton) findViewById(R.id.ActivityFriendBlock_ButtonBlock);
         Animation blinkAnim = AnimationUtils.loadAnimation(ActivityFriendBlock.this,R.anim.blink);
         fab.startAnimation(blinkAnim);
         fab.bringToFront();
+
+        fabEmoji = (FloatingActionButton) findViewById(R.id.ActivityFriendBlock_ButtonEmoticon);
+        fabEmoji.startAnimation(blinkAnim);
+        fabEmoji.bringToFront();
 
         ImageView picture = (ImageView) findViewById(R.id.ActivityFriendBlock_ImageViewContact);
         picture.setImageBitmap(loadImage(this, friend.getId()));
@@ -115,7 +137,18 @@ public class ActivityFriendBlock extends ActionBarActivity {
             }
         });
 
-
+        gridView = (GridView) findViewById(R.id.ActivityFriendBlock_GridLayout);
+        final List<String> gifNames = new ArrayList<>();
+        for (int j=1; j<10; j++){
+            gifNames.add("gif"+j);
+        }
+        gridView.setAdapter(new AdapterEmoticon(this,gifNames));
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                SnackBar.show(ActivityFriendBlock.this,gifNames.get(position));
+            }
+        });
     }
 
     @Override
@@ -158,6 +191,14 @@ public class ActivityFriendBlock extends ActionBarActivity {
         imm.hideSoftInputFromWindow(messageTextView.getWindowToken(), 0);
         overridePendingTransition(R.animator.push_left_inverted, R.animator.push_right_inverted);
         return true;
+    }
+
+    public void emoji(View view){
+        if (gridView.getVisibility() == View.GONE){
+            gridView.setVisibility(View.VISIBLE);
+        }else{
+            gridView.setVisibility(View.GONE);
+        }
     }
 
     public void block(View view) {

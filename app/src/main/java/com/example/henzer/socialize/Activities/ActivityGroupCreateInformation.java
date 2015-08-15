@@ -248,9 +248,11 @@ public class ActivityGroupCreateInformation extends ActionBarActivity {
                         ModelGroup newG = new ModelGroup(0, name, selected, path, limit, state);
 
                         Log.e(TAG, newG.toString());
-                        TaskAddNewGroup taskAddNewGroup = new TaskAddNewGroup(ActivityGroupCreateInformation.this);
-                        try {
-                            newG = taskAddNewGroup.execute(newG).get();
+                        new TaskAddNewGroup(ActivityGroupCreateInformation.this, newG, ActivityGroupCreateInformation.this).execute(newG);
+
+                        //newG = taskAddNewGroup.execute(newG).get();
+                        /*try {
+
                             if (newG.getId() != -1) {
                                 modelSessionData.getModelGroups().add(newG);
                                 saveGroupInSession(newG);
@@ -265,7 +267,7 @@ public class ActivityGroupCreateInformation extends ActionBarActivity {
                             e.printStackTrace();
                         } catch (JSONException e) {
                             e.printStackTrace();
-                        }
+                        }*/
                     }
                 }else{
                     SnackBar.show(ActivityGroupCreateInformation.this, R.string.no_connection, R.string.button_change_connection, new View.OnClickListener() {
@@ -290,6 +292,21 @@ public class ActivityGroupCreateInformation extends ActionBarActivity {
             }
         }
         return true;
+    }
+
+    public void saveGroup(ModelGroup newG){
+        if (newG.getId() != -1) {
+            modelSessionData.getModelGroups().add(newG);
+            try {
+                saveGroupInSession(newG);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            FragmentGroups.addNewGroup(newG);
+            finish();
+            overridePendingTransition(R.animator.push_left_inverted, R.animator.push_right_inverted);
+        }
     }
 
     public void search(View view){

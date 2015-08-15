@@ -6,6 +6,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.example.henzer.socialize.Activities.ActivityGroupCreateInformation;
 import com.example.henzer.socialize.Controller.JSONParser;
 import com.example.henzer.socialize.Models.ModelGroup;
 import com.example.henzer.socialize.Models.ModelPerson;
@@ -19,15 +20,19 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TaskAddNewGroup extends AsyncTask<ModelGroup, String, ModelGroup> {
+public class TaskAddNewGroup extends AsyncTask<ModelGroup, String, Void> {
     private MaterialDialog pDialog;
     private Context context;
     private JSONParser jsonParser;
     private String message;
+    private ModelGroup newG;
+    private ActivityGroupCreateInformation activityGroupCreateInformation;
 
-    public TaskAddNewGroup(Context c){
+    public TaskAddNewGroup(Context c,ModelGroup newG, ActivityGroupCreateInformation activityGroupCreateInformation){
         this.context = c;
         jsonParser = new JSONParser();
+        this.newG = newG;
+        this.activityGroupCreateInformation = activityGroupCreateInformation;
     }
 
     @Override
@@ -43,7 +48,7 @@ public class TaskAddNewGroup extends AsyncTask<ModelGroup, String, ModelGroup> {
     }
 
     @Override
-    protected ModelGroup doInBackground(ModelGroup... params) {
+    protected Void doInBackground(ModelGroup... params) {
         ModelGroup n = params[0];
 
         //Parametros a enviar
@@ -73,11 +78,13 @@ public class TaskAddNewGroup extends AsyncTask<ModelGroup, String, ModelGroup> {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return n;
+        newG = n;
+        return null;
     }
 
     @Override
-    protected void onPostExecute(ModelGroup newG){
+    protected void onPostExecute(Void aVoid) {
+        activityGroupCreateInformation.saveGroup(newG);
         Log.e("MainActivity", "Quitando el Progress Dialog");
         pDialog.dismiss();
         Toast.makeText(context, message, Toast.LENGTH_LONG).show();
