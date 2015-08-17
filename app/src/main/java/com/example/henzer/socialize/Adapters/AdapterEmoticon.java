@@ -50,52 +50,35 @@ public class AdapterEmoticon extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        GifImageView imageView = (GifImageView) ((Activity)context).getLayoutInflater().inflate(R.layout.layout_emoticon,parent,false);
-        String name = gifImages.get(position);
-        GifDrawable gif = null;
-        try {
-            switch (name){
-                case "gif1":
-                    gif = new GifDrawable(context.getResources(), R.drawable.gif1);
-                    break;
-                case "gif2":
-                    gif = new GifDrawable(context.getResources(), R.drawable.gif2);
-                    break;
-                case "gif3":
-                    gif = new GifDrawable(context.getResources(), R.drawable.gif3);
-                    break;
-                case "gif4":
-                    gif = new GifDrawable(context.getResources(), R.drawable.gif4);
-                    break;
-                case "gif5":
-                    gif = new GifDrawable(context.getResources(), R.drawable.gif5);
-                    break;
-                case "gif6":
-                    gif = new GifDrawable(context.getResources(), R.drawable.gif6);
-                    break;
-                case "gif7":
-                    gif = new GifDrawable(context.getResources(), R.drawable.gif7);
-                    break;
-                case "gif8":
-                    gif = new GifDrawable(context.getResources(), R.drawable.gif8);
-                    break;
-                case "gif9":
-                    gif = new GifDrawable(context.getResources(), R.drawable.gif9);
-                    break;
+        GifHolder gifHolder;
+        if (convertView==null){
+            convertView = ((Activity)context).getLayoutInflater().inflate(R.layout.layout_emoticon,parent,false);
+            gifHolder = new GifHolder();
+
+            gifHolder.gifImageView = (GifImageView) convertView;
+            String name = gifImages.get(position);
+
+            int resourceId = context.getResources().getIdentifier(name, "drawable", context.getPackageName());
+            GifDrawable gif = null;
+            try {
+                gif = new GifDrawable(context.getResources(), resourceId);
+            }catch(Exception e){
+                e.printStackTrace();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+            gifHolder.gifImageView.setImageDrawable(gif);
+            gifHolder.gifImageView.setId(position);
+            gifHolder.gifImageView.setAdjustViewBounds(true);
+            gifHolder.gifImageView.setScaleType(ImageView.ScaleType.CENTER);
+
+            convertView.setTag(gifHolder);
+        }else{
+            gifHolder = (GifHolder) convertView.getTag();
         }
-        imageView.setImageDrawable(gif);
-        imageView.setId(position);
-        imageView.setAdjustViewBounds(true);
-        imageView.setScaleType(ImageView.ScaleType.CENTER);
-        /*imageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                SnackBar.show((Activity)context,""+v.getId());
-            }
-        });*/
-        return imageView;
+
+        return convertView;
+    }
+
+    static class GifHolder{
+        GifImageView gifImageView;
     }
 }

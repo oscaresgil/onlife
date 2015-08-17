@@ -48,8 +48,8 @@ import static com.example.henzer.socialize.Controller.StaticMethods.isNetworkAva
 import static com.example.henzer.socialize.Controller.StaticMethods.loadImage;
 import static com.example.henzer.socialize.Controller.StaticMethods.loadImagePath;
 
-//public class ActivityFriendBlock extends ActionBarActivity {
-public class ActivityFriendBlock extends Activity {
+public class ActivityFriendBlock extends ActionBarActivity {
+//public class ActivityFriendBlock extends Activity {
     public static final String TAG = "ActivityFriendBlock";
     private ModelPerson actualUser;
     private ModelPerson friend;
@@ -77,15 +77,15 @@ public class ActivityFriendBlock extends Activity {
 
         Slidr.attach(this, config);
 
-        FadingActionBarHelper helper = new FadingActionBarHelper().actionBarBackground(new ColorDrawable(R.color.orange_light)).headerLayout(R.layout.header_test).contentLayout(R.layout.activity_friend_block);
+        /*FadingActionBarHelper helper = new FadingActionBarHelper().actionBarBackground(new ColorDrawable(R.color.orange_light)).headerLayout(R.layout.header_test).contentLayout(R.layout.activity_friend_block);
         setContentView(helper.createView(this));
-        helper.initActionBar(this);
+        helper.initActionBar(this);*/
 
-        /*android.support.v7.app.ActionBar actionBar = getSupportActionBar();
+        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setHomeAsUpIndicator(R.drawable.ic_arrow_back_black_48dp);
         actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.orange_light)));
-        actionBar.setTitle((Html.fromHtml("<b><font color=\""+getResources().getColor(R.color.black)+"\">" + friend.getName()+ "</font></b>")));*/
+        actionBar.setTitle((Html.fromHtml("<b><font color=\""+getResources().getColor(R.color.black)+"\">" + friend.getName()+ "</font></b>")));
         setContentView(R.layout.activity_friend_block);
 
         fab = (FloatingActionButton) findViewById(R.id.ActivityFriendBlock_ButtonBlock);

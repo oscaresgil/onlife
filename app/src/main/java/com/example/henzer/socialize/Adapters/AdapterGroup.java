@@ -30,12 +30,29 @@ public class AdapterGroup extends ArrayAdapter<ModelPerson> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        LayoutInflater inflater = ((Activity)context).getLayoutInflater();
-        View rowView = inflater.inflate(resource, null, true);
-        ImageView avatar = (ImageView) rowView.findViewById(R.id.LayoutFriendsInGroup_ImageViewContact);
-        TextView text = (TextView) rowView.findViewById(R.id.LayoutGroups_TextViewGroupName);
-        avatar.setImageBitmap(loadImage(context, objects.get(position).getId()));
-        text.setText(objects.get(position).getName());
-        return rowView;
+        GroupHolder groupHolder;
+
+        if (convertView == null){
+            LayoutInflater inflater = ((Activity)context).getLayoutInflater();
+            convertView = inflater.inflate(resource, null, true);
+
+            groupHolder = new GroupHolder();
+            groupHolder.avatar = (ImageView) convertView.findViewById(R.id.LayoutFriendsInGroup_ImageViewContact);
+            groupHolder.text = (TextView) convertView.findViewById(R.id.LayoutGroups_TextViewGroupName);
+            groupHolder.avatar.setImageBitmap(loadImage(context, objects.get(position).getId()));
+            groupHolder.text.setText(objects.get(position).getName());
+
+            convertView.setTag(groupHolder);
+        }
+        else{
+            groupHolder = (GroupHolder) convertView.getTag();
+        }
+
+        return convertView;
+    }
+
+    static class GroupHolder{
+        ImageView avatar;
+        TextView text;
     }
 }
