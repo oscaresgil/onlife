@@ -48,6 +48,7 @@ public class TaskSendNotification extends AsyncTask<ModelPerson, String, Boolean
     protected Boolean doInBackground(ModelPerson... params) {
         //Parametros a enviar
         List<NameValuePair> p = new ArrayList<>();
+        Log.e("FriendBlocked",params.toString());
         for(int i = 0; i<params.length; i++){
             p.add(new BasicNameValuePair("id[]",params[i].getId_phone()));
             Log.i("IDPHONE",params[i].getId_phone());

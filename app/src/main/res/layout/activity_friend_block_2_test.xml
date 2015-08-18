@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/ActivityFriendBlock_ToolBarMain"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
+
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/ActivityFriendBlock_ScrollView"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        app:layout_below="@id/ActivityFriendBlock_AppBar">
+
+        <RelativeLayout
+            android:id="@+id/ActivityFriendBlock_RelativeLayoutContact"
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:focusableInTouchMode="true">
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/ActivityFriendBlock_CardViewMessage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/activity_friend_block_card_view_margin">
+                <RelativeLayout
+                    android:id="@+id/ActivityFriendBlock_RelativeLayoutMessage"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:focusableInTouchMode="true"
+                    android:clickable="false">
+                    <TextView
+                        style="@style/FriendStyle"
+                        android:id="@+id/ActivityFriendBlock_TextViewMaxCharacters"
+                        android:gravity="center"
+                        android:layout_margin="@dimen/activity_friend_block_relative_layout_textview_maxlength_margin"
+                        android:layout_width="@dimen/activity_friend_block_textview_maxlength_message"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
+                        android:text="@string/max_characters_text"/>
+                    <LinearLayout
+                        android:id="@+id/ActivityFriendBlock_LinearLayoutDivider"
+                        android:orientation="vertical"
+                        android:layout_below="@id/ActivityFriendBlock_TextViewMaxCharacters"
+                        android:layout_width="fill_parent"
+                        android:layout_height="@dimen/activity_friend_block_linearlayout_divider_height"
+                        android:layout_marginLeft="@dimen/activity_friend_block_linearlayout_divider_margin"
+                        android:layout_marginRight="@dimen/activity_friend_block_linearlayout_divider_margin"
+                        android:background="@color/black"
+                        android:divider="@color/black"/>
+                    <com.rengwuxian.materialedittext.MaterialEditText
+                        style="@style/BlockingMessage"
+                        android:id="@+id/ActivityFriendBlock_EditTextMessage"
+                        android:layout_below="@id/ActivityFriendBlock_TextViewMaxCharacters"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:imeOptions="actionDone"
+                        android:singleLine="true"
+                        android:hint="@string/send_a_message_bar"
+                        android:layout_margin="@dimen/activity_friend_block_edittext_message_margin"
+                        android:inputType="textCapSentences"
+                        app:met_baseColor="@color/black"
+                        app:met_primaryColor="@color/orange_light"
+                        app:met_hideUnderline="true"/>
+                </RelativeLayout>
+            </android.support.v7.widget.CardView>
+        </RelativeLayout>
+    </android.support.v4.widget.NestedScrollView>
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/ActivityFriendBlock_AppBar"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent">
+
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            app:contentScrim="@color/orange_light"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+            <android.support.v7.widget.Toolbar
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                app:layout_collapseMode="pin"/>
+        </android.support.design.widget.CollapsingToolbarLayout>
+
+    </android.support.design.widget.AppBarLayout>
+
+</android.support.design.widget.CoordinatorLayout>
+
+
+
+
+
+
+
+<!--
+<ScrollView
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/ActivityFriendBlock_ScrollViewMain"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:background="@color/background_material_light"
+    android:animateLayoutChanges="true">
+
+    <RelativeLayout
+        android:id="@+id/ActivityFriendBlock_RelativeLayoutContact"
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:focusableInTouchMode="true">
+
+        <ImageView
+            android:id="@+id/ActivityFriendBlock_ImageViewContact"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:scaleType="centerCrop"
+            android:background="@color/black"
+            android:adjustViewBounds="true"/>
+        <com.melnykov.fab.FloatingActionButton
+            xmlns:fab="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/ActivityFriendBlock_ButtonBlock"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_alignBottom="@id/ActivityFriendBlock_ImageViewContact"
+            android:layout_marginBottom="-20dp"
+            android:layout_marginRight="10dp"
+            android:onClick="block"
+            android:src="@drawable/ic_action_lock_outline"
+            fab:fab_colorNormal="@color/orange_light"
+            fab:fab_colorPressed="@color/orange"/>
+        <com.melnykov.fab.FloatingActionButton
+            xmlns:fab="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/ActivityFriendBlock_ButtonEmoticon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/ActivityFriendBlock_ButtonBlock"
+            android:layout_alignBottom="@id/ActivityFriendBlock_ImageViewContact"
+            android:layout_marginBottom="-20dp"
+            android:layout_marginRight="10dp"
+            android:onClick="emoji"
+            android:src="@drawable/ic_editor_insert_emoticon"
+            fab:fab_colorNormal="@color/orange_light"
+            fab:fab_colorPressed="@color/orange"/>
+        <android.support.v7.widget.CardView
+            android:id="@+id/ActivityFriendBlock_CardViewMessage"
+            android:layout_below="@id/ActivityFriendBlock_ImageViewContact"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/activity_friend_block_card_view_margin">
+            <RelativeLayout
+                android:id="@+id/ActivityFriendBlock_RelativeLayoutMessage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusableInTouchMode="true"
+                android:clickable="false">
+                <TextView
+                    style="@style/FriendStyle"
+                    android:id="@+id/ActivityFriendBlock_TextViewMaxCharacters"
+                    android:gravity="center"
+                    android:layout_margin="@dimen/activity_friend_block_relative_layout_textview_maxlength_margin"
+                    android:layout_width="@dimen/activity_friend_block_textview_maxlength_message"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+                    android:text="@string/max_characters_text"/>
+                <LinearLayout
+                    android:id="@+id/ActivityFriendBlock_LinearLayoutDivider"
+                    android:orientation="vertical"
+                    android:layout_below="@id/ActivityFriendBlock_TextViewMaxCharacters"
+                    android:layout_width="fill_parent"
+                    android:layout_height="@dimen/activity_friend_block_linearlayout_divider_height"
+                    android:layout_marginLeft="@dimen/activity_friend_block_linearlayout_divider_margin"
+                    android:layout_marginRight="@dimen/activity_friend_block_linearlayout_divider_margin"
+                    android:background="@color/black"
+                    android:divider="@color/black"/>
+                <com.rengwuxian.materialedittext.MaterialEditText
+                    style="@style/BlockingMessage"
+                    android:id="@+id/ActivityFriendBlock_EditTextMessage"
+                    android:layout_below="@id/ActivityFriendBlock_TextViewMaxCharacters"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionDone"
+                    android:singleLine="true"
+                    android:hint="@string/send_a_message_bar"
+                    android:layout_margin="@dimen/activity_friend_block_edittext_message_margin"
+                    android:inputType="textCapSentences"
+                    app:met_baseColor="@color/black"
+                    app:met_primaryColor="@color/orange_light"
+                    app:met_hideUnderline="true"/>
+            </RelativeLayout>
+        </android.support.v7.widget.CardView>
+
+        <GridView
+            android:background="@color/white"
+            android:layout_below="@id/ActivityFriendBlock_CardViewMessage"
+            android:layout_width="fill_parent"
+            android:layout_height="150dp"
+            android:numColumns="3"
+            android:layout_margin="10dp"
+            android:gravity="center"
+            android:id="@+id/ActivityFriendBlock_GridLayout"
+            android:visibility="gone">
+        </GridView>
+
+        &lt;!&ndash;mehdi.sakout.fancybuttons.FancyButton xmlns:fancy="http://schemas.android.com/apk/res-auto"
+            style="@style/BlockMessagesStyle"
+            android:id="@+id/ActivityFriendBlock_ButtonBlock"
+            android:layout_below="@id/ActivityFriendBlock_CardViewMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/activity_friend_block_button_block_margin"
+            android:layout_centerHorizontal="true"
+            android:onClick="block"
+            android:paddingBottom="@dimen/activity_friend_block_button_block_padding"
+            android:paddingTop="@dimen/activity_friend_block_button_block_padding"
+            android:paddingRight="@dimen/activity_friend_block_button_block_padding_right"
+            fancy:fb_borderWidth="@dimen/activity_friend_block_button_block_border"
+            fancy:fb_defaultColor="@color/orange_light"
+            fancy:fb_focusColor="@color/orange"
+            fancy:fb_fontIconSize="@dimen/activity_friend_block_button_block_icon_size"
+            fancy:fb_iconResource="@drawable/ic_action_lock"
+            fancy:fb_iconPosition="left"
+            fancy:fb_radius="@dimen/activity_friend_block_button_block_radius"
+            fancy:fb_text="@string/button_block"
+            fancy:fb_textColor="@color/black"
+            fancy:fb_textSize="@dimen/activity_friend_block_button_block_text_size"/&ndash;&gt;
+    </RelativeLayout>
+</ScrollView>-->

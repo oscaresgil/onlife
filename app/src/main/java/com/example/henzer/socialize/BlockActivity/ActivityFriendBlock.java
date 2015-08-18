@@ -3,7 +3,6 @@ package com.example.henzer.socialize.BlockActivity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.os.Bundle;
@@ -12,7 +11,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
-import android.view.Display;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -26,18 +25,17 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.henzer.socialize.Adapters.AdapterEmoticon;
+import com.example.henzer.socialize.Adapters.AdapterFadingActionBar;
 import com.example.henzer.socialize.Models.ModelPerson;
 import com.example.henzer.socialize.R;
 import com.example.henzer.socialize.Tasks.TaskGPS;
 import com.example.henzer.socialize.Tasks.TaskSendNotification;
 import com.kenny.snackbar.SnackBar;
-import com.manuelpeinado.fadingactionbar.FadingActionBarHelper;
 import com.melnykov.fab.FloatingActionButton;
 import com.r0adkll.slidr.Slidr;
 import com.r0adkll.slidr.model.SlidrConfig;
 import com.r0adkll.slidr.model.SlidrPosition;
 import com.rengwuxian.materialedittext.MaterialEditText;
-import com.squareup.picasso.Picasso;
 
 import net.steamcrafted.loadtoast.LoadToast;
 
@@ -46,7 +44,6 @@ import java.util.List;
 
 import static com.example.henzer.socialize.Controller.StaticMethods.isNetworkAvailable;
 import static com.example.henzer.socialize.Controller.StaticMethods.loadImage;
-import static com.example.henzer.socialize.Controller.StaticMethods.loadImagePath;
 
 public class ActivityFriendBlock extends ActionBarActivity {
 //public class ActivityFriendBlock extends Activity {
@@ -67,6 +64,7 @@ public class ActivityFriendBlock extends ActionBarActivity {
         Intent i = getIntent();
         friend = (ModelPerson)i.getSerializableExtra("data");
         actualUser = (ModelPerson) i.getSerializableExtra("actualuser");
+        Log.e("ActualBlockID", actualUser.getId_phone());
 
         SlidrConfig config = new SlidrConfig.Builder()
                 .primaryColor(getResources().getColor(R.color.orange))
@@ -77,9 +75,16 @@ public class ActivityFriendBlock extends ActionBarActivity {
 
         Slidr.attach(this, config);
 
-        /*FadingActionBarHelper helper = new FadingActionBarHelper().actionBarBackground(new ColorDrawable(R.color.orange_light)).headerLayout(R.layout.header_test).contentLayout(R.layout.activity_friend_block);
+        /*AdapterFadingActionBar helper = new AdapterFadingActionBar()
+                .actionBarBackground(new ColorDrawable(R.color.orange_light))
+                .headerLayout(R.layout.header_test)
+                .contentLayout(R.layout.activity_friend_block);
         setContentView(helper.createView(this));
-        helper.initActionBar(this);*/
+        helper.initActionBar(this);
+
+        ImageView img = (ImageView)getLayoutInflater().inflate(R.layout.header_test,null);
+        img.setImageBitmap(loadImage(this, friend.getId()));
+        img.setScaleType(ImageView.ScaleType.CENTER_CROP);*/
 
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
