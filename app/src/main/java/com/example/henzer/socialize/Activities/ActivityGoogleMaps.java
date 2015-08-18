@@ -9,7 +9,6 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 import com.example.henzer.socialize.R;
-import com.gc.materialdesign.views.ButtonIcon;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -47,6 +46,7 @@ public class ActivityGoogleMaps extends Activity  implements OnMapReadyCallback 
         MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+/*
         LinearLayout layout = (LinearLayout) findViewById(R.id.ActivityGoogleMaps_LayoutMenu);
         ButtonIcon friendB = (ButtonIcon) findViewById(R.id.ActivityGoogleMaps_ButtonFriendLocation);
         friendB.setDrawableIcon(getResources().getDrawable(R.drawable.ic_social_person));
@@ -57,6 +57,7 @@ public class ActivityGoogleMaps extends Activity  implements OnMapReadyCallback 
         ButtonIcon closeB = (ButtonIcon) findViewById(R.id.close_button);
         closeB.setDrawableIcon(getResources().getDrawable(R.drawable.ic_content_clear));
         layout.bringToFront();
+*/
     }
 
     @Override

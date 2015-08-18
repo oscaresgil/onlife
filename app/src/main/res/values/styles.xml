@@ -33,18 +33,30 @@
         <item name="android:typeface">monospace</item>
     </style>
 
-    <style name="Theme.Slidr.Slidable" parent="Theme.AppCompat.Light.DarkActionBar">
+    <!--<style name="Theme.Slidr.Slidable" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>
+    </style>-->
+
+    <style name="Theme.Slidr.Slidable" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:actionBarItemBackground">@android:color/transparent</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowContentOverlay">@null</item>
     </style>
 
-    <style name="Theme.Slidr.Slidable.Activity" parent="Theme.AppCompat.Light.DarkActionBar">
+    <!--<style name="Theme.Slidr.Slidable.Activity" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:actionBarItemBackground">@android:color/transparent</item>
         <item name="android:windowActionBarOverlay">true</item>
         <item name="windowActionBarOverlay">true</item>
         <item name="android:windowContentOverlay">@null</item>
+    </style>-->
+
+    <style name="Theme.Slidr.Slidable.Activity" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
     </style>
 
     <style name="IndeterminateProgress" parent="@android:style/Widget.ProgressBar">

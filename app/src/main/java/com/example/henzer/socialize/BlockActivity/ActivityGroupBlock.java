@@ -10,7 +10,10 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
@@ -34,6 +37,8 @@ import com.example.henzer.socialize.Adapters.AdapterGroup;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.henzer.socialize.Activities.ActivityGroupInformation;
 import com.example.henzer.socialize.Fragments.FragmentGroups;
+import com.example.henzer.socialize.Listeners.MessageFocusChangedListener;
+import com.example.henzer.socialize.Listeners.TextWatcherListener;
 import com.example.henzer.socialize.Models.ModelPerson;
 import com.example.henzer.socialize.Tasks.TaskSendNotification;
 import com.example.henzer.socialize.Tasks.TaskGPS;
@@ -53,6 +58,7 @@ import com.r0adkll.slidr.Slidr;
 import com.r0adkll.slidr.model.SlidrConfig;
 import com.r0adkll.slidr.model.SlidrPosition;
 import com.rengwuxian.materialedittext.MaterialEditText;
+import com.squareup.picasso.Picasso;
 
 import net.steamcrafted.loadtoast.LoadToast;
 
@@ -60,12 +66,13 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.example.henzer.socialize.Controller.StaticMethods.isNetworkAvailable;
 import static com.example.henzer.socialize.Controller.StaticMethods.loadImage;
+import static com.example.henzer.socialize.Controller.StaticMethods.loadImagePath;
 
-public class ActivityGroupBlock extends ActionBarActivity {
+public class ActivityGroupBlock extends AppCompatActivity {
     public static final String TAG = "ActivityGroupBlock";
-    private String nameGroup;
-    private int maximumChars = 30, actualChar = 0;
+    private int actualChar = 0;
 
     private RelativeLayout rl;
     private SweetSheet sweetSheet;
@@ -74,85 +81,69 @@ public class ActivityGroupBlock extends ActionBarActivity {
     private ModelGroup modelGroup;
     private List<ModelPerson> friendsInGroup;
 
-    private ImageView avatar;
     private TextView maxCharsView;
     private MaterialEditText messageTextView;
-    private FloatingActionButton fab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        SlidrConfig config = new SlidrConfig.Builder()
-                .primaryColor(getResources().getColor(R.color.orange))
-                .secondaryColor(getResources().getColor(R.color.orange_light))
-                .position(SlidrPosition.LEFT)
-                .sensitivity(0.4f)
-                .build();
-
+        SlidrConfig config = new SlidrConfig.Builder().primaryColor(getResources().getColor(R.color.orange)).secondaryColor(getResources().getColor(R.color.orange_light)).position(SlidrPosition.LEFT).sensitivity(0.4f).build();
         Slidr.attach(this, config);
 
-        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.orange_light)));
-        actionBar.setHomeAsUpIndicator(R.drawable.ic_arrow_back_black_48dp);
         setContentView(R.layout.activity_group_block);
 
-        fab = (FloatingActionButton) findViewById(R.id.ActivityGroupBlock_ButtonBlock);
-        Animation blinkAnim = AnimationUtils.loadAnimation(ActivityGroupBlock.this, R.anim.blink);
-        fab.startAnimation(blinkAnim);
-        fab.bringToFront();
+        Toolbar toolbar = (Toolbar) findViewById(R.id.ActivityGroupBlock_ToolBar);
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null){
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            //getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_black_48dp);
+        }
 
         Intent i = getIntent();
-        nameGroup = i.getStringExtra("name");
         modelGroup = (ModelGroup) i.getSerializableExtra("data");
         actualUser = (ModelPerson) i.getSerializableExtra("user");
-
-        avatar = (ImageView) findViewById(R.id.ActivityGroupBlock_ImageViewAvatarGroup);
-        avatar.setImageBitmap(loadImage(this, modelGroup.getName()));
-        avatar.setScaleType(ImageView.ScaleType.CENTER_CROP);
-
         friendsInGroup = modelGroup.getFriendsInGroup();
-        actionBar.setTitle((Html.fromHtml("<b><font color=\"#000000\">" + nameGroup + "</font></b>")));
 
-        maxCharsView = (TextView) findViewById(R.id.ActivityGroupBlock_TextViewMaxCharacter);
+        CollapsingToolbarLayout collapser = (CollapsingToolbarLayout) findViewById(R.id.ActivityGroupBlock_CollapsingToolBarLayout);
+        collapser.setTitle(modelGroup.getName());
+        //collapser.setCollapsedTitleTextColor(getResources().getColor(R.color.white));
+
+        Picasso.with(this).load(loadImagePath(this, modelGroup.getName())).into((ImageView) findViewById(R.id.ActivityGroupBlock_ImageViewContact));
+
+        maxCharsView = (TextView) findViewById(R.id.ActivityGroupBlock_TextViewMaxCharacters);
         messageTextView = (MaterialEditText) findViewById(R.id.ActivityGroupBlock_EditTextMessage);
-        final Handler handler = new Handler();
-        messageTextView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                        imm.showSoftInput(messageTextView, InputMethodManager.SHOW_IMPLICIT);
-                    }
+        messageTextView.setOnFocusChangeListener(new MessageFocusChangedListener(this,messageTextView));
+        messageTextView.addTextChangedListener(new TextWatcherListener(this,maxCharsView));
 
-                }, 500000);
-            }
-        });
-        messageTextView.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                actualChar = s.length();
-                if (actualChar > 30) {
-                    maxCharsView.setTextColor(getResources().getColor(R.color.red));
-                    maxCharsView.setText(actualChar + "/" + maximumChars);
-                } else {
-                    maxCharsView.setTextColor(getResources().getColor(R.color.black));
-                    maxCharsView.setText(actualChar + "/" + maximumChars);
-                }
-            }
-            @Override
-            public void afterTextChanged(Editable s) {}
-        });
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.ActivityGroupBlock_ButtonBlock);
-        fab.bringToFront();
+        /*gridView = (GridView) findViewById(R.id.ActivityFriendBlock_GridLayout);
 
-        rl = (RelativeLayout) findViewById(R.id.ActivityGroupBlock_LayoutMain);
+        final List<String> gifNames = setGifNames();
+
+        gridView.setAdapter(new AdapterEmoticon(this,gifNames));
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                SnackBar.show(ActivityFriendBlock_2.this,gifNames.get(position));
+            }
+        });*/
+
+        rl = (RelativeLayout) findViewById(R.id.ActivityGroupBlock_RelativeLayoutContact);
         sweetSheet = new SweetSheet(rl);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        /*RelativeLayout linearLayout = (RelativeLayout) findViewById(R.id.ActivityGroupBlock_LayoutMain);
+        linearLayout.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(getWindow().getCurrentFocus().getWindowToken(), 0);
+                return false;
+            }
+        });*/
     }
 
     @Override
@@ -162,20 +153,6 @@ public class ActivityGroupBlock extends ActionBarActivity {
                 Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(messageTextView.getWindowToken(), 0);
         overridePendingTransition(R.animator.push_left_inverted, R.animator.push_right_inverted);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        RelativeLayout linearLayout = (RelativeLayout) findViewById(R.id.ActivityGroupBlock_LayoutMain);
-        linearLayout.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(getWindow().getCurrentFocus().getWindowToken(), 0);
-                return false;
-            }
-        });
     }
 
     @Override
@@ -228,12 +205,6 @@ public class ActivityGroupBlock extends ActionBarActivity {
             else{
                 sweetSheet.dismiss();
             }
-
-            /*Intent intent = new Intent(this,ActivityGroupInformation.class);
-            intent.putExtra("data",(Serializable)friendsInGroup);
-            intent.putExtra("user",actualUser);
-            startActivity(intent);
-            overridePendingTransition(R.animator.push_right, R.animator.push_left);*/
         }
         else if(i == R.id.delete_group){
             new MaterialDialog.Builder(this)
@@ -278,15 +249,8 @@ public class ActivityGroupBlock extends ActionBarActivity {
         return true;
     }
 
-    private boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
-    }
-
     public void block(View view){
-        if (isNetworkAvailable()) {
+        if (isNetworkAvailable(this)) {
             if (actualChar <= 30) {
                 try {
                     new TaskGPS(this,TAG).execute();

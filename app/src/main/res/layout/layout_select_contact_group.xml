@@ -14,7 +14,7 @@
         android:scaleType="fitCenter"
         android:layout_marginRight="5dp"/>
 
-    <com.gc.materialdesign.views.CheckBox
+    <CheckBox
         style="@style/AppTheme"
         android:id="@+id/LayoutSelectContactGroup_CheckBoxContact"
         android:layout_width="90dp"

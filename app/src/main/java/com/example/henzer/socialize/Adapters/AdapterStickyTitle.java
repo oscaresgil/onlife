@@ -14,7 +14,6 @@ import android.widget.TextView;
 import com.example.henzer.socialize.Listeners.ListenerFlipCheckbox;
 import com.example.henzer.socialize.Models.ModelPerson;
 import com.example.henzer.socialize.R;
-import com.gc.materialdesign.views.CheckBox;
 
 import java.util.List;
 
@@ -75,14 +74,14 @@ public class AdapterStickyTitle extends RecyclerView.Adapter<AdapterStickyTitle.
     class ViewHolder extends RecyclerView.ViewHolder {
         public TextView textView;
         public ImageView imageView;
-        public CheckBox checkBox;
+        //public CheckBox checkBox;
 
         public ViewHolder(View itemView) {
             super(itemView);
 
             LinearLayout linearLayout = (LinearLayout) itemView;
             imageView = (ImageView) linearLayout.findViewById(R.id.LayoutSelectContactGroup_ImageViewFriend);
-            checkBox = (CheckBox) linearLayout.findViewById(R.id.LayoutSelectContactGroup_CheckBoxContact);
+            //checkBox = (CheckBox) linearLayout.findViewById(R.id.LayoutSelectContactGroup_CheckBoxContact);
             textView = (TextView) linearLayout.findViewById(R.id.LayoutSelectContactGroup_TextViewNameFriend);
         }
     }
@@ -104,8 +103,8 @@ public class AdapterStickyTitle extends RecyclerView.Adapter<AdapterStickyTitle.
         @Override
         public void onClick(View v) {
             int item = recyclerView.getChildAdapterPosition(v);
-            CheckBox checkBox = (CheckBox)v.findViewById(R.id.LayoutSelectContactGroup_CheckBoxContact);
-            checkBox.setChecked(!checkBox.isCheck());
+            /*CheckBox checkBox = (CheckBox)v.findViewById(R.id.LayoutSelectContactGroup_CheckBoxContact);
+            checkBox.setChecked(!checkBox.isCheck());*/
             friends.get(item).setSelected(!friends.get(item).isSelected());
 
             ImageView avatar = (ImageView) v.findViewById(R.id.LayoutSelectContactGroup_ImageViewFriend);

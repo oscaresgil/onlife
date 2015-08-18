@@ -26,6 +26,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -43,7 +44,6 @@ import com.example.henzer.socialize.Models.ModelPerson;
 import com.example.henzer.socialize.Models.ModelSessionData;
 import com.example.henzer.socialize.R;
 import com.example.henzer.socialize.Tasks.TaskAddNewGroup;
-import com.gc.materialdesign.views.CheckBox;
 import com.kenny.snackbar.SnackBar;
 import com.melnykov.fab.FloatingActionButton;
 import com.r0adkll.slidr.Slidr;
@@ -137,8 +137,8 @@ public class ActivityGroupCreateInformation extends ActionBarActivity {
                 if (view != null) {
                     CheckBox checkBox = (CheckBox) view.findViewById(R.id.LayoutSelectContactGroup_CheckBoxContact);
                     ModelPerson actualFriend = (ModelPerson)checkBox.getTag();
-                    actualFriend.setSelected(!checkBox.isCheck());
-                    checkBox.setChecked(!checkBox.isCheck());
+                    actualFriend.setSelected(!checkBox.isChecked());
+                    checkBox.setChecked(!checkBox.isChecked());
 
                     ImageView avatar = (ImageView) view.findViewById(R.id.LayoutSelectContactGroup_ImageViewFriend);
                     listener.setFriend(actualFriend);
@@ -486,8 +486,8 @@ public class ActivityGroupCreateInformation extends ActionBarActivity {
                 intent.putExtra("crop", "true");
                 intent.putExtra("aspectX", 1);
                 intent.putExtra("aspectY", 1);
-                intent.putExtra("outputX", 500);
-                intent.putExtra("outputY", 500);
+                intent.putExtra("outputX", 900);
+                intent.putExtra("outputY", 900);
                 intent.putExtra("scale", true);
                 intent.putExtra("return-data", true);
 

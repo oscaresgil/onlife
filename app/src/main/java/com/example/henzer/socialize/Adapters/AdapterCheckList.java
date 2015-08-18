@@ -8,12 +8,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.henzer.socialize.Models.ModelPerson;
 import com.example.henzer.socialize.R;
-import com.gc.materialdesign.views.CheckBox;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -39,16 +40,23 @@ public class AdapterCheckList extends ArrayAdapter<ModelPerson> {
 
             holder = new Holder();
             holder.avatar = (ImageView) convertView.findViewById(R.id.LayoutSelectContactGroup_ImageViewFriend);
-            holder.check = (com.gc.materialdesign.views.CheckBox) convertView.findViewById(R.id.LayoutSelectContactGroup_CheckBoxContact);
+            holder.check = (CheckBox) convertView.findViewById(R.id.LayoutSelectContactGroup_CheckBoxContact);
             holder.name = (TextView) convertView.findViewById(R.id.LayoutSelectContactGroup_TextViewNameFriend);
             convertView.setTag(holder);
-            holder.check.setOncheckListener(new CheckBox.OnCheckListener() {
+            holder.check.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    ModelPerson friend = (ModelPerson) buttonView.getTag();
+                    friend.setSelected(isChecked);
+                }
+            });
+            /*holder.check.setOncheckListener(new CheckBox.OnCheckListener() {
                 @Override
                 public void onCheck(CheckBox cb, boolean b) {
                     ModelPerson friend = (ModelPerson) cb.getTag();
                     friend.setSelected(cb.isCheck());
                 }
-            });
+            });*/
         }
         else {
             holder = (Holder) convertView.getTag();
@@ -74,7 +82,7 @@ public class AdapterCheckList extends ArrayAdapter<ModelPerson> {
     }
     private class Holder {
         ImageView avatar;
-        com.gc.materialdesign.views.CheckBox check;
+        CheckBox check;
         TextView name;
     }
 }

@@ -2,8 +2,6 @@ package com.example.henzer.socialize.Fragments;
 
 import android.content.Context;
 import android.content.Intent;
-import android.location.Location;
-import android.nfc.Tag;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
@@ -31,12 +29,8 @@ import com.example.henzer.socialize.R;
 import com.example.henzer.socialize.Tasks.TaskGPS;
 import com.example.henzer.socialize.Tasks.TaskImageDownload;
 import com.example.henzer.socialize.Models.ModelSessionData;
-import com.example.henzer.socialize.Tasks.TaskSendNotification;
 import com.kenny.snackbar.SnackBar;
 import com.rengwuxian.materialedittext.MaterialEditText;
-import com.yalantis.flipviewpager.utils.FlipSettings;
-
-import net.steamcrafted.loadtoast.LoadToast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -93,6 +87,7 @@ public class FragmentContacts extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (!mSwipeRefreshLayout.isRefreshing()){
                     ModelPerson user = (ModelPerson)gridView.getItemAtPosition(position);
+                    //Intent i = new Intent(getActivity(),ActivityFriendBlock.class);
                     Intent i = new Intent(getActivity(),ActivityFriendBlock.class);
                     i.putExtra("data",user);
                     i.putExtra("actualuser", actualUser);
