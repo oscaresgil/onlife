@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|right"
         android:layout_margin="16dp"
-        android:src="@drawable/ic_ic_add_black_48dp"
+        android:src="@drawable/ic_add_black_24dp"
         fab:fab_colorNormal="@color/orange_light"
         fab:fab_colorPressed="@color/orange" />
 

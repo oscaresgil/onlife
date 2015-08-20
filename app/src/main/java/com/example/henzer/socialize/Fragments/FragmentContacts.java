@@ -228,7 +228,7 @@ public class FragmentContacts extends Fragment {
 
             InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(getActivity().getWindow().getCurrentFocus().getWindowToken(), 0);
-            mSearchAction.setIcon(getResources().getDrawable(R.drawable.ic_ic_search_black_48dp));
+            mSearchAction.setIcon(getResources().getDrawable(R.drawable.ic_search_black_24dp));
             isSearchOpened = false;
         }
         else{
@@ -259,7 +259,7 @@ public class FragmentContacts extends Fragment {
             InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.showSoftInput(searchText, InputMethodManager.SHOW_IMPLICIT);
 
-            mSearchAction.setIcon(getResources().getDrawable(R.drawable.ic_ic_close_black_48dp));
+            mSearchAction.setIcon(getResources().getDrawable(R.drawable.ic_close_black_24dp));
 
             isSearchOpened = true;
         }

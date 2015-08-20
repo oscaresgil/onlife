@@ -93,12 +93,8 @@ public class ActivityHome extends ActionBarActivity {
     public void settings(MenuItem item){
         MaterialSimpleListAdapter materialAdapter = new MaterialSimpleListAdapter(this);
         materialAdapter.add(new MaterialSimpleListItem.Builder(this)
-                .content(R.string.settings_option_gps)
-                .icon(R.drawable.ic_device_gps_fixed)
-                .build());
-        materialAdapter.add(new MaterialSimpleListItem.Builder(this)
                 .content(R.string.settings_option_select_friends)
-                .icon(R.drawable.ic_social_group_add)
+                .icon(R.drawable.ic_person_add_black_24dp)
                 .build());
         MaterialDialog.Builder materialDialog = new MaterialDialog.Builder(this)
                 .title(R.string.settings_options)
@@ -107,8 +103,6 @@ public class ActivityHome extends ActionBarActivity {
                     @Override
                     public void onSelection(MaterialDialog materialDialog, View view, int which, CharSequence charSequence) {
                         if (which == 0) {
-                            Toast.makeText(ActivityHome.this, "GPS Selected", Toast.LENGTH_SHORT).show();
-                        } else if (which == 1) {
 
                             List<ModelPerson> friends = modelSessionData.getFriends();
                             for (ModelPerson f: friends){

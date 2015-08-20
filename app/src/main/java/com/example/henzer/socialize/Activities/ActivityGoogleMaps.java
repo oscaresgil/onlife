@@ -80,11 +80,11 @@ public class ActivityGoogleMaps extends Activity  implements OnMapReadyCallback 
 
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(loc, 15));
 
-        map.addMarker(new MarkerOptions()
+        /*map.addMarker(new MarkerOptions()
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_social_person))
                 .title(user)
                 .snippet(user + " " + getResources().getString(R.string.blocked_here))
-                .position(loc));
+                .position(loc));*/
 
         map.setOnMyLocationChangeListener(new GoogleMap.OnMyLocationChangeListener() {
             @Override

@@ -56,7 +56,7 @@ public class ActivityGroupInformation extends ActionBarActivity {
         actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.orange_light)));
         actionBar.setTitle((Html.fromHtml("<b><font color=\"#000000\">" + getResources().getString(R.string.title_activity_information) + "</font></b>")));
         actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setHomeAsUpIndicator(R.drawable.ic_arrow_back_black_48dp);
+        actionBar.setHomeAsUpIndicator(R.drawable.ic_arrow_back_black_24dp);
         setContentView(R.layout.activity_group_information);
 
         Intent i = getIntent();

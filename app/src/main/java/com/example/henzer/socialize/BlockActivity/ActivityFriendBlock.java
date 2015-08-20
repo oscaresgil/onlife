@@ -61,6 +61,7 @@ public class ActivityFriendBlock extends AppCompatActivity {
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null){
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp);
         }
 
         friend = (ModelPerson)getIntent().getSerializableExtra("data");
@@ -69,6 +70,7 @@ public class ActivityFriendBlock extends AppCompatActivity {
         CollapsingToolbarLayout collapser = (CollapsingToolbarLayout) findViewById(R.id.ActivityFriendBlock_CollapsingToolBarLayout);
         collapser.setTitle(friend.getName());
         collapser.setCollapsedTitleTextColor(getResources().getColor(R.color.white));
+        collapser.setExpandedTitleColor(getResources().getColor(R.color.white));
 
         Picasso.with(this).load(loadImagePath(this, friend.getId())).into((ImageView) findViewById(R.id.ActivityFriendBlock_ImageViewContact));
 

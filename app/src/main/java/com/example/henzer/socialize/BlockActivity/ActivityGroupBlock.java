@@ -76,6 +76,7 @@ public class ActivityGroupBlock extends AppCompatActivity {
 
     private RelativeLayout rl;
     private SweetSheet sweetSheet;
+    private Toolbar toolbar;
 
     private ModelPerson actualUser;
     private ModelGroup modelGroup;
@@ -93,11 +94,11 @@ public class ActivityGroupBlock extends AppCompatActivity {
 
         setContentView(R.layout.activity_group_block);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.ActivityGroupBlock_ToolBar);
+        toolbar = (Toolbar) findViewById(R.id.ActivityGroupBlock_ToolBar);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null){
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            //getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_black_48dp);
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp);
         }
 
         Intent i = getIntent();
@@ -107,7 +108,8 @@ public class ActivityGroupBlock extends AppCompatActivity {
 
         CollapsingToolbarLayout collapser = (CollapsingToolbarLayout) findViewById(R.id.ActivityGroupBlock_CollapsingToolBarLayout);
         collapser.setTitle(modelGroup.getName());
-        //collapser.setCollapsedTitleTextColor(getResources().getColor(R.color.white));
+        collapser.setCollapsedTitleTextColor(getResources().getColor(R.color.white));
+        collapser.setExpandedTitleColor(getResources().getColor(R.color.white));
 
         Picasso.with(this).load(loadImagePath(this, modelGroup.getName())).into((ImageView) findViewById(R.id.ActivityGroupBlock_ImageViewContact));
 
@@ -157,6 +159,7 @@ public class ActivityGroupBlock extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        menu.clear();
         getMenuInflater().inflate(R.menu.menu_in_group, menu);
         return true;
     }

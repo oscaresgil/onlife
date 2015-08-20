@@ -56,7 +56,7 @@
             android:layout_height="64dp"
             android:layout_centerInParent="true"
             android:id="@+id/ActivityInBlock_ImageBlock"
-            android:src="@drawable/ic_https_black_48dp"/>
+            android:src="@drawable/ic_lock_black_24dp"/>
     </com.skyfishjy.library.RippleBackground>
 
 </RelativeLayout>

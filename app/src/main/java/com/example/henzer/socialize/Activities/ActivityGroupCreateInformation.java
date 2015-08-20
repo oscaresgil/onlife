@@ -1,5 +1,6 @@
 package com.example.henzer.socialize.Activities;
 
+import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
@@ -8,6 +9,7 @@ import android.content.SharedPreferences;
 import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -19,6 +21,7 @@ import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,7 +29,6 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
-import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -50,6 +52,7 @@ import com.r0adkll.slidr.Slidr;
 import com.r0adkll.slidr.model.SlidrConfig;
 import com.r0adkll.slidr.model.SlidrPosition;
 import com.rengwuxian.materialedittext.MaterialEditText;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -58,7 +61,6 @@ import org.json.JSONObject;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import static com.example.henzer.socialize.Controller.StaticMethods.isNetworkAvailable;
 import static com.example.henzer.socialize.Controller.StaticMethods.saveImage;
@@ -70,7 +72,7 @@ public class ActivityGroupCreateInformation extends ActionBarActivity {
     public static final String TAG ="GroupCreateInfActivity";
 
     private Uri mImageCaptureUri;
-    private ImageButton avatarGroup;
+    private ImageView avatarGroup;
     private static final int PICK_FROM_CAMERA = 1;
     private static final int PICK_FROM_FILE = 2;
     private static final int PIC_CROP = 3;
@@ -111,13 +113,21 @@ public class ActivityGroupCreateInformation extends ActionBarActivity {
 
         setContentView(R.layout.activity_group_create_information);
 
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        int width = size.x/5;
+
+        avatarGroup = (ImageView) findViewById(R.id.ActivityCreateGroup_ImageButtonSelectImage);
+        Picasso.with(this).load(R.drawable.ic_camera_alt_black_24dp).resize(width,width).into(avatarGroup);
+
         actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.orange_light)));
         actionBar.setTitle((Html.fromHtml("<b><font color=\"#000000\">" + getString(R.string.title_activity_new_group) + "</font></b>")));
-        actionBar.setHomeAsUpIndicator(R.drawable.ic_arrow_back_black_48dp);
+        actionBar.setHomeAsUpIndicator(R.drawable.ic_arrow_back_black_24dp);
 
-        (findViewById(R.id.search_button)).bringToFront();
+        (findViewById(R.id.ActivityCreateGroup_FABSearchFriend)).bringToFront();
 
         Intent i = getIntent();
         modelSessionData = (ModelSessionData) i.getSerializableExtra("data");
@@ -126,21 +136,19 @@ public class ActivityGroupCreateInformation extends ActionBarActivity {
         friendsFiltred = new ArrayList<>();
         friendsFiltred.addAll(friends);
 
-        nameNewGroup = (com.rengwuxian.materialedittext.MaterialEditText) findViewById(R.id.nameNewGroup);
+        nameNewGroup = (com.rengwuxian.materialedittext.MaterialEditText) findViewById(R.id.ActivityCreateGroup_EditTextNameGroup);
 
-        final ListView listView = (ListView) findViewById(R.id.listView);
+        ListView listView = (ListView) findViewById(R.id.ActivityCreateGroup_ListViewFriends);
         adapterCheckList = new AdapterCheckList(this, R.layout.layout_select_contact_group, friendsFiltred);
         listView.setAdapter(adapterCheckList);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (view != null) {
-                    CheckBox checkBox = (CheckBox) view.findViewById(R.id.LayoutSelectContactGroup_CheckBoxContact);
-                    ModelPerson actualFriend = (ModelPerson)checkBox.getTag();
-                    actualFriend.setSelected(!checkBox.isChecked());
-                    checkBox.setChecked(!checkBox.isChecked());
-
                     ImageView avatar = (ImageView) view.findViewById(R.id.LayoutSelectContactGroup_ImageViewFriend);
+                    ModelPerson actualFriend = (ModelPerson)avatar.getTag();
+                    actualFriend.setSelected(!actualFriend.isSelected());
+
                     listener.setFriend(actualFriend);
                     listener.setView(avatar);
                     listener.setHome(false);
@@ -207,7 +215,7 @@ public class ActivityGroupCreateInformation extends ActionBarActivity {
                     Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(nameNewGroup.getWindowToken(), 0);
             overridePendingTransition(R.animator.push_left_inverted, R.animator.push_right_inverted);
-            actionBar.setIcon(getResources().getDrawable(R.drawable.ic_arrow_back_black_48dp));
+            actionBar.setIcon(getResources().getDrawable(R.drawable.ic_arrow_back_black_24dp));
         }
     }
 
@@ -342,10 +350,10 @@ public class ActivityGroupCreateInformation extends ActionBarActivity {
     public void handleMenuSearch(){
         MenuItem savegroup = myMenu.findItem(R.id.saveGroup_button);
         MenuItem search = myMenu.findItem(R.id.searchCancelContact);
-        FloatingActionButton searchButton = (FloatingActionButton) findViewById(R.id.search_button);
+        FloatingActionButton searchButton = (FloatingActionButton) findViewById(R.id.ActivityCreateGroup_FABSearchFriend);
 
-        LinearLayout mainLayout = (LinearLayout)this.findViewById(R.id.header);
-        final FrameLayout layout_friends = (FrameLayout) this.findViewById(R.id.body);
+        LinearLayout mainLayout = (LinearLayout)this.findViewById(R.id.ActivityCreateGroup_LinearLayoutSubMain);
+        final FrameLayout layout_friends = (FrameLayout) this.findViewById(R.id.ActivityCreateGroup_FrameLayoutSelectFriends);
 
         mainLayout.animate().setStartDelay(getResources().getInteger(R.integer.animation_search_contact_create));
         layout_friends.animate().setStartDelay(getResources().getInteger(R.integer.animation_search_contact_create));
@@ -367,7 +375,7 @@ public class ActivityGroupCreateInformation extends ActionBarActivity {
             actionBar.setDisplayShowCustomEnabled(false);
             actionBar.setDisplayShowTitleEnabled(true);
 
-            searchButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_ic_search_black_48dp));
+            searchButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_search_black_24dp));
             search.setVisible(false);
             savegroup.setVisible(true);
             isSearchOpened = false;
@@ -383,7 +391,7 @@ public class ActivityGroupCreateInformation extends ActionBarActivity {
 
             actionBar.setShowHideAnimationEnabled(true);
             actionBar.setDisplayShowTitleEnabled(false);
-            actionBar.setIcon(getResources().getDrawable(R.drawable.ic_ic_close_black_48dp));
+            actionBar.setIcon(getResources().getDrawable(R.drawable.ic_arrow_back_black_24dp));
 
             searchText = (MaterialEditText) actionBar.getCustomView().findViewById(R.id.LayoutSearchContactBar_EditTextSearch);
             searchText.setVisibility(View.VISIBLE);
@@ -409,7 +417,7 @@ public class ActivityGroupCreateInformation extends ActionBarActivity {
             imm.showSoftInput(searchText,0);
 
             searchButton.bringToFront();
-            searchButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_ic_close_black_48dp));
+            searchButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_close_black_24dp));
 
             isSearchOpened = true;
         }
@@ -419,11 +427,11 @@ public class ActivityGroupCreateInformation extends ActionBarActivity {
         MaterialSimpleListAdapter materialAdapter = new MaterialSimpleListAdapter(this);
         materialAdapter.add(new MaterialSimpleListItem.Builder(this)
                 .content(R.string.photo_option_camera)
-                .icon(R.drawable.ic_photo_camera_black_48dp)
+                .icon(R.drawable.ic_camera_alt_black_24dp)
                 .build());
         materialAdapter.add(new MaterialSimpleListItem.Builder(this)
                 .content(R.string.photo_option_sd)
-                .icon(R.drawable.ic_sim_card_black_48dp)
+                .icon(R.drawable.ic_sd_card_black_24dp)
             .build());
 
         final MaterialDialog.Builder materialDialog = new MaterialDialog.Builder(this)
@@ -454,7 +462,6 @@ public class ActivityGroupCreateInformation extends ActionBarActivity {
                     }
             });
 
-        avatarGroup = (ImageButton) findViewById(R.id.imageView);
         avatarGroup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

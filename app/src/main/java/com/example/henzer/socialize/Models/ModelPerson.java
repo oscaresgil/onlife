@@ -22,6 +22,7 @@ public class ModelPerson implements Serializable{
         this.name = name;
         this.photo = photo;
         this.state = state;
+        selected = false;
     }
 
     public boolean isHomeSelected() {
@@ -103,6 +104,7 @@ public class ModelPerson implements Serializable{
                 ", name='" + name + '\'' +
                 ", photo='" + photo + '\'' +
                 ", state='" + state + '\'' +
+                ", selected='" + selected + '\'' +
                 '}';
     }
 }

@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:icon="@drawable/ic_more_vert_black_24dp">
     <item
         android:id="@+id/searchCancelContact"
-        android:icon="@drawable/ic_close_black_48dp"
+        android:icon="@drawable/ic_close_black_24dp"
         app:showAsAction="never"
         android:title="@string/cancel"/>
     <item
         android:id="@+id/saveGroup_button"
-        android:icon="@drawable/ic_done_black_48dp"
+        android:icon="@drawable/ic_done_black_24dp"
         android:title="@string/button_add_group"
         app:showAsAction="always"/>
 </menu>

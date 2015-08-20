@@ -56,8 +56,9 @@ public class GcmMessageHandler extends IntentService {
         if (looper==null){
             Looper.prepare();
         }
-        TaskGPS taskGps = new TaskGPS(this,TAG);
-        taskGps.execute();
+        onMessage(this);
+        //TaskGPS taskGps = new TaskGPS(this,TAG);
+        //taskGps.execute();
     }
 
     public void setLocation(Location location){

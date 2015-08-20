@@ -46,6 +46,12 @@ public class AdapterContact extends BaseAdapter {
     @Override
     public View getView(int position, View view, ViewGroup parent) {
         ModelPerson userData = friends.get(position);
+
+        Display display = ((Activity)context).getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        int width = size.x/2;
+
         ContactHolder contactHolder;
         if (view == null){
             view = ((Activity)context).getLayoutInflater().inflate(R.layout.layout_contact, parent, false);
@@ -53,19 +59,14 @@ public class AdapterContact extends BaseAdapter {
             contactHolder.avatar = (ImageView) view.findViewById(R.id.LayoutContact_ImageViewLeft);
             contactHolder.name = (TextView) view.findViewById(R.id.LayoutContact_TextViewNameLeft);
 
-            Display display = ((Activity)context).getWindowManager().getDefaultDisplay();
-            Point size = new Point();
-            display.getSize(size);
-            int width = size.x/2;
-
-            Picasso.with(context).load(loadImagePath(context,userData.getId())).resize(width,width).into(contactHolder.avatar);
-            contactHolder.name.setText(userData.getName());
-
             view.setTag(contactHolder);
         }
         else{
             contactHolder = (ContactHolder) view.getTag();
         }
+
+        Picasso.with(context).load(loadImagePath(context,userData.getId())).resize(width,width).into(contactHolder.avatar);
+        contactHolder.name.setText(userData.getName());
 
         return view;
     }
