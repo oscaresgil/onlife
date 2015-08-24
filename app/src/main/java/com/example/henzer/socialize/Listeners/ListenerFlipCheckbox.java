@@ -60,7 +60,7 @@ public class ListenerFlipCheckbox implements Animation.AnimationListener{
                 if (!f.isHomeSelected()) {
                     Picasso.with(context).load(loadImagePath(context,f.getId())).resize(width,width).into(imageButton);
                 } else {
-                    Picasso.with(context).load(R.drawable.ic_navigation_check).resize(width,width).into(imageButton);
+                    Picasso.with(context).load(R.drawable.ic_done_black_24dp).resize(width,width).into(imageButton);
                 }
                 imageButton.clearAnimation();
                 imageButton.setAnimation(animation2);
@@ -75,7 +75,7 @@ public class ListenerFlipCheckbox implements Animation.AnimationListener{
                     Picasso.with(context).load(loadImagePath(context,f.getId())).resize(width,width).into(imageButton);
                 }
                 else{
-                    Picasso.with(context).load(R.drawable.ic_navigation_check).resize(width,width).into(imageButton);
+                    Picasso.with(context).load(R.drawable.ic_done_black_24dp).resize(width,width).into(imageButton);
                 }
                 imageButton.clearAnimation();
                 imageButton.setAnimation(animation2);

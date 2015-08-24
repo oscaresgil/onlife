@@ -92,6 +92,8 @@ public class ActivityGroupCreateInformation extends ActionBarActivity {
     private Animation animation2;
     private ListenerFlipCheckbox listener;
 
+    private int width;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -116,7 +118,7 @@ public class ActivityGroupCreateInformation extends ActionBarActivity {
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
-        int width = size.x/5;
+        width = size.x/5;
 
         avatarGroup = (ImageView) findViewById(R.id.ActivityCreateGroup_ImageButtonSelectImage);
         Picasso.with(this).load(R.drawable.ic_camera_alt_black_24dp).resize(width,width).into(avatarGroup);
@@ -171,6 +173,8 @@ public class ActivityGroupCreateInformation extends ActionBarActivity {
                 bitmap = extras.getParcelable("data");
             }
             avatarGroup.setImageBitmap(bitmap);
+            avatarGroup.getLayoutParams().height = width;
+            avatarGroup.getLayoutParams().width = width;
         }
         if (requestCode == PICK_FROM_FILE && resultCode == RESULT_OK) {
             mImageCaptureUri = data.getData();

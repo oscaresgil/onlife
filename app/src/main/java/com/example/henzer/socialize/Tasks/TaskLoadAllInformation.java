@@ -50,21 +50,23 @@ public class TaskLoadAllInformation extends AsyncTask<List<ModelPerson>, String,
         p.add(new BasicNameValuePair("photo", me.getPhoto()));
         p.add(new BasicNameValuePair("name", me.getName()));
         p.add(new BasicNameValuePair("state", me.getState()));
-
-        JSONObject json = jsonParser.makeHttpRequest("http://socialize.comyr.com/Prueba/person.php", "POST", p);
-        Log.e("LoadAllInformation", json.toString());
+        for(int i = 1; i<params[0].size(); i++){
+            p.add(new BasicNameValuePair("id_friends[]", params[0].get(i).getId()));
+        }
+        Log.e("PDebug",p.toString());
+        JSONObject json = null;
         try {
+            json = jsonParser.makeHttpRequest("http://104.236.74.55/onlife/person.php", "POST", p);
+            Log.e("LoadAllInformation", json.toString());
             boolean error = json.getBoolean("error");
             if(error==false){
                 //Se obtiene la informacion completa de sus amigos.
                 List<NameValuePair> p2 = new ArrayList<>();
                 p2.add(new BasicNameValuePair("tag", "getFriends"));
                 p2.add(new BasicNameValuePair("myId", me.getId()));
-                for(int i = 1; i<params[0].size(); i++){
-                    p2.add(new BasicNameValuePair("id[]", params[0].get(i).getId()));
-                }
+
                 jsonParser = new JSONParser();
-                JSONObject json2 = jsonParser.makeHttpRequest("http://socialize.comyr.com/Prueba/person.php", "POST", p2);
+                JSONObject json2 = jsonParser.makeHttpRequest("http://104.236.74.55/onlife/person.php", "POST", p2);
                 Log.e("Create Response", json2.toString());
                 return json2;
             }else{

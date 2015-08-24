@@ -56,7 +56,7 @@ public class AdapterCheckList extends ArrayAdapter<ModelPerson> {
         display.getSize(size);
         int width = size.x/4;
         if (friend.isSelected()){
-            Picasso.with(getContext()).load(R.drawable.ic_navigation_check).resize(width,width).into(holder.avatar);
+            Picasso.with(getContext()).load(R.drawable.ic_done_black_24dp).resize(width,width).into(holder.avatar);
         }
         else{
             Picasso.with(getContext()).load(loadImagePath(getContext(),friend.getId())).resize(width,width).into(holder.avatar);

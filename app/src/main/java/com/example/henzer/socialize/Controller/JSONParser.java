@@ -79,6 +79,7 @@ public class JSONParser {
             while ((line = reader.readLine()) != null) {
                 sb.append(line + "\n");
             }
+            Log.e("SB",sb.toString());
             is.close();
             json = sb.toString();
         } catch (Exception e) {

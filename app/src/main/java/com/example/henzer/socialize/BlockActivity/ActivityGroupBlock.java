@@ -132,6 +132,7 @@ public class ActivityGroupBlock extends AppCompatActivity {
 
         rl = (RelativeLayout) findViewById(R.id.ActivityGroupBlock_RelativeLayoutContact);
         sweetSheet = new SweetSheet(rl);
+        sweetSheet.setBackgroundClickEnable(true);
     }
 
     @Override
@@ -150,11 +151,16 @@ public class ActivityGroupBlock extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        InputMethodManager imm = (InputMethodManager)getSystemService(
-                Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(messageTextView.getWindowToken(), 0);
-        overridePendingTransition(R.animator.push_left_inverted, R.animator.push_right_inverted);
+        if (sweetSheet.isShow()){
+            sweetSheet.dismiss();
+        }
+        else {
+            InputMethodManager imm = (InputMethodManager) getSystemService(
+                    Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(messageTextView.getWindowToken(), 0);
+            overridePendingTransition(R.animator.push_left_inverted, R.animator.push_right_inverted);
+            super.onBackPressed();
+        }
     }
 
     @Override
