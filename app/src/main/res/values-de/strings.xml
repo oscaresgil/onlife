@@ -64,7 +64,7 @@
     <string name="button_group_change_name">Gruppennamen ändern!</string>
     <string name="toast_contacts_refreshed">Kontakte aktualisiert!</string>
     <string name="toast_wait_until_contacts_refreshed">Attendez! Les contacts sont rafraîchissante..</string>
-    <string name="toast_group_not_yet_created">Name, Foto oder Kontaktlinsen nicht angegeben. versuchen Sie Es Erneut</string>
+    <string name="toast_group_not_yet_created">Name oder Kontaktlinsen nicht angegeben. versuchen Sie Es Erneut</string>
 
     <string name="select_friend">Wählen Sie die Freunde</string>
     <string name="show_location">Show Freund Location</string>

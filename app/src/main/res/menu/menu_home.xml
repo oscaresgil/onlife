@@ -1,8 +1,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:icon="@drawable/ic_more_vert_black_24dp"
-    tools:context=".HomeActivity">
+    android:icon="@drawable/ic_more_vert_black_24dp">
     <item
         android:id="@+id/searchContact"
         android:icon="@drawable/ic_search_black_24dp"

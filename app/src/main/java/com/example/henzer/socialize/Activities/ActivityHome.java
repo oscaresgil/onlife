@@ -138,10 +138,4 @@ public class ActivityHome extends ActionBarActivity {
         }
         ActivityHome.this.finish();
     }
-
-    public void blockContact(Location location, LoadToast toast, ModelPerson actualUser, ModelPerson friend){
-        SnackBar.show(ActivityHome.this, location.getLatitude() + "," + location.getLongitude());
-        TaskSendNotification gcm = new TaskSendNotification(ActivityHome.this, actualUser.getName(), location.getLatitude(), location.getLongitude(),toast);
-        gcm.execute(friend);
-    }
 }

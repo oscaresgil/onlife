@@ -25,6 +25,7 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.henzer.socialize.Activities.ActivityGroupCreateInformation;
 import com.example.henzer.socialize.Activities.ActivityMain;
+import com.example.henzer.socialize.Adapters.AdapterGroup;
 import com.example.henzer.socialize.BlockActivity.ActivityGroupBlock;
 import com.example.henzer.socialize.Models.ModelGroup;
 import com.example.henzer.socialize.Models.ModelPerson;
@@ -46,7 +47,7 @@ import static com.example.henzer.socialize.Controller.StaticMethods.loadImagePat
 public class FragmentGroups extends Fragment {
     public static final String TAG = "GroupsFragment";
     private ModelSessionData modelSessionData;
-    private GroupAdapter adapter;
+    private AdapterGroup adapter;
     private ListView list;
     private FloatingActionButton addGroupButton;
     private static List<ModelGroup> modelGroups;
@@ -72,7 +73,7 @@ public class FragmentGroups extends Fragment {
         modelSessionData = (ModelSessionData) getArguments().getSerializable("data");
 
         modelGroups = modelSessionData.getModelGroups();
-        adapter = new GroupAdapter(getActivity(), R.layout.layout_groups, modelGroups);
+        adapter = new AdapterGroup(getActivity(), R.layout.layout_groups, modelGroups);
         list = (ListView)v.findViewById(R.id.FragmentGroups_ListGroup);
         list.setAdapter(adapter);
         addGroupButton = (FloatingActionButton) v.findViewById(R.id.FragmentGroup_ButtonAddGroup);
@@ -94,7 +95,7 @@ public class FragmentGroups extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        adapter = new GroupAdapter(getActivity(), R.layout.layout_groups, modelGroups);
+        adapter = new AdapterGroup(getActivity(), R.layout.layout_groups, modelGroups);
         list.setAdapter(adapter);
         adapter.notifyDataSetChanged();
         list.setLongClickable(true);
@@ -168,31 +169,6 @@ public class FragmentGroups extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
-    class GroupAdapter extends ArrayAdapter<ModelGroup> {
-        List<ModelGroup> objects;
-        public GroupAdapter(Context context, int resource, List<ModelGroup> objects) {
-            super(context, resource, objects);
-            this.objects = objects;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            LayoutInflater inflater = getActivity().getLayoutInflater();
-            View rowView = inflater.inflate(R.layout.layout_groups, null, true);
-            TextView text = (TextView) rowView.findViewById(R.id.LayoutGroups_TextViewGroupName);
-            ImageView image = (ImageView) rowView.findViewById(R.id.LayoutGroups_CircleImageViewGroup);
-
-            Display display = getActivity().getWindowManager().getDefaultDisplay();
-            Point size = new Point();
-            display.getSize(size);
-            int width = size.x/4;
-
-            Picasso.with(getActivity()).load(loadImagePath(getContext(),objects.get(position).getName())).resize(width,width).into(image);
-            image.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            text.setText(objects.get(position).getName());
-            return rowView;
-        }
-    }
     public static void addNewGroup(ModelGroup modelGroup){
         modelGroups.add(modelGroup);
     }

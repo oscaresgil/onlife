@@ -137,13 +137,6 @@
             android:label=""
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:windowSoftInputMode="adjustResize|stateHidden"/>
-        <activity android:name=".Activities.ActivityGroupInformation"
-            android:theme="@style/Theme.Slidr.Slidable"
-            android:screenOrientation="portrait"
-            android:launchMode="standard"
-            android:label=""
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:windowSoftInputMode="adjustResize|stateHidden"/>
     </application>
 
 </manifest>

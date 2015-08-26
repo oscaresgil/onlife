@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.example.henzer.socialize.Controller.JSONParser;
 import com.example.henzer.socialize.Models.ModelPerson;
+import com.example.henzer.socialize.R;
 
 import net.steamcrafted.loadtoast.LoadToast;
 
@@ -18,30 +19,28 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TaskSendNotification extends AsyncTask<ModelPerson, String, Boolean>{
-    private LoadToast toast;
     private Context context;
+    private LoadToast toast;
     private JSONParser jsonParser;
-    private String message="";
-    private String longitude;
-    private String latitude;
-    private String actualUser;
+    private String message="",actualUser, gifName="";
 
-    public TaskSendNotification(Context c, String message, String actualUser, double latitude, double longitude, LoadToast toast){
+    public TaskSendNotification(Context c, String message, String actualUser, String gifName){
         this.context = c;
-        this.toast = toast;
         this.message = message;
-        jsonParser = new JSONParser();
-        this.latitude = ""+latitude;
-        this.longitude = ""+longitude;
         this.actualUser = actualUser;
-    }
-    public TaskSendNotification(Context c, String actualUser, double latitude, double longitude, LoadToast toast){
-        this.context = c;
-        this.toast = toast;
+        this.gifName = gifName;
         jsonParser = new JSONParser();
-        this.latitude = ""+latitude;
-        this.longitude = ""+longitude;
-        this.message = actualUser;
+    }
+
+    @Override
+    protected void onPreExecute() {
+        super.onPreExecute();
+        toast = new LoadToast(context)
+                .setText(context.getResources().getString(R.string.blocking))
+                .setTextColor(context.getResources().getColor(R.color.black))
+                .setTranslationY(100)
+                .setProgressColor(context.getResources().getColor(R.color.orange_light))
+                .show();
     }
 
     @Override
@@ -54,10 +53,10 @@ public class TaskSendNotification extends AsyncTask<ModelPerson, String, Boolean
             Log.i("IDPHONE",params[i].getId_phone());
         }
 
-        p.add(new BasicNameValuePair("message", actualUser+"\n"+message+"\n"+latitude+"\n"+longitude));
+        p.add(new BasicNameValuePair("message", actualUser+"\n"+message+"\n"+gifName));
         p.add(new BasicNameValuePair("data", ""));
 
-        JSONObject json = jsonParser.makeHttpRequest("http://socialize.comyr.com/Prueba/gcm.php", "POST", p);
+        JSONObject json = jsonParser.makeHttpRequest("http://104.236.74.55/onlife/person.php", "POST", p);
         Log.e("AddNewGroup", json.toString());
 
         try {

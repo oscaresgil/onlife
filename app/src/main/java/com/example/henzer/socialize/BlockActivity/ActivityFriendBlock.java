@@ -2,27 +2,26 @@ package com.example.henzer.socialize.BlockActivity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.location.Location;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.henzer.socialize.Adapters.AdapterEmoticon;
 import com.example.henzer.socialize.Listeners.MessageFocusChangedListener;
 import com.example.henzer.socialize.Listeners.TextWatcherListener;
 import com.example.henzer.socialize.Models.ModelPerson;
 import com.example.henzer.socialize.R;
-import com.example.henzer.socialize.Tasks.TaskGPS;
 import com.example.henzer.socialize.Tasks.TaskSendNotification;
 import com.kenny.snackbar.SnackBar;
 import com.r0adkll.slidr.Slidr;
@@ -31,13 +30,15 @@ import com.r0adkll.slidr.model.SlidrPosition;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.squareup.picasso.Picasso;
 
-import net.steamcrafted.loadtoast.LoadToast;
-
 import java.util.ArrayList;
 import java.util.List;
 
+import pl.droidsonroids.gif.GifDrawable;
+import pl.droidsonroids.gif.GifImageView;
+
 import static com.example.henzer.socialize.Controller.StaticMethods.isNetworkAvailable;
 import static com.example.henzer.socialize.Controller.StaticMethods.loadImagePath;
+import static com.example.henzer.socialize.Controller.StaticMethods.setGifNames;
 
 public class ActivityFriendBlock extends AppCompatActivity {
     public static final String TAG = "ActivityFriendBlock";
@@ -45,8 +46,12 @@ public class ActivityFriendBlock extends AppCompatActivity {
 
     private MaterialEditText messageTextView;
     private TextView maxCharsView;
-    private int maximumChars = 30, actualChar = 0;
+    private int actualChar = 0;
     private GridView gridView;
+
+    private TextWatcherListener textWatcherListener;
+
+    private String gifName="";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -77,24 +82,54 @@ public class ActivityFriendBlock extends AppCompatActivity {
         maxCharsView = (TextView) findViewById(R.id.ActivityFriendBlock_TextViewMaxCharacters);
         messageTextView = (MaterialEditText) findViewById(R.id.ActivityFriendBlock_EditTextMessage);
         messageTextView.setOnFocusChangeListener(new MessageFocusChangedListener(this,messageTextView));
-        messageTextView.addTextChangedListener(new TextWatcherListener(this,maxCharsView));
+        textWatcherListener = new TextWatcherListener(this,maxCharsView,messageTextView);
 
-        /*gridView = (GridView) findViewById(R.id.ActivityFriendBlock_GridLayout);
+        messageTextView.addTextChangedListener(textWatcherListener);
 
-        final List<String> gifNames = setGifNames();
+        gridView = (GridView) findViewById(R.id.ActivityFriendBlock_GridLayout);
 
-        gridView.setAdapter(new AdapterEmoticon(this,gifNames));
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        FloatingActionButton fabGif = (FloatingActionButton) findViewById(R.id.ActivityFriendBlock_FABEmoticon);
+        fabGif.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                SnackBar.show(ActivityFriendBlock_2.this,gifNames.get(position));
-            }
-        });*/
-    }
+            public void onClick(View v) {
+                if (gridView.getVisibility() != View.VISIBLE) {
+                    gridView.setVisibility(View.VISIBLE);
+                    final List<String> gifNames = setGifNames();
 
-    @Override
-    protected void onResume() {
-        super.onResume();
+                    gridView.setAdapter(new AdapterEmoticon(ActivityFriendBlock.this,gifNames));
+                    gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                            try{
+                                gifName = gifNames.get(position);
+                                final GifImageView gifImageView = (GifImageView) findViewById(R.id.ActivityFriendBlock_GifImage);
+                                int resourceId = getResources().getIdentifier(gifName, "drawable", getPackageName());
+                                GifDrawable gif = new GifDrawable(getResources(), resourceId);
+                                gifImageView.setImageDrawable(gif);
+                                gifImageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+
+                                gifImageView.setOnLongClickListener(new View.OnLongClickListener() {
+                                    @Override
+                                    public boolean onLongClick(View v) {
+                                        gifImageView.setImageBitmap(null);
+                                        gifName = "";
+                                        return false;
+                                    }
+                                });
+                            }catch (Exception e){
+                                e.printStackTrace();
+                            }
+                            gridView.setVisibility(View.GONE);
+                        }
+                    });
+
+                }else{
+                    gridView.setVisibility(View.GONE);
+                    List<String> array = new ArrayList<>();
+                    gridView.setAdapter(new AdapterEmoticon(ActivityFriendBlock.this,array));
+                }
+            }
+        });
     }
 
     @Override
@@ -116,31 +151,15 @@ public class ActivityFriendBlock extends AppCompatActivity {
         return true;
     }
 
-    private List<String> setGifNames(){
-        List<String> gifNames = new ArrayList<>();
-        for (int j=1; j<10; j++){
-            gifNames.add("gif"+j);
-        }
-        return gifNames;
-    }
-
-    public void emoji(View view){
-        if (gridView.getVisibility() == View.GONE){
-            gridView.setVisibility(View.VISIBLE);
-        }else{
-            gridView.setVisibility(View.GONE);
-        }
-    }
-
     public void block(View view) {
         if (isNetworkAvailable(this)) {
             InputMethodManager imm = (InputMethodManager) getSystemService(
                     Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(messageTextView.getWindowToken(), 0);
 
-            if (actualChar <= 30) {
+            if (textWatcherListener.getActualChar() <= 30) {
                 try {
-                    new TaskGPS(this,TAG).execute();
+                    new TaskSendNotification(ActivityFriendBlock.this, actualUser.getName(), messageTextView.getText().toString(),gifName).execute(friend);
                 } catch (Exception ex) {
                     ex.printStackTrace();
                     SnackBar.show(ActivityFriendBlock.this, R.string.error);
@@ -165,12 +184,6 @@ public class ActivityFriendBlock extends AppCompatActivity {
                 }
             });
         }
-    }
-
-    public void blockContact(Location location, LoadToast toast){
-        SnackBar.show(ActivityFriendBlock.this, location.getLatitude() + "," + location.getLongitude());
-        TaskSendNotification gcm = new TaskSendNotification(ActivityFriendBlock.this, actualUser.getName(), messageTextView.getText().toString(), location.getLatitude(), location.getLongitude(),toast);
-        gcm.execute(friend);
     }
 
     /*class TextWatcherListener implements TextWatcher {

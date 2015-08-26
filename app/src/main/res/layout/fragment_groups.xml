@@ -6,7 +6,7 @@
     <ListView
         android:id="@+id/FragmentGroups_ListGroup"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="fill_parent"
         android:divider="@color/transparent"
         android:listSelector="@drawable/list_selector"
         style="@style/AppTheme"/>

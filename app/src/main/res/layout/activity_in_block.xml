@@ -21,19 +21,17 @@
         android:gravity="center"
         android:layout_margin="2dp"
         android:textColor="@color/black"/>
-    <TextView
-        style="@style/FriendStyle"
-        android:id="@+id/ActivityInBlock_TextViewDistance"
-        android:layout_below="@id/ActivityInBlock_TextViewMessage"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:layout_margin="2dp"
-        android:textColor="@color/black"/>
+
+    <pl.droidsonroids.gif.GifImageView
+        android:id="@+id/ActivityInBlock_GifImageView"
+        android:layout_height="60dp"
+        android:layout_width="60dp"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/ActivityInBlock_TextViewMessage"/>
 
     <Button
         android:layout_centerHorizontal="true"
-        android:layout_below="@id/ActivityInBlock_TextViewDistance"
+        android:layout_below="@id/ActivityInBlock_GifImageView"
         android:id="@+id/ActivityInBlock_ButtonShowLocation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

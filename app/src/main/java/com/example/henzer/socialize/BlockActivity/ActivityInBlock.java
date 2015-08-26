@@ -16,12 +16,14 @@ import com.skyfishjy.library.RippleBackground;
 
 import java.text.DecimalFormat;
 
+import pl.droidsonroids.gif.GifDrawable;
+import pl.droidsonroids.gif.GifImageView;
+
 public class ActivityInBlock extends Activity{
 
     private String user;
-    private double latitude;
-    private double longitude;
-    private double distance;
+    private String message;
+    private String gifName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,19 +31,26 @@ public class ActivityInBlock extends Activity{
         setContentView(R.layout.activity_in_block);
 
         user = getIntent().getStringExtra("user");
-        latitude = getIntent().getDoubleExtra("latitude",0.0);
-        longitude = getIntent().getDoubleExtra("longitude",0.0);
-        String message = getIntent().getStringExtra("message");
-        distance = getIntent().getDoubleExtra("distance",0.0);
+        message = getIntent().getStringExtra("message");
+        gifName = getIntent().getStringExtra("gif");
 
         TextView userView = (TextView) findViewById(R.id.ActivityInBlock_TextViewUser);
         TextView messageView = (TextView) findViewById(R.id.ActivityInBlock_TextViewMessage);
-        TextView distanceView = (TextView) findViewById(R.id.ActivityInBlock_TextViewDistance);
 
         userView.setText(user);
         messageView.setText("\""+message+"\"");
-        DecimalFormat df = new DecimalFormat("#.###");
-        distanceView.setText(getResources().getString(R.string.distance)+" "+df.format(distance)+"m");
+        if (!gifName.equals("")) {
+            try {
+                GifImageView gifImageView = (GifImageView) findViewById(R.id.ActivityInBlock_GifImageView);
+                int resourceId = getResources().getIdentifier(gifName, "drawable", getPackageName());
+                GifDrawable gif = new GifDrawable(getResources(), resourceId);
+                gifImageView.setImageDrawable(gif);
+                gifImageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
 
         final RippleBackground rippleBackground = (RippleBackground) findViewById(R.id.ActivityInBlock_BlockAnimation);
         rippleBackground.startRippleAnimation();
@@ -78,11 +87,11 @@ public class ActivityInBlock extends Activity{
             }
         });
     }
-    public void showLocation(View v){
+    /*public void showLocation(View v){
         Intent i = new Intent(ActivityInBlock.this, ActivityGoogleMaps.class);
         i.putExtra("user",user);
         i.putExtra("longitude",longitude);
         i.putExtra("latitude",latitude);
         startActivity(i);
-    }
+    }*/
 }

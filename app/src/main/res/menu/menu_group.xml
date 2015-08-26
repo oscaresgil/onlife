@@ -1,12 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:icon="@drawable/ic_more_vert_black_24dp">
-    <item
-        android:id="@+id/searchCancelContact"
-        android:icon="@drawable/ic_close_black_24dp"
-        app:showAsAction="never"
-        android:title="@string/cancel"/>
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/saveGroup_button"
         android:icon="@drawable/ic_done_black_24dp"

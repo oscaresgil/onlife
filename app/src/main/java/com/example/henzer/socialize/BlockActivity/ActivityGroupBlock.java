@@ -1,78 +1,74 @@
 package com.example.henzer.socialize.BlockActivity;
 
+import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ResolveInfo;
+import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.ColorDrawable;
-import android.location.Location;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.v7.app.ActionBarActivity;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.Editable;
-import android.text.Html;
-import android.text.TextWatcher;
-import android.view.LayoutInflater;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.example.henzer.socialize.Adapters.AdapterContact;
-import com.example.henzer.socialize.Adapters.AdapterGroup;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.example.henzer.socialize.Activities.ActivityGroupInformation;
+import com.afollestad.materialdialogs.simplelist.MaterialSimpleListAdapter;
+import com.afollestad.materialdialogs.simplelist.MaterialSimpleListItem;
+import com.example.henzer.socialize.Adapters.AdapterEmoticon;
 import com.example.henzer.socialize.Fragments.FragmentGroups;
 import com.example.henzer.socialize.Listeners.MessageFocusChangedListener;
 import com.example.henzer.socialize.Listeners.TextWatcherListener;
 import com.example.henzer.socialize.Models.ModelPerson;
 import com.example.henzer.socialize.Tasks.TaskSendNotification;
-import com.example.henzer.socialize.Tasks.TaskGPS;
 import com.example.henzer.socialize.Models.ModelGroup;
 import com.example.henzer.socialize.R;
 import com.kenny.snackbar.SnackBar;
-import com.melnykov.fab.FloatingActionButton;
 import com.mingle.entity.MenuEntity;
-import com.mingle.sweetpick.BlurEffect;
-import com.mingle.sweetpick.CustomDelegate;
-import com.mingle.sweetpick.Delegate;
 import com.mingle.sweetpick.DimEffect;
 import com.mingle.sweetpick.RecyclerViewDelegate;
 import com.mingle.sweetpick.SweetSheet;
-import com.mingle.sweetpick.ViewPagerDelegate;
 import com.r0adkll.slidr.Slidr;
 import com.r0adkll.slidr.model.SlidrConfig;
 import com.r0adkll.slidr.model.SlidrPosition;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.squareup.picasso.Picasso;
 
-import net.steamcrafted.loadtoast.LoadToast;
-
-import java.io.Serializable;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import pl.droidsonroids.gif.GifDrawable;
+import pl.droidsonroids.gif.GifImageView;
+
+import static com.example.henzer.socialize.Controller.StaticMethods.getRealPathFromURI;
 import static com.example.henzer.socialize.Controller.StaticMethods.isNetworkAvailable;
 import static com.example.henzer.socialize.Controller.StaticMethods.loadImage;
 import static com.example.henzer.socialize.Controller.StaticMethods.loadImagePath;
+import static com.example.henzer.socialize.Controller.StaticMethods.performCrop;
+import static com.example.henzer.socialize.Controller.StaticMethods.saveImage;
+import static com.example.henzer.socialize.Controller.StaticMethods.setGifNames;
 
 public class ActivityGroupBlock extends AppCompatActivity {
     public static final String TAG = "ActivityGroupBlock";
-    private int actualChar = 0;
+    private static final int PICK_FROM_CAMERA = 1;
+    private static final int PICK_FROM_FILE = 2;
+    private static final int PIC_CROP = 3;
 
     private RelativeLayout rl;
     private SweetSheet sweetSheet;
@@ -84,6 +80,15 @@ public class ActivityGroupBlock extends AppCompatActivity {
 
     private TextView maxCharsView;
     private MaterialEditText messageTextView;
+    private TextWatcherListener textWatcherListener;
+
+    private GridView gridView;
+    private String gifName="";
+
+    private ImageView avatarGroup;
+    private Uri mImageCaptureUri;
+    private String path;
+    private Bitmap bitmapGroup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,42 +116,66 @@ public class ActivityGroupBlock extends AppCompatActivity {
         collapser.setCollapsedTitleTextColor(getResources().getColor(R.color.white));
         collapser.setExpandedTitleColor(getResources().getColor(R.color.white));
 
-        Picasso.with(this).load(loadImagePath(this, modelGroup.getName())).into((ImageView) findViewById(R.id.ActivityGroupBlock_ImageViewContact));
+        avatarGroup = (ImageView) findViewById(R.id.ActivityGroupBlock_ImageViewContact);
+        avatarGroup.setImageBitmap(loadImage(this,modelGroup.getName()));
+
+        selectTypeImage();
+        //Picasso.with(this).load(loadImagePath(this, modelGroup.getName())).into(avatarGroup);
 
         maxCharsView = (TextView) findViewById(R.id.ActivityGroupBlock_TextViewMaxCharacters);
         messageTextView = (MaterialEditText) findViewById(R.id.ActivityGroupBlock_EditTextMessage);
         messageTextView.setOnFocusChangeListener(new MessageFocusChangedListener(this,messageTextView));
-        messageTextView.addTextChangedListener(new TextWatcherListener(this,maxCharsView));
+        textWatcherListener = new TextWatcherListener(this,maxCharsView,messageTextView);
+        messageTextView.addTextChangedListener(textWatcherListener);
 
-        /*gridView = (GridView) findViewById(R.id.ActivityFriendBlock_GridLayout);
+        gridView = (GridView) findViewById(R.id.ActivityGroupBlock_GridLayout);
 
-        final List<String> gifNames = setGifNames();
-
-        gridView.setAdapter(new AdapterEmoticon(this,gifNames));
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        FloatingActionButton fabGif = (FloatingActionButton) findViewById(R.id.ActivityGroupBlock_FABEmoticon);
+        fabGif.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                SnackBar.show(ActivityFriendBlock_2.this,gifNames.get(position));
-            }
-        });*/
+            public void onClick(View v) {
+                if (gridView.getVisibility() != View.VISIBLE) {
+                    gridView.setVisibility(View.VISIBLE);
+                    final List<String> gifNames = setGifNames();
 
-        rl = (RelativeLayout) findViewById(R.id.ActivityGroupBlock_RelativeLayoutContact);
+                    gridView.setAdapter(new AdapterEmoticon(ActivityGroupBlock.this,gifNames));
+                    gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                            try{
+                                gifName = gifNames.get(position);
+                                final GifImageView gifImageView = (GifImageView) findViewById(R.id.ActivityFriendBlock_GifImage);
+                                int resourceId = getResources().getIdentifier(gifName, "drawable", getPackageName());
+                                GifDrawable gif = new GifDrawable(getResources(), resourceId);
+                                gifImageView.setImageDrawable(gif);
+                                gifImageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+
+                                gifImageView.setOnLongClickListener(new View.OnLongClickListener() {
+                                    @Override
+                                    public boolean onLongClick(View v) {
+                                        gifImageView.setImageBitmap(null);
+                                        gifName = "";
+                                        return false;
+                                    }
+                                });
+                            }catch (Exception e){
+                                e.printStackTrace();
+                            }
+                            gridView.setVisibility(View.GONE);
+                        }
+                    });
+
+                }else{
+                    gridView.setVisibility(View.GONE);
+                    List<String> array = new ArrayList<>();
+                    gridView.setAdapter(new AdapterEmoticon(ActivityGroupBlock.this,array));
+                }
+            }
+        });
+
+        rl = (RelativeLayout) findViewById(R.id.ActivityGroupBlock_RelativeLayoutMain);
         sweetSheet = new SweetSheet(rl);
         sweetSheet.setBackgroundClickEnable(true);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        /*RelativeLayout linearLayout = (RelativeLayout) findViewById(R.id.ActivityGroupBlock_LayoutMain);
-        linearLayout.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(getWindow().getCurrentFocus().getWindowToken(), 0);
-                return false;
-            }
-        });*/
     }
 
     @Override
@@ -195,18 +224,13 @@ public class ActivityGroupBlock extends AppCompatActivity {
                 sweetSheet.setOnMenuItemClickListener(new SweetSheet.OnMenuItemClickListener() {
                     @Override
                     public boolean onItemClick(int position, MenuEntity menuEntity1) {
-                        if (position!=0) {
-                            ModelPerson friend = friendsInGroup.get(position-1);
-                            Intent intent = new Intent(ActivityGroupBlock.this, ActivityFriendBlock.class);
-                            intent.putExtra("data", friend);
-                            intent.putExtra("actualuser", actualUser);
-                            startActivity(intent);
-                            overridePendingTransition(R.animator.push_right, R.animator.push_left);
-                            return true;
-                        }
-                        else{
-                            return false;
-                        }
+                        ModelPerson friend = friendsInGroup.get(position-1);
+                        Intent intent = new Intent(ActivityGroupBlock.this, ActivityFriendBlock.class);
+                        intent.putExtra("data", friend);
+                        intent.putExtra("actualuser", actualUser);
+                        startActivity(intent);
+                        overridePendingTransition(R.animator.push_right, R.animator.push_left);
+                        return true;
                     }
                 });
                 sweetSheet.toggle();
@@ -258,11 +282,50 @@ public class ActivityGroupBlock extends AppCompatActivity {
         return true;
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.e("ResultCode",""+resultCode);
+        Log.e("RequestCode", "" + requestCode);
+        if (requestCode == PIC_CROP && resultCode == RESULT_OK) {
+            Bundle extras = data.getExtras();
+            bitmapGroup = extras.getParcelable("data");
+            saveImage(this,modelGroup.getName(),bitmapGroup);
+            avatarGroup.setImageBitmap(null);
+            avatarGroup.setImageBitmap(bitmapGroup);
+        }
+        else if (requestCode == PICK_FROM_FILE && resultCode == RESULT_OK) {
+            mImageCaptureUri = data.getData();
+            // From Gallery
+            path = getRealPathFromURI(this,mImageCaptureUri);
+            if (path == null) {
+                // From File Manager
+                path = mImageCaptureUri.getPath();
+            }
+            if (path != null) {
+                try {
+                    performCrop(this,mImageCaptureUri,PIC_CROP);
+                    //performCrop();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        } else if (requestCode == PICK_FROM_CAMERA && resultCode==RESULT_OK) {
+            path = mImageCaptureUri.getPath();
+            try {
+                performCrop(this,mImageCaptureUri,PIC_CROP);
+                //performCrop();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     public void block(View view){
         if (isNetworkAvailable(this)) {
-            if (actualChar <= 30) {
+            if (textWatcherListener.getActualChar() <= 30) {
                 try {
-                    new TaskGPS(this,TAG).execute();
+                    new TaskSendNotification(ActivityGroupBlock.this, actualUser.getName(), messageTextView.getText().toString(),"").execute(friendsInGroup.toArray(new ModelPerson[friendsInGroup.size()]));
+
                 } catch (Exception ex) {
                     SnackBar.show(ActivityGroupBlock.this, R.string.error);
                 }
@@ -286,10 +349,98 @@ public class ActivityGroupBlock extends AppCompatActivity {
             });
         }
     }
+    public void selectTypeImage(){
+        MaterialSimpleListAdapter materialAdapter = new MaterialSimpleListAdapter(this);
+        materialAdapter.add(new MaterialSimpleListItem.Builder(this)
+                .content(R.string.photo_option_camera)
+                .icon(R.drawable.ic_camera_alt_black_24dp)
+                .build());
+        materialAdapter.add(new MaterialSimpleListItem.Builder(this)
+                .content(R.string.photo_option_sd)
+                .icon(R.drawable.ic_sd_card_black_24dp)
+                .build());
 
-    public void blockGroup(Location location, LoadToast toast){
-        SnackBar.show(ActivityGroupBlock.this, location.getLatitude() + "," + location.getLongitude());
-        TaskSendNotification gcm = new TaskSendNotification(ActivityGroupBlock.this, actualUser.getName(), messageTextView.getText().toString(), location.getLatitude(), location.getLongitude(), toast);
-        gcm.execute(friendsInGroup.toArray(new ModelPerson[friendsInGroup.size()]));
+        final MaterialDialog.Builder materialDialog = new MaterialDialog.Builder(this)
+                .title(R.string.photo_select_image)
+                .titleColorRes(R.color.orange_light)
+                .adapter(materialAdapter, new MaterialDialog.ListCallback() {
+                    @Override
+                    public void onSelection(MaterialDialog materialDialog, View view, int which, CharSequence charSequence) {
+                        if (which == 0) {
+                            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                            File file = new File(Environment.getExternalStorageDirectory(), "tmp_avatar_" + String.valueOf(System.currentTimeMillis()) + ".jpg");
+                            mImageCaptureUri = Uri.fromFile(file);
+                            try {
+                                intent.putExtra(MediaStore.EXTRA_OUTPUT, mImageCaptureUri);
+                                intent.putExtra("return-data", true);
+                                startActivityForResult(intent, PICK_FROM_CAMERA);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            materialDialog.cancel();
+                        } else {
+                            Intent intent = new Intent();
+                            intent.setType("image/*");
+                            intent.setAction(Intent.ACTION_GET_CONTENT);
+                            startActivityForResult(Intent.createChooser(intent, getResources().getString(R.string.pick_image)), PICK_FROM_FILE);
+                            materialDialog.cancel();
+                        }
+                    }
+                });
+
+        avatarGroup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //dialog.show();
+                materialDialog.show();
+            }
+        });
     }
+    /*public void performCrop(){
+        try {
+            Log.e("ImageUriString",mImageCaptureUri.toString());
+
+            Intent intent = new Intent("com.android.camera.action.CROP");
+            intent.setType("image*//*");
+
+            if (mImageCaptureUri.toString().substring(0,21).equals("content://com.android")) {
+                Log.e("Path",mImageCaptureUri.toString().split("%3A")[1]);
+                String imageUriString = "content://media/external/images/media/"+mImageCaptureUri.toString().split("%3A")[1];
+                Log.e("PathCorrect",imageUriString);
+                mImageCaptureUri = Uri.parse(imageUriString);
+            }
+
+            List<ResolveInfo> list = getPackageManager().queryIntentActivities( intent, 0 );
+            int size = list.size();
+            Log.e("SIZE",""+size);
+            if (size != 0) {
+                intent.setData(mImageCaptureUri);
+                intent.putExtra("crop", "true");
+                intent.putExtra("aspectX", 1);
+                intent.putExtra("aspectY", 1);
+                intent.putExtra("outputX", 400);
+                intent.putExtra("outputY", 400);
+                intent.putExtra("return-data", true);
+                if (size > 0) {
+                    Intent i = new Intent(intent);
+                    ResolveInfo res = list.get(0);
+                    i.setComponent(new ComponentName(res.activityInfo.packageName, res.activityInfo.name));
+
+                    startActivityForResult(intent, PIC_CROP);
+                }
+            }
+            else{
+                SnackBar.show(this, "NO CROP APP");
+            }
+        }
+        catch(Exception e){
+            Log.e("ErrorCrop",e.toString());
+            e.printStackTrace();
+        }
+        *//*catch(ActivityNotFoundException anfe){
+            String errorMessage = "Whoops - your device doesn't support the crop action!";
+            SnackBar.show((Activity)context, errorMessage);
+            anfe.printStackTrace();
+        }*//*
+    }*/
 }

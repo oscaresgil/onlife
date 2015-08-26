@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
@@ -62,7 +63,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.example.henzer.socialize.Controller.StaticMethods.getRealPathFromURI;
 import static com.example.henzer.socialize.Controller.StaticMethods.isNetworkAvailable;
+import static com.example.henzer.socialize.Controller.StaticMethods.performCrop;
 import static com.example.henzer.socialize.Controller.StaticMethods.saveImage;
 
 public class ActivityGroupCreateInformation extends ActionBarActivity {
@@ -121,7 +124,7 @@ public class ActivityGroupCreateInformation extends ActionBarActivity {
         width = size.x/5;
 
         avatarGroup = (ImageView) findViewById(R.id.ActivityCreateGroup_ImageButtonSelectImage);
-        Picasso.with(this).load(R.drawable.ic_camera_alt_black_24dp).resize(width,width).into(avatarGroup);
+        Picasso.with(this).load(R.drawable.ic_image_camera_alt_large).resize(width,width).into(avatarGroup);
 
         actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
@@ -179,14 +182,14 @@ public class ActivityGroupCreateInformation extends ActionBarActivity {
         if (requestCode == PICK_FROM_FILE && resultCode == RESULT_OK) {
             mImageCaptureUri = data.getData();
             // From Gallery
-            path = getRealPathFromURI(mImageCaptureUri);
+            path = getRealPathFromURI(this,mImageCaptureUri);
             if (path == null) {
                 // From File Manager
                 path = mImageCaptureUri.getPath();
             }
             if (path != null) {
                 try {
-                    performCrop();
+                    performCrop(this,mImageCaptureUri,PIC_CROP);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -194,7 +197,7 @@ public class ActivityGroupCreateInformation extends ActionBarActivity {
         } else if (requestCode == PICK_FROM_CAMERA && resultCode==RESULT_OK) {
             path = mImageCaptureUri.getPath();
             try {
-                performCrop();
+                performCrop(this,mImageCaptureUri,PIC_CROP);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -242,7 +245,7 @@ public class ActivityGroupCreateInformation extends ActionBarActivity {
             int limit = 30;
             String state = "A";
 
-            if (!name.equals("") && !path.equals("") && !selected.isEmpty()){
+            if (!name.equals("")  && !selected.isEmpty()){
                 if (isNetworkAvailable(this)) {
                     if (FragmentGroups.alreadyGroup(name)){
                         SnackBar.show(ActivityGroupCreateInformation.this, R.string.group_already, R.string.button_group_change_name, new View.OnClickListener() {
@@ -256,30 +259,16 @@ public class ActivityGroupCreateInformation extends ActionBarActivity {
                         });
                     }
                     else{
-                        path = saveImage(getApplicationContext(), name, bitmap);
+                        if (!path.equals("")) {
+                            path = saveImage(getApplicationContext(), name, bitmap);
+                        }
+                        else{
+                            path = saveImage(getApplicationContext(), name, BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher));
+                        }
                         ModelGroup newG = new ModelGroup(0, name, selected, path, limit, state);
 
                         Log.e(TAG, newG.toString());
                         new TaskAddNewGroup(ActivityGroupCreateInformation.this, newG, ActivityGroupCreateInformation.this).execute(newG);
-
-                        //newG = taskAddNewGroup.execute(newG).get();
-                        /*try {
-
-                            if (newG.getId() != -1) {
-                                modelSessionData.getModelGroups().add(newG);
-                                saveGroupInSession(newG);
-
-                                FragmentGroups.addNewGroup(newG);
-                                finish();
-                                overridePendingTransition(R.animator.push_left_inverted, R.animator.push_right_inverted);
-                            }
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        } catch (ExecutionException e) {
-                            e.printStackTrace();
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }*/
                     }
                 }else{
                     SnackBar.show(ActivityGroupCreateInformation.this, R.string.no_connection, R.string.button_change_connection, new View.OnClickListener() {
@@ -353,7 +342,7 @@ public class ActivityGroupCreateInformation extends ActionBarActivity {
 
     public void handleMenuSearch(){
         MenuItem savegroup = myMenu.findItem(R.id.saveGroup_button);
-        MenuItem search = myMenu.findItem(R.id.searchCancelContact);
+
         FloatingActionButton searchButton = (FloatingActionButton) findViewById(R.id.ActivityCreateGroup_FABSearchFriend);
 
         LinearLayout mainLayout = (LinearLayout)this.findViewById(R.id.ActivityCreateGroup_LinearLayoutSubMain);
@@ -380,7 +369,6 @@ public class ActivityGroupCreateInformation extends ActionBarActivity {
             actionBar.setDisplayShowTitleEnabled(true);
 
             searchButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_search_black_24dp));
-            search.setVisible(false);
             savegroup.setVisible(true);
             isSearchOpened = false;
 
@@ -389,7 +377,6 @@ public class ActivityGroupCreateInformation extends ActionBarActivity {
             searchButton.setVisibility(View.GONE);
 
             savegroup.setVisible(false);
-            search.setVisible(true);
             actionBar.setDisplayShowCustomEnabled(true);
             actionBar.setCustomView(R.layout.layout_search_contact_bar);
 
@@ -475,19 +462,10 @@ public class ActivityGroupCreateInformation extends ActionBarActivity {
         });
     }
 
-    public String getRealPathFromURI(Uri contentUri){
-        String [] proj      = {MediaStore.Images.Media.DATA};
-        Cursor cursor       = managedQuery( contentUri, proj, null, null,null);
-        if (cursor == null) return null;
-        int column_index    = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-        cursor.moveToFirst();
-        return cursor.getString(column_index);
-    }
-
-    private void performCrop(){
+    /*private void performCrop(){
         try {
             Intent intent = new Intent("com.android.camera.action.CROP");
-            intent.setType("image/*");
+            intent.setType("image*//*");
 
             List<ResolveInfo> list = getPackageManager().queryIntentActivities( intent, 0 );
             int size = list.size();
@@ -513,7 +491,7 @@ public class ActivityGroupCreateInformation extends ActionBarActivity {
             String errorMessage = "Whoops - your device doesn't support the crop action!";
             SnackBar.show(ActivityGroupCreateInformation.this, errorMessage);
         }
-    }
+    }*/
 
     private void saveGroupInSession(ModelGroup modelGroup) throws JSONException {
         SharedPreferences prefe = getSharedPreferences

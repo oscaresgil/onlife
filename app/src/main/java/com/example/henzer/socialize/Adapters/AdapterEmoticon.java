@@ -56,24 +56,25 @@ public class AdapterEmoticon extends BaseAdapter {
             gifHolder = new GifHolder();
 
             gifHolder.gifImageView = (GifImageView) convertView;
-            String name = gifImages.get(position);
-
-            int resourceId = context.getResources().getIdentifier(name, "drawable", context.getPackageName());
-            GifDrawable gif = null;
-            try {
-                gif = new GifDrawable(context.getResources(), resourceId);
-            }catch(Exception e){
-                e.printStackTrace();
-            }
-            gifHolder.gifImageView.setImageDrawable(gif);
-            gifHolder.gifImageView.setId(position);
-            gifHolder.gifImageView.setAdjustViewBounds(true);
-            gifHolder.gifImageView.setScaleType(ImageView.ScaleType.CENTER);
-
             convertView.setTag(gifHolder);
         }else{
             gifHolder = (GifHolder) convertView.getTag();
         }
+
+        String name = gifImages.get(position);
+
+        int resourceId = context.getResources().getIdentifier(name, "drawable", context.getPackageName());
+        GifDrawable gif = null;
+        try {
+            gif = new GifDrawable(context.getResources(), resourceId);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        gifHolder.gifImageView.setImageDrawable(gif);
+        gifHolder.gifImageView.setId(position);
+        gifHolder.gifImageView.setAdjustViewBounds(true);
+        gifHolder.gifImageView.setScaleType(ImageView.ScaleType.CENTER);
+
 
         return convertView;
     }

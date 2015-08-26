@@ -26,9 +26,9 @@ import com.example.henzer.socialize.Adapters.AdapterContact;
 import com.example.henzer.socialize.BlockActivity.ActivityFriendBlock;
 import com.example.henzer.socialize.Models.ModelPerson;
 import com.example.henzer.socialize.R;
-import com.example.henzer.socialize.Tasks.TaskGPS;
 import com.example.henzer.socialize.Tasks.TaskImageDownload;
 import com.example.henzer.socialize.Models.ModelSessionData;
+import com.example.henzer.socialize.Tasks.TaskSendNotification;
 import com.kenny.snackbar.SnackBar;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
@@ -103,21 +103,7 @@ public class FragmentContacts extends Fragment {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
                 if (!mSwipeRefreshLayout.isRefreshing() && isNetworkAvailable(getActivity())){
-                    new MaterialDialog.Builder(getActivity())
-                            .title(R.string.button_block)
-                            .content(R.string.really_delete)
-                            .positiveText(R.string.yes)
-                            .positiveColorRes(R.color.orange_light)
-                            .negativeText(R.string.no)
-                            .negativeColorRes(R.color.red)
-                            .callback(new MaterialDialog.ButtonCallback() {
-                                @Override
-                                public void onPositive(MaterialDialog dialog) {
-                                    new TaskGPS(getActivity(),TAG,actualUser,(ModelPerson)gridView.getItemAtPosition(position)).execute();
-                                    dialog.dismiss();
-                                    dialog.cancel();
-                                }
-                            }).show();
+                    new TaskSendNotification(getActivity(), "", actualUser.getName(), "").execute((ModelPerson) gridView.getItemAtPosition(position));
                 }else if(!isNetworkAvailable(getActivity())){
                     SnackBar.show(getActivity(), R.string.no_connection, R.string.button_change_connection, new View.OnClickListener() {
                         @Override
@@ -129,7 +115,7 @@ public class FragmentContacts extends Fragment {
                 else{
                     Toast.makeText(getActivity(),getResources().getString(R.string.toast_wait_until_contacts_refreshed),Toast.LENGTH_SHORT).show();
                 }
-                return false;
+                return true;
             }
         });
 

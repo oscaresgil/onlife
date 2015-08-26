@@ -16,7 +16,6 @@ import android.util.Log;
 
 import com.example.henzer.socialize.BlockActivity.ActivityInBlock;
 import com.example.henzer.socialize.R;
-import com.example.henzer.socialize.Tasks.TaskGPS;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 import static com.example.henzer.socialize.Controller.StaticMethods.distFrom;
@@ -27,9 +26,7 @@ public class GcmMessageHandler extends IntentService {
     private Intent intent;
     private NotificationManager myNotificationManager;
     private Looper looper;
-    private String user, message;
-    private double latitude, longitude;
-    private double distance;
+    private String user, message, gifName;
     private String[] dataP;
 
     public GcmMessageHandler() {
@@ -44,33 +41,19 @@ public class GcmMessageHandler extends IntentService {
         Bundle extras = intent.getExtras();
         this.intent = intent;
         GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(this);
-        String messageType = gcm.getMessageType(intent);
 
         String messageS = extras.getString("message");
         dataP = messageS.split("\n");
 
         message = dataP[0];
         user = dataP[1];
+        gifName = dataP[2];
 
         looper = Looper.myLooper();
         if (looper==null){
             Looper.prepare();
         }
         onMessage(this);
-        //TaskGPS taskGps = new TaskGPS(this,TAG);
-        //taskGps.execute();
-    }
-
-    public void setLocation(Location location){
-        latitude = Double.parseDouble(dataP[2]);
-        longitude = Double.parseDouble(dataP[3]);
-        double latitudeBlocked = location.getLatitude();
-        double longitudeBlocked = location.getLongitude();
-        distance = distFrom(latitude, longitude, latitudeBlocked, longitudeBlocked);
-        Log.e("Distance", distFrom(latitude, longitude, latitudeBlocked, longitudeBlocked)+"");
-
-        onMessage(this);
-        GcmBroadcastReceiver.completeWakefulIntent(intent);
     }
 
     protected void onMessage(Context context) {
@@ -95,9 +78,7 @@ public class GcmMessageHandler extends IntentService {
         Intent i = new Intent(context, ActivityInBlock.class);
         i.putExtra("user",user);
         i.putExtra("message",message);
-        i.putExtra("distance",distance);
-        i.putExtra("latitude",latitude);
-        i.putExtra("longitude",longitude);
+        i.putExtra("gif",gifName);
         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         DevicePolicyManager mDPM =
                 (DevicePolicyManager)getSystemService(Context.DEVICE_POLICY_SERVICE);

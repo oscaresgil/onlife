@@ -64,7 +64,7 @@
     <string name="button_group_change_name">Changer le nom du groupe!</string>
     <string name="toast_contacts_refreshed">Contacts Refreshed!</string>
     <string name="toast_wait_until_contacts_refreshed">Warten Sie! Kontakte sind erfrischend ..</string>
-    <string name="toast_group_not_yet_created">Nom, photo ou contacts non précisés. Essaye Encore</string>
+    <string name="toast_group_not_yet_created">Nom ou contacts non précisés. Essaye Encore</string>
 
     <string name="select_friend">Sélectionnez amis</string>
     <string name="show_location">Afficher ami Emplacement</string>
