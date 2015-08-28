@@ -2,7 +2,6 @@ package com.example.henzer.socialize.BlockActivity;
 
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.DragEvent;
 import android.view.MotionEvent;
@@ -10,11 +9,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.henzer.socialize.Activities.ActivityGoogleMaps;
 import com.example.henzer.socialize.R;
 import com.skyfishjy.library.RippleBackground;
-
-import java.text.DecimalFormat;
 
 import pl.droidsonroids.gif.GifDrawable;
 import pl.droidsonroids.gif.GifImageView;

@@ -8,6 +8,7 @@ import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.util.Log;
 import android.view.Menu;
@@ -20,28 +21,57 @@ import com.afollestad.materialdialogs.simplelist.MaterialSimpleListAdapter;
 import com.afollestad.materialdialogs.simplelist.MaterialSimpleListItem;
 import com.example.henzer.socialize.Adapters.AdapterFragmentPager;
 import com.example.henzer.socialize.Layouts.LayoutSlidingTab;
+import com.example.henzer.socialize.Models.ModelGroup;
 import com.example.henzer.socialize.Models.ModelPerson;
 import com.example.henzer.socialize.Models.ModelSessionData;
 import com.example.henzer.socialize.R;
-import com.example.henzer.socialize.Tasks.TaskSendNotification;
-import com.facebook.AccessToken;
-import com.facebook.Profile;
+import com.example.henzer.socialize.Tasks.TaskSetFriends;
 import com.facebook.login.LoginManager;
-import com.kenny.snackbar.SnackBar;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
-import net.steamcrafted.loadtoast.LoadToast;
-
+import java.util.ArrayList;
 import java.util.List;
 
-public class ActivityHome extends ActionBarActivity {
-    private ModelSessionData modelSessionData;
+import static com.example.henzer.socialize.Controller.StaticMethods.activateDeviceAdmin;
+
+public class ActivityHome extends AppCompatActivity {
+    public static ModelSessionData modelSessionData;
+    private ModelPerson userLogin;
+    private List<ModelPerson> friends;
+    private List<ModelGroup> groups;
+    private SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        modelSessionData = (ModelSessionData)getIntent().getExtras().getSerializable("data");
 
+        activateDeviceAdmin(this);
+
+        sharedPreferences = getSharedPreferences(ActivityMain.MyPREFERENCES, Context.MODE_PRIVATE);
+        Gson gson = new Gson();
+        userLogin = gson.fromJson(sharedPreferences.getString("userLogin", ""), ModelPerson.class);
+        friends = gson.fromJson(sharedPreferences.getString("friends", ""), (new TypeToken<ArrayList<ModelPerson>>(){}.getType()));
+
+        if (sharedPreferences.contains("groups")){
+            groups = gson.fromJson(sharedPreferences.getString("groups", ""), (new TypeToken<ArrayList<ModelGroup>>(){}.getType()));
+        } else {
+            groups = new ArrayList<>();
+            sharedPreferences.edit().putString("groups",gson.toJson(groups));
+        }
+
+        modelSessionData = new ModelSessionData(userLogin,friends, groups);
+
+        if (!sharedPreferences.contains("session")) {
+            ArrayList<String> idFriends = new ArrayList<>();
+            idFriends.add(userLogin.getId());
+            for (ModelPerson modelPerson : friends){
+                idFriends.add(modelPerson.getId());
+            }
+            TaskSetFriends taskFriends = new TaskSetFriends(this);
+            taskFriends.execute(idFriends);
+        }
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.orange_light)));
         getSupportActionBar().setTitle((Html.fromHtml("<b><font color=\"#000000\">" + getString(R.string.app_name) + "</font></b>")));
 
@@ -51,6 +81,7 @@ public class ActivityHome extends ActionBarActivity {
         pgAdapter.setModelSessionData(modelSessionData);
 
         viewPager.setAdapter(pgAdapter);
+
         // Give the SlidingTabLayout the ViewPager
         LayoutSlidingTab layoutSlidingTab = (LayoutSlidingTab) findViewById(R.id.ActivityHome_SlindingTabs);
         layoutSlidingTab.setCustomTabColorizer(new LayoutSlidingTab.TabColorizer() {
@@ -62,6 +93,10 @@ public class ActivityHome extends ActionBarActivity {
         // Center the tabs in the layout
         layoutSlidingTab.setDistributeEvenly(true);
         layoutSlidingTab.setViewPager(viewPager);
+
+
+        sharedPreferences.edit().putBoolean("session", true).commit();
+
     }
 
     @Override
@@ -126,16 +161,10 @@ public class ActivityHome extends ActionBarActivity {
     }
 
     public void logout(MenuItem item) {
-        SharedPreferences sharedpreferences = getSharedPreferences
-                (ActivityMain.MyPREFERENCES, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedpreferences.edit();
-        editor.clear();
-        editor.commit();
-        if (LoginManager.getInstance()!=null) {
-            LoginManager.getInstance().logOut();
-            AccessToken.setCurrentAccessToken(null);
-            Profile.setCurrentProfile(null);
-        }
+        SharedPreferences sharedpreferences = getSharedPreferences(ActivityMain.MyPREFERENCES, Context.MODE_PRIVATE);
+        sharedPreferences.edit().clear().commit();
+        LoginManager.getInstance().logOut();
         ActivityHome.this.finish();
     }
+
 }

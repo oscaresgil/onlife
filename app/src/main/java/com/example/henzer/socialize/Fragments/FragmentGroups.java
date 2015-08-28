@@ -1,15 +1,11 @@
 package com.example.henzer.socialize.Fragments;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.Point;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -17,10 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.henzer.socialize.Activities.ActivityGroupCreateInformation;
@@ -31,8 +24,8 @@ import com.example.henzer.socialize.Models.ModelGroup;
 import com.example.henzer.socialize.Models.ModelPerson;
 import com.example.henzer.socialize.Models.ModelSessionData;
 import com.example.henzer.socialize.R;
+import com.google.gson.Gson;
 import com.melnykov.fab.FloatingActionButton;
-import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -41,9 +34,6 @@ import org.json.JSONObject;
 import java.io.Serializable;
 import java.util.List;
 
-import static com.example.henzer.socialize.Controller.StaticMethods.loadImage;
-import static com.example.henzer.socialize.Controller.StaticMethods.loadImagePath;
-
 public class FragmentGroups extends Fragment {
     public static final String TAG = "GroupsFragment";
     private ModelSessionData modelSessionData;
@@ -51,7 +41,7 @@ public class FragmentGroups extends Fragment {
     private ListView list;
     private FloatingActionButton addGroupButton;
     private static List<ModelGroup> modelGroups;
-    private static SharedPreferences preferences;
+    private static SharedPreferences sharedPreferences;
 
     public static FragmentGroups newInstance(Bundle arguments){
         FragmentGroups myfragment = new FragmentGroups();
@@ -66,7 +56,7 @@ public class FragmentGroups extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        preferences = getActivity().getSharedPreferences(ActivityMain.MyPREFERENCES, Context.MODE_PRIVATE);
+        sharedPreferences = getActivity().getSharedPreferences(ActivityMain.MyPREFERENCES, Context.MODE_PRIVATE);
         Log.e(TAG, "OnCreateView");
         setHasOptionsMenu(true);
         View v = inflater.inflate(R.layout.fragment_groups, container, false);
@@ -178,11 +168,8 @@ public class FragmentGroups extends Fragment {
                 modelGroups.remove(i);
             }
         }
-        try {
-            saveInSession(modelGroups);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        Gson gson = new Gson();
+        sharedPreferences.edit().putString("groups", gson.toJson(modelGroups));
     }
     public static boolean alreadyGroup(String name){
         for (ModelGroup g: modelGroups){
@@ -191,41 +178,6 @@ public class FragmentGroups extends Fragment {
             }
         }
         return false;
-    }
-    public static void saveInSession(List<ModelGroup> modelGroups) throws JSONException {
-        SharedPreferences.Editor editor = preferences.edit();
-        JSONObject mySession = new JSONObject(preferences.getString("session", "{}"));
-        Log.e(TAG, mySession.toString());
-
-        JSONArray myGroups = new JSONArray();
-
-        for(ModelGroup modelGroup : modelGroups) {
-            JSONObject obj = new JSONObject();
-            obj.put("id", modelGroup.getId());
-            obj.put("name", modelGroup.getName());
-            obj.put("photo", modelGroup.getNameImage());
-            obj.put("limit", modelGroup.getLimit());
-            obj.put("state", modelGroup.getState());
-
-            JSONArray arr = new JSONArray();
-            for (ModelPerson p : modelGroup.getFriendsInGroup()) {
-                JSONObject friend = new JSONObject();
-                friend.put("id", p.getId());
-                friend.put("id_phone", p.getId_phone());
-                friend.put("name", p.getName());
-                friend.put("photo", p.getPhoto());
-                friend.put("state", p.getState());
-                friend.put("background", p.getBackground());
-                arr.put(friend);
-            }
-            obj.put("people", arr);
-            myGroups.put(obj);
-        }
-        mySession.put("activity_groups", myGroups);
-
-        Log.e(TAG, mySession.toString());
-        editor.putString("session", mySession.toString());
-        editor.commit();
     }
 
 }

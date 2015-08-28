@@ -2,6 +2,7 @@ package com.example.henzer.socialize.Fragments;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
@@ -22,6 +23,7 @@ import android.widget.GridView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.example.henzer.socialize.Activities.ActivityMain;
 import com.example.henzer.socialize.Adapters.AdapterContact;
 import com.example.henzer.socialize.BlockActivity.ActivityFriendBlock;
 import com.example.henzer.socialize.Models.ModelPerson;
@@ -29,6 +31,8 @@ import com.example.henzer.socialize.R;
 import com.example.henzer.socialize.Tasks.TaskImageDownload;
 import com.example.henzer.socialize.Models.ModelSessionData;
 import com.example.henzer.socialize.Tasks.TaskSendNotification;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.kenny.snackbar.SnackBar;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
@@ -52,6 +56,7 @@ public class FragmentContacts extends Fragment {
     private List<ModelPerson> friendsFiltred;
     private boolean isSearchOpened = false;
     private String mSearchQuery;
+    private SharedPreferences sharedPreferences;
 
     private static boolean typeUrl = false;
 
@@ -72,8 +77,10 @@ public class FragmentContacts extends Fragment {
 
         friendsFiltred = new ArrayList<>();
 
-        actualUser = ((ModelSessionData)getArguments().getSerializable("data")).getUser();
-        friends = ((ModelSessionData)getArguments().getSerializable("data")).getFriends();
+        sharedPreferences = getActivity().getSharedPreferences(ActivityMain.MyPREFERENCES, Context.MODE_PRIVATE);
+        Gson gson = new Gson();
+        actualUser = gson.fromJson(sharedPreferences.getString("userLogin", ""), ModelPerson.class);
+        friends = gson.fromJson(sharedPreferences.getString("friends", ""), (new TypeToken<ArrayList<ModelPerson>>(){}.getType()));
         friendsFiltred.addAll(friends);
 
         adapter = new AdapterContact(getActivity(),friendsFiltred);

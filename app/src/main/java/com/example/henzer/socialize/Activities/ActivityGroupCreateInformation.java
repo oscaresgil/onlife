@@ -1,13 +1,8 @@
 package com.example.henzer.socialize.Activities;
 
-import android.app.Activity;
-import android.content.ActivityNotFoundException;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.ResolveInfo;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
@@ -31,7 +26,6 @@ import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -46,7 +40,6 @@ import com.example.henzer.socialize.Models.ModelGroup;
 import com.example.henzer.socialize.Models.ModelPerson;
 import com.example.henzer.socialize.Models.ModelSessionData;
 import com.example.henzer.socialize.R;
-import com.example.henzer.socialize.Tasks.TaskAddNewGroup;
 import com.kenny.snackbar.SnackBar;
 import com.melnykov.fab.FloatingActionButton;
 import com.r0adkll.slidr.Slidr;
@@ -265,10 +258,6 @@ public class ActivityGroupCreateInformation extends ActionBarActivity {
                         else{
                             path = saveImage(getApplicationContext(), name, BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher));
                         }
-                        ModelGroup newG = new ModelGroup(0, name, selected, path, limit, state);
-
-                        Log.e(TAG, newG.toString());
-                        new TaskAddNewGroup(ActivityGroupCreateInformation.this, newG, ActivityGroupCreateInformation.this).execute(newG);
                     }
                 }else{
                     SnackBar.show(ActivityGroupCreateInformation.this, R.string.no_connection, R.string.button_change_connection, new View.OnClickListener() {

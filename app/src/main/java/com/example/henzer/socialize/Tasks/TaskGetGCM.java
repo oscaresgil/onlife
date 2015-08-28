@@ -6,8 +6,11 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.example.henzer.socialize.Activities.ActivityMain;
 import com.example.henzer.socialize.GCMClient.GcmHelper;
 import com.example.henzer.socialize.Models.ModelPerson;
+import com.example.henzer.socialize.R;
 import com.kenny.snackbar.SnackBar;
 
 import org.json.JSONArray;
@@ -22,27 +25,33 @@ import java.util.concurrent.ExecutionException;
 
 public class TaskGetGCM extends AsyncTask<Void, Void, String> {
 
-    private static final String PROJECT_NUMBER = "194566212765";
     private static final String TAG = "GetGCM";
-    public static final String MyPREFERENCES = "MyPrefs";
     private Context context;
-    private ModelPerson userLogin;
-    private List<ModelPerson> friends;
     private SharedPreferences sharedPreferences;
 
-    public TaskGetGCM(Context context, ModelPerson userLogin, List<ModelPerson> friends, SharedPreferences sharedPreferences){
+    public TaskGetGCM(Context context){
         this.context = context;
-        this.userLogin = userLogin;
-        this.friends = friends;
-        this.sharedPreferences = sharedPreferences;
     }
+
+    /*@Override
+    protected void onPreExecute(){
+        super.onPreExecute();
+        Log.e("MainActivity", "Mostrando el Progress Dialog");
+        materialDialog = new MaterialDialog.Builder(context)
+                .title("Get GCM")
+                .content(R.string.dialog_title_loading_friends)
+                .progress(true,0)
+                .widgetColorRes(R.color.orange_light)
+                .cancelable(false)
+                .show();
+    }*/
 
     @Override
     protected String doInBackground(Void... params) {
         String msg = "";
         try {
             GcmHelper gcmRegistrationHelper = new GcmHelper(context);
-            String gcmRegID = gcmRegistrationHelper.GCMRegister(PROJECT_NUMBER);
+            String gcmRegID = gcmRegistrationHelper.GCMRegister(ActivityMain.PROJECT_NUMBER);
             msg = gcmRegID;
             Log.i("GCM", gcmRegID);
             return msg;
@@ -53,11 +62,16 @@ public class TaskGetGCM extends AsyncTask<Void, Void, String> {
             return null;
         }
     }
-@Override
-public void onPostExecute(String idMSG) {
+
+    @Override
+    public void onPostExecute(String idMSG) {
+        sharedPreferences = context.getSharedPreferences(ActivityMain.MyPREFERENCES, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("gcmId", idMSG);
+        editor.commit();
         //AddNewUser addNewUser = new AddNewUser(MainActivity.this);
-        userLogin.setId_phone(idMSG);
-        TaskLoadAllInformation load = new TaskLoadAllInformation(context);
+/*        userLogin.setId_phone(idMSG);
+        TaskLoadAllInformation load = new TaskLoadAllInformation(context, materialDialog);
         List<ModelPerson> enviados = new ArrayList();
         enviados.add(userLogin);
         enviados.addAll(friends);
@@ -69,7 +83,7 @@ public void onPostExecute(String idMSG) {
             boolean error = data.getBoolean("error");
             String mensaje = data.getString("message");
             if(error == false){
-                sharedPreferences = context.getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+                sharedPreferences = context.getSharedPreferences(ActivityMain.MyPREFERENCES, Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 data.put("activity_groups", new JSONArray());
                 editor.putString("session", data.toString());
@@ -86,5 +100,5 @@ public void onPostExecute(String idMSG) {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-    }
-}
+    }*/
+}}

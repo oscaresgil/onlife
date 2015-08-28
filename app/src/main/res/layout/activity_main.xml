@@ -14,25 +14,26 @@
             android:src="@drawable/logo_home_page"/>
         <com.facebook.login.widget.LoginButton
             android:id="@+id/login_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="30dp"
-            android:layout_marginBottom="30dp"
-            android:onClick="loginWithFB"/>
-        <Button
-            android:id="@+id/ActivityMain_ButtonLoginFb"
             android:layout_below="@id/ActivityMain_ImageViewLogo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/activity_main_button_fb_margin"
-            android:layout_centerHorizontal="true"
-            android:onClick="loginWithFB"
-            android:text="@string/login_facebook"
-            android:background="@color/com_facebook_button_background_color"
-            android:textColor="@color/com_facebook_share_button_text_color"
-            android:paddingLeft="@dimen/activity_main_button_fb_padding"
-            android:paddingRight="@dimen/activity_main_button_fb_padding" />
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="10dp"
+            android:layout_centerHorizontal="true"/>
+            <!--android:onClick="loginWithFB"/>-->
+        <!--<Button-->
+            <!--android:id="@+id/ActivityMain_ButtonLoginFb"-->
+            <!--android:layout_below="@id/ActivityMain_ImageViewLogo"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_margin="@dimen/activity_main_button_fb_margin"-->
+            <!--android:layout_centerHorizontal="true"-->
+            <!--android:onClick="loginWithFB"-->
+            <!--android:text="@string/login_facebook"-->
+            <!--android:background="@color/com_facebook_button_background_color"-->
+            <!--android:textColor="@color/com_facebook_share_button_text_color"-->
+            <!--android:paddingLeft="@dimen/activity_main_button_fb_padding"-->
+            <!--android:paddingRight="@dimen/activity_main_button_fb_padding"/>-->
     </RelativeLayout>
 
 </RelativeLayout>

@@ -1,7 +1,8 @@
 package com.example.henzer.socialize.Controller;
 
 import android.app.Activity;
-import android.content.ActivityNotFoundException;
+import android.app.admin.DeviceAdminReceiver;
+import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.ContextWrapper;
@@ -18,6 +19,7 @@ import android.provider.MediaStore;
 import android.provider.Settings;
 import android.util.Log;
 
+import com.example.henzer.socialize.R;
 import com.kenny.snackbar.SnackBar;
 
 import java.io.File;
@@ -26,6 +28,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class StaticMethods {
+
+    public static final int ACTIVATION_REQUEST = 47;
+
+    public static void activateDeviceAdmin(Activity activity){
+
+        DevicePolicyManager devicePolicyManager = (DevicePolicyManager) activity.getSystemService(Context.DEVICE_POLICY_SERVICE);
+        ComponentName myDeviceAdmin = new ComponentName(activity, DeviceAdmin.class);
+
+        if (!devicePolicyManager.isAdminActive(myDeviceAdmin)) {
+            Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
+            intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, myDeviceAdmin);
+            intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION,
+                    activity.getString(R.string.device_admin_description));
+            Log.e("DeviceAdmin", "entro a la contidicion");
+            activity.startActivityForResult(intent, ACTIVATION_REQUEST);
+        }
+    }
 
     public static Bitmap loadImage(Context context, String name){
         ContextWrapper cw = new ContextWrapper(context);
@@ -61,7 +80,6 @@ public class StaticMethods {
         try {
             Log.e("ImageUriString",mImageCaptureUri.toString());
             Log.e("ImageUriPathString",mImageCaptureUri.getPath());
-            Log.e("ImageUriEncodedPathString",mImageCaptureUri.getEncodedPath());
             //Log.e("ImageUriPathExamp",mImageCaptureUri.)
 
             Intent intent = new Intent("com.android.camera.action.CROP");

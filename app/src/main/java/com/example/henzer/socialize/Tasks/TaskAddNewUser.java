@@ -5,8 +5,10 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.example.henzer.socialize.Activities.ActivityMain;
 import com.example.henzer.socialize.Controller.JSONParser;
 import com.example.henzer.socialize.Models.ModelPerson;
+import com.example.henzer.socialize.R;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -14,29 +16,11 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-
-/**
- * Created by Henzer on 01/05/2015.
- */
 public class TaskAddNewUser extends AsyncTask<ModelPerson, ModelPerson, Boolean> {
-    private ProgressDialog pDialog;
-    private Context context;
     private JSONParser jsonParser;
 
-    public TaskAddNewUser(Context c){
-        this.context = c;
+    public TaskAddNewUser(){
         jsonParser = new JSONParser();
-    }
-
-    @Override
-    protected void onPreExecute(){
-        super.onPreExecute();
-        Log.e("MainActivity", "Mostrando el Progress Dialog");
-        pDialog = new ProgressDialog(context);
-        pDialog.setMessage("Save new user...");
-        pDialog.setIndeterminate(false);
-        pDialog.setCancelable(true);
-        pDialog.show();
     }
 
     @Override
@@ -45,22 +29,19 @@ public class TaskAddNewUser extends AsyncTask<ModelPerson, ModelPerson, Boolean>
         //Parametros a enviar
         List<NameValuePair> p = new ArrayList<>();
         p.add(new BasicNameValuePair("tag", "newUser"));
-        p.add(new BasicNameValuePair("id", n.getId()+""));
+        p.add(new BasicNameValuePair("id", n.getId() + ""));
         p.add(new BasicNameValuePair("id_phone", n.getId_phone()));
         p.add(new BasicNameValuePair("photo", n.getPhoto()));
         p.add(new BasicNameValuePair("name", n.getName()));
         p.add(new BasicNameValuePair("state", n.getState()));
-
-        JSONObject json = jsonParser.makeHttpRequest("http://socialize.comyr.com/Prueba/person.php", "POST", p);
-        Log.d("Create Response", json.toString());
-        return true;
+        try {
+            JSONObject json = jsonParser.makeHttpRequest(ActivityMain.SERVER_URL, "POST", p);
+            boolean error = json.getBoolean("error");
+            return error;
+        }catch (Exception ex){
+            ex.printStackTrace();
+            return false;
+        }
     }
-
-    @Override
-    protected void onPostExecute(Boolean param){
-        Log.e("MainActivity", "Quitando el Progress Dialog");
-        pDialog.dismiss();
-    }
-
 
 }

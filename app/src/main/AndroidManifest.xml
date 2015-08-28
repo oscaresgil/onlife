@@ -86,7 +86,7 @@
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" /-->
         <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
-        <meta-data android:name="com.google.android.geo.API_KEY" android:value="@string/gps_app_id"/>
+        <!--<meta-data android:name="com.google.android.geo.API_KEY" android:value="@string/gps_app_id"/>-->
 
         <activity android:name="com.facebook.FacebookActivity"
             android:screenOrientation="portrait"
@@ -131,12 +131,6 @@
             android:launchMode="standard"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:windowSoftInputMode="adjustPan"/>
-        <activity android:name=".Activities.ActivityGoogleMaps"
-            android:screenOrientation="portrait"
-            android:launchMode="standard"
-            android:label=""
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:windowSoftInputMode="adjustResize|stateHidden"/>
     </application>
 
 </manifest>

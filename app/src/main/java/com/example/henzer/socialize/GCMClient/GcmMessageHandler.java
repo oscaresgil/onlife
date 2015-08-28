@@ -45,7 +45,11 @@ public class GcmMessageHandler extends IntentService {
         String messageS = extras.getString("message");
         dataP = messageS.split("\n");
 
-        message = dataP[0];
+        try{
+            message = dataP[0];
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         user = dataP[1];
         gifName = dataP[2];
 

@@ -1,6 +1,7 @@
 package com.example.henzer.socialize.Tasks;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.example.henzer.socialize.Activities.ActivityMain;
@@ -8,6 +9,7 @@ import com.example.henzer.socialize.Activities.ActivitySelectContacts;
 import com.example.henzer.socialize.Models.ModelPerson;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
+import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -24,10 +26,12 @@ public class TaskFacebookFriendRequest implements GraphRequest.Callback {
     private Context context;
     private String TAG;
     private List<ModelPerson> friends;
+    private SharedPreferences sharedPreferences;
 
     public TaskFacebookFriendRequest(Context context, String TAG){
         this.context = context;
         this.TAG = TAG;
+
         friends = new ArrayList<>();
     }
 
@@ -71,10 +75,14 @@ public class TaskFacebookFriendRequest implements GraphRequest.Callback {
 
             if (TAG.equals("ActivityMain")){
                 ActivityMain activityMain = (ActivityMain) context;
-                activityMain.setFriends(friends);
-                activityMain.GetGCM();
+                Gson gson = new Gson();
+                sharedPreferences = context.getSharedPreferences(ActivityMain.MyPREFERENCES, Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString("friends", gson.toJson(friends));
+                editor.commit();
+                activityMain.gotoHome();
             }
-            else if(TAG.equals("ActivitySelectContacts")){
+            if(TAG.equals("ActivitySelectContacts")){
                 ActivitySelectContacts activitySelectContacts = (ActivitySelectContacts)context;
                 activitySelectContacts.setAllFriends(friends);
                 activitySelectContacts.setAdapterAndDecor();
