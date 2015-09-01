@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Log;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.henzer.socialize.Adapters.AdapterContact;
@@ -28,27 +29,35 @@ import java.util.List;
 
 import static com.example.henzer.socialize.Controller.StaticMethods.saveImage;
 
-public class TaskImageDownload extends AsyncTask<Boolean, Void, Void> {
-    private Activity context;
+public class TaskImageDownload extends AsyncTask<Void, Void, Void> {
+    public final static String TAG = "TaskImageDownload";
+    private Context context;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private AdapterContact adapter;
     private MaterialDialog materialDialog;
     private List<ModelPerson> friends;
-    private boolean typeUrl,isMaterialDialog;
+    private boolean isMaterialDialog;
 
     public TaskImageDownload(Context context, SwipeRefreshLayout mSwipeRefreshLayout, boolean isMaterialDialog, AdapterContact adapter, List<ModelPerson> friends){
-        this.context = (Activity) context;
+        Log.e(TAG,"OnConstructor");
+        this.context = context;
         this.mSwipeRefreshLayout = mSwipeRefreshLayout;
         this.adapter = adapter;
         this.isMaterialDialog = isMaterialDialog;
         this.friends = friends;
     }
 
+    public TaskImageDownload(Context context, List<ModelPerson> friends, boolean isMaterialDialog) {
+        this.context = context;
+        this.friends = friends;
+        this.isMaterialDialog = isMaterialDialog;
+    }
+
     @Override protected void onPreExecute() {
         if (isMaterialDialog){
             materialDialog = new MaterialDialog.Builder(context)
-                    .title(R.string.dialog_message_loading_friends)
-                    .content(R.string.dialog_title_loading_friends)
+                    .title(R.string.dialog_please_wait)
+                    .content(R.string.getting_images)
                     .progress(true,0)
                     .widgetColorRes(R.color.orange_light)
                     .cancelable(false)
@@ -59,14 +68,14 @@ public class TaskImageDownload extends AsyncTask<Boolean, Void, Void> {
         }
     }
 
-    protected Void doInBackground(Boolean ... urls) {
+    protected Void doInBackground(Void ... urls) {
         try {
-            typeUrl = !urls[0];
+            Log.e(TAG,"StartDoInBackground");
             for (ModelPerson user: friends){
                 String userID = user.getId();
                 user.setName(user.getName());
                 String urlStr = "https://graph.facebook.com/" + userID + "/picture?width=700&height=700";
-
+                Log.e(TAG,"URL: "+urlStr);
                 HttpClient client = new DefaultHttpClient();
                 HttpGet request = new HttpGet(urlStr);
                 HttpResponse response;
@@ -100,8 +109,7 @@ public class TaskImageDownload extends AsyncTask<Boolean, Void, Void> {
             friends = new ArrayList<>();
             friends.addAll(temp);
             adapter.notifyDataSetChanged();
-            FragmentContacts.setTypeUrl(typeUrl);
-            SnackBar.show(context, R.string.toast_contacts_refreshed);
+            SnackBar.show((Activity)context, R.string.toast_contacts_refreshed);
         }
     }
 }

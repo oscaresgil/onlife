@@ -6,19 +6,17 @@ import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.view.Display;
 import android.view.animation.Animation;
-import android.widget.ImageView;
+import net.soulwolf.widget.ratiolayout.widget.RatioImageView;
 
 import com.example.henzer.socialize.Models.ModelPerson;
 import com.example.henzer.socialize.R;
-import com.squareup.picasso.Picasso;
 
 import static com.example.henzer.socialize.Controller.StaticMethods.loadImage;
-import static com.example.henzer.socialize.Controller.StaticMethods.loadImagePath;
 
 public class ListenerFlipCheckbox implements Animation.AnimationListener{
     private Context context;
     private ModelPerson f;
-    private ImageView imageButton;
+    private RatioImageView imageButton;
     private Animation animation1,animation2;
     private boolean home;
 
@@ -34,7 +32,7 @@ public class ListenerFlipCheckbox implements Animation.AnimationListener{
         this.f = f;
     }
 
-    public void setView(ImageView imageButton){
+    public void setView(RatioImageView imageButton){
         this.imageButton = imageButton;
     }
 
@@ -54,17 +52,17 @@ public class ListenerFlipCheckbox implements Animation.AnimationListener{
         Display display = ((Activity)context).getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
-        int width = size.x/4;
+        int sizeInt = size.x/4;
 
-        imageButton.getLayoutParams().height = width;
-        imageButton.getLayoutParams().width = width;
+        imageButton.getLayoutParams().height = sizeInt;
+        imageButton.getLayoutParams().width = sizeInt;
 
-        if (home) {
+        /*if (home) {
             if (animation == animation1) {
                 if (!f.isHomeSelected()) {
-                    Picasso.with(context).load(loadImagePath(context,f.getId())).into(imageButton);
+                    imageButton.setImageBitmap(loadImage(context,f.getId()));
                 } else {
-                    Picasso.with(context).load(R.drawable.ic_action_done_large).into(imageButton);
+                    imageButton.setImageBitmap(BitmapFactory.decodeResource(context.getResources(),R.drawable.ic_action_done_large));
                 }
                 imageButton.clearAnimation();
                 imageButton.setAnimation(animation2);
@@ -73,23 +71,23 @@ public class ListenerFlipCheckbox implements Animation.AnimationListener{
                 f.setHomeSelected(!f.isHomeSelected());
             }
         }
-        else{
-            if (animation == animation1){
-                if (!f.isSelected()){
-                    Picasso.with(context).load(loadImagePath(context,f.getId())).into(imageButton);
-                }
-                else{
-                    Picasso.with(context).load(R.drawable.ic_action_done_large).into(imageButton);
-                }
-                imageButton.clearAnimation();
-                imageButton.setAnimation(animation2);
-                imageButton.startAnimation(animation2);
+        else{*/
+        if (animation == animation1){
+            if (!f.isSelected()){
+                imageButton.setImageBitmap(loadImage(context,f.getId()));
             }
             else{
-                f.setDeleted(!f.isSelected());
+                imageButton.setImageBitmap(BitmapFactory.decodeResource(context.getResources(),R.drawable.ic_action_done_large));
             }
+            imageButton.clearAnimation();
+            imageButton.setAnimation(animation2);
+            imageButton.startAnimation(animation2);
+        }
+        else{
+            f.setDeleted(!f.isSelected());
         }
     }
+    //}
 
     @Override public void onAnimationRepeat(Animation animation) {
 

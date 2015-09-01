@@ -5,55 +5,48 @@
     android:layout_height="match_parent">
 
     <TextView
-        style="@style/BlockMessagesStyle"
         android:id="@+id/ActivityInBlock_TextViewUser"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:layout_margin="2dp"
+        android:textSize="@dimen/activity_in_block_text_view_user_size"
+        android:layout_margin="@dimen/activity_in_block_text_view_user_margin"
         android:textColor="@color/black"/>
+
     <TextView
         style="@style/FriendStyle"
         android:id="@+id/ActivityInBlock_TextViewMessage"
         android:layout_below="@id/ActivityInBlock_TextViewUser"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:textSize="@dimen/activity_in_block_text_view_message_size"
         android:gravity="center"
-        android:layout_margin="2dp"
+        android:layout_margin="@dimen/activity_in_block_text_view_message_margin"
         android:textColor="@color/black"/>
 
     <pl.droidsonroids.gif.GifImageView
         android:id="@+id/ActivityInBlock_GifImageView"
-        android:layout_height="60dp"
-        android:layout_width="60dp"
+        android:layout_height="@dimen/activity_in_block_gif_view_height_width"
+        android:layout_width="@dimen/activity_in_block_gif_view_height_width"
         android:layout_centerHorizontal="true"
         android:layout_below="@id/ActivityInBlock_TextViewMessage"/>
 
-    <Button
-        android:layout_centerHorizontal="true"
-        android:layout_below="@id/ActivityInBlock_GifImageView"
-        android:id="@+id/ActivityInBlock_ButtonShowLocation"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/show_location"
-        android:onClick="showLocation"/>
-
     <com.skyfishjy.library.RippleBackground
-        android:layout_below="@id/ActivityInBlock_ButtonShowLocation"
-        android:layout_margin="5dp"
+        android:layout_below="@id/ActivityInBlock_GifImageView"
+        android:layout_margin="@dimen/activity_in_block_ripple_background_margin"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/ActivityInBlock_BlockAnimation"
         app:rb_color="@color/orange_light"
-        app:rb_radius="32dp"
-        app:rb_rippleAmount="5"
-        app:rb_duration="3000"
-        app:rb_scale="6">
+        app:rb_radius="@dimen/activity_in_block_ripple_background_radius"
+        app:rb_rippleAmount="@integer/activity_in_block_ripple_amount"
+        app:rb_duration="@integer/activity_in_block_ripple_duration"
+        app:rb_scale="@integer/activity_in_block_ripple_scale">
         <ImageView
-            android:layout_width="64dp"
-            android:layout_height="64dp"
-            android:layout_centerInParent="true"
             android:id="@+id/ActivityInBlock_ImageBlock"
+            android:layout_width="@dimen/activity_in_block_ripple_background_image_height_width"
+            android:layout_height="@dimen/activity_in_block_ripple_background_image_height_width"
+            android:layout_centerInParent="true"
             android:src="@drawable/ic_lock_black_24dp"/>
     </com.skyfishjy.library.RippleBackground>
 

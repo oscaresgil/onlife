@@ -1,22 +1,21 @@
 package com.example.henzer.socialize.BlockActivity;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.henzer.socialize.Activities.ActivityLogoScreen;
 import com.example.henzer.socialize.Adapters.AdapterEmoticon;
 import com.example.henzer.socialize.Listeners.MessageFocusChangedListener;
 import com.example.henzer.socialize.Listeners.TextWatcherListener;
@@ -28,7 +27,8 @@ import com.r0adkll.slidr.Slidr;
 import com.r0adkll.slidr.model.SlidrConfig;
 import com.r0adkll.slidr.model.SlidrPosition;
 import com.rengwuxian.materialedittext.MaterialEditText;
-import com.squareup.picasso.Picasso;
+
+import net.soulwolf.widget.ratiolayout.widget.RatioImageView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,9 +36,12 @@ import java.util.List;
 import pl.droidsonroids.gif.GifDrawable;
 import pl.droidsonroids.gif.GifImageView;
 
+import static com.example.henzer.socialize.Controller.StaticMethods.animationEnd;
+import static com.example.henzer.socialize.Controller.StaticMethods.hideSoftKeyboard;
 import static com.example.henzer.socialize.Controller.StaticMethods.isNetworkAvailable;
-import static com.example.henzer.socialize.Controller.StaticMethods.loadImagePath;
+import static com.example.henzer.socialize.Controller.StaticMethods.loadImage;
 import static com.example.henzer.socialize.Controller.StaticMethods.setGifNames;
+import static com.example.henzer.socialize.Controller.StaticMethods.showSoftKeyboard;
 
 public class ActivityFriendBlock extends AppCompatActivity {
     public static final String TAG = "ActivityFriendBlock";
@@ -46,18 +49,23 @@ public class ActivityFriendBlock extends AppCompatActivity {
 
     private MaterialEditText messageTextView;
     private TextView maxCharsView;
-    private int actualChar = 0;
     private GridView gridView;
 
     private TextWatcherListener textWatcherListener;
-
     private String gifName="";
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        SlidrConfig config = new SlidrConfig.Builder().primaryColor(getResources().getColor(R.color.orange)).secondaryColor(getResources().getColor(R.color.orange_light)).position(SlidrPosition.LEFT).sensitivity(0.4f).build();
+        Log.i(TAG, "onCreate()");
+
+        SlidrConfig config = new SlidrConfig.Builder()
+                .primaryColor(getResources().getColor(R.color.orange))
+                .secondaryColor(getResources().getColor(R.color.orange_light))
+                .position(SlidrPosition.LEFT)
+                .sensitivity(0.4f)
+                .build();
         Slidr.attach(this, config);
 
         setContentView(R.layout.activity_friend_block);
@@ -77,7 +85,8 @@ public class ActivityFriendBlock extends AppCompatActivity {
         collapser.setCollapsedTitleTextColor(getResources().getColor(R.color.white));
         collapser.setExpandedTitleColor(getResources().getColor(R.color.white));
 
-        Picasso.with(this).load(loadImagePath(this, friend.getId())).into((ImageView) findViewById(R.id.ActivityFriendBlock_ImageViewContact));
+        RatioImageView avatar = (RatioImageView) findViewById(R.id.ActivityFriendBlock_ImageViewContact);
+        avatar.setImageBitmap(loadImage(this,friend.getId()));
 
         maxCharsView = (TextView) findViewById(R.id.ActivityFriendBlock_TextViewMaxCharacters);
         messageTextView = (MaterialEditText) findViewById(R.id.ActivityFriendBlock_EditTextMessage);
@@ -135,30 +144,28 @@ public class ActivityFriendBlock extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        InputMethodManager imm = (InputMethodManager)getSystemService(
-                Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(messageTextView.getWindowToken(), 0);
-        overridePendingTransition(R.animator.push_left_inverted, R.animator.push_right_inverted);
+        Log.i(TAG, "onBackPressed()");
+        hideSoftKeyboard(this,messageTextView);
+        animationEnd(this);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Log.i(TAG, "onOptionsItemSelected(): Back button");
+        hideSoftKeyboard(this,messageTextView);
         finish();
-        InputMethodManager imm = (InputMethodManager) getSystemService(
-                Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(messageTextView.getWindowToken(), 0);
-        overridePendingTransition(R.animator.push_left_inverted, R.animator.push_right_inverted);
-        return true;
+        animationEnd(this);
+        return super.onOptionsItemSelected(item);
     }
 
     public void block(View view) {
+        Intent i = new Intent(this,ActivityLogoScreen.class);
+        startActivity(i);
         if (isNetworkAvailable(this)) {
-            InputMethodManager imm = (InputMethodManager) getSystemService(
-                    Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(messageTextView.getWindowToken(), 0);
-
+            hideSoftKeyboard(this,messageTextView);
             if (textWatcherListener.getActualChar() <= 30) {
                 try {
+                    Log.i(TAG, "Block: "+friend.getName()+". Actual User: "+actualUser.getName()+" Message: "+messageTextView.getText().toString()+". Gif: "+gifName);
                     new TaskSendNotification(ActivityFriendBlock.this, actualUser.getName(), messageTextView.getText().toString(),gifName).execute(friend);
                 } catch (Exception ex) {
                     ex.printStackTrace();
@@ -169,14 +176,11 @@ public class ActivityFriendBlock extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         messageTextView.requestFocus();
-                        InputMethodManager imm = (InputMethodManager) getSystemService(
-                                Context.INPUT_METHOD_SERVICE);
-                        imm.showSoftInput(messageTextView, 0);
+                        showSoftKeyboard(ActivityFriendBlock.this,messageTextView);
                     }
                 });
             }
         } else {
-
             SnackBar.show(ActivityFriendBlock.this, R.string.no_connection, R.string.button_change_connection, new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -185,41 +189,4 @@ public class ActivityFriendBlock extends AppCompatActivity {
             });
         }
     }
-
-    /*class TextWatcherListener implements TextWatcher {
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-        }
-
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-            actualChar = s.length();
-            if (actualChar > 30) {
-                maxCharsView.setTextColor(getResources().getColor(R.color.red));
-                maxCharsView.setText(actualChar + "/" + maximumChars);
-            } else {
-                maxCharsView.setTextColor(getResources().getColor(R.color.black));
-                maxCharsView.setText(actualChar + "/" + maximumChars);
-            }
-        }
-
-        @Override
-        public void afterTextChanged(Editable s) {
-        }
-    }*/
-
-    /*class MessageFocusChanged implements View.OnFocusChangeListener{
-        @Override
-        public void onFocusChange(View v, boolean hasFocus) {
-            if (!hasFocus) {
-                InputMethodManager imm = (InputMethodManager)getSystemService(
-                        Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(messageTextView.getWindowToken(), 0);
-                messageTextView.setFocusable(false);
-                messageTextView.clearFocus();
-            }
-        }
-    }*/
-
-
 }

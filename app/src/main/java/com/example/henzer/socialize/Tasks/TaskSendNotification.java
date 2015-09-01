@@ -7,6 +7,7 @@ import android.util.Log;
 import com.example.henzer.socialize.Controller.JSONParser;
 import com.example.henzer.socialize.Models.ModelPerson;
 import com.example.henzer.socialize.R;
+import com.google.gson.Gson;
 
 import net.steamcrafted.loadtoast.LoadToast;
 
@@ -19,12 +20,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TaskSendNotification extends AsyncTask<ModelPerson, String, Boolean>{
+    public final static String TAG = "TaskSendNotification";
     private Context context;
     private LoadToast toast;
     private JSONParser jsonParser;
     private String message="",actualUser, gifName="";
 
-    public TaskSendNotification(Context c, String message, String actualUser, String gifName){
+    public TaskSendNotification(Context c, String actualUser, String message, String gifName){
         this.context = c;
         this.message = message;
         this.actualUser = actualUser;
@@ -49,14 +51,16 @@ public class TaskSendNotification extends AsyncTask<ModelPerson, String, Boolean
         List<NameValuePair> p = new ArrayList<>();
         Log.e("FriendBlocked",params.toString());
         for(int i = 0; i<params.length; i++){
+            Log.e("Id[]",params[i].toString());
             p.add(new BasicNameValuePair("id[]",params[i].getId_phone()));
             Log.i("IDPHONE",params[i].getId_phone());
         }
 
-        p.add(new BasicNameValuePair("message", actualUser+"\n"+message+"\n"+gifName));
-        p.add(new BasicNameValuePair("data", ""));
+        p.add(new BasicNameValuePair("userName", actualUser));
+        p.add(new BasicNameValuePair("message", message));
+        p.add(new BasicNameValuePair("gifName", gifName));
 
-        JSONObject json = jsonParser.makeHttpRequest("http://104.236.74.55/onlife/person.php", "POST", p);
+        JSONObject json = jsonParser.makeHttpRequest("http://104.236.74.55/onlife/gcm.php", "POST", p);
         Log.e("AddNewGroup", json.toString());
 
         try {

@@ -3,14 +3,13 @@ package com.example.henzer.socialize.Listeners;
 import android.content.Context;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.widget.TextView;
 
 import com.example.henzer.socialize.R;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
 public class TextWatcherListener implements TextWatcher {
-    private int maximumChars = 30, actualChar = 0;
+    private int actualChar = 0;
     private String text="";
     private TextView maxCharsView;
     private MaterialEditText messageTextView;
@@ -41,6 +40,7 @@ public class TextWatcherListener implements TextWatcher {
             }
             text = s.toString();
         }
+        int maximumChars = 30;
         maxCharsView.setText(actualChar + "/" + maximumChars);
     }
 

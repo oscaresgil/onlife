@@ -18,19 +18,19 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
-            android:id="@+id/ActivityFriendBlock_RelativeLayoutContact"
-            android:orientation="vertical"
+            android:id="@+id/ActivityFriendBlock_LinearLayoutContact"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="10dp">
+            android:orientation="vertical"
+            android:padding="@dimen/activity_friend_block_relative_layout_contact_padding">
             <GridView
                 android:id="@+id/ActivityFriendBlock_GridLayout"
-                android:background="@color/white"
                 android:layout_width="fill_parent"
-                android:layout_height="160dp"
-                android:layout_marginTop="15dp"
-                android:layout_marginBottom="15dp"
-                android:numColumns="3"
+                android:layout_height="@dimen/activity_friend_block_grid_layout_height"
+                android:background="@color/white"
+                android:layout_marginTop="@dimen/activity_friend_block_grid_layout_margin_topbottom"
+                android:layout_marginBottom="@dimen/activity_friend_block_grid_layout_margin_topbottom"
+                android:numColumns="@integer/activity_friend_block_grid_layout_rows"
                 android:visibility="gone"
                 android:gravity="center"
                 android:layout_gravity="bottom">
@@ -42,9 +42,9 @@
                 android:layout_marginTop="@dimen/activity_friend_block_card_view_margin"
                 android:layout_marginBottom="@dimen/activity_friend_block_card_view_margin">
                 <LinearLayout
-                    android:orientation="horizontal"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
                     <android.support.design.widget.FloatingActionButton
                         android:id="@+id/ActivityFriendBlock_FABEmoticon"
                         android:layout_height="wrap_content"
@@ -52,7 +52,7 @@
                         android:layout_gravity="center"
                         app:backgroundTint="@color/white"
                         android:src="@drawable/ic_insert_emoticon_black_24dp"
-                        app:borderWidth="0dp"/>
+                        app:borderWidth="@dimen/activity_friend_block_fab_emoticon_border"/>
                     <RelativeLayout
                         android:id="@+id/ActivityFriendBlock_RelativeLayoutMessage"
                         android:layout_width="match_parent"
@@ -62,19 +62,19 @@
                         <TextView
                             style="@style/FriendStyle"
                             android:id="@+id/ActivityFriendBlock_TextViewMaxCharacters"
-                            android:gravity="center"
-                            android:layout_margin="@dimen/activity_friend_block_relative_layout_textview_maxlength_margin"
-                            android:layout_width="@dimen/activity_friend_block_textview_maxlength_message"
                             android:layout_height="wrap_content"
+                            android:layout_width="@dimen/activity_friend_block_textview_maxlength_message"
+                            android:gravity="center"
+                            android:layout_margin="@dimen/activity_friend_block_textview_maxlength_margin"
                             android:layout_alignParentLeft="true"
                             android:layout_alignParentStart="true"
                             android:text="@string/max_characters_text"/>
                         <LinearLayout
                             android:id="@+id/ActivityFriendBlock_LinearLayoutDivider"
-                            android:orientation="vertical"
-                            android:layout_below="@id/ActivityFriendBlock_TextViewMaxCharacters"
                             android:layout_width="fill_parent"
                             android:layout_height="@dimen/activity_friend_block_linearlayout_divider_height"
+                            android:orientation="vertical"
+                            android:layout_below="@id/ActivityFriendBlock_TextViewMaxCharacters"
                             android:layout_marginLeft="@dimen/activity_friend_block_linearlayout_divider_margin"
                             android:layout_marginRight="@dimen/activity_friend_block_linearlayout_divider_margin"
                             android:background="@color/black"
@@ -82,9 +82,9 @@
                         <com.rengwuxian.materialedittext.MaterialEditText
                             style="@style/BlockingMessage"
                             android:id="@+id/ActivityFriendBlock_EditTextMessage"
-                            android:layout_below="@id/ActivityFriendBlock_TextViewMaxCharacters"
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
+                            android:layout_below="@id/ActivityFriendBlock_TextViewMaxCharacters"
                             android:imeOptions="actionDone"
                             android:singleLine="true"
                             android:hint="@string/send_a_message_bar"
@@ -98,15 +98,15 @@
             </android.support.v7.widget.CardView>
             <pl.droidsonroids.gif.GifImageView
                 android:id="@+id/ActivityFriendBlock_GifImage"
-                android:layout_gravity="center"
-                android:layout_height="70dp"
-                android:layout_width="70dp"/>
+                android:layout_height="@dimen/activity_friend_block_gif_view_height_width"
+                android:layout_width="@dimen/activity_friend_block_gif_view_height_width"
+                android:layout_gravity="center"/>
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/ActivityFriendBlock_AppBar"
-        android:layout_height="256dp"
+        android:layout_height="@dimen/activity_friend_block_app_bar_layout_height"
         android:layout_width="match_parent"
         android:fitsSystemWindows="true">
 
@@ -121,23 +121,24 @@
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
-                <ImageView
+				
+				<net.soulwolf.widget.ratiolayout.widget.RatioImageView
                     android:id="@+id/ActivityFriendBlock_ImageViewContact"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:fitsSystemWindows="true"
                     android:scaleType="centerCrop"
+                    app:datumRatio="datumWidth"
+                    app:widthRatio="1.0"
+                    app:heightRatio="1.0"
                     app:layout_collapseMode="parallax"/>
                 <TextView
                     style="@style/FriendStyle"
                     android:id="@+id/ActivityFriendBlock_TextViewNameBar"
-                    android:layout_width="fill_parent"
-                    android:layout_height="256dp"
-                    android:padding="4dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:layout_gravity="bottom"
                     android:layout_alignParentBottom="true"
-                    android:textColor="@color/white"
-                    android:textSize="12sp"
                     android:background="@color/black_transparent"/>
             </FrameLayout>
 
@@ -158,7 +159,7 @@
         android:layout_height="wrap_content"
         android:onClick="block"
         android:src="@drawable/ic_lock_black_24dp"
-        app:borderWidth="0dp"
+        app:borderWidth="@dimen/activity_friend_block_fab_block_border"
         app:backgroundTint="@color/orange_light"
         app:layout_anchor="@id/ActivityFriendBlock_AppBar"
         app:layout_anchorGravity="bottom|right|end"/>

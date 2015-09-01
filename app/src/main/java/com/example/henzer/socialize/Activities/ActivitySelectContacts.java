@@ -87,7 +87,7 @@ public class ActivitySelectContacts extends Activity {
         mList.addItemDecoration(decor, 1);
     }
 
-    public void setAllFriends(List<ModelPerson> allFriends) {
+    /*public void setAllFriends(List<ModelPerson> allFriends) {
         this.allFriends = allFriends;
         for (ModelPerson f: this.allFriends){
             if (isSelected(f.getId())){
@@ -107,5 +107,5 @@ public class ActivitySelectContacts extends Activity {
             }
         }
         return false;
-    }
+    }*/
 }

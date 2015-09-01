@@ -7,7 +7,7 @@
         android:id="@+id/FragmentContacts_GridView"
         android:isScrollContainer="false"
         android:divider="@color/transparent"
-        android:numColumns="2"
+        android:numColumns="@integer/fragment_contacts_rows"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"/>
 </android.support.v4.widget.SwipeRefreshLayout>

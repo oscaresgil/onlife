@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:background="@color/orange_light">
+    <com.eftimoff.androipathview.PathView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/ActivityLogoScreen_PathView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        app:svg="@raw/ic_launcher"
+        app:pathColor="@color/black"
+        app:pathWidth="3"/>
+</LinearLayout>

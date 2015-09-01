@@ -30,6 +30,10 @@ public class ModelSessionData implements Serializable{
         this.friends = friends;
     }
 
+    public void setModelGroups(List<ModelGroup> modelGroups) {
+        this.modelGroups = modelGroups;
+    }
+
     public List<ModelGroup> getModelGroups() {
         return modelGroups;
     }

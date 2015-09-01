@@ -1,15 +1,12 @@
 package com.example.henzer.socialize.BlockActivity;
 
-import android.app.Activity;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ResolveInfo;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -20,7 +17,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -31,13 +27,13 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.simplelist.MaterialSimpleListAdapter;
 import com.afollestad.materialdialogs.simplelist.MaterialSimpleListItem;
 import com.example.henzer.socialize.Adapters.AdapterEmoticon;
-import com.example.henzer.socialize.Fragments.FragmentGroups;
 import com.example.henzer.socialize.Listeners.MessageFocusChangedListener;
 import com.example.henzer.socialize.Listeners.TextWatcherListener;
-import com.example.henzer.socialize.Models.ModelPerson;
-import com.example.henzer.socialize.Tasks.TaskSendNotification;
 import com.example.henzer.socialize.Models.ModelGroup;
+import com.example.henzer.socialize.Models.ModelPerson;
+import com.example.henzer.socialize.Models.ModelSessionData;
 import com.example.henzer.socialize.R;
+import com.example.henzer.socialize.Tasks.TaskSendNotification;
 import com.kenny.snackbar.SnackBar;
 import com.mingle.entity.MenuEntity;
 import com.mingle.sweetpick.DimEffect;
@@ -47,22 +43,24 @@ import com.r0adkll.slidr.Slidr;
 import com.r0adkll.slidr.model.SlidrConfig;
 import com.r0adkll.slidr.model.SlidrPosition;
 import com.rengwuxian.materialedittext.MaterialEditText;
-import com.squareup.picasso.Picasso;
 
-import java.io.File;
+import net.soulwolf.widget.ratiolayout.widget.RatioImageView;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import pl.droidsonroids.gif.GifDrawable;
 import pl.droidsonroids.gif.GifImageView;
 
-import static com.example.henzer.socialize.Controller.StaticMethods.getRealPathFromURI;
+import static com.example.henzer.socialize.Controller.StaticMethods.animationEnd;
+import static com.example.henzer.socialize.Controller.StaticMethods.hideSoftKeyboard;
 import static com.example.henzer.socialize.Controller.StaticMethods.isNetworkAvailable;
 import static com.example.henzer.socialize.Controller.StaticMethods.loadImage;
-import static com.example.henzer.socialize.Controller.StaticMethods.loadImagePath;
 import static com.example.henzer.socialize.Controller.StaticMethods.performCrop;
+import static com.example.henzer.socialize.Controller.StaticMethods.removeGroup;
 import static com.example.henzer.socialize.Controller.StaticMethods.saveImage;
 import static com.example.henzer.socialize.Controller.StaticMethods.setGifNames;
+import static com.example.henzer.socialize.Controller.StaticMethods.showSoftKeyboard;
 
 public class ActivityGroupBlock extends AppCompatActivity {
     public static final String TAG = "ActivityGroupBlock";
@@ -74,6 +72,7 @@ public class ActivityGroupBlock extends AppCompatActivity {
     private SweetSheet sweetSheet;
     private Toolbar toolbar;
 
+    private ModelSessionData modelSessionData;
     private ModelPerson actualUser;
     private ModelGroup modelGroup;
     private List<ModelPerson> friendsInGroup;
@@ -85,14 +84,14 @@ public class ActivityGroupBlock extends AppCompatActivity {
     private GridView gridView;
     private String gifName="";
 
-    private ImageView avatarGroup;
-    private Uri mImageCaptureUri;
+    private RatioImageView avatarGroup;
     private String path;
     private Bitmap bitmapGroup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.i(TAG,"onCreate()");
 
         SlidrConfig config = new SlidrConfig.Builder().primaryColor(getResources().getColor(R.color.orange)).secondaryColor(getResources().getColor(R.color.orange_light)).position(SlidrPosition.LEFT).sensitivity(0.4f).build();
         Slidr.attach(this, config);
@@ -107,8 +106,9 @@ public class ActivityGroupBlock extends AppCompatActivity {
         }
 
         Intent i = getIntent();
-        modelGroup = (ModelGroup) i.getSerializableExtra("data");
-        actualUser = (ModelPerson) i.getSerializableExtra("user");
+        modelSessionData = (ModelSessionData) i.getSerializableExtra("sessiondata");
+        modelGroup = (ModelGroup) i.getSerializableExtra("modelgroup");
+        actualUser = modelSessionData.getUser();
         friendsInGroup = modelGroup.getFriendsInGroup();
 
         CollapsingToolbarLayout collapser = (CollapsingToolbarLayout) findViewById(R.id.ActivityGroupBlock_CollapsingToolBarLayout);
@@ -116,11 +116,14 @@ public class ActivityGroupBlock extends AppCompatActivity {
         collapser.setCollapsedTitleTextColor(getResources().getColor(R.color.white));
         collapser.setExpandedTitleColor(getResources().getColor(R.color.white));
 
-        avatarGroup = (ImageView) findViewById(R.id.ActivityGroupBlock_ImageViewContact);
+        avatarGroup = (RatioImageView) findViewById(R.id.ActivityGroupBlock_ImageViewContact);
         avatarGroup.setImageBitmap(loadImage(this,modelGroup.getName()));
-
-        selectTypeImage();
-        //Picasso.with(this).load(loadImagePath(this, modelGroup.getName())).into(avatarGroup);
+        avatarGroup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectTypeImage();
+            }
+        });
 
         maxCharsView = (TextView) findViewById(R.id.ActivityGroupBlock_TextViewMaxCharacters);
         messageTextView = (MaterialEditText) findViewById(R.id.ActivityGroupBlock_EditTextMessage);
@@ -181,19 +184,20 @@ public class ActivityGroupBlock extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         if (sweetSheet.isShow()){
+            Log.i(TAG,"onBackPressed() with sweetSheet");
             sweetSheet.dismiss();
         }
         else {
-            InputMethodManager imm = (InputMethodManager) getSystemService(
-                    Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(messageTextView.getWindowToken(), 0);
-            overridePendingTransition(R.animator.push_left_inverted, R.animator.push_right_inverted);
+            Log.i(TAG,"onCreate() destroying");
             super.onBackPressed();
+            hideSoftKeyboard(this,messageTextView);
+            animationEnd(this);
         }
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        Log.i(TAG,"onCreateOptionsMenu()");
         menu.clear();
         getMenuInflater().inflate(R.menu.menu_in_group, menu);
         return true;
@@ -201,6 +205,7 @@ public class ActivityGroupBlock extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Log.i(TAG,"onOptionsItemSelected(). Item: "+item.getItemId());
         int i = item.getItemId();
         if (i == R.id.information_button){
             if (!sweetSheet.isShow()) {
@@ -224,7 +229,7 @@ public class ActivityGroupBlock extends AppCompatActivity {
                 sweetSheet.setOnMenuItemClickListener(new SweetSheet.OnMenuItemClickListener() {
                     @Override
                     public boolean onItemClick(int position, MenuEntity menuEntity1) {
-                        ModelPerson friend = friendsInGroup.get(position-1);
+                        ModelPerson friend = friendsInGroup.get(position);
                         Intent intent = new Intent(ActivityGroupBlock.this, ActivityFriendBlock.class);
                         intent.putExtra("data", friend);
                         intent.putExtra("actualuser", actualUser);
@@ -241,7 +246,7 @@ public class ActivityGroupBlock extends AppCompatActivity {
         }
         else if(i == R.id.delete_group){
             new MaterialDialog.Builder(this)
-                .title(R.string.delete)
+                .title(getResources().getString(R.string.delete) + " " + modelGroup.getName())
                 .content(R.string.really_delete)
                 .positiveText(R.string.yes)
                 .positiveColorRes(R.color.orange_light)
@@ -250,73 +255,42 @@ public class ActivityGroupBlock extends AppCompatActivity {
                 .callback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onPositive(MaterialDialog dialog) {
-                        FragmentGroups.removeGroup(modelGroup);
+                        SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+                        modelSessionData.getModelGroups();
+                        removeGroup(modelGroup,sharedPreferences,modelSessionData);
+
                         dialog.dismiss();
                         dialog.cancel();
-
-                        new MaterialDialog.Builder(ActivityGroupBlock.this)
-                            .title("Group " + modelGroup.getName() + " deleted!")
-                            .positiveText(R.string.yes)
-                            .positiveColorRes(R.color.orange_light)
-                            .callback(new MaterialDialog.ButtonCallback() {
-                                @Override
-                                public void onPositive(MaterialDialog dialog) {
-                                    InputMethodManager imm = (InputMethodManager) getSystemService(
-                                            Context.INPUT_METHOD_SERVICE);
-                                    imm.hideSoftInputFromWindow(messageTextView.getWindowToken(), 0);
-                                    finish();
-                                    overridePendingTransition(R.animator.push_left_inverted, R.animator.push_right_inverted);
-                                }
-                            })
-                            .show();
+                        finish();
+                        animationEnd(ActivityGroupBlock.this);
                     }
                 }).show();
         }
         else {
-            InputMethodManager imm = (InputMethodManager)getSystemService(
-                    Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(messageTextView.getWindowToken(), 0);
+            hideSoftKeyboard(this,messageTextView);
             finish();
-            overridePendingTransition(R.animator.push_left_inverted, R.animator.push_right_inverted);
+            animationEnd(this);
         }
         return true;
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.e("ResultCode",""+resultCode);
-        Log.e("RequestCode", "" + requestCode);
-        if (requestCode == PIC_CROP && resultCode == RESULT_OK) {
-            Bundle extras = data.getExtras();
-            bitmapGroup = extras.getParcelable("data");
-            saveImage(this,modelGroup.getName(),bitmapGroup);
-            avatarGroup.setImageBitmap(null);
-            avatarGroup.setImageBitmap(bitmapGroup);
-        }
-        else if (requestCode == PICK_FROM_FILE && resultCode == RESULT_OK) {
-            mImageCaptureUri = data.getData();
-            // From Gallery
-            path = getRealPathFromURI(this,mImageCaptureUri);
-            if (path == null) {
-                // From File Manager
-                path = mImageCaptureUri.getPath();
-            }
-            if (path != null) {
-                try {
-                    performCrop(this,mImageCaptureUri,PIC_CROP);
-                    //performCrop();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        } else if (requestCode == PICK_FROM_CAMERA && resultCode==RESULT_OK) {
-            path = mImageCaptureUri.getPath();
+        Log.i(TAG,"onActivityResult(). Request: "+requestCode+". Result: "+resultCode);
+        if ((requestCode == PICK_FROM_FILE || requestCode == PICK_FROM_CAMERA) && resultCode == RESULT_OK) {
+            Uri mImageCaptureUri = data.getData();
+			path = mImageCaptureUri.getPath();
             try {
                 performCrop(this,mImageCaptureUri,PIC_CROP);
-                //performCrop();
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        } else if (requestCode == PIC_CROP && resultCode == RESULT_OK) {
+            Bundle extras = data.getExtras();
+            bitmapGroup = extras.getParcelable("data");
+            avatarGroup.setImageBitmap(bitmapGroup);
+            saveImage(this,modelGroup.getName(),bitmapGroup);
         }
     }
 
@@ -324,6 +298,7 @@ public class ActivityGroupBlock extends AppCompatActivity {
         if (isNetworkAvailable(this)) {
             if (textWatcherListener.getActualChar() <= 30) {
                 try {
+                    Log.i(TAG, "Actual User: "+actualUser.getName()+" Message: "+messageTextView.getText().toString()+". Gif: "+gifName);
                     new TaskSendNotification(ActivityGroupBlock.this, actualUser.getName(), messageTextView.getText().toString(),"").execute(friendsInGroup.toArray(new ModelPerson[friendsInGroup.size()]));
 
                 } catch (Exception ex) {
@@ -334,9 +309,7 @@ public class ActivityGroupBlock extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         messageTextView.requestFocus();
-                        InputMethodManager imm = (InputMethodManager) getSystemService(
-                                Context.INPUT_METHOD_SERVICE);
-                        imm.showSoftInput(messageTextView, 0);
+                        showSoftKeyboard(ActivityGroupBlock.this,messageTextView);
                     }
                 });
             }
@@ -349,7 +322,7 @@ public class ActivityGroupBlock extends AppCompatActivity {
             });
         }
     }
-    public void selectTypeImage(){
+    private void selectTypeImage(){
         MaterialSimpleListAdapter materialAdapter = new MaterialSimpleListAdapter(this);
         materialAdapter.add(new MaterialSimpleListItem.Builder(this)
                 .content(R.string.photo_option_camera)
@@ -367,18 +340,12 @@ public class ActivityGroupBlock extends AppCompatActivity {
                     @Override
                     public void onSelection(MaterialDialog materialDialog, View view, int which, CharSequence charSequence) {
                         if (which == 0) {
-                            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                            File file = new File(Environment.getExternalStorageDirectory(), "tmp_avatar_" + String.valueOf(System.currentTimeMillis()) + ".jpg");
-                            mImageCaptureUri = Uri.fromFile(file);
-                            try {
-                                intent.putExtra(MediaStore.EXTRA_OUTPUT, mImageCaptureUri);
-                                intent.putExtra("return-data", true);
-                                startActivityForResult(intent, PICK_FROM_CAMERA);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
+                            Log.i(TAG, "CameraIntent");
+                            Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+							startActivityForResult(cameraIntent,PICK_FROM_CAMERA);
                             materialDialog.cancel();
                         } else {
+                            Log.i(TAG, "SDIntent");
                             Intent intent = new Intent();
                             intent.setType("image/*");
                             intent.setAction(Intent.ACTION_GET_CONTENT);
@@ -387,60 +354,6 @@ public class ActivityGroupBlock extends AppCompatActivity {
                         }
                     }
                 });
-
-        avatarGroup.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //dialog.show();
-                materialDialog.show();
-            }
-        });
+        materialDialog.show();
     }
-    /*public void performCrop(){
-        try {
-            Log.e("ImageUriString",mImageCaptureUri.toString());
-
-            Intent intent = new Intent("com.android.camera.action.CROP");
-            intent.setType("image*//*");
-
-            if (mImageCaptureUri.toString().substring(0,21).equals("content://com.android")) {
-                Log.e("Path",mImageCaptureUri.toString().split("%3A")[1]);
-                String imageUriString = "content://media/external/images/media/"+mImageCaptureUri.toString().split("%3A")[1];
-                Log.e("PathCorrect",imageUriString);
-                mImageCaptureUri = Uri.parse(imageUriString);
-            }
-
-            List<ResolveInfo> list = getPackageManager().queryIntentActivities( intent, 0 );
-            int size = list.size();
-            Log.e("SIZE",""+size);
-            if (size != 0) {
-                intent.setData(mImageCaptureUri);
-                intent.putExtra("crop", "true");
-                intent.putExtra("aspectX", 1);
-                intent.putExtra("aspectY", 1);
-                intent.putExtra("outputX", 400);
-                intent.putExtra("outputY", 400);
-                intent.putExtra("return-data", true);
-                if (size > 0) {
-                    Intent i = new Intent(intent);
-                    ResolveInfo res = list.get(0);
-                    i.setComponent(new ComponentName(res.activityInfo.packageName, res.activityInfo.name));
-
-                    startActivityForResult(intent, PIC_CROP);
-                }
-            }
-            else{
-                SnackBar.show(this, "NO CROP APP");
-            }
-        }
-        catch(Exception e){
-            Log.e("ErrorCrop",e.toString());
-            e.printStackTrace();
-        }
-        *//*catch(ActivityNotFoundException anfe){
-            String errorMessage = "Whoops - your device doesn't support the crop action!";
-            SnackBar.show((Activity)context, errorMessage);
-            anfe.printStackTrace();
-        }*//*
-    }*/
 }

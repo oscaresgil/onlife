@@ -7,12 +7,16 @@
     android:descendantFocusability="blocksDescendants"
     android:gravity="left">
 
-    <ImageView
+	<net.soulwolf.widget.ratiolayout.widget.RatioImageView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/LayoutSelectContactGroup_ImageViewFriend"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
+        app:datumRatio="datumWidth"
+        app:widthRatio="1.0"
+        app:heightRatio="1.0"
         android:scaleType="fitCenter"
+        android:layout_gravity="center"
         android:layout_marginRight="5dp"/>
 
     <TextView

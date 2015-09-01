@@ -49,19 +49,13 @@ public class TaskFacebookFriendRequest implements GraphRequest.Callback {
 
                 // http://stackoverflow.com/questions/5841710/get-user-image-from-facebook-graph-api
                 // http://stackoverflow.com/questions/23559736/android-skimagedecoderfactory-returned-null-error
-                String path = "https://graph.facebook.com/" + id + "/picture?width=900&height=900";
+                String path = "https://graph.facebook.com/" + id + "/picture?width=700&height=700";
                 URL pathURL = new URL(path);
-
-                Log.i("Friend "+i,id+" = "+ deleteAccent(name));
-                Log.i("Friend URL "+i,path.toString());
-
                 ModelPerson contact = new ModelPerson(id, null, deleteAccent(name), pathURL.toString(), "A");
-                //Hay que eliminarlo luego
-                contact.setHomeSelected(true);
                 friends.add(contact);
             }
 
-            new TaskImageDownload(context,null,true,null,friends).execute(true);
+            new TaskImageDownload(context,friends,true).execute();
 
             Collections.sort(friends, new Comparator<ModelPerson>() {
                 @Override
@@ -69,9 +63,6 @@ public class TaskFacebookFriendRequest implements GraphRequest.Callback {
                     return modelPerson1.getName().compareTo(modelPerson2.getName());
                 }
             });
-
-
-            Log.i("ACTUAL FRIENDS", friends.toString());
 
             if (TAG.equals("ActivityMain")){
                 ActivityMain activityMain = (ActivityMain) context;
@@ -82,11 +73,11 @@ public class TaskFacebookFriendRequest implements GraphRequest.Callback {
                 editor.commit();
                 activityMain.gotoHome();
             }
-            if(TAG.equals("ActivitySelectContacts")){
+            /*if(TAG.equals("ActivitySelectContacts")){
                 ActivitySelectContacts activitySelectContacts = (ActivitySelectContacts)context;
                 activitySelectContacts.setAllFriends(friends);
                 activitySelectContacts.setAdapterAndDecor();
-            }
+            }*/
 
         }catch(Exception e){e.printStackTrace();}
     }

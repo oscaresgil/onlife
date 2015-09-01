@@ -16,22 +16,24 @@
                 android:layout_height="match_parent"
                 android:orientation="horizontal"
                 android:gravity="left">
-
-                <de.hdodenhof.circleimageview.CircleImageView
+                <net.soulwolf.widget.ratiolayout.widget.RatioImageView
                     xmlns:app="http://schemas.android.com/apk/res-auto"
-                    app:border_color="@color/transparent"
                     android:id="@+id/LayoutGroups_CircleImageViewGroup"
-                    android:layout_width="fill_parent"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_weight="3"
+                    android:layout_weight="1"
+                    android:scaleType="fitCenter"
                     android:layout_margin="5dp"
-                    android:layout_gravity="center"/>
+                    android:layout_gravity="center"
+                    app:datumRatio="datumWidth"
+                    app:widthRatio="1.0"
+                    app:heightRatio="1.0"/>
                 <TextView
                     style="@style/AppTheme"
                     android:id="@+id/LayoutGroups_TextViewGroupName"
                     android:layout_width="fill_parent"
                     android:layout_height="match_parent"
-                    android:layout_weight="2"
+                    android:layout_weight="3"
                     android:layout_gravity="center"
                     android:gravity="center" />
 
@@ -39,39 +41,3 @@
         </android.support.v7.widget.CardView>
     </LinearLayout>
 </LinearLayout>
-
-
-<!--TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/tablelayout"
-    android:divider="@color/date_color"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
-    <TableRow style="@style/AppTheme"
-        android:layout_height="wrap_content"
-        android:layout_width="fill_parent">
-        <android.support.v7.widget.CardView
-            android:layout_height="wrap_content"
-            android:layout_width="fill_parent">
-            <LinearLayout
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_margin="5dp">
-                <de.hdodenhof.circleimageview.CircleImageView
-                    xmlns:app="http://schemas.android.com/apk/res-auto"
-                    app:border_width="1dp"
-                    app:border_color="@color/orange_light"
-                    android:id="@+id/image_group"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="5dp" />
-                <TextView
-                    style="@style/AppTheme"
-                    android:id="@+id/name_group"
-                    android:gravity="center"
-                    android:layout_width="fill_parent"
-                    android:layout_height="100dp"/>
-            </LinearLayout>
-        </android.support.v7.widget.CardView>
-    </TableRow>
-</TableLayout-->

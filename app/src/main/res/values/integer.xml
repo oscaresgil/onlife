@@ -1,11 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <integer name="animation_search_contact_create">1000</integer>
+    <integer name="splash_screen_time">3000</integer>
+
+    <integer name="animation_search_contact_create">1500</integer>
     <integer name="flip_animation_time">60</integer>
     <integer name="blink_animation_time">1000</integer>
 
-    <integer name="layout_contact_linearlayout_main_weight_sum">2</integer>
-    <integer name="layout_contact_linearlayout_left_contact_weight_sum">1</integer>
-    <integer name="layout_contact_imageview_weight">4</integer>
-    <integer name="layout_contact_textview_weight">1</integer>
+    <!-- Activity Friend Block Integers -->
+    <integer name="activity_friend_block_grid_layout_rows">3</integer>
+
+    <!-- Activity Group Block Integers -->
+    <integer name="activity_group_block_grid_layout_rows">3</integer>
+
+    <!-- Activity In Block Integers -->
+    <integer name="activity_in_block_ripple_amount">5</integer>
+    <integer name="activity_in_block_ripple_duration">3000</integer>
+    <integer name="activity_in_block_ripple_scale">6</integer>
+
+    <!-- Fragment Contacts Integers -->
+    <integer name="fragment_contacts_size_refresh_layout">15</integer>
+    <integer name="fragment_contacts_rows">2</integer>
+
 </resources>

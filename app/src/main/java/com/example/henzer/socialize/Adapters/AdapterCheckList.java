@@ -2,27 +2,23 @@ package com.example.henzer.socialize.Adapters;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
+import android.graphics.BitmapFactory;
 import android.graphics.Point;
-import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.henzer.socialize.Listeners.ListenerFlipCheckbox;
 import com.example.henzer.socialize.Models.ModelPerson;
 import com.example.henzer.socialize.R;
-import com.squareup.picasso.Picasso;
+
+import net.soulwolf.widget.ratiolayout.widget.RatioImageView;
 
 import java.util.List;
 
-import static com.example.henzer.socialize.Controller.StaticMethods.loadImagePath;
+import static com.example.henzer.socialize.Controller.StaticMethods.loadImage;
 
 public class AdapterCheckList extends ArrayAdapter<ModelPerson> {
     private List<ModelPerson> friends;
@@ -41,16 +37,16 @@ public class AdapterCheckList extends ArrayAdapter<ModelPerson> {
         Display display = ((Activity)context).getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
-        int width = size.x/4;
+        int sizeT = size.x/4;
 
         if (convertView == null) {
             LayoutInflater inflater = ((Activity)context).getLayoutInflater();
             convertView = inflater.inflate(R.layout.layout_select_contact_group, parent, false);
 
             holder = new Holder();
-            holder.avatar = (ImageView) convertView.findViewById(R.id.LayoutSelectContactGroup_ImageViewFriend);
-            holder.avatar.getLayoutParams().height = width;
-            holder.avatar.getLayoutParams().width = width;
+            holder.avatar = (RatioImageView) convertView.findViewById(R.id.LayoutSelectContactGroup_ImageViewFriend);
+            holder.avatar.getLayoutParams().height = sizeT;
+            holder.avatar.getLayoutParams().width = sizeT;
             holder.name = (TextView) convertView.findViewById(R.id.LayoutSelectContactGroup_TextViewNameFriend);
             convertView.setTag(holder);
         }
@@ -60,18 +56,19 @@ public class AdapterCheckList extends ArrayAdapter<ModelPerson> {
 
         ModelPerson friend = friends.get(position);
         if (friend.isSelected()){
-            Picasso.with(getContext()).load(R.drawable.ic_action_done_large).into(holder.avatar);
+            holder.avatar.setImageBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_action_done_large));
         }
         else{
-            Picasso.with(getContext()).load(loadImagePath(getContext(),friend.getId())).into(holder.avatar);
+            holder.avatar.setImageBitmap(loadImage(context,friend.getId()));
         }
+
         holder.avatar.setTag(friend);
         holder.name.setText(friend.getName());
         return convertView;
 
     }
     private class Holder {
-        ImageView avatar;
+        RatioImageView avatar;
         TextView name;
     }
 }

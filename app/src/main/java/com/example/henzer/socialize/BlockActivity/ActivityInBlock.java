@@ -3,6 +3,7 @@ package com.example.henzer.socialize.BlockActivity;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -17,6 +18,8 @@ import pl.droidsonroids.gif.GifImageView;
 
 public class ActivityInBlock extends Activity{
 
+    public final static String TAG = "ActivityInBlock";
+
     private String user;
     private String message;
     private String gifName;
@@ -29,6 +32,8 @@ public class ActivityInBlock extends Activity{
         user = getIntent().getStringExtra("user");
         message = getIntent().getStringExtra("message");
         gifName = getIntent().getStringExtra("gif");
+
+        Log.i(TAG,"User: "+user+". Message: "+message+". GifName: "+gifName);
 
         TextView userView = (TextView) findViewById(R.id.ActivityInBlock_TextViewUser);
         TextView messageView = (TextView) findViewById(R.id.ActivityInBlock_TextViewMessage);
@@ -83,11 +88,4 @@ public class ActivityInBlock extends Activity{
             }
         });
     }
-    /*public void showLocation(View v){
-        Intent i = new Intent(ActivityInBlock.this, ActivityGoogleMaps.class);
-        i.putExtra("user",user);
-        i.putExtra("longitude",longitude);
-        i.putExtra("latitude",latitude);
-        startActivity(i);
-    }*/
 }

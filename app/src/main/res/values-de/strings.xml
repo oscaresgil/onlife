@@ -1,73 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">OnLife</string>
+    <string name="gcm_server_id">AIzaSyBMo260wxpPNsCHle_ynoMUx4sju9W76LY</string>
 
-    <string name="distance">Entfernung</string>
-    <string name="blocking">Blockierung</string>
-    <string name="group">Gruppe</string>
+    <string name="distance">Distance</string>
+    <string name="blocking">Blocking</string>
+    <string name="group">Group</string>
+
+    <string name="loading_friends">Loading friends</string>
+    <string name="uploading_friends">Uploading friends</string>
+    <string name="getting_images">Getting Friends Images</string>
+    <string name="dialog_please_wait">Please Wait...</string>
+
+    <string name="dialog_title_creating_group">Creating Group</string>
+    <string name="group_name">Change Group Name..</string>
+    <string name="group_already">Group already created!</string>
 
     <string name="device_admin">Lockscreen OnLife Authorization</string>
-    <string name="device_admin_description">Diese ermöglichen das Telefon gesperrt werden</string>
+    <string name="device_admin_description">This allow your phone to be locked</string>
     <string name="facebook_app_id">1690720374494757</string>
-    <string name="login_facebook">Mit Facebook einloggen</string>
-    <string name="action_logout">Abmelden</string>
 
-    <string name="notification_someone_block_you">Jemand Sperren Sie!</string>
+    <string name="login_facebook">Login with Facebook</string>
+    <string name="action_logout">Logout</string>
 
-    <string name="action_settings">Einstellungen</string>
+    <string name="notification_someone_block_you">Someone Block You!</string>
+
+    <string name="action_settings">Settings</string>
     <string name="settings_options">Options</string>
     <string name="settings_option_gps">GPS</string>
-    <string name="settings_option_select_friends">Wählen Sie die Freunde</string>
+    <string name="settings_option_select_friends">Select Friends</string>
 
-    <string name="tab_contacts">Kontakte</string>
-    <string name="button_search_friend">Suche Freund</string>
-    <string name="search_contact_bar">Suche in Kontakten..</string>
-    <string name="tab_groups">Gruppen</string>
+    <string name="tab_contacts">Contacts</string>
+    <string name="button_search_friend">Search Friend</string>
+    <string name="search_contact_bar">Search in contacts..</string>
+    <string name="tab_groups">Groups</string>
 
     <string name="title_activity_information">Information</string>
-    <string name="friends_in_group">Freunde in der Gruppe</string>
+    <string name="friends_in_group">Friends in Group</string>
 
-    <string name="title_activity_new_group">Neue Gruppe</string>
-    <string name="button_add_group">Gruppe hinzufügen</string>
-    <string name="photo_select_image">Bild auswählen</string>
-    <string name="photo_option_camera">Von Kamera</string>
-    <string name="photo_option_sd">Von SD-Karte</string>
-    <string name="pick_image">Tipp Grafik</string>
-    <string name="not_supported_image_crop">Whoops - Ihr Gerät unterstützt nicht die Ernte-Action!</string>
+    <string name="title_activity_new_group">New Group</string>
+    <string name="button_add_group">Add Group</string>
+    <string name="photo_select_image">Select Image</string>
+    <string name="photo_option_camera">From Camera</string>
+    <string name="photo_option_sd">From SD Card</string>
+    <string name="pick_image">Pick Image</string>
+    <string name="not_supported_image_crop">Whoops - your device does not support the crop action!</string>
 
-    <string name="no">Nein</string>
-    <string name="yes">Ja</string>
+    <string name="no">No</string>
+    <string name="yes">Yes</string>
     <string name="ok">Ok</string>
-    <string name="cancel">Stornieren</string>
-    <string name="delete">Löschen</string>
-    <string name="deleted">Gelöscht</string>
-    <string name="really_delete">Sind Sie sicher?</string>
-    <string name="refresh_contact">Refresh Kontakt</string>
+    <string name="cancel">Cancel</string>
+    <string name="delete">Delete</string>
+    <string name="deleted">Deleted</string>
+    <string name="really_delete">Are you sure?</string>
+    <string name="refresh_contact">Refresh Contact</string>
 
-    <string name="dialog_title_loading_friends">Bitte Warten</string>
-    <string name="dialog_message_loading_friends">Loading Freunde..</string>
-    <string name="dialog_message_loading_information_friends">Laden einige Informationen der Freunde..</string>
-    <string name="dialog_title_creating_group">Erstellen von Gruppen</string>
-
-    <string name="group_name">Ändern Gruppenname..</string>
-    <string name="group_already">Gruppe bereits erstellt!</string>
-
-    <string name="send_a_message_bar">Eine Nachricht schicken..</string>
-    <string name="message_max_characters">Nur 30 Zeichen bitte</string>
-    <string name="button_change_text_message">Text ändern</string>
+    <string name="send_a_message_bar">Send a message..</string>
+    <string name="max_characters_text">0/30</string>
+    <string name="message_max_characters">Only 30 characters please</string>
+    <string name="button_change_text_message">Change Text</string>
     <string name="button_block">Block!</string>
-    <string name="blocked_here">hier blockiert..</string>
+    <string name="blocked_here">blocked here..</string>
 
-    <string name="no_connection">Keine Verbindung.</string>
-    <string name="error">Es gab einen Fehler.</string>
-    <string name="button_change_connection">Verbindung ändern</string>
-    <string name="button_group_change_name">Gruppennamen ändern!</string>
-    <string name="toast_contacts_refreshed">Kontakte aktualisiert!</string>
-    <string name="toast_wait_until_contacts_refreshed">Attendez! Les contacts sont rafraîchissante..</string>
-    <string name="toast_group_not_yet_created">Name oder Kontaktlinsen nicht angegeben. versuchen Sie Es Erneut</string>
+    <string name="no_connection">No Connection.</string>
+    <string name="no_server">Server not available.</string>
+    <string name="error">There was an error.</string>
+    <string name="button_change_connection">Change Connection</string>
+    <string name="button_group_change_name">Change group name!</string>
+    <string name="toast_contacts_refreshed">Contacts Refreshed!</string>
+    <string name="toast_wait_until_contacts_refreshed">Wait! reloading Contacts...</string>
+    <string name="toast_group_not_yet_created">Name or Contacts not specified. Try Again</string>
 
-    <string name="select_friend">Wählen Sie die Freunde</string>
-    <string name="show_location">Show Freund Location</string>
-    <string name="getting_actual_position">Anreise Position</string>
+    <string name="select_friend">Select Friends</string>
+    <string name="show_location">Show Friend Location</string>
+    <string name="getting_actual_position">Getting Position</string>
 
 </resources>

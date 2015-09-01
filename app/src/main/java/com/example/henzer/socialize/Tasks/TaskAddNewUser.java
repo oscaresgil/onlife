@@ -1,14 +1,10 @@
 package com.example.henzer.socialize.Tasks;
 
-import android.app.ProgressDialog;
-import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
 
 import com.example.henzer.socialize.Activities.ActivityMain;
 import com.example.henzer.socialize.Controller.JSONParser;
 import com.example.henzer.socialize.Models.ModelPerson;
-import com.example.henzer.socialize.R;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;

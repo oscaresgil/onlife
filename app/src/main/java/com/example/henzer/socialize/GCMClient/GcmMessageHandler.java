@@ -7,10 +7,8 @@ import android.app.admin.DevicePolicyManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
-import android.location.Location;
 import android.media.RingtoneManager;
 import android.os.Bundle;
-import android.os.Looper;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
@@ -18,16 +16,14 @@ import com.example.henzer.socialize.BlockActivity.ActivityInBlock;
 import com.example.henzer.socialize.R;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
-import static com.example.henzer.socialize.Controller.StaticMethods.distFrom;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 
 public class GcmMessageHandler extends IntentService {
     private final String TAG = "GcmMessageHandler";
-    private Intent intent;
     private NotificationManager myNotificationManager;
-    private Looper looper;
     private String user, message, gifName;
-    private String[] dataP;
 
     public GcmMessageHandler() {
         super("GcmMessageHandler");
@@ -39,25 +35,16 @@ public class GcmMessageHandler extends IntentService {
 
     @Override protected void onHandleIntent(Intent intent) {
         Bundle extras = intent.getExtras();
-        this.intent = intent;
         GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(this);
-
-        String messageS = extras.getString("message");
-        dataP = messageS.split("\n");
-
-        try{
-            message = dataP[0];
-        }catch (Exception e){
-            e.printStackTrace();
+        String messageType = gcm.getMessageType(intent);
+        Log.i(TAG,"MessageType: "+messageType);
+        message = extras.getString("message");
+        user = extras.getString("userName");
+        gifName = extras.getString("gifName");
+        Log.i(TAG,"User: "+user+". Message: "+message+". GifName: "+gifName);
+        if(!user.equals("") || user != null) {
+            onMessage(this);
         }
-        user = dataP[1];
-        gifName = dataP[2];
-
-        looper = Looper.myLooper();
-        if (looper==null){
-            Looper.prepare();
-        }
-        onMessage(this);
     }
 
     protected void onMessage(Context context) {

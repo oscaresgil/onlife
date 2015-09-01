@@ -15,6 +15,8 @@ import com.example.henzer.socialize.Listeners.ListenerFlipCheckbox;
 import com.example.henzer.socialize.Models.ModelPerson;
 import com.example.henzer.socialize.R;
 
+import net.soulwolf.widget.ratiolayout.widget.RatioImageView;
+
 import java.util.List;
 
 import ca.barrenechea.widget.recyclerview.decoration.StickyHeaderAdapter;
@@ -46,12 +48,12 @@ public class AdapterStickyTitle extends RecyclerView.Adapter<AdapterStickyTitle.
 
     @Override public void onBindViewHolder(ViewHolder viewHolder, int i) {
         viewHolder.textView.setText(friends.get(i).getName());
-        if (!friends.get(i).isHomeSelected()){
+        /*if (!friends.get(i).isHomeSelected()){
             viewHolder.imageView.setImageBitmap(BitmapFactory.decodeResource(context.getResources(),R.drawable.ic_navigation_check));
         }
-        else{
+        else{*/
             viewHolder.imageView.setImageBitmap(loadImage(context, friends.get(i).getId()));
-        }
+        //}
     }
 
     @Override public int getItemCount() {
@@ -74,14 +76,12 @@ public class AdapterStickyTitle extends RecyclerView.Adapter<AdapterStickyTitle.
     class ViewHolder extends RecyclerView.ViewHolder {
         public TextView textView;
         public ImageView imageView;
-        //public CheckBox checkBox;
 
         public ViewHolder(View itemView) {
             super(itemView);
 
             LinearLayout linearLayout = (LinearLayout) itemView;
             imageView = (ImageView) linearLayout.findViewById(R.id.LayoutSelectContactGroup_ImageViewFriend);
-            //checkBox = (CheckBox) linearLayout.findViewById(R.id.LayoutSelectContactGroup_CheckBoxContact);
             textView = (TextView) linearLayout.findViewById(R.id.LayoutSelectContactGroup_TextViewNameFriend);
         }
     }
@@ -103,11 +103,9 @@ public class AdapterStickyTitle extends RecyclerView.Adapter<AdapterStickyTitle.
         @Override
         public void onClick(View v) {
             int item = recyclerView.getChildAdapterPosition(v);
-            /*CheckBox checkBox = (CheckBox)v.findViewById(R.id.LayoutSelectContactGroup_CheckBoxContact);
-            checkBox.setChecked(!checkBox.isCheck());*/
             friends.get(item).setSelected(!friends.get(item).isSelected());
 
-            ImageView avatar = (ImageView) v.findViewById(R.id.LayoutSelectContactGroup_ImageViewFriend);
+            RatioImageView avatar = (RatioImageView) v.findViewById(R.id.LayoutSelectContactGroup_ImageViewFriend);
             listener.setFriend(friends.get(item));
             listener.setView(avatar);
             listener.setHome(true);

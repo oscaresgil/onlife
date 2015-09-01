@@ -11,7 +11,6 @@ public class ModelPerson implements Serializable{
     private int background;
     private boolean selected;
     private boolean deleted=true;
-    private boolean homeSelected=false;
 
     public ModelPerson() {
     }
@@ -23,14 +22,6 @@ public class ModelPerson implements Serializable{
         this.photo = photo;
         this.state = state;
         selected = false;
-    }
-
-    public boolean isHomeSelected() {
-        return homeSelected;
-    }
-
-    public void setHomeSelected(boolean homeSelected) {
-        this.homeSelected = homeSelected;
     }
 
     public String getId() {

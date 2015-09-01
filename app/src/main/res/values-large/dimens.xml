@@ -1,0 +1,100 @@
+<resources>
+
+    <!-- https://www.google.com/design/tool/devices/ -->
+
+    <!-- Activity Friend Block Dimensions -->
+    <dimen name="activity_friend_block_relative_layout_contact_padding">8dp</dimen>
+    <dimen name="activity_friend_block_grid_layout_height">130dp</dimen>
+    <dimen name="activity_friend_block_grid_layout_margin_topbottom">13dp</dimen>
+    <dimen name="activity_friend_block_card_view_margin">10dp</dimen>
+    <dimen name="activity_friend_block_fab_emoticon_border">0dp</dimen>
+    <dimen name="activity_friend_block_textview_maxlength_message">-50dp</dimen>
+    <dimen name="activity_friend_block_textview_maxlength_margin">10dp</dimen>
+    <dimen name="activity_friend_block_linearlayout_divider_height">0.25dp</dimen>
+    <dimen name="activity_friend_block_linearlayout_divider_margin">5dp</dimen>
+    <dimen name="activity_friend_block_edittext_message_margin">5dp</dimen>
+    <dimen name="activity_friend_block_gif_view_height_width">70dp</dimen>
+    <dimen name="activity_friend_block_app_bar_layout_height">364dp</dimen>
+    <dimen name="activity_friend_block_fab_block_border">0dp</dimen>
+
+    <!-- Activity Group Block Dimensions -->
+    <dimen name="activity_group_block_relative_layout_contact_padding">4dp</dimen>
+    <dimen name="activity_group_block_grid_layout_height">130dp</dimen>
+    <dimen name="activity_group_block_grid_layout_margin_topbottom">11dp</dimen>
+    <dimen name="activity_group_block_card_view_margin">8dp</dimen>
+    <dimen name="activity_group_block_fab_emoticon_border">0dp</dimen>
+    <dimen name="activity_group_block_textview_maxlength_message">-50dp</dimen>
+    <dimen name="activity_group_block_textview_maxlength_margin">8dp</dimen>
+    <dimen name="activity_group_block_linearlayout_divider_height">0.25dp</dimen>
+    <dimen name="activity_group_block_linearlayout_divider_margin">3dp</dimen>
+    <dimen name="activity_group_block_edittext_message_margin">3dp</dimen>
+    <dimen name="activity_group_block_gif_view_height_width">50dp</dimen>
+    <dimen name="activity_group_block_app_bar_layout_height">256dp</dimen>
+    <dimen name="activity_group_block_fab_block_border">0dp</dimen>
+
+    <!-- Activity Group Create Information Dimensions -->
+    <dimen name="activity_group_create_information_linear_layout_sub_main_padding">10dp</dimen>
+    <dimen name="activity_group_create_information_ratio_image_view_margin">15dp</dimen>
+    <dimen name="activity_group_create_information_edit_text_name_group_margin">4dp</dimen>
+    <dimen name="activity_group_create_information_fab_search_margin_bottom">-20dp</dimen>
+    <dimen name="activity_group_create_information_fab_search_margin_right">10dp</dimen>
+    <dimen name="activity_group_create_information_edit_text_size">16sp</dimen>
+
+    <!-- Activity In Block Dimensions -->
+    <dimen name="activity_in_block_text_view_user_size">30sp</dimen>
+    <dimen name="activity_in_block_text_view_user_margin">4dp</dimen>
+    <dimen name="activity_in_block_text_view_message_size">18sp</dimen>
+    <dimen name="activity_in_block_text_view_message_margin">4dp</dimen>
+    <dimen name="activity_in_block_gif_view_height_width">70dp</dimen>
+    <dimen name="activity_in_block_ripple_background_margin">5dp</dimen>
+    <dimen name="activity_in_block_ripple_background_radius">32dp</dimen>
+    <dimen name="activity_in_block_ripple_background_image_height_width">64dp</dimen>
+
+    <!-- Fragment Groups Dimensions -->
+    <dimen name="fragment_group_fab_margin">16dp</dimen>
+
+    <!-- Layout Emoticon Dimensions -->
+    <dimen name="layout_emoticon_gif_view_height_width">60dp</dimen>
+    <dimen name="layout_emoticon_gif_view_margin">15dp</dimen>
+
+    <!-- Layout Contact Dimensions -->
+    <dimen name="layout_contact_text_size">14sp</dimen>
+    <dimen name="layout_contact_text_padding">6dp</dimen>
+
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+
+    <!--
+    * Dimensiones para la Actividad Main
+    -->
+    <dimen name="activity_main_height_logo">250dp</dimen>
+    <dimen name="activity_main_logo_margin">10dp</dimen>
+    <dimen name="activity_main_button_fb_padding">10dp</dimen>
+    <dimen name="activity_main_button_fb_margin">10dp</dimen>
+
+    <!--
+    * Dimensiones para la Actividad Friend Block
+    -->
+    <dimen name="activity_friend_block_button_block_margin">10dp</dimen>
+    <dimen name="activity_friend_block_button_block_padding">10dp</dimen>
+    <dimen name="activity_friend_block_button_block_padding_right">20dp</dimen>
+    <dimen name="activity_friend_block_button_block_border">1dp</dimen>
+    <dimen name="activity_friend_block_button_block_icon_size">10dp</dimen>
+    <dimen name="activity_friend_block_button_block_radius">50dp</dimen>
+    <dimen name="activity_friend_block_button_block_text_size">15dp</dimen>
+    <!--
+    Dimensiones para la Actividad Select Contacts
+    -->
+    <dimen name="activity_select_contact_textview_select_contacts_margin">10dp</dimen>
+    <dimen name="activity_select_contact_recyclerview_padding_horizontal">64dp</dimen>
+    <dimen name="activity_select_contact_recyclerview_padding_vertical">16dp</dimen>
+    <dimen name="activity_select_contact_button_ok_margin">16dp</dimen>
+
+    <!--
+    Dimensiones para la Layout Friends in Group Simple
+    -->
+    <dimen name="layout_friends_in_group_simple_textview_name_margin">5dp</dimen>
+    <dimen name="layout_friends_in_group_simple_height">90dp</dimen>
+
+</resources>

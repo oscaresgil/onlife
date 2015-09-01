@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">OnLife</string>
+    <string name="gcm_server_id">AIzaSyBMo260wxpPNsCHle_ynoMUx4sju9W76LY</string>
 
     <string name="distance">Distance</string>
     <string name="blocking">Blocking</string>
@@ -8,6 +9,7 @@
 
 	<string name="loading_friends">Loading friends</string>
     <string name="uploading_friends">Uploading friends</string>
+    <string name="getting_images">Getting Friends Images</string>
     <string name="dialog_please_wait">Please Wait...</string>
 
     <string name="dialog_title_creating_group">Creating Group</string>

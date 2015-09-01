@@ -2,9 +2,10 @@ package com.example.henzer.socialize.Listeners;
 
 import android.content.Context;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 
 import com.rengwuxian.materialedittext.MaterialEditText;
+
+import static com.example.henzer.socialize.Controller.StaticMethods.hideSoftKeyboard;
 
 public class MessageFocusChangedListener implements View.OnFocusChangeListener{
     private Context context;
@@ -18,8 +19,7 @@ public class MessageFocusChangedListener implements View.OnFocusChangeListener{
     @Override
     public void onFocusChange(View v, boolean hasFocus) {
         if (!hasFocus) {
-            InputMethodManager imm = (InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(messageTextView.getWindowToken(), 0);
+            hideSoftKeyboard(context,messageTextView);
             messageTextView.setFocusable(false);
             messageTextView.clearFocus();
         }

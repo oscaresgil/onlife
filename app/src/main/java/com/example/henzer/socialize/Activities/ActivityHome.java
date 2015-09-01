@@ -35,7 +35,7 @@ import java.util.List;
 
 import static com.example.henzer.socialize.Controller.StaticMethods.activateDeviceAdmin;
 
-public class ActivityHome extends AppCompatActivity {
+public class ActivityHome extends ActionBarActivity {
     public static ModelSessionData modelSessionData;
     private ModelPerson userLogin;
     private List<ModelPerson> friends;
@@ -54,14 +54,15 @@ public class ActivityHome extends AppCompatActivity {
         userLogin = gson.fromJson(sharedPreferences.getString("userLogin", ""), ModelPerson.class);
         friends = gson.fromJson(sharedPreferences.getString("friends", ""), (new TypeToken<ArrayList<ModelPerson>>(){}.getType()));
 
+        groups = new ArrayList<>();
         if (sharedPreferences.contains("groups")){
+            Log.e("ContainsGroups","true");
             groups = gson.fromJson(sharedPreferences.getString("groups", ""), (new TypeToken<ArrayList<ModelGroup>>(){}.getType()));
         } else {
-            groups = new ArrayList<>();
-            sharedPreferences.edit().putString("groups",gson.toJson(groups));
+            sharedPreferences.edit().putString("groups",gson.toJson(groups)).commit();
         }
 
-        modelSessionData = new ModelSessionData(userLogin,friends, groups);
+        modelSessionData = new ModelSessionData(userLogin,friends,groups);
 
         if (!sharedPreferences.contains("session")) {
             ArrayList<String> idFriends = new ArrayList<>();
@@ -152,7 +153,7 @@ public class ActivityHome extends AppCompatActivity {
                             friends = modelSessionData.getFriends();
                             for (ModelPerson f: friends){
                                 f.setSelected(false);
-                                Log.i("Friend Home Selected", f.isHomeSelected() + "");
+                                //Log.i("Friend Home Selected", f.isHomeSelected() + "");
                             }
                         }
                     }
@@ -161,7 +162,6 @@ public class ActivityHome extends AppCompatActivity {
     }
 
     public void logout(MenuItem item) {
-        SharedPreferences sharedpreferences = getSharedPreferences(ActivityMain.MyPREFERENCES, Context.MODE_PRIVATE);
         sharedPreferences.edit().clear().commit();
         LoginManager.getInstance().logOut();
         ActivityHome.this.finish();

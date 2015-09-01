@@ -95,18 +95,18 @@ public class ActivityMain extends Activity{
         loginButton = (LoginButton) findViewById(R.id.login_button);
         loginButton.setReadPermissions("public_profile", "user_friends", "email");
 
-        LoginManager.getInstance().logOut();
+        /*LoginManager.getInstance().logOut();
         SharedPreferences preferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
-        preferences.edit().clear().commit();
+        preferences.edit().clear().commit();*/
 
         mProfileTracker = new ProfileTracker() {
             @Override
             protected void onCurrentProfileChanged(Profile oldProfile, Profile profile) {
-
                 Gson gson = new Gson();
                 sharedPreferences = getSharedPreferences(ActivityMain.MyPREFERENCES, Context.MODE_PRIVATE);
-                userLogin = new ModelPerson(profile.getId(), sharedPreferences.getString("idGcm",""), profile.getName(), "http://graph.facebook.com/" + profile.getId() + "/picture?type=large", "A");
+                userLogin = new ModelPerson(profile.getId(), sharedPreferences.getString("gcmId", ""), profile.getName(), "http://graph.facebook.com/" + profile.getId() + "/picture?type=large", "A");
                 sharedPreferences.edit().putString("userLogin", gson.toJson(userLogin)).commit();
+                SnackBar.show(ActivityMain.this,"ActivityMainOnCurrentProfileChanged");
                 TaskAddNewUser taskAddNewUser = new TaskAddNewUser();
                 taskAddNewUser.execute(userLogin);
 

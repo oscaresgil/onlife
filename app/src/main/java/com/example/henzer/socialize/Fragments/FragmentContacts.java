@@ -5,14 +5,15 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,14 +23,12 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.Toast;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.henzer.socialize.Activities.ActivityMain;
 import com.example.henzer.socialize.Adapters.AdapterContact;
 import com.example.henzer.socialize.BlockActivity.ActivityFriendBlock;
 import com.example.henzer.socialize.Models.ModelPerson;
 import com.example.henzer.socialize.R;
 import com.example.henzer.socialize.Tasks.TaskImageDownload;
-import com.example.henzer.socialize.Models.ModelSessionData;
 import com.example.henzer.socialize.Tasks.TaskSendNotification;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -40,12 +39,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.henzer.socialize.Controller.StaticMethods.isNetworkAvailable;
+import static com.example.henzer.socialize.Controller.StaticMethods.showSoftKeyboard;
 
 public class FragmentContacts extends Fragment {
     public static final String TAG = "ContactsFragment";
 
     private ModelPerson actualUser;
-    private List<ModelPerson> friends;
+    public static List<ModelPerson> friends;
+
     private AdapterContact adapter;
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
@@ -54,11 +55,8 @@ public class FragmentContacts extends Fragment {
     private MenuItem mSearchAction;
     private MaterialEditText searchText;
     private List<ModelPerson> friendsFiltred;
-    private boolean isSearchOpened = false;
+    public static boolean isSearchOpened = false;
     private String mSearchQuery;
-    private SharedPreferences sharedPreferences;
-
-    private static boolean typeUrl = false;
 
     public static FragmentContacts newInstance(Bundle arguments){
         FragmentContacts myfragment = new FragmentContacts();
@@ -70,17 +68,19 @@ public class FragmentContacts extends Fragment {
     public FragmentContacts(){}
 
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
+        Log.i(TAG, "onCreateView()");
+
         setHasOptionsMenu(true);
         View v = inflater.inflate(R.layout.fragment_contacts, container, false);
 
-        friendsFiltred = new ArrayList<>();
-
-        sharedPreferences = getActivity().getSharedPreferences(ActivityMain.MyPREFERENCES, Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(ActivityMain.MyPREFERENCES, Context.MODE_PRIVATE);
         Gson gson = new Gson();
         actualUser = gson.fromJson(sharedPreferences.getString("userLogin", ""), ModelPerson.class);
         friends = gson.fromJson(sharedPreferences.getString("friends", ""), (new TypeToken<ArrayList<ModelPerson>>(){}.getType()));
+
+        friendsFiltred = new ArrayList<>();
         friendsFiltred.addAll(friends);
 
         adapter = new AdapterContact(getActivity(),friendsFiltred);
@@ -94,7 +94,6 @@ public class FragmentContacts extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (!mSwipeRefreshLayout.isRefreshing()){
                     ModelPerson user = (ModelPerson)gridView.getItemAtPosition(position);
-                    //Intent i = new Intent(getActivity(),ActivityFriendBlock.class);
                     Intent i = new Intent(getActivity(),ActivityFriendBlock.class);
                     i.putExtra("data",user);
                     i.putExtra("actualuser", actualUser);
@@ -110,7 +109,7 @@ public class FragmentContacts extends Fragment {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
                 if (!mSwipeRefreshLayout.isRefreshing() && isNetworkAvailable(getActivity())){
-                    new TaskSendNotification(getActivity(), "", actualUser.getName(), "").execute((ModelPerson) gridView.getItemAtPosition(position));
+                    new TaskSendNotification(getActivity(), actualUser.getName(),"" , "").execute((ModelPerson) gridView.getItemAtPosition(position));
                 }else if(!isNetworkAvailable(getActivity())){
                     SnackBar.show(getActivity(), R.string.no_connection, R.string.button_change_connection, new View.OnClickListener() {
                         @Override
@@ -132,6 +131,7 @@ public class FragmentContacts extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        Log.i(TAG, "onResume()");
 
         mSwipeRefreshLayout = (SwipeRefreshLayout) getActivity().findViewById(R.id.FragmentContacts_SwipeRefreshLayout);
         gridView.setOnScrollListener(new AbsListView.OnScrollListener() {
@@ -151,7 +151,7 @@ public class FragmentContacts extends Fragment {
             }
         });
         mSwipeRefreshLayout.setColorSchemeResources(R.color.orange_light, R.color.orange);
-        mSwipeRefreshLayout.setSize(15);
+        mSwipeRefreshLayout.setSize(R.integer.fragment_contacts_size_refresh_layout);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -164,6 +164,7 @@ public class FragmentContacts extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
+        Log.i(TAG, "onPause()");
         if (mSwipeRefreshLayout!=null) {
             mSwipeRefreshLayout.setRefreshing(false);
             mSwipeRefreshLayout.destroyDrawingCache();
@@ -175,6 +176,14 @@ public class FragmentContacts extends Fragment {
     public void onPrepareOptionsMenu(Menu menu) {
         mSearchAction = menu.findItem(R.id.searchContact);
         super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        friendsFiltred.clear();
+        friendsFiltred.addAll(friends);
+        adapter.notifyDataSetChanged();
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
@@ -221,6 +230,7 @@ public class FragmentContacts extends Fragment {
 
             InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(getActivity().getWindow().getCurrentFocus().getWindowToken(), 0);
+
             mSearchAction.setIcon(getResources().getDrawable(R.drawable.ic_search_black_24dp));
             isSearchOpened = false;
         }
@@ -249,22 +259,15 @@ public class FragmentContacts extends Fragment {
                 }
             });
             searchText.requestFocus();
-            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.showSoftInput(searchText, InputMethodManager.SHOW_IMPLICIT);
-
+            showSoftKeyboard(getActivity(),searchText);
             mSearchAction.setIcon(getResources().getDrawable(R.drawable.ic_close_black_24dp));
-
             isSearchOpened = true;
         }
     }
 
     public void refreshContact(){
         if (isNetworkAvailable(getActivity())) {
-            String[] ids = new String[friends.size()];
-            for (int i=0; i<friends.size(); i++){
-                ids[i] = friends.get(i).getId();
-            }
-            new TaskImageDownload(getActivity(),mSwipeRefreshLayout,false,adapter,friends).execute(typeUrl);
+            new TaskImageDownload(getActivity(),mSwipeRefreshLayout,false,adapter,friends).execute();
             /*FacebookFriendRequest fbRequest = new FacebookFriendRequest(getActivity(),actualUser,friends,adapter);
             Bundle params = new Bundle();
             params.putString("fields","id,name");
@@ -281,8 +284,14 @@ public class FragmentContacts extends Fragment {
         }
     }
 
-    public static void setTypeUrl(boolean tUrl){
-        typeUrl = tUrl;
+    public static void setIsSearchOpened(boolean isSearchOpened) {
+        FragmentContacts.isSearchOpened = isSearchOpened;
+    }
+    public static boolean isIsSearchOpened() {
+        return isSearchOpened;
     }
 
+    public static void setFriends(List<ModelPerson> friendsSet){
+        friends = friendsSet;
+    }
 }
