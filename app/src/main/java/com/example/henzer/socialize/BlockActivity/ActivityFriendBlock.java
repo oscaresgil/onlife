@@ -159,8 +159,6 @@ public class ActivityFriendBlock extends AppCompatActivity {
     }
 
     public void block(View view) {
-        Intent i = new Intent(this,ActivityLogoScreen.class);
-        startActivity(i);
         if (isNetworkAvailable(this)) {
             hideSoftKeyboard(this,messageTextView);
             if (textWatcherListener.getActualChar() <= 30) {
