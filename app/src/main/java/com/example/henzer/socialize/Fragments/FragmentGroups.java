@@ -44,33 +44,23 @@ import static com.example.henzer.socialize.Controller.StaticMethods.removeGroup;
 
 public class FragmentGroups extends Fragment {
     public static final String TAG = "GroupsFragment";
-    private ModelSessionData modelSessionData;
+    //private ModelSessionData modelSessionData;
     private AdapterGroup adapter;
     private ListView list;
     private FloatingActionButton addGroupButton;
     private List<ModelGroup> modelGroups;
-    private static SharedPreferences sharedPreferences;
-
-    public static FragmentGroups newInstance(Bundle arguments){
-        FragmentGroups myfragment = new FragmentGroups();
-        if(arguments !=null){
-            myfragment.setArguments(arguments);
-        }
-        return myfragment;
-    }
 
     public FragmentGroups(){}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        sharedPreferences = getActivity().getSharedPreferences(ActivityMain.MyPREFERENCES, Context.MODE_PRIVATE);
         Log.e(TAG, "OnCreateView");
         setHasOptionsMenu(true);
         View v = inflater.inflate(R.layout.fragment_groups, container, false);
-        modelSessionData = (ModelSessionData) getArguments().getSerializable("data");
+        //modelSessionData = (ModelSessionData) getArguments().getSerializable("data");
 
-        modelGroups = modelSessionData.getModelGroups();
+        modelGroups = ModelSessionData.getInstance().getModelGroups();
         adapter = new AdapterGroup(getActivity(), R.layout.layout_groups, modelGroups);
         list = (ListView)v.findViewById(R.id.FragmentGroups_ListGroup);
         list.setAdapter(adapter);
@@ -97,7 +87,7 @@ public class FragmentGroups extends Fragment {
         final SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
         Gson gson = new Gson();
         modelGroups = gson.fromJson(sharedPreferences.getString("groups", ""), (new TypeToken<ArrayList<ModelGroup>>(){}.getType()));
-        modelSessionData.setModelGroups(modelGroups);
+        ModelSessionData.getInstance().setModelGroups(modelGroups);
 
         adapter = new AdapterGroup(getActivity(), R.layout.layout_groups, modelGroups);
         list.setAdapter(adapter);
@@ -118,7 +108,8 @@ public class FragmentGroups extends Fragment {
                         .callback(new MaterialDialog.ButtonCallback() {
                             @Override
                             public void onPositive(MaterialDialog dialog) {
-                                removeGroup(actualModelGroup,sharedPreferences,modelSessionData);
+                                //removeGroup(actualModelGroup,sharedPreferences,modelSessionData);
+                                removeGroup(actualModelGroup);
                                 adapter.notifyDataSetChanged();
                                 dialog.dismiss();
                                 dialog.cancel();
@@ -134,7 +125,6 @@ public class FragmentGroups extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 ModelGroup modelGroup = modelGroups.get(position);
                 Intent intent = new Intent(getActivity(), ActivityGroupBlock.class);
-                intent.putExtra("sessiondata",modelSessionData);
                 intent.putExtra("modelgroup", modelGroup);
                 /*intent.putExtra("name", modelGroup.getName());
                 intent.putExtra("user", modelSessionData.getUser());*/
@@ -168,7 +158,6 @@ public class FragmentGroups extends Fragment {
 
     public void addGroup(View view){
         Intent i = new Intent(getActivity(), ActivityGroupCreateInformation.class);
-        i.putExtra("data", modelSessionData);
         startActivity(i);
         getActivity().overridePendingTransition(R.animator.push_right, R.animator.push_left);
     }

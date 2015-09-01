@@ -66,7 +66,7 @@ public class ActivityGroupCreateInformation extends ActionBarActivity {
     private Menu myMenu;
     private android.support.v7.app.ActionBar actionBar;
 
-    private ModelSessionData modelSessionData;
+    //private ModelSessionData modelSessionData;
     private List<ModelPerson> friends;
 
     private AdapterCheckList adapterCheckList;
@@ -98,9 +98,7 @@ public class ActivityGroupCreateInformation extends ActionBarActivity {
                 .build();
         Slidr.attach(this, config);
 
-        Intent i = getIntent();
-        modelSessionData = (ModelSessionData) i.getSerializableExtra("data");
-        friends = modelSessionData.getFriends();
+        friends = ModelSessionData.getInstance().getFriends();
 
         int width = getWidth();
         setContentView(R.layout.activity_group_create_information);
@@ -392,7 +390,7 @@ public class ActivityGroupCreateInformation extends ActionBarActivity {
     }
 
     private boolean alreadyGroup(String name){
-        for (ModelGroup g: modelSessionData.getModelGroups()){
+        for (ModelGroup g: ModelSessionData.getInstance().getModelGroups()){
             if (g.getName().equals(name)){
                 return true;
             }

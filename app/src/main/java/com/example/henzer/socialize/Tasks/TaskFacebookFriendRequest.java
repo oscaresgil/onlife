@@ -69,8 +69,7 @@ public class TaskFacebookFriendRequest implements GraphRequest.Callback {
                 Gson gson = new Gson();
                 sharedPreferences = context.getSharedPreferences(ActivityMain.MyPREFERENCES, Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putString("friends", gson.toJson(friends));
-                editor.commit();
+                editor.putString("friends", gson.toJson(friends)).commit();
                 activityMain.gotoHome();
             }
             /*if(TAG.equals("ActivitySelectContacts")){

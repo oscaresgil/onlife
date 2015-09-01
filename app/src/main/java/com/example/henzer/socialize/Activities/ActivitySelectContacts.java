@@ -32,7 +32,6 @@ public class ActivitySelectContacts extends Activity {
     private final String TAG = "ActivitySelectContacts";
     private StickyHeaderDecoration decor;
     private RecyclerView mList;
-    private ModelSessionData modelSessionData;
     private List<ModelPerson> friends;
     private List<ModelPerson> allFriends;
     private Animation animation1,animation2;
@@ -43,8 +42,8 @@ public class ActivitySelectContacts extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_contact);
 
-        modelSessionData = (ModelSessionData)getIntent().getExtras().getSerializable("data");
-        friends = modelSessionData.getFriends();
+        //modelSessionData = (ModelSessionData)getIntent().getExtras().getSerializable("data");
+        friends = ModelSessionData.getInstance().getFriends();
 
         mList = (RecyclerView) findViewById(R.id.ActivitySelectContact_RecyclerViewList);
         mList.setHasFixedSize(true);

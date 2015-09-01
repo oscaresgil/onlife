@@ -2,7 +2,6 @@ package com.example.henzer.socialize.Activities;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Path;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -21,8 +20,8 @@ public class ActivityLogoScreen extends Activity{
 
         PathView pathView = (PathView) findViewById(R.id.ActivityLogoScreen_PathView);
         pathView.getPathAnimator()
-                .delay(300)
-                .duration(800)
+                .delay(getResources().getInteger(R.integer.activity_logo_screen_path_animator_delay))
+                .duration(getResources().getInteger(R.integer.activity_logo_screen_path_animator_duration))
                 .start();
 
         TimerTask task = new TimerTask() {
@@ -35,6 +34,6 @@ public class ActivityLogoScreen extends Activity{
         };
 
         Timer timer = new Timer();
-        timer.schedule(task,getResources().getInteger(R.integer.splash_screen_time));
+        timer.schedule(task,getResources().getInteger(R.integer.activity_logo_screen_splash_screen_time));
     }
 }

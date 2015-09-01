@@ -25,6 +25,7 @@ import com.example.henzer.socialize.Models.ModelGroup;
 import com.example.henzer.socialize.Models.ModelPerson;
 import com.example.henzer.socialize.Models.ModelSessionData;
 import com.example.henzer.socialize.R;
+import com.example.henzer.socialize.Tasks.TaskGetFriends;
 import com.example.henzer.socialize.Tasks.TaskSetFriends;
 import com.facebook.login.LoginManager;
 import com.google.gson.Gson;
@@ -36,7 +37,6 @@ import java.util.List;
 import static com.example.henzer.socialize.Controller.StaticMethods.activateDeviceAdmin;
 
 public class ActivityHome extends ActionBarActivity {
-    public static ModelSessionData modelSessionData;
     private ModelPerson userLogin;
     private List<ModelPerson> friends;
     private List<ModelGroup> groups;
@@ -62,7 +62,8 @@ public class ActivityHome extends ActionBarActivity {
             sharedPreferences.edit().putString("groups",gson.toJson(groups)).commit();
         }
 
-        modelSessionData = new ModelSessionData(userLogin,friends,groups);
+        //modelSessionData = new ModelSessionData(userLogin,friends,groups);
+        ModelSessionData.initInstance(userLogin,friends,groups);
 
         if (!sharedPreferences.contains("session")) {
             ArrayList<String> idFriends = new ArrayList<>();
@@ -72,6 +73,8 @@ public class ActivityHome extends ActionBarActivity {
             }
             TaskSetFriends taskFriends = new TaskSetFriends(this);
             taskFriends.execute(idFriends);
+        }else{
+            new TaskGetFriends(this,null).execute(userLogin.getId());
         }
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.orange_light)));
         getSupportActionBar().setTitle((Html.fromHtml("<b><font color=\"#000000\">" + getString(R.string.app_name) + "</font></b>")));
@@ -79,7 +82,6 @@ public class ActivityHome extends ActionBarActivity {
         // Get the ViewPager and set it's PagerAdapter so that it can display items
         ViewPager viewPager = (ViewPager) findViewById(R.id.ActivityHome_ViewPager);
         AdapterFragmentPager pgAdapter = new AdapterFragmentPager(getSupportFragmentManager(), ActivityHome.this);
-        pgAdapter.setModelSessionData(modelSessionData);
 
         viewPager.setAdapter(pgAdapter);
 
@@ -94,7 +96,6 @@ public class ActivityHome extends ActionBarActivity {
         // Center the tabs in the layout
         layoutSlidingTab.setDistributeEvenly(true);
         layoutSlidingTab.setViewPager(viewPager);
-
 
         sharedPreferences.edit().putBoolean("session", true).commit();
 
@@ -126,6 +127,15 @@ public class ActivityHome extends ActionBarActivity {
         moveTaskToBack(true);
     }
 
+    @Override
+    protected void onDestroy() {
+        Gson gson = new Gson();
+        sharedPreferences.edit().putString("userLogin",gson.toJson(ModelSessionData.getInstance().getUser())).commit();
+        sharedPreferences.edit().putString("friends",gson.toJson(ModelSessionData.getInstance().getFriends())).commit();
+        sharedPreferences.edit().putString("groups",gson.toJson(ModelSessionData.getInstance().getModelGroups())).commit();
+        super.onDestroy();
+    }
+
     public void settings(MenuItem item){
         MaterialSimpleListAdapter materialAdapter = new MaterialSimpleListAdapter(this);
         materialAdapter.add(new MaterialSimpleListItem.Builder(this)
@@ -140,17 +150,17 @@ public class ActivityHome extends ActionBarActivity {
                     public void onSelection(MaterialDialog materialDialog, View view, int which, CharSequence charSequence) {
                         if (which == 0) {
 
-                            List<ModelPerson> friends = modelSessionData.getFriends();
+                            List<ModelPerson> friends = ModelSessionData.getInstance().getFriends();
                             for (ModelPerson f: friends){
                                 f.setSelected(false);
                             }
 
                             Intent intent = new Intent(ActivityHome.this, ActivitySelectContacts.class);
-                            intent.putExtra("data", modelSessionData);
+                            intent.putExtra("data", ModelSessionData.getInstance());
                             startActivity(intent);
                             materialDialog.cancel();
 
-                            friends = modelSessionData.getFriends();
+                            friends = ModelSessionData.getInstance().getFriends();
                             for (ModelPerson f: friends){
                                 f.setSelected(false);
                                 //Log.i("Friend Home Selected", f.isHomeSelected() + "");
@@ -163,6 +173,7 @@ public class ActivityHome extends ActionBarActivity {
 
     public void logout(MenuItem item) {
         sharedPreferences.edit().clear().commit();
+        ModelSessionData.getInstance().clear();
         LoginManager.getInstance().logOut();
         ActivityHome.this.finish();
     }

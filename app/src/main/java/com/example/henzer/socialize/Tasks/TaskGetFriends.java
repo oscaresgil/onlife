@@ -11,6 +11,7 @@ import com.example.henzer.socialize.Activities.ActivityMain;
 import com.example.henzer.socialize.Controller.JSONParser;
 import com.example.henzer.socialize.Fragments.FragmentContacts;
 import com.example.henzer.socialize.Models.ModelPerson;
+import com.example.henzer.socialize.Models.ModelSessionData;
 import com.example.henzer.socialize.R;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -21,6 +22,8 @@ import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class TaskGetFriends extends AsyncTask<String, Void, ArrayList<ModelPerson>> {
@@ -37,8 +40,15 @@ public class TaskGetFriends extends AsyncTask<String, Void, ArrayList<ModelPerso
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        dialog.setTitle(context.getResources().getString(R.string.loading_friends));
-        dialog.show();
+        if (dialog!=null) {
+            dialog = new MaterialDialog.Builder(context)
+                    .title(R.string.dialog_please_wait)
+                    .content(R.string.loading_friends)
+                    .progress(true,0)
+                    .widgetColor(context.getResources().getColor(R.color.orange_light))
+                    .cancelable(false)
+                    .show();
+        }
     }
 
     @Override
@@ -63,12 +73,17 @@ public class TaskGetFriends extends AsyncTask<String, Void, ArrayList<ModelPerso
     @Override
     protected void onPostExecute(ArrayList<ModelPerson> friends) {
         super.onPostExecute(friends);
-        ActivityHome.modelSessionData.setFriends(friends);
-        Gson gson = new Gson();
-        context.getSharedPreferences(ActivityMain.MyPREFERENCES,Context.MODE_PRIVATE).edit().putString("friends",gson.toJson(friends)).commit();
-        FragmentContacts.setFriends(friends);
-        dialog.dismiss();
-        SnackBar.show((Activity)context,"OnPostExecuteGetFriends");
+        if (dialog!=null) {
+            dialog.dismiss();
+        }
+
+        Collections.sort(friends, new Comparator<ModelPerson>() {
+            @Override
+            public int compare(ModelPerson modelPerson1, ModelPerson modelPerson2) {
+                return modelPerson1.getName().compareTo(modelPerson2.getName());
+            }
+        });
+        ModelSessionData.getInstance().setFriends(friends);
     }
 
 }

@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <integer name="splash_screen_time">3000</integer>
+
+    <integer name="activity_logo_screen_splash_screen_time">1800</integer>
+    <integer name="activity_logo_screen_path_animator_delay">300</integer>
+    <integer name="activity_logo_screen_path_animator_duration">800</integer>
 
     <integer name="animation_search_contact_create">1500</integer>
     <integer name="flip_animation_time">60</integer>

@@ -14,7 +14,6 @@ import com.example.henzer.socialize.R;
 public class AdapterFragmentPager extends FragmentPagerAdapter {
     final int PAGE_COUNT = 2;
     private String tabTitles[];
-    private ModelSessionData modelSessionData;
 
     public AdapterFragmentPager(FragmentManager fm, Context context) {
         super(fm);
@@ -26,23 +25,15 @@ public class AdapterFragmentPager extends FragmentPagerAdapter {
     }
 
     @Override public Fragment getItem(int position) {
-        Bundle arguments = new Bundle();
-        arguments.putSerializable("data", modelSessionData);
         if (position==0) {
-            return FragmentContacts.newInstance(arguments);
+            return new FragmentContacts();
         }
         else {
-            return FragmentGroups.newInstance(arguments);
+            return new FragmentGroups();
         }
     }
 
     @Override public CharSequence getPageTitle(int position) {
         return tabTitles[position];
     }
-
-    public void setModelSessionData(ModelSessionData modelSessionData) {
-        this.modelSessionData = modelSessionData;
-    }
-
-
 }

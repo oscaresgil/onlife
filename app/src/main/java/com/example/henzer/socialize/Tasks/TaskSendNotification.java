@@ -49,11 +49,8 @@ public class TaskSendNotification extends AsyncTask<ModelPerson, String, Boolean
     protected Boolean doInBackground(ModelPerson... params) {
         //Parametros a enviar
         List<NameValuePair> p = new ArrayList<>();
-        Log.e("FriendBlocked",params.toString());
         for(int i = 0; i<params.length; i++){
-            Log.e("Id[]",params[i].toString());
             p.add(new BasicNameValuePair("id[]",params[i].getId_phone()));
-            Log.i("IDPHONE",params[i].getId_phone());
         }
 
         p.add(new BasicNameValuePair("userName", actualUser));
@@ -61,8 +58,8 @@ public class TaskSendNotification extends AsyncTask<ModelPerson, String, Boolean
         p.add(new BasicNameValuePair("gifName", gifName));
 
         JSONObject json = jsonParser.makeHttpRequest("http://104.236.74.55/onlife/gcm.php", "POST", p);
-        Log.e("AddNewGroup", json.toString());
-
+        Log.e(TAG, "Response: "+json.toString());
+        //for (int i=0; i<30000; i++);
         try {
             boolean error = json.getBoolean("error");
             if(error==false){

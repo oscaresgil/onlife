@@ -72,7 +72,7 @@ public class ActivityGroupBlock extends AppCompatActivity {
     private SweetSheet sweetSheet;
     private Toolbar toolbar;
 
-    private ModelSessionData modelSessionData;
+    //private ModelSessionData modelSessionData;
     private ModelPerson actualUser;
     private ModelGroup modelGroup;
     private List<ModelPerson> friendsInGroup;
@@ -106,9 +106,8 @@ public class ActivityGroupBlock extends AppCompatActivity {
         }
 
         Intent i = getIntent();
-        modelSessionData = (ModelSessionData) i.getSerializableExtra("sessiondata");
         modelGroup = (ModelGroup) i.getSerializableExtra("modelgroup");
-        actualUser = modelSessionData.getUser();
+        actualUser = ModelSessionData.getInstance().getUser();
         friendsInGroup = modelGroup.getFriendsInGroup();
 
         CollapsingToolbarLayout collapser = (CollapsingToolbarLayout) findViewById(R.id.ActivityGroupBlock_CollapsingToolBarLayout);
@@ -256,8 +255,8 @@ public class ActivityGroupBlock extends AppCompatActivity {
                     @Override
                     public void onPositive(MaterialDialog dialog) {
                         SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
-                        modelSessionData.getModelGroups();
-                        removeGroup(modelGroup,sharedPreferences,modelSessionData);
+                        //modelSessionData.getModelGroups();
+                        removeGroup(modelGroup);
 
                         dialog.dismiss();
                         dialog.cancel();

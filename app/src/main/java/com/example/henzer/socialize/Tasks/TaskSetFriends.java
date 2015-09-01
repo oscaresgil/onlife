@@ -44,7 +44,7 @@ public class TaskSetFriends extends AsyncTask<ArrayList<String>, Void, String> {
                 .title(context.getResources().getString(R.string.dialog_please_wait))
                 .content(context.getResources().getString(R.string.uploading_friends))
                 .progress(true,10)
-                .widgetColor(R.color.orange_light)
+                .widgetColor(context.getResources().getColor(R.color.orange_light))
                 .cancelable(false)
                 .show();
     }

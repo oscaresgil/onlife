@@ -134,7 +134,7 @@ public class StaticMethods {
         }
     }
 
-    public static void removeGroup(ModelGroup modelGroup, SharedPreferences sharedPreferences,ModelSessionData modelSessionData){
+    public static void removeGroup(ModelGroup modelGroup, SharedPreferences sharedPreferences, ModelSessionData modelSessionData){
         List<ModelGroup> modelGroups = modelSessionData.getModelGroups();
         for (int i=0; i< modelGroups.size(); i++){
             if (modelGroups.get(i).getId()== modelGroup.getId()){
@@ -145,6 +145,18 @@ public class StaticMethods {
         Gson gson = new Gson();
         modelSessionData.setModelGroups(modelGroups);
         sharedPreferences.edit().putString("groups", gson.toJson(modelGroups)).commit();
+    }
+
+    public static void removeGroup(ModelGroup modelGroup){
+        List<ModelGroup> modelGroups = ModelSessionData.getInstance().getModelGroups();
+        for (int i=0; i< modelGroups.size(); i++){
+            if (modelGroups.get(i).getId()== modelGroup.getId()){
+                modelGroups.remove(i);
+                Log.e("RemovedGroup",modelGroups.toString());
+            }
+        }
+        Gson gson = new Gson();
+        ModelSessionData.getInstance().setModelGroups(modelGroups);
     }
 
     public static String saveImage(Context context, String name, Bitmap image){

@@ -49,8 +49,6 @@ public class ActivityMain extends Activity{
     private CallbackManager callbackManager;
     private SharedPreferences sharedPreferences;
 
-    private Bundle infoFB;
-
     private ProfileTracker mProfileTracker;
 
 
@@ -99,26 +97,26 @@ public class ActivityMain extends Activity{
         SharedPreferences preferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
         preferences.edit().clear().commit();*/
 
-        mProfileTracker = new ProfileTracker() {
-            @Override
-            protected void onCurrentProfileChanged(Profile oldProfile, Profile profile) {
-                Gson gson = new Gson();
-                sharedPreferences = getSharedPreferences(ActivityMain.MyPREFERENCES, Context.MODE_PRIVATE);
-                userLogin = new ModelPerson(profile.getId(), sharedPreferences.getString("gcmId", ""), profile.getName(), "http://graph.facebook.com/" + profile.getId() + "/picture?type=large", "A");
-                sharedPreferences.edit().putString("userLogin", gson.toJson(userLogin)).commit();
-                SnackBar.show(ActivityMain.this,"ActivityMainOnCurrentProfileChanged");
-                TaskAddNewUser taskAddNewUser = new TaskAddNewUser();
-                taskAddNewUser.execute(userLogin);
 
-                Bundle params = new Bundle();
-                params.putString("fields", "id,name");
-                new GraphRequest(AccessToken.getCurrentAccessToken(),"/me/friends",params,HttpMethod.GET, new TaskFacebookFriendRequest(ActivityMain.this,TAG)).executeAsync();
-                mProfileTracker.stopTracking();
-            }
-        };
-        mProfileTracker.startTracking();
 
         callbackManager = CallbackManager.Factory.create();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (callbackManager.onActivityResult(requestCode, resultCode, data)) return;
+    }
+
+    @Override
+    public void onBackPressed() {
+        moveTaskToBack(true);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.e(TAG, "onResume()");
         if (isNetworkAvailable(ActivityMain.this)) {
             loginButton.registerCallback(callbackManager, facebookCallback);
         }else{
@@ -129,63 +127,7 @@ public class ActivityMain extends Activity{
                 }
             });
         }
-        Log.i("Carga", "Todo bien hasta ahora");
-    }
 
-/*    public void loginWithFB(View view){
-        if (isNetworkAvailable(ActivityMain.this)) {
-            friends = new ArrayList<>();
-            if (AccessToken.getCurrentAccessToken() == null) {
-                try {
-                    LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile", "user_friends", "email"));
-                    Log.i("METODO", "Entro a loginButton");
-                    //loginButton.setText(R.string.action_logout);
-                } catch (Exception ex) {
-                    //Toast.makeText(this, "There was a problem.", Toast.LENGTH_SHORT).show();
-                }
-            } else {
-                try {
-                    LoginManager.getInstance().logOut();
-                    Log.i("METODO", "Entroa loginButton null");
-                    //loginButton.setText(R.string.login_facebook);
-                    SharedPreferences sharedpreferences = getSharedPreferences(ActivityMain.MyPREFERENCES, Context.MODE_PRIVATE);
-                    SharedPreferences.Editor editor = sharedpreferences.edit();
-                    editor.clear();
-                    editor.commit();
-                } catch (Exception ex) {
-                    //Toast.makeText(this, "There was a problem.", Toast.LENGTH_SHORT).show();
-                }
-            }
-        }else{
-            SnackBar.show(ActivityMain.this, R.string.no_connection, R.string.button_change_connection, new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    startActivity(new Intent(Settings.ACTION_WIRELESS_SETTINGS));
-                }
-            });
-        }
-    }*/
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        /*switch (requestCode) {
-            case StaticMethods.ACTIVATION_REQUEST:
-                if (resultCode == Activity.RESULT_OK) {
-                    Log.i("DeviceAdminSample", "Administration enabled!");
-                } else {
-                    Log.i("DeviceAdminSample", "Administration enable FAILED!");
-                }
-                return;
-        }*/
-        super.onActivityResult(requestCode, resultCode, data);
-        if (callbackManager.onActivityResult(requestCode, resultCode, data)) return;
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Log.e("Methods", "I passed onResume()");
         if (!isNetworkAvailable(ActivityMain.this)) {
             SnackBar.show(ActivityMain.this, R.string.no_connection, R.string.button_change_connection, new View.OnClickListener() {
                 @Override
@@ -194,6 +136,27 @@ public class ActivityMain extends Activity{
                 }
             });
         }
+        mProfileTracker = new ProfileTracker() {
+            @Override
+            protected void onCurrentProfileChanged(Profile oldProfile, Profile profile) {
+                Log.e(TAG, "Cambio el perfil");
+                if (profile!=null) {
+                    Gson gson = new Gson();
+                    sharedPreferences = getSharedPreferences(ActivityMain.MyPREFERENCES, Context.MODE_PRIVATE);
+                    userLogin = new ModelPerson(profile.getId(), sharedPreferences.getString("gcmId", ""), profile.getName(), "http://graph.facebook.com/" + profile.getId() + "/picture?type=large", "A");
+                    sharedPreferences.edit().putString("userLogin", gson.toJson(userLogin)).commit();
+                    SnackBar.show(ActivityMain.this,"ActivityMainOnCurrentProfileChanged");
+                    TaskAddNewUser taskAddNewUser = new TaskAddNewUser();
+                    taskAddNewUser.execute(userLogin);
+
+                    Bundle params = new Bundle();
+                    params.putString("fields", "id,name");
+                    new GraphRequest(AccessToken.getCurrentAccessToken(),"/me/friends",params,HttpMethod.GET, new TaskFacebookFriendRequest(ActivityMain.this,TAG)).executeAsync();
+                    mProfileTracker.stopTracking();
+                }
+            }
+        };
+        mProfileTracker.startTracking();
         if(sharedPreferences.contains("session")){
             gotoHome();
         }

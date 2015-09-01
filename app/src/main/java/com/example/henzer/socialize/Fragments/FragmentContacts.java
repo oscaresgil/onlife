@@ -27,6 +27,7 @@ import com.example.henzer.socialize.Activities.ActivityMain;
 import com.example.henzer.socialize.Adapters.AdapterContact;
 import com.example.henzer.socialize.BlockActivity.ActivityFriendBlock;
 import com.example.henzer.socialize.Models.ModelPerson;
+import com.example.henzer.socialize.Models.ModelSessionData;
 import com.example.henzer.socialize.R;
 import com.example.henzer.socialize.Tasks.TaskImageDownload;
 import com.example.henzer.socialize.Tasks.TaskSendNotification;
@@ -45,7 +46,7 @@ public class FragmentContacts extends Fragment {
     public static final String TAG = "ContactsFragment";
 
     private ModelPerson actualUser;
-    public static List<ModelPerson> friends;
+    private List<ModelPerson> friends;
 
     private AdapterContact adapter;
     private SwipeRefreshLayout mSwipeRefreshLayout;
@@ -58,13 +59,6 @@ public class FragmentContacts extends Fragment {
     public static boolean isSearchOpened = false;
     private String mSearchQuery;
 
-    public static FragmentContacts newInstance(Bundle arguments){
-        FragmentContacts myfragment = new FragmentContacts();
-        if(arguments !=null){
-            myfragment.setArguments(arguments);
-        }
-        return myfragment;
-    }
     public FragmentContacts(){}
 
     @Override
@@ -75,10 +69,8 @@ public class FragmentContacts extends Fragment {
         setHasOptionsMenu(true);
         View v = inflater.inflate(R.layout.fragment_contacts, container, false);
 
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(ActivityMain.MyPREFERENCES, Context.MODE_PRIVATE);
-        Gson gson = new Gson();
-        actualUser = gson.fromJson(sharedPreferences.getString("userLogin", ""), ModelPerson.class);
-        friends = gson.fromJson(sharedPreferences.getString("friends", ""), (new TypeToken<ArrayList<ModelPerson>>(){}.getType()));
+        actualUser = ModelSessionData.getInstance().getUser();
+        friends = ModelSessionData.getInstance().getFriends();
 
         friendsFiltred = new ArrayList<>();
         friendsFiltred.addAll(friends);
@@ -93,7 +85,8 @@ public class FragmentContacts extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (!mSwipeRefreshLayout.isRefreshing()){
-                    ModelPerson user = (ModelPerson)gridView.getItemAtPosition(position);
+                    adapter.notifyDataSetChanged();
+                    ModelPerson user = ModelSessionData.getInstance().getFriends().get(position);
                     Intent i = new Intent(getActivity(),ActivityFriendBlock.class);
                     i.putExtra("data",user);
                     i.putExtra("actualuser", actualUser);
@@ -109,7 +102,9 @@ public class FragmentContacts extends Fragment {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
                 if (!mSwipeRefreshLayout.isRefreshing() && isNetworkAvailable(getActivity())){
-                    new TaskSendNotification(getActivity(), actualUser.getName(),"" , "").execute((ModelPerson) gridView.getItemAtPosition(position));
+                    adapter.notifyDataSetChanged();
+                    ModelPerson user = ModelSessionData.getInstance().getFriends().get(position);
+                    new TaskSendNotification(getActivity(), actualUser.getName(),"" , "").execute(user);
                 }else if(!isNetworkAvailable(getActivity())){
                     SnackBar.show(getActivity(), R.string.no_connection, R.string.button_change_connection, new View.OnClickListener() {
                         @Override
@@ -291,7 +286,4 @@ public class FragmentContacts extends Fragment {
         return isSearchOpened;
     }
 
-    public static void setFriends(List<ModelPerson> friendsSet){
-        friends = friendsSet;
-    }
 }
