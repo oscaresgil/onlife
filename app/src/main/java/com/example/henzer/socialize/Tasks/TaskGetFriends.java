@@ -44,7 +44,7 @@ public class TaskGetFriends extends AsyncTask<String, Void, ArrayList<ModelPerso
             dialog = new MaterialDialog.Builder(context)
                     .title(R.string.dialog_please_wait)
                     .content(R.string.loading_friends)
-                    .progress(true,0)
+                    .progress(true,10)
                     .widgetColor(context.getResources().getColor(R.color.orange_light))
                     .cancelable(false)
                     .show();

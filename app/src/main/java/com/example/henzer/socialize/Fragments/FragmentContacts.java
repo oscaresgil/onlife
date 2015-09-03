@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarActivity;
@@ -39,7 +40,11 @@ import com.rengwuxian.materialedittext.MaterialEditText;
 import java.util.ArrayList;
 import java.util.List;
 
+import pl.droidsonroids.gif.GifImageButton;
+import pl.droidsonroids.gif.GifImageView;
+
 import static com.example.henzer.socialize.Controller.StaticMethods.isNetworkAvailable;
+import static com.example.henzer.socialize.Controller.StaticMethods.loadImage;
 import static com.example.henzer.socialize.Controller.StaticMethods.showSoftKeyboard;
 
 public class FragmentContacts extends Fragment {
@@ -60,6 +65,12 @@ public class FragmentContacts extends Fragment {
     private String mSearchQuery;
 
     public FragmentContacts(){}
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Log.i(TAG,"OnCreate()");
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -119,6 +130,8 @@ public class FragmentContacts extends Fragment {
                 return true;
             }
         });
+
+//        new TaskImageDownload()
 
         return v;
     }

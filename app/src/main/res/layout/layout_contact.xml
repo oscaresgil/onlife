@@ -15,17 +15,23 @@
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-			<net.soulwolf.widget.ratiolayout.widget.RatioImageView
+			<!--<net.soulwolf.widget.ratiolayout.widget.RatioImageView
                 android:id="@+id/LayoutContact_ImageViewLeft"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:datumRatio="datumWidth"
                 app:widthRatio="1.0"
                 app:heightRatio="1.0"
-                android:scaleType="centerCrop"/>
+                android:scaleType="centerCrop"/>-->
+            <pl.droidsonroids.gif.GifImageView
+                android:id="@+id/LayoutContact_GifImageView"
+                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@drawable/loadinggif"/>
             <TextView
                 style="@style/FriendStyle"
-                android:layout_below="@id/LayoutContact_ImageViewLeft"
+                android:layout_below="@id/LayoutContact_GifImageView"
                 android:id="@+id/LayoutContact_TextViewNameLeft"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"

@@ -14,6 +14,9 @@ import net.soulwolf.widget.ratiolayout.widget.RatioImageView;
 
 import java.util.List;
 
+import pl.droidsonroids.gif.GifImageButton;
+import pl.droidsonroids.gif.GifImageView;
+
 import static com.example.henzer.socialize.Controller.StaticMethods.loadImage;
 
 public class AdapterContact extends BaseAdapter {
@@ -47,7 +50,8 @@ public class AdapterContact extends BaseAdapter {
         if (view == null){
             view = ((Activity)context).getLayoutInflater().inflate(R.layout.layout_contact, parent, false);
             contactHolder = new ContactHolder();
-            contactHolder.avatar = (RatioImageView) view.findViewById(R.id.LayoutContact_ImageViewLeft);
+            //contactHolder.avatar = (RatioImageView) view.findViewById(R.id.LayoutContact_GifImageView);
+            contactHolder.avatar = (GifImageView) view.findViewById(R.id.LayoutContact_GifImageView);
             contactHolder.name = (TextView) view.findViewById(R.id.LayoutContact_TextViewNameLeft);
 
             view.setTag(contactHolder);
@@ -62,7 +66,8 @@ public class AdapterContact extends BaseAdapter {
         return view;
     }
     static class ContactHolder{
-        RatioImageView avatar;
+        //RatioImageView avatar;
+        GifImageView avatar;
         TextView name;
     }
 }

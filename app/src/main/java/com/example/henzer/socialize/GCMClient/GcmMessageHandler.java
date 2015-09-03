@@ -51,20 +51,16 @@ public class GcmMessageHandler extends IntentService {
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
                         .setSmallIcon(R.drawable.ic_launcher)
-                        .setLargeIcon(BitmapFactory.decodeResource(context.getResources(),R.drawable.ic_launcher))
                         .setTicker(getResources().getString(R.string.notification_someone_block_you))
-                        .setContentTitle(user)
-                        .setVibrate(new long[]{ 1000, 1000 })
-                        .setPriority(Notification.PRIORITY_HIGH)
-                        .setWhen(System.currentTimeMillis())
-                        .setLights(getResources().getColor(R.color.orange_light), 3000, 3000)
-                        .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
-                        .setContentText(message);
+                        .setStyle(new NotificationCompat.BigTextStyle())
+                        .setOnlyAlertOnce(true);
 
         myNotificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
         myNotificationManager.notify(0, mBuilder.build());
+        myNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        myNotificationManager.cancel(0);
 
         Intent i = new Intent(context, ActivityInBlock.class);
         i.putExtra("user",user);

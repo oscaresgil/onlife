@@ -47,10 +47,11 @@ public class TaskImageDownload extends AsyncTask<Void, Void, Void> {
         this.friends = friends;
     }
 
-    public TaskImageDownload(Context context, List<ModelPerson> friends, boolean isMaterialDialog) {
+    public TaskImageDownload(Context context, List<ModelPerson> friends, boolean isMaterialDialog, AdapterContact adapter) {
         this.context = context;
         this.friends = friends;
         this.isMaterialDialog = isMaterialDialog;
+        this.adapter = adapter;
     }
 
     @Override protected void onPreExecute() {

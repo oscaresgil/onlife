@@ -55,7 +55,7 @@ public class TaskFacebookFriendRequest implements GraphRequest.Callback {
                 friends.add(contact);
             }
 
-            new TaskImageDownload(context,friends,true).execute();
+            //;new TaskImageDownload(context,friends,true).execute();
 
             Collections.sort(friends, new Comparator<ModelPerson>() {
                 @Override

@@ -97,45 +97,6 @@ public class ActivityMain extends Activity{
         SharedPreferences preferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
         preferences.edit().clear().commit();*/
 
-
-
-        callbackManager = CallbackManager.Factory.create();
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (callbackManager.onActivityResult(requestCode, resultCode, data)) return;
-    }
-
-    @Override
-    public void onBackPressed() {
-        moveTaskToBack(true);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Log.e(TAG, "onResume()");
-        if (isNetworkAvailable(ActivityMain.this)) {
-            loginButton.registerCallback(callbackManager, facebookCallback);
-        }else{
-            SnackBar.show(ActivityMain.this, R.string.no_connection, R.string.button_change_connection, new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    startActivity(new Intent(Settings.ACTION_WIRELESS_SETTINGS));
-                }
-            });
-        }
-
-        if (!isNetworkAvailable(ActivityMain.this)) {
-            SnackBar.show(ActivityMain.this, R.string.no_connection, R.string.button_change_connection, new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    startActivity(new Intent(Settings.ACTION_WIRELESS_SETTINGS));
-                }
-            });
-        }
         mProfileTracker = new ProfileTracker() {
             @Override
             protected void onCurrentProfileChanged(Profile oldProfile, Profile profile) {
@@ -156,9 +117,50 @@ public class ActivityMain extends Activity{
                 }
             }
         };
-        mProfileTracker.startTracking();
+
+        callbackManager = CallbackManager.Factory.create();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (callbackManager.onActivityResult(requestCode, resultCode, data)) return;
+    }
+
+    @Override
+    public void onBackPressed() {
+        moveTaskToBack(true);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.e(TAG, "onResume()");
+
+        if (isNetworkAvailable(ActivityMain.this)) {
+            loginButton.registerCallback(callbackManager, facebookCallback);
+        }else{
+            SnackBar.show(ActivityMain.this, R.string.no_connection, R.string.button_change_connection, new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(new Intent(Settings.ACTION_WIRELESS_SETTINGS));
+                }
+            });
+        }
+
+        if (!isNetworkAvailable(ActivityMain.this)) {
+            SnackBar.show(ActivityMain.this, R.string.no_connection, R.string.button_change_connection, new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(new Intent(Settings.ACTION_WIRELESS_SETTINGS));
+                }
+            });
+        }
+
         if(sharedPreferences.contains("session")){
             gotoHome();
+        }else{
+            mProfileTracker.startTracking();
         }
     }
 

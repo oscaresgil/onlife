@@ -73,8 +73,10 @@ public class TaskSetFriends extends AsyncTask<ArrayList<String>, Void, String> {
     @Override
     protected void onPostExecute(String userId) {
         super.onPostExecute(userId);
+        dialog.dismiss();
         TaskGetFriends taskGetFriends = new TaskGetFriends(context, dialog);
         taskGetFriends.execute(userId);
+
     }
 
 }

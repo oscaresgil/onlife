@@ -26,6 +26,7 @@ import com.example.henzer.socialize.Models.ModelPerson;
 import com.example.henzer.socialize.Models.ModelSessionData;
 import com.example.henzer.socialize.R;
 import com.example.henzer.socialize.Tasks.TaskGetFriends;
+import com.example.henzer.socialize.Tasks.TaskImageDownload;
 import com.example.henzer.socialize.Tasks.TaskSetFriends;
 import com.facebook.login.LoginManager;
 import com.google.gson.Gson;
@@ -175,7 +176,7 @@ public class ActivityHome extends ActionBarActivity {
         sharedPreferences.edit().clear().commit();
         ModelSessionData.getInstance().clear();
         LoginManager.getInstance().logOut();
-        ActivityHome.this.finish();
+        finish();
     }
 
 }
