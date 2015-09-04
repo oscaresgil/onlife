@@ -50,8 +50,7 @@ public class AdapterContact extends BaseAdapter {
         if (view == null){
             view = ((Activity)context).getLayoutInflater().inflate(R.layout.layout_contact, parent, false);
             contactHolder = new ContactHolder();
-            //contactHolder.avatar = (RatioImageView) view.findViewById(R.id.LayoutContact_GifImageView);
-            contactHolder.avatar = (GifImageView) view.findViewById(R.id.LayoutContact_GifImageView);
+            contactHolder.avatar = (RatioImageView) view.findViewById(R.id.LayoutContact_GifImageView);
             contactHolder.name = (TextView) view.findViewById(R.id.LayoutContact_TextViewNameLeft);
 
             view.setTag(contactHolder);
@@ -66,8 +65,7 @@ public class AdapterContact extends BaseAdapter {
         return view;
     }
     static class ContactHolder{
-        //RatioImageView avatar;
-        GifImageView avatar;
+        RatioImageView avatar;
         TextView name;
     }
 }

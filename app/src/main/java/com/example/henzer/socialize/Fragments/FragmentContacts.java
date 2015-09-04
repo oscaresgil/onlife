@@ -188,9 +188,9 @@ public class FragmentContacts extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        friendsFiltred.clear();
+        /*friendsFiltred.clear();
         friendsFiltred.addAll(friends);
-        adapter.notifyDataSetChanged();
+        adapter.notifyDataSetChanged();*/
         super.onCreateOptionsMenu(menu, inflater);
     }
 
