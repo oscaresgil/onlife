@@ -65,6 +65,13 @@ public class StaticMethods {
         imm.showSoftInput(v,0);
     }
 
+    public static boolean imageInDisk(Context context, String name){
+        ContextWrapper cw = new ContextWrapper(context);
+        File dirImages = cw.getDir("Profiles",Context.MODE_APPEND);
+        File myPath = new File(dirImages, name+".png");
+        return myPath.exists();
+    }
+
     public static Bitmap loadImage(Context context, String name){
         ContextWrapper cw = new ContextWrapper(context);
         File dirImages = cw.getDir("Profiles",Context.MODE_APPEND);
@@ -76,6 +83,19 @@ public class StaticMethods {
             b = BitmapFactory.decodeFile(myPath.getAbsolutePath(), options);
         }catch (Exception e){e.printStackTrace();}
         return b;
+    }
+
+    public static String saveImage(Context context, String name, Bitmap image){
+        ContextWrapper cw = new ContextWrapper(context);
+        File dirImages = cw.getDir("Profiles",Context.MODE_PRIVATE);
+        File myPath = new File(dirImages, name+".png");
+        FileOutputStream fos = null;
+        try{
+            fos = new FileOutputStream(myPath);
+            image.compress(Bitmap.CompressFormat.PNG, 90, fos);
+            fos.flush();
+        }catch (Exception e){e.printStackTrace();}
+        return myPath.getAbsolutePath();
     }
 
     public static List<String> setGifNames(){
@@ -159,18 +179,6 @@ public class StaticMethods {
         ModelSessionData.getInstance().setModelGroups(modelGroups);
     }
 
-    public static String saveImage(Context context, String name, Bitmap image){
-        ContextWrapper cw = new ContextWrapper(context);
-        File dirImages = cw.getDir("Profiles",Context.MODE_PRIVATE);
-        File myPath = new File(dirImages, name+".png");
-        FileOutputStream fos = null;
-        try{
-            fos = new FileOutputStream(myPath);
-            image.compress(Bitmap.CompressFormat.PNG, 90, fos);
-            fos.flush();
-        }catch (Exception e){e.printStackTrace();}
-        return myPath.getAbsolutePath();
-    }
 
     public static boolean isNetworkAvailable(Activity activity) {
         ConnectivityManager connectivityManager = (ConnectivityManager) activity.getSystemService(Context.CONNECTIVITY_SERVICE);

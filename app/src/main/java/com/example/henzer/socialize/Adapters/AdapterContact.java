@@ -9,23 +9,24 @@ import android.widget.TextView;
 
 import com.example.henzer.socialize.Models.ModelPerson;
 import com.example.henzer.socialize.R;
+import com.example.henzer.socialize.Tasks.TaskSimpleImageDownload;
 
 import net.soulwolf.widget.ratiolayout.widget.RatioImageView;
 
 import java.util.List;
 
-import pl.droidsonroids.gif.GifImageButton;
-import pl.droidsonroids.gif.GifImageView;
-
+import static com.example.henzer.socialize.Controller.StaticMethods.imageInDisk;
 import static com.example.henzer.socialize.Controller.StaticMethods.loadImage;
 
 public class AdapterContact extends BaseAdapter {
     private Context context;
     private List<ModelPerson> friends;
+    private int size;
 
     public AdapterContact(Context context, List<ModelPerson> friends) {
         this.context = context;
         this.friends = friends;
+        size = context.getResources().getInteger(R.integer.adapter_contact_size_little);
     }
 
     @Override
@@ -59,7 +60,11 @@ public class AdapterContact extends BaseAdapter {
             contactHolder = (ContactHolder) view.getTag();
         }
 
-        contactHolder.avatar.setImageBitmap(loadImage(context,userData.getId()));
+        if (imageInDisk(context, userData.getId())){
+            contactHolder.avatar.setImageBitmap(loadImage(context,userData.getId()));
+        }else{
+            new TaskSimpleImageDownload(context,contactHolder.avatar,size).execute(userData);
+        }
         contactHolder.name.setText(userData.getName());
 
         return view;

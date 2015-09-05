@@ -2,7 +2,6 @@ package com.example.henzer.socialize.Fragments;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
@@ -24,27 +23,20 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.Toast;
 
-import com.example.henzer.socialize.Activities.ActivityMain;
 import com.example.henzer.socialize.Adapters.AdapterContact;
 import com.example.henzer.socialize.BlockActivity.ActivityFriendBlock;
 import com.example.henzer.socialize.Models.ModelPerson;
 import com.example.henzer.socialize.Models.ModelSessionData;
 import com.example.henzer.socialize.R;
-import com.example.henzer.socialize.Tasks.TaskImageDownload;
+import com.example.henzer.socialize.Tasks.TaskRefreshImageDownload;
 import com.example.henzer.socialize.Tasks.TaskSendNotification;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.kenny.snackbar.SnackBar;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import pl.droidsonroids.gif.GifImageButton;
-import pl.droidsonroids.gif.GifImageView;
-
 import static com.example.henzer.socialize.Controller.StaticMethods.isNetworkAvailable;
-import static com.example.henzer.socialize.Controller.StaticMethods.loadImage;
 import static com.example.henzer.socialize.Controller.StaticMethods.showSoftKeyboard;
 
 public class FragmentContacts extends Fragment {
@@ -275,12 +267,7 @@ public class FragmentContacts extends Fragment {
 
     public void refreshContact(){
         if (isNetworkAvailable(getActivity())) {
-            new TaskImageDownload(getActivity(),mSwipeRefreshLayout,false,adapter,friends).execute();
-            /*FacebookFriendRequest fbRequest = new FacebookFriendRequest(getActivity(),actualUser,friends,adapter);
-            Bundle params = new Bundle();
-            params.putString("fields","id,name");
-            new GraphRequest(AccessToken.getCurrentAccessToken(), "/me/friends", params, HttpMethod.GET, fbRequest).executeAsync();
-            adapter.notifyDataSetChanged();*/
+            new TaskRefreshImageDownload(getActivity(),mSwipeRefreshLayout,adapter).execute(actualUser.getId());
         }else{
             mSwipeRefreshLayout.setRefreshing(false);
             SnackBar.show(getActivity(), R.string.no_connection, R.string.button_change_connection, new View.OnClickListener() {

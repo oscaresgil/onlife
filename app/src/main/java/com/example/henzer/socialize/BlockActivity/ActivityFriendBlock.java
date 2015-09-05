@@ -86,7 +86,7 @@ public class ActivityFriendBlock extends AppCompatActivity {
         collapser.setExpandedTitleColor(getResources().getColor(R.color.white));
 
         RatioImageView avatar = (RatioImageView) findViewById(R.id.ActivityFriendBlock_ImageViewContact);
-        avatar.setImageBitmap(loadImage(this,friend.getId()));
+        avatar.setImageBitmap(loadImage(this,friend.getId()+"_"+getResources().getInteger(R.integer.adapter_contact_size_little)));
 
         maxCharsView = (TextView) findViewById(R.id.ActivityFriendBlock_TextViewMaxCharacters);
         messageTextView = (MaterialEditText) findViewById(R.id.ActivityFriendBlock_EditTextMessage);

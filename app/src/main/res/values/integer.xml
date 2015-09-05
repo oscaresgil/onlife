@@ -24,4 +24,7 @@
     <integer name="fragment_contacts_size_refresh_layout">15</integer>
     <integer name="fragment_contacts_rows">2</integer>
 
+    <!-- Adapter Contact Integers -->
+    <integer name="adapter_contact_size_little">501</integer>
+
 </resources>

@@ -19,6 +19,7 @@
                 android:id="@+id/LayoutContact_GifImageView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:src="@drawable/loading_friend_icon"
                 app:datumRatio="datumWidth"
                 app:widthRatio="1.0"
                 app:heightRatio="1.0"

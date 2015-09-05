@@ -49,13 +49,10 @@ public class TaskFacebookFriendRequest implements GraphRequest.Callback {
 
                 // http://stackoverflow.com/questions/5841710/get-user-image-from-facebook-graph-api
                 // http://stackoverflow.com/questions/23559736/android-skimagedecoderfactory-returned-null-error
-                String path = "https://graph.facebook.com/" + id + "/picture?width=700&height=700";
-                URL pathURL = new URL(path);
-                ModelPerson contact = new ModelPerson(id, null, deleteAccent(name), pathURL.toString(), "A");
+                String path = "https://graph.facebook.com/" + id + "/picture?";
+                ModelPerson contact = new ModelPerson(id, null, deleteAccent(name), path, "A");
                 friends.add(contact);
             }
-
-            //;new TaskImageDownload(context,friends,true).execute();
 
             Collections.sort(friends, new Comparator<ModelPerson>() {
                 @Override

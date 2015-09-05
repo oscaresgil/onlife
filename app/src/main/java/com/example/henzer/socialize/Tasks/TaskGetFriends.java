@@ -37,6 +37,8 @@ public class TaskGetFriends extends AsyncTask<String, Void, ArrayList<ModelPerso
         jsonParser = new JSONParser();
     }
 
+
+
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
@@ -63,6 +65,7 @@ public class TaskGetFriends extends AsyncTask<String, Void, ArrayList<ModelPerso
             Gson gson = new Gson();
             ArrayList<ModelPerson> friends = new ArrayList<>();
             friends = gson.fromJson(jsonFriends.getString("friends"), (new TypeToken<ArrayList<ModelPerson>>(){}.getType()));
+
             return friends;
         }catch(Exception ex){
             ex.printStackTrace();
