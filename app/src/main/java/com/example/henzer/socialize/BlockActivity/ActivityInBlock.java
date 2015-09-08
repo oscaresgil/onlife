@@ -10,6 +10,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.applovin.adview.AppLovinInterstitialAd;
+import com.applovin.sdk.AppLovinSdk;
 import com.example.henzer.socialize.R;
 import com.skyfishjy.library.RippleBackground;
 
@@ -23,9 +25,11 @@ public class ActivityInBlock extends Activity{
     private String user;
     private String message;
     private String gifName;
+    private boolean flagForAds;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        this.flagForAds=true;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_in_block);
 
@@ -87,5 +91,27 @@ public class ActivityInBlock extends Activity{
                 return false;
             }
         });
+
+        // Inicializar el sdk de AppLovin
+        AppLovinSdk.initializeSdk(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(flagForAds){
+            if(AppLovinInterstitialAd.isAdReadyToDisplay(this)){
+                // An ad is available to display.  It's safe to call show.
+                AppLovinInterstitialAd.show(this);
+                flagForAds=false;
+
+            }
+            else{
+                Log.i("No funciona", "AppLovin");
+                // No ad is available to display.  Perform failover logic...
+            }
+
+        }
+
     }
 }

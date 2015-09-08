@@ -50,5 +50,6 @@ dependencies {
     compile 'net.soulwolf.widget:ratiolayout:1.0.0'
     compile 'com.google.code.gson:gson:1.7.2'
     compile 'com.eftimoff:android-pathview:1.0.6@aar'
+    compile files('libs/applovin-sdk-6.1.1.jar')
 }
 

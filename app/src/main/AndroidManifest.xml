@@ -136,6 +136,13 @@
             android:launchMode="standard"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:windowSoftInputMode="adjustPan"/>
+
+        <activity android:name="com.applovin.adview.AppLovinInterstitialActivity" />
+
+        <activity android:name="com.applovin.adview.AppLovinConfirmationActivity" />
+
+        <meta-data android:name="applovin.sdk.key"
+            android:value="C6fu6R-u5bFg0ywiTuu3z-EJsI2kI73UEkMKALCFxSxyOsetkXwgW9_MS24l98DNsah0wvFsLBol1Rbl-WQUfP"  />
     </application>
 
 </manifest>
