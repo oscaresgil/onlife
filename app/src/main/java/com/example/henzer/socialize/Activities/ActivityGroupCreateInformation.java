@@ -206,12 +206,13 @@ public class ActivityGroupCreateInformation extends ActionBarActivity {
                             path = saveImage(getApplicationContext(), name, BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher));
                         }
 
-                        SharedPreferences sharedPreferences = getSharedPreferences(ActivityMain.MyPREFERENCES, Context.MODE_PRIVATE);
-                        Gson gson = new Gson();
-                        List<ModelGroup> groups = gson.fromJson(sharedPreferences.getString("groups", ""), (new TypeToken<ArrayList<ModelGroup>>(){}.getType()));
-                        ModelGroup newG = new ModelGroup(groups.size(), name, selected, path, limit, state);
-                        groups.add(newG);
-                        sharedPreferences.edit().putString("groups",gson.toJson(groups)).commit();
+                        ModelGroup newG = new ModelGroup(ModelSessionData.getInstance().getModelGroups().size(), name, selected, path, limit, state);
+                        ModelSessionData.getInstance().getModelGroups().add(newG);
+
+                        for (ModelPerson p: friends){
+                            p.setSelected(false);
+                        }
+
                         finish();
                         animationEnd(this);
                     }

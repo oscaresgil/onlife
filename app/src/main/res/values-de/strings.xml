@@ -61,6 +61,7 @@
     <string name="button_change_text_message">Change Text</string>
     <string name="button_block">Block!</string>
     <string name="blocked_here">blocked here..</string>
+    <string name="friend_inactive">Friend Inactive</string>
 
     <string name="no_connection">No Connection.</string>
     <string name="no_server">Server not available.</string>

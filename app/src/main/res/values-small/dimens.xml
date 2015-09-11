@@ -61,6 +61,7 @@
     <dimen name="layout_contact_text_size">12sp</dimen>
     <dimen name="layout_contact_text_padding">4dp</dimen>
     <dimen name="layout_contact_linearlayout_margin">3dp</dimen>
+    <dimen name="layout_contact_switch_margin">10dp</dimen>
 
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>

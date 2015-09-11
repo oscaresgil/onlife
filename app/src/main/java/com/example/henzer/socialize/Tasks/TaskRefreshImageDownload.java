@@ -6,8 +6,11 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
+import android.widget.Adapter;
+import android.widget.GridView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.example.henzer.socialize.Activities.ActivityHome;
 import com.example.henzer.socialize.Activities.ActivityMain;
 import com.example.henzer.socialize.Adapters.AdapterContact;
 import com.example.henzer.socialize.Controller.JSONParser;
@@ -34,6 +37,8 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import static com.example.henzer.socialize.Controller.StaticMethods.saveImage;
@@ -42,16 +47,16 @@ public class TaskRefreshImageDownload extends AsyncTask<String, Void, Void> {
     public final static String TAG = "TaskImageDownload";
     private Context context;
     private SwipeRefreshLayout mSwipeRefreshLayout;
-    private AdapterContact adapter;
+    private GridView gridView;
     private List<ModelPerson> friends;
     private JSONParser jsonParser;
     private int size;
 
-    public TaskRefreshImageDownload(Context context, SwipeRefreshLayout mSwipeRefreshLayout, AdapterContact adapter){
+    public TaskRefreshImageDownload(Context context, SwipeRefreshLayout mSwipeRefreshLayout, GridView gridView){
         Log.e(TAG,"OnConstructor");
         this.context = context;
         this.mSwipeRefreshLayout = mSwipeRefreshLayout;
-        this.adapter = adapter;
+        this.gridView = gridView;
         size = context.getResources().getInteger(R.integer.adapter_contact_size_little);
         jsonParser = new JSONParser();
     }
@@ -72,7 +77,6 @@ public class TaskRefreshImageDownload extends AsyncTask<String, Void, Void> {
             Gson gson = new Gson();
             friends = gson.fromJson(jsonFriends.getString("friends"), (new TypeToken<ArrayList<ModelPerson>>() {
             }.getType()));
-
             for (ModelPerson user : friends) {
                 String userID = user.getId();
                 String urlStr = user.getPhoto() + "width=" + size + "&height=" + size;
@@ -101,8 +105,20 @@ public class TaskRefreshImageDownload extends AsyncTask<String, Void, Void> {
     @Override protected void onPostExecute(Void aVoid) {
         mSwipeRefreshLayout.setRefreshing(false);
 
+        Collections.sort(friends, new Comparator<ModelPerson>() {
+            @Override
+            public int compare(ModelPerson modelPerson1, ModelPerson modelPerson2) {
+                return modelPerson1.getName().compareTo(modelPerson2.getName());
+            }
+        });
+
+        Log.i(TAG,"FriendsOnPost: "+friends.toString());
+
         ModelSessionData.getInstance().setFriends(friends);
-        adapter.notifyDataSetChanged();
+        AdapterContact adapter = new AdapterContact(context,R.layout.layout_contact,friends);
+        ((ActivityHome)context).setAdapterContact(adapter);
+        gridView.setAdapter(adapter);
+
         SnackBar.show((Activity)context, R.string.toast_contacts_refreshed);
     }
 }

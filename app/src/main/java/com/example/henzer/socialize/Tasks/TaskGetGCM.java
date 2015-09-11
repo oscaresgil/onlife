@@ -58,5 +58,4 @@ public class TaskGetGCM extends AsyncTask<Void, Void, String> {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("gcmId", idMSG);
         editor.commit();
-        SnackBar.show((Activity)context, "TaskGCMOnPost "+idMSG);
 }}

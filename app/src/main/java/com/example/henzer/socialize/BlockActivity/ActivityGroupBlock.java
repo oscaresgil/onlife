@@ -254,8 +254,6 @@ public class ActivityGroupBlock extends AppCompatActivity {
                 .callback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onPositive(MaterialDialog dialog) {
-                        SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
-                        //modelSessionData.getModelGroups();
                         removeGroup(modelGroup);
 
                         dialog.dismiss();

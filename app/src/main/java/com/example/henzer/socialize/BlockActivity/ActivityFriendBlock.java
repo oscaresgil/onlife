@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -29,6 +30,7 @@ import com.r0adkll.slidr.model.SlidrPosition;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
 import net.soulwolf.widget.ratiolayout.widget.RatioImageView;
+import net.steamcrafted.loadtoast.LoadToast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -85,8 +87,10 @@ public class ActivityFriendBlock extends AppCompatActivity {
         collapser.setCollapsedTitleTextColor(getResources().getColor(R.color.white));
         collapser.setExpandedTitleColor(getResources().getColor(R.color.white));
 
+        //NestedScrollView nestedScrollView = (NestedScrollView) findViewById(R.id.ActivityFriendBlock_ScrollView);
+
         RatioImageView avatar = (RatioImageView) findViewById(R.id.ActivityFriendBlock_ImageViewContact);
-        avatar.setImageBitmap(loadImage(this,friend.getId()+"_"+getResources().getInteger(R.integer.adapter_contact_size_little)));
+        avatar.setImageBitmap(loadImage(this,friend.getId()));
 
         maxCharsView = (TextView) findViewById(R.id.ActivityFriendBlock_TextViewMaxCharacters);
         messageTextView = (MaterialEditText) findViewById(R.id.ActivityFriendBlock_EditTextMessage);
@@ -162,12 +166,23 @@ public class ActivityFriendBlock extends AppCompatActivity {
         if (isNetworkAvailable(this)) {
             hideSoftKeyboard(this,messageTextView);
             if (textWatcherListener.getActualChar() <= 30) {
-                try {
-                    Log.i(TAG, "Block: "+friend.getName()+". Actual User: "+actualUser.getName()+" Message: "+messageTextView.getText().toString()+". Gif: "+gifName);
-                    new TaskSendNotification(ActivityFriendBlock.this, actualUser.getName(), messageTextView.getText().toString(),gifName).execute(friend);
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                    SnackBar.show(ActivityFriendBlock.this, R.string.error);
+                if (actualUser.getState().equals("A")) {
+                    try {
+                        Log.i(TAG, "Block: " + friend.getName() + ". Actual User: " + actualUser.getName() + " Message: " + messageTextView.getText().toString() + ". Gif: " + gifName);
+                        new TaskSendNotification(ActivityFriendBlock.this, actualUser.getName(), messageTextView.getText().toString(), gifName).execute(friend);
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                        SnackBar.show(ActivityFriendBlock.this, R.string.error);
+                    }
+                }else{
+                    LoadToast toast = new LoadToast(ActivityFriendBlock.this).setText(getResources().getString(R.string.blocking))
+                            .setTextColor(getResources().getColor(R.color.black))
+                            .setTranslationY(100)
+                            .setProgressColor(getResources().getColor(R.color.orange_light))
+                            .show();
+
+                    SnackBar.show(ActivityFriendBlock.this,R.string.friend_inactive);
+                    toast.error();
                 }
             } else {
                 SnackBar.show(ActivityFriendBlock.this, R.string.message_max_characters, R.string.button_change_text_message, new View.OnClickListener() {

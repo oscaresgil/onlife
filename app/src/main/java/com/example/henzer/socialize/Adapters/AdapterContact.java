@@ -2,9 +2,19 @@ package com.example.henzer.socialize.Adapters;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.ColorStateList;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
+import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.example.henzer.socialize.Models.ModelPerson;
@@ -18,12 +28,14 @@ import java.util.List;
 import static com.example.henzer.socialize.Controller.StaticMethods.imageInDisk;
 import static com.example.henzer.socialize.Controller.StaticMethods.loadImage;
 
-public class AdapterContact extends BaseAdapter {
+public class AdapterContact extends ArrayAdapter<ModelPerson> {
+    public static final String TAG="AdapterContact";
     private Context context;
     private List<ModelPerson> friends;
     private int size;
 
-    public AdapterContact(Context context, List<ModelPerson> friends) {
+    public AdapterContact(Context context, int resource, List<ModelPerson> friends) {
+        super(context, resource, friends);
         this.context = context;
         this.friends = friends;
         size = context.getResources().getInteger(R.integer.adapter_contact_size_little);
@@ -41,7 +53,7 @@ public class AdapterContact extends BaseAdapter {
 
     @Override
     public long getItemId(int position) {
-        return 0;
+        return position;
     }
 
     @Override
@@ -53,6 +65,7 @@ public class AdapterContact extends BaseAdapter {
             contactHolder = new ContactHolder();
             contactHolder.avatar = (RatioImageView) view.findViewById(R.id.LayoutContact_GifImageView);
             contactHolder.name = (TextView) view.findViewById(R.id.LayoutContact_TextViewNameLeft);
+            contactHolder.visibility = (ImageView)view.findViewById(R.id.LayoutContact_RadioButton);
 
             view.setTag(contactHolder);
         }
@@ -66,11 +79,18 @@ public class AdapterContact extends BaseAdapter {
             new TaskSimpleImageDownload(context,contactHolder.avatar,size).execute(userData);
         }
         contactHolder.name.setText(userData.getName());
+        Log.i(TAG, "Adapter User: "+userData.toString());
+        if (userData.getState().equals("O")){
+            contactHolder.visibility.setImageBitmap(BitmapFactory.decodeResource(context.getResources(),R.drawable.ic_visib_red));
+        }else{
+            contactHolder.visibility.setImageBitmap(BitmapFactory.decodeResource(context.getResources(),R.drawable.ic_visib_green));
+        }
 
         return view;
     }
     static class ContactHolder{
         RatioImageView avatar;
         TextView name;
+        ImageView visibility;
     }
 }

@@ -1,11 +1,15 @@
 package com.example.henzer.socialize.Fragments;
 
+import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.WakefulBroadcastReceiver;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.text.Editable;
@@ -23,8 +27,10 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.Toast;
 
+import com.example.henzer.socialize.Activities.ActivityHome;
 import com.example.henzer.socialize.Adapters.AdapterContact;
 import com.example.henzer.socialize.BlockActivity.ActivityFriendBlock;
+import com.example.henzer.socialize.GCMClient.GcmMessageHandler;
 import com.example.henzer.socialize.Models.ModelPerson;
 import com.example.henzer.socialize.Models.ModelSessionData;
 import com.example.henzer.socialize.R;
@@ -36,6 +42,7 @@ import com.rengwuxian.materialedittext.MaterialEditText;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.example.henzer.socialize.Controller.StaticMethods.animationStart;
 import static com.example.henzer.socialize.Controller.StaticMethods.isNetworkAvailable;
 import static com.example.henzer.socialize.Controller.StaticMethods.showSoftKeyboard;
 
@@ -78,7 +85,7 @@ public class FragmentContacts extends Fragment {
         friendsFiltred = new ArrayList<>();
         friendsFiltred.addAll(friends);
 
-        adapter = new AdapterContact(getActivity(),friendsFiltred);
+        adapter = ((ActivityHome)getActivity()).getAdapterContact();
         gridView = (GridView) v.findViewById(R.id.FragmentContacts_GridView);
         gridView.setAdapter(adapter);
         gridView.setSelector(R.drawable.list_selector);
@@ -88,13 +95,12 @@ public class FragmentContacts extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (!mSwipeRefreshLayout.isRefreshing()){
-                    adapter.notifyDataSetChanged();
                     ModelPerson user = ModelSessionData.getInstance().getFriends().get(position);
                     Intent i = new Intent(getActivity(),ActivityFriendBlock.class);
                     i.putExtra("data",user);
                     i.putExtra("actualuser", actualUser);
                     startActivity(i);
-                    getActivity().overridePendingTransition(R.animator.push_right, R.animator.push_left);
+                    animationStart(getActivity());
                 }else{
                     Toast.makeText(getActivity(),getResources().getString(R.string.toast_wait_until_contacts_refreshed),Toast.LENGTH_SHORT).show();
                 }
@@ -105,7 +111,6 @@ public class FragmentContacts extends Fragment {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
                 if (!mSwipeRefreshLayout.isRefreshing() && isNetworkAvailable(getActivity())){
-                    adapter.notifyDataSetChanged();
                     ModelPerson user = ModelSessionData.getInstance().getFriends().get(position);
                     new TaskSendNotification(getActivity(), actualUser.getName(),"" , "").execute(user);
                 }else if(!isNetworkAvailable(getActivity())){
@@ -122,8 +127,6 @@ public class FragmentContacts extends Fragment {
                 return true;
             }
         });
-
-//        new TaskImageDownload()
 
         return v;
     }
@@ -267,7 +270,7 @@ public class FragmentContacts extends Fragment {
 
     public void refreshContact(){
         if (isNetworkAvailable(getActivity())) {
-            new TaskRefreshImageDownload(getActivity(),mSwipeRefreshLayout,adapter).execute(actualUser.getId());
+            new TaskRefreshImageDownload(getActivity(),mSwipeRefreshLayout,gridView).execute(actualUser.getId());
         }else{
             mSwipeRefreshLayout.setRefreshing(false);
             SnackBar.show(getActivity(), R.string.no_connection, R.string.button_change_connection, new View.OnClickListener() {

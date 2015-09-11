@@ -61,6 +61,7 @@
     <string name="button_change_text_message">Cambiar Texto</string>
     <string name="button_block">Bloquear!</string>
     <string name="blocked_here">acá te han bloqueado..</string>
+    <string name="friend_inactive">Amigo Inactivo</string>
 
     <string name="no_connection">No hay Conexión.</string>
     <string name="no_server">Servidor no disponible.</string>

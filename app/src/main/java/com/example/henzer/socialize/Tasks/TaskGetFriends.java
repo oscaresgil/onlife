@@ -8,6 +8,8 @@ import android.util.Log;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.henzer.socialize.Activities.ActivityHome;
 import com.example.henzer.socialize.Activities.ActivityMain;
+import com.example.henzer.socialize.Adapters.AdapterContact;
+import com.example.henzer.socialize.Adapters.AdapterGroup;
 import com.example.henzer.socialize.Controller.JSONParser;
 import com.example.henzer.socialize.Fragments.FragmentContacts;
 import com.example.henzer.socialize.Models.ModelPerson;
@@ -36,8 +38,6 @@ public class TaskGetFriends extends AsyncTask<String, Void, ArrayList<ModelPerso
         this.context = c;
         jsonParser = new JSONParser();
     }
-
-
 
     @Override
     protected void onPreExecute() {
@@ -86,7 +86,10 @@ public class TaskGetFriends extends AsyncTask<String, Void, ArrayList<ModelPerso
                 return modelPerson1.getName().compareTo(modelPerson2.getName());
             }
         });
-        ModelSessionData.getInstance().setFriends(friends);
-    }
 
+        ModelSessionData.getInstance().setFriends(friends);
+        AdapterContact adapterContact = ((ActivityHome) context).getAdapterContact();
+        adapterContact.clear();
+        adapterContact.addAll(friends);
+    }
 }

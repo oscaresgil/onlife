@@ -1,10 +1,13 @@
 package com.example.henzer.socialize.Activities;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Looper;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
 import android.text.Html;
@@ -16,28 +19,37 @@ import android.view.View;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.simplelist.MaterialSimpleListAdapter;
 import com.afollestad.materialdialogs.simplelist.MaterialSimpleListItem;
+import com.example.henzer.socialize.Adapters.AdapterContact;
 import com.example.henzer.socialize.Adapters.AdapterFragmentPager;
+import com.example.henzer.socialize.Adapters.AdapterGroup;
 import com.example.henzer.socialize.Layouts.LayoutSlidingTab;
 import com.example.henzer.socialize.Models.ModelGroup;
 import com.example.henzer.socialize.Models.ModelPerson;
 import com.example.henzer.socialize.Models.ModelSessionData;
 import com.example.henzer.socialize.R;
+import com.example.henzer.socialize.Tasks.TaskChangeState;
 import com.example.henzer.socialize.Tasks.TaskGetFriends;
 import com.example.henzer.socialize.Tasks.TaskSetFriends;
+import com.facebook.internal.WebDialog;
 import com.facebook.login.LoginManager;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.kenny.snackbar.SnackBar;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.henzer.socialize.Controller.StaticMethods.activateDeviceAdmin;
+import static com.example.henzer.socialize.Controller.StaticMethods.getFriend;
 
 public class ActivityHome extends ActionBarActivity {
+    public static final String TAG = "ActivityHome";
     private ModelPerson userLogin;
     private List<ModelPerson> friends;
     private List<ModelGroup> groups;
     private SharedPreferences sharedPreferences;
+    private AdapterContact adapterContact;
+    private AdapterGroup adapterGroup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,6 +108,20 @@ public class ActivityHome extends ActionBarActivity {
 
         sharedPreferences.edit().putBoolean("session", true).commit();
 
+        adapterContact = new AdapterContact(this,R.layout.layout_contact,friends);
+        adapterGroup = new AdapterGroup(this,R.layout.layout_groups,groups);
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        registerReceiver(broadcastReceiver,new IntentFilter("com.example.henzer.socialize.Activities.ActivityHome"));
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
     }
 
     @Override
@@ -119,18 +145,44 @@ public class ActivityHome extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Bundle extras = intent.getExtras();
+            String state = extras.getString("state");
+            String id = extras.getString("id");
+            List<ModelPerson> friendsT = ModelSessionData.getInstance().getFriends();
+            for (ModelPerson p: friendsT){
+                if (p.getId().equals(id)){
+                    p.setState(state);
+                }
+            }
+            adapterContact.clear();
+            adapterContact.addAll(friendsT);
+        }
+    };
+
     @Override
     public void onBackPressed() {
         moveTaskToBack(true);
     }
 
     @Override
-    protected void onDestroy() {
+    protected void onStop() {
+        Log.i(TAG,"onStop()");
         Gson gson = new Gson();
         sharedPreferences.edit().putString("userLogin",gson.toJson(ModelSessionData.getInstance().getUser())).commit();
         sharedPreferences.edit().putString("friends",gson.toJson(ModelSessionData.getInstance().getFriends())).commit();
         sharedPreferences.edit().putString("groups",gson.toJson(ModelSessionData.getInstance().getModelGroups())).commit();
+        unregisterReceiver(broadcastReceiver);
+        super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        Log.i(TAG,"onDestroy()");
         super.onDestroy();
+
     }
 
     public void settings(MenuItem item){
@@ -147,7 +199,8 @@ public class ActivityHome extends ActionBarActivity {
                     public void onSelection(MaterialDialog materialDialog, View view, int which, CharSequence charSequence) {
                         if (which == 0) {
 
-                            List<ModelPerson> friends = ModelSessionData.getInstance().getFriends();
+
+                            /*List<ModelPerson> friends = ModelSessionData.getInstance().getFriends();
                             for (ModelPerson f: friends){
                                 f.setSelected(false);
                             }
@@ -161,7 +214,7 @@ public class ActivityHome extends ActionBarActivity {
                             for (ModelPerson f: friends){
                                 f.setSelected(false);
                                 //Log.i("Friend Home Selected", f.isHomeSelected() + "");
-                            }
+                            }*/
                         }
                     }
                 });
@@ -169,10 +222,29 @@ public class ActivityHome extends ActionBarActivity {
     }
 
     public void logout(MenuItem item) {
-        sharedPreferences.edit().clear().commit();
+        sharedPreferences.edit().remove("session").commit();
+        sharedPreferences.edit().remove("friends").commit();
+        sharedPreferences.edit().remove("groups").commit();
+        sharedPreferences.edit().remove("userLogin").commit();
         ModelSessionData.getInstance().clear();
         LoginManager.getInstance().logOut();
+        new TaskChangeState().execute(userLogin.getId(),"O");
         finish();
     }
 
+    public AdapterContact getAdapterContact() {
+        return adapterContact;
+    }
+
+    public AdapterGroup getAdapterGroup() {
+        return adapterGroup;
+    }
+
+    public void setAdapterContact(AdapterContact adapterContact) {
+        this.adapterContact = adapterContact;
+    }
+
+    public void setAdapterGroup(AdapterGroup adapterGroup) {
+        this.adapterGroup = adapterGroup;
+    }
 }

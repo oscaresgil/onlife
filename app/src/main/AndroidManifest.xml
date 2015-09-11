@@ -63,6 +63,7 @@
                 <category android:name="com.hmkcode.android.gcm" />
             </intent-filter>
         </receiver>
+
         <receiver android:name=".Controller.DeviceAdmin"
             android:label="@string/device_admin"
             android:description="@string/device_admin_description"
@@ -79,6 +80,7 @@
 
         <!-- Se crea un nuevo servicio de la aplicacion -->
         <service android:name=".GCMClient.GcmMessageHandler" />
+        <service android:name=".Services.ServicePhoneState"/>
 
         <!-- Guarda la version de Google Play Services para poder utilizar GCM -->
         <!--meta-data

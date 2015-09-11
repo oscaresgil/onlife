@@ -22,6 +22,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
 import com.example.henzer.socialize.Models.ModelGroup;
+import com.example.henzer.socialize.Models.ModelPerson;
 import com.example.henzer.socialize.Models.ModelSessionData;
 import com.example.henzer.socialize.R;
 import com.google.gson.Gson;
@@ -48,6 +49,10 @@ public class StaticMethods {
             Log.e("DeviceAdmin", "entro a la contidicion");
             activity.startActivityForResult(intent, ACTIVATION_REQUEST);
         }
+    }
+
+    public static void animationStart(Context context){
+        ((Activity)context).overridePendingTransition(R.animator.push_right, R.animator.push_left);
     }
 
     public static void animationEnd(Context context){
@@ -154,6 +159,15 @@ public class StaticMethods {
         }
     }
 
+    public static ModelPerson getFriend(String id){
+        for (ModelPerson p: ModelSessionData.getInstance().getFriends()){
+            if (p.getId().equals(id)){
+                return p;
+            }
+        }
+        return null;
+    }
+
     public static void removeGroup(ModelGroup modelGroup, SharedPreferences sharedPreferences, ModelSessionData modelSessionData){
         List<ModelGroup> modelGroups = modelSessionData.getModelGroups();
         for (int i=0; i< modelGroups.size(); i++){
@@ -175,7 +189,6 @@ public class StaticMethods {
                 Log.e("RemovedGroup",modelGroups.toString());
             }
         }
-        Gson gson = new Gson();
         ModelSessionData.getInstance().setModelGroups(modelGroups);
     }
 

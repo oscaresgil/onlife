@@ -24,6 +24,15 @@ public class ModelPerson implements Serializable{
         selected = false;
     }
 
+    public void setAttr(String id, String id_phone, String name, String photo, String state, boolean selected) {
+        this.id = id;
+        this.id_phone = id_phone;
+        this.name = name;
+        this.photo = photo;
+        this.state = state;
+        this.selected = selected;
+    }
+
     public String getId() {
         return id;
     }

@@ -23,6 +23,7 @@ import com.facebook.GraphRequest;
 import com.facebook.HttpMethod;
 import com.facebook.Profile;
 import com.facebook.ProfileTracker;
+import com.facebook.internal.WebDialog;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
@@ -104,7 +105,7 @@ public class ActivityMain extends Activity{
                 if (profile!=null) {
                     Gson gson = new Gson();
                     sharedPreferences = getSharedPreferences(ActivityMain.MyPREFERENCES, Context.MODE_PRIVATE);
-                    userLogin = new ModelPerson(profile.getId(), sharedPreferences.getString("gcmId", ""), profile.getName(), "http://graph.facebook.com/" + profile.getId() + "/picture?type=large", "A");
+                    userLogin = new ModelPerson(profile.getId(), sharedPreferences.getString("gcmId", ""), profile.getName(), "http://graph.facebook.com/" + profile.getId() + "/picture?", "A");
                     sharedPreferences.edit().putString("userLogin", gson.toJson(userLogin)).commit();
                     SnackBar.show(ActivityMain.this,"ActivityMainOnCurrentProfileChanged");
                     TaskAddNewUser taskAddNewUser = new TaskAddNewUser();
@@ -163,62 +164,6 @@ public class ActivityMain extends Activity{
             mProfileTracker.startTracking();
         }
     }
-
-    /*public void GetGCM() {
-        new AsyncTask<Void, Void, String>() {
-            @Override
-            protected String doInBackground(Void... params) {
-                String msg = "";
-                try {
-                    GcmHelper gcmRegistrationHelper = new GcmHelper(getApplicationContext());
-                    String gcmRegID = gcmRegistrationHelper.GCMRegister(PROJECT_NUMBER);
-                    msg = gcmRegID;
-                    Log.i("GCM", gcmRegID);
-                    return msg;
-                } catch (IOException e) {
-                    return null;
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    return null;
-                }
-            }
-            @Override
-            public void onPostExecute(String idMSG) {
-                //AddNewUser addNewUser = new AddNewUser(MainActivity.this);
-                userLogin.setId_phone(idMSG);
-                TaskLoadAllInformation load = new TaskLoadAllInformation(ActivityMain.this);
-                List<ModelPerson> enviados = new ArrayList();
-                enviados.add(userLogin);
-                enviados.addAll(friends);
-                JSONObject data = null;
-                try {
-                    data = load.execute(enviados).get();
-                    Log.e(TAG, data.toString());
-
-                    boolean error = data.getBoolean("error");
-                    String mensaje = data.getString("message");
-                    if(!error){
-                        sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
-                        Editor editor = sharedpreferences.edit();
-                        data.put("activity_groups", new JSONArray());
-                        editor.putString("session", data.toString());
-                        editor.commit();
-
-                        gotoHome();
-                    }else{
-                        SnackBar.show(ActivityMain.this, mensaje);
-                    }
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }.execute();
-    }*/
-
 
     public void gotoHome(){
 

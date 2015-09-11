@@ -20,6 +20,7 @@ import android.widget.ListView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.henzer.socialize.Activities.ActivityGroupCreateInformation;
+import com.example.henzer.socialize.Activities.ActivityHome;
 import com.example.henzer.socialize.Activities.ActivityMain;
 import com.example.henzer.socialize.Adapters.AdapterGroup;
 import com.example.henzer.socialize.BlockActivity.ActivityGroupBlock;
@@ -39,6 +40,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.example.henzer.socialize.Controller.StaticMethods.animationStart;
 import static com.example.henzer.socialize.Controller.StaticMethods.hideSoftKeyboard;
 import static com.example.henzer.socialize.Controller.StaticMethods.removeGroup;
 
@@ -61,9 +63,14 @@ public class FragmentGroups extends Fragment {
         //modelSessionData = (ModelSessionData) getArguments().getSerializable("data");
 
         modelGroups = ModelSessionData.getInstance().getModelGroups();
-        adapter = new AdapterGroup(getActivity(), R.layout.layout_groups, modelGroups);
+        //adapter = new AdapterGroup(getActivity(), R.layout.layout_groups, modelGroups);
+        adapter = ((ActivityHome)getActivity()).getAdapterGroup();
         list = (ListView)v.findViewById(R.id.FragmentGroups_ListGroup);
         list.setAdapter(adapter);
+        list.setLongClickable(true);
+        list.setOnItemLongClickListener(new LongItemClickListener());
+        list.setOnItemClickListener(new ItemClickListener());
+
         addGroupButton = (FloatingActionButton) v.findViewById(R.id.FragmentGroup_ButtonAddGroup);
         addGroupButton.attachToListView(list);
         addGroupButton.setOnClickListener(new View.OnClickListener() {
@@ -76,68 +83,11 @@ public class FragmentGroups extends Fragment {
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
-
-        final SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
-        Gson gson = new Gson();
-        modelGroups = gson.fromJson(sharedPreferences.getString("groups", ""), (new TypeToken<ArrayList<ModelGroup>>(){}.getType()));
-        ModelSessionData.getInstance().setModelGroups(modelGroups);
-
-        adapter = new AdapterGroup(getActivity(), R.layout.layout_groups, modelGroups);
-        list.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
-        list.setLongClickable(true);
-        list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                final ModelGroup actualModelGroup = modelGroups.get(position);
-
-                new MaterialDialog.Builder(getActivity())
-                        .title(getResources().getString(R.string.delete)+" "+actualModelGroup.getName())
-                        .content(R.string.really_delete)
-                        .positiveText(R.string.yes)
-                        .positiveColorRes(R.color.orange_light)
-                        .negativeText(R.string.no)
-                        .negativeColorRes(R.color.red)
-                        .callback(new MaterialDialog.ButtonCallback() {
-                            @Override
-                            public void onPositive(MaterialDialog dialog) {
-                                //removeGroup(actualModelGroup,sharedPreferences,modelSessionData);
-                                removeGroup(actualModelGroup);
-                                adapter.notifyDataSetChanged();
-                                dialog.dismiss();
-                                dialog.cancel();
-                            }
-                        }).show();
-
-                return true;
-            }
-        });
-
-        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ModelGroup modelGroup = modelGroups.get(position);
-                Intent intent = new Intent(getActivity(), ActivityGroupBlock.class);
-                intent.putExtra("modelgroup", modelGroup);
-                /*intent.putExtra("name", modelGroup.getName());
-                intent.putExtra("user", modelSessionData.getUser());*/
-                startActivity(intent);
-                getActivity().overridePendingTransition(R.animator.push_right, R.animator.push_left);
-            }
-        });
-    }
-
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        Log.e(TAG, "OnViewCreated");
+        //modelGroups = ModelSessionData.getInstance().getModelGroups();
+        //adapter = new AdapterGroup(getActivity(), R.layout.layout_groups, modelGroups);
+        //list.setAdapter(adapter);
     }
 
     @Override
@@ -159,11 +109,44 @@ public class FragmentGroups extends Fragment {
     public void addGroup(View view){
         Intent i = new Intent(getActivity(), ActivityGroupCreateInformation.class);
         startActivity(i);
-        getActivity().overridePendingTransition(R.animator.push_right, R.animator.push_left);
+        animationStart(getActivity());
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        return super.onOptionsItemSelected(item);
+    class LongItemClickListener implements AdapterView.OnItemLongClickListener {
+        @Override
+        public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+            final ModelGroup actualModelGroup = modelGroups.get(position);
+
+            new MaterialDialog.Builder(getActivity())
+                    .title(getResources().getString(R.string.delete)+" "+actualModelGroup.getName())
+                    .content(R.string.really_delete)
+                    .positiveText(R.string.yes)
+                    .positiveColorRes(R.color.orange_light)
+                    .negativeText(R.string.no)
+                    .negativeColorRes(R.color.red)
+                    .callback(new MaterialDialog.ButtonCallback() {
+                        @Override
+                        public void onPositive(MaterialDialog dialog) {
+                            removeGroup(actualModelGroup);
+                            adapter.remove(actualModelGroup);
+                            adapter.notifyDataSetChanged();
+                            dialog.dismiss();
+                            dialog.cancel();
+                        }
+                    }).show();
+
+            return true;
+        }
     }
+    class ItemClickListener implements AdapterView.OnItemClickListener {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            ModelGroup modelGroup = modelGroups.get(position);
+            Intent intent = new Intent(getActivity(), ActivityGroupBlock.class);
+            intent.putExtra("modelgroup", modelGroup);
+            startActivity(intent);
+            getActivity().overridePendingTransition(R.animator.push_right, R.animator.push_left);
+        }
+    }
+
 }
