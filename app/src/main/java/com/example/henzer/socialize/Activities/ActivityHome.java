@@ -1,5 +1,6 @@
 package com.example.henzer.socialize.Activities;
 
+import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -27,6 +28,7 @@ import com.example.henzer.socialize.Models.ModelGroup;
 import com.example.henzer.socialize.Models.ModelPerson;
 import com.example.henzer.socialize.Models.ModelSessionData;
 import com.example.henzer.socialize.R;
+import com.example.henzer.socialize.Services.ServicePhoneState;
 import com.example.henzer.socialize.Tasks.TaskChangeState;
 import com.example.henzer.socialize.Tasks.TaskGetFriends;
 import com.example.henzer.socialize.Tasks.TaskSetFriends;
@@ -54,6 +56,11 @@ public class ActivityHome extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Intent i = new Intent(this, ServicePhoneState.class);
+        i.putExtra("user","hola");
+        i.putExtra("state","A");
+        this.startService(i);
+
         setContentView(R.layout.activity_home);
 
         activateDeviceAdmin(this);
@@ -161,6 +168,8 @@ public class ActivityHome extends ActionBarActivity {
             adapterContact.addAll(friendsT);
         }
     };
+
+
 
     @Override
     public void onBackPressed() {

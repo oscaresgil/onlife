@@ -23,7 +23,7 @@ public class BroadcastReceiverPhoneStatus extends BroadcastReceiver{
         Log.i(TAG, "User: " + userLogin.toString());
 
         Intent i = new Intent(context, ServicePhoneState.class);
-        i.putExtra("user",userLogin);
+        i.putExtra("user",userLogin.getId());
         if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)){
             i.putExtra("state","I");
         }else if(intent.getAction().equals(Intent.ACTION_SCREEN_ON)){

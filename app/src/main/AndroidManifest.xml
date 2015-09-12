@@ -64,6 +64,15 @@
             </intent-filter>
         </receiver>
 
+        <receiver android:name=".BroadcastReceivers.BroadcastReceiverPhoneStatus"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.SCREEN_ON"/>
+                <action android:name="android.intent.action.SCREEN_OFF"/>
+            </intent-filter>
+        </receiver>
+
         <receiver android:name=".Controller.DeviceAdmin"
             android:label="@string/device_admin"
             android:description="@string/device_admin_description"
