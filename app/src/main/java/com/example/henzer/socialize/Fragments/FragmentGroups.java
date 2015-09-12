@@ -2,16 +2,13 @@ package com.example.henzer.socialize.Fragments;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -21,32 +18,24 @@ import android.widget.ListView;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.henzer.socialize.Activities.ActivityGroupCreateInformation;
 import com.example.henzer.socialize.Activities.ActivityHome;
-import com.example.henzer.socialize.Activities.ActivityMain;
 import com.example.henzer.socialize.Adapters.AdapterGroup;
 import com.example.henzer.socialize.BlockActivity.ActivityGroupBlock;
 import com.example.henzer.socialize.Models.ModelGroup;
-import com.example.henzer.socialize.Models.ModelPerson;
 import com.example.henzer.socialize.Models.ModelSessionData;
 import com.example.henzer.socialize.R;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.melnykov.fab.FloatingActionButton;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.henzer.socialize.Controller.StaticMethods.animationStart;
-import static com.example.henzer.socialize.Controller.StaticMethods.hideSoftKeyboard;
+import static com.example.henzer.socialize.Controller.StaticMethods.getModelGroupIndex;
 import static com.example.henzer.socialize.Controller.StaticMethods.removeGroup;
 
 public class FragmentGroups extends Fragment {
     public static final String TAG = "GroupsFragment";
-    //private ModelSessionData modelSessionData;
+    public static final int CREATE_GROUP_ACTIVITY_ID = 1;
+    public static final int GROUP_BLOCK_ACTIVITY_ID = 3;
+
     private AdapterGroup adapter;
     private ListView list;
     private FloatingActionButton addGroupButton;
@@ -83,14 +72,6 @@ public class FragmentGroups extends Fragment {
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        //modelGroups = ModelSessionData.getInstance().getModelGroups();
-        //adapter = new AdapterGroup(getActivity(), R.layout.layout_groups, modelGroups);
-        //list.setAdapter(adapter);
-    }
-
-    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         menu.findItem(R.id.searchContact).setVisible(false);
         if (FragmentContacts.isIsSearchOpened()){
@@ -106,9 +87,23 @@ public class FragmentGroups extends Fragment {
         super.onCreateOptionsMenu(menu, inflater);
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == getActivity().RESULT_OK){
+            if (requestCode == CREATE_GROUP_ACTIVITY_ID){
+                ModelGroup newG = (ModelGroup) data.getSerializableExtra("new_group");
+                adapter.add(newG);
+            }else if(requestCode == GROUP_BLOCK_ACTIVITY_ID){
+                ModelGroup delG = (ModelGroup) data.getSerializableExtra("delete_group");
+                int pos = getModelGroupIndex(delG,modelGroups);
+                adapter.remove(adapter.getItem(pos));
+            }
+        }
+    }
+
     public void addGroup(View view){
         Intent i = new Intent(getActivity(), ActivityGroupCreateInformation.class);
-        startActivity(i);
+        startActivityForResult(i, CREATE_GROUP_ACTIVITY_ID);
         animationStart(getActivity());
     }
 
@@ -143,8 +138,8 @@ public class FragmentGroups extends Fragment {
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             ModelGroup modelGroup = modelGroups.get(position);
             Intent intent = new Intent(getActivity(), ActivityGroupBlock.class);
-            intent.putExtra("modelgroup", modelGroup);
-            startActivity(intent);
+            intent.putExtra("model_group", modelGroup);
+            startActivityForResult(intent,GROUP_BLOCK_ACTIVITY_ID);
             getActivity().overridePendingTransition(R.animator.push_right, R.animator.push_left);
         }
     }

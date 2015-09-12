@@ -1,4 +1,4 @@
-package com.example.henzer.socialize.GCMClient;
+package com.example.henzer.socialize.Services;
 
 import android.app.IntentService;
 import android.app.Notification;

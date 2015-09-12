@@ -18,14 +18,9 @@ public class ListenerFlipCheckbox implements Animation.AnimationListener{
     private ModelPerson f;
     private RatioImageView imageButton;
     private Animation animation1,animation2;
-    private boolean home;
 
     public ListenerFlipCheckbox(Context context){
         this.context = context;
-    }
-
-    public void setHome(boolean home) {
-        this.home = home;
     }
 
     public void setFriend(ModelPerson f){
@@ -57,21 +52,6 @@ public class ListenerFlipCheckbox implements Animation.AnimationListener{
         imageButton.getLayoutParams().height = sizeInt;
         imageButton.getLayoutParams().width = sizeInt;
 
-        /*if (home) {
-            if (animation == animation1) {
-                if (!f.isHomeSelected()) {
-                    imageButton.setImageBitmap(loadImage(context,f.getId()));
-                } else {
-                    imageButton.setImageBitmap(BitmapFactory.decodeResource(context.getResources(),R.drawable.ic_action_done_large));
-                }
-                imageButton.clearAnimation();
-                imageButton.setAnimation(animation2);
-                imageButton.startAnimation(animation2);
-            } else {
-                f.setHomeSelected(!f.isHomeSelected());
-            }
-        }
-        else{*/
         if (animation == animation1){
             if (!f.isSelected()){
                 imageButton.setImageBitmap(loadImage(context,f.getId()));

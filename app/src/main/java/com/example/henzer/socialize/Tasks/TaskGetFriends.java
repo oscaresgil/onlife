@@ -2,8 +2,11 @@ package com.example.henzer.socialize.Tasks;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
+import android.provider.Settings;
 import android.util.Log;
+import android.view.View;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.henzer.socialize.Activities.ActivityHome;
@@ -27,6 +30,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+
+import static com.example.henzer.socialize.Controller.StaticMethods.friendsOnlyOnline;
+import static com.example.henzer.socialize.Controller.StaticMethods.isNetworkAvailable;
 
 public class TaskGetFriends extends AsyncTask<String, Void, ArrayList<ModelPerson>> {
     private MaterialDialog dialog;
@@ -76,20 +82,32 @@ public class TaskGetFriends extends AsyncTask<String, Void, ArrayList<ModelPerso
     @Override
     protected void onPostExecute(ArrayList<ModelPerson> friends) {
         super.onPostExecute(friends);
-        if (dialog!=null) {
-            dialog.dismiss();
-        }
-
-        Collections.sort(friends, new Comparator<ModelPerson>() {
-            @Override
-            public int compare(ModelPerson modelPerson1, ModelPerson modelPerson2) {
-                return modelPerson1.getName().compareTo(modelPerson2.getName());
+        if (isNetworkAvailable((Activity)context)){
+            if (dialog!=null) {
+                dialog.dismiss();
             }
-        });
 
-        ModelSessionData.getInstance().setFriends(friends);
-        AdapterContact adapterContact = ((ActivityHome) context).getAdapterContact();
-        adapterContact.clear();
-        adapterContact.addAll(friends);
+            //friends = friendsOnlyOnline(friends);
+
+            Collections.sort(friends, new Comparator<ModelPerson>() {
+                @Override
+                public int compare(ModelPerson modelPerson1, ModelPerson modelPerson2) {
+                    return modelPerson1.getName().compareTo(modelPerson2.getName());
+                }
+            });
+
+            ModelSessionData.getInstance().setFriends(friends);
+            AdapterContact adapterContact = ((ActivityHome) context).getAdapterContact();
+            adapterContact.clear();
+            adapterContact.addAll(friends);
+        }
+        else{
+            SnackBar.show((Activity)context, R.string.no_connection, R.string.button_change_connection, new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    context.startActivity(new Intent(Settings.ACTION_WIRELESS_SETTINGS));
+                }
+            });
+        }
     }
 }

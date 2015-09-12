@@ -8,27 +8,29 @@ import android.util.Log;
 
 import com.example.henzer.socialize.Activities.ActivityMain;
 import com.example.henzer.socialize.Models.ModelPerson;
-import com.example.henzer.socialize.Services.ServicePhoneState;
 import com.example.henzer.socialize.Tasks.TaskChangeState;
 import com.google.gson.Gson;
 
-public class BroadcastReceiverPhoneStatus extends BroadcastReceiver{
+public class BroadcastReceiverPhoneStatus extends BroadcastReceiver {
     public static final String TAG = "BroadcastReceiverWake";
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        Log.i(TAG,"onReceive()");
         SharedPreferences sharedPreferences = context.getSharedPreferences(ActivityMain.MyPREFERENCES, Context.MODE_PRIVATE);
-        Gson gson = new Gson();
-        ModelPerson userLogin = gson.fromJson(sharedPreferences.getString("userLogin", ""), ModelPerson.class);
-        Log.i(TAG, "User: " + userLogin.toString());
+        ModelPerson userLogin = new Gson().fromJson(sharedPreferences.getString("userLogin", ""), ModelPerson.class);
 
-        Intent i = new Intent(context, ServicePhoneState.class);
-        i.putExtra("user",userLogin.getId());
-        if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)){
-            i.putExtra("state","I");
-        }else if(intent.getAction().equals(Intent.ACTION_SCREEN_ON)){
-            i.putExtra("state","A");
+        String id = userLogin.getId();
+        String state = "A";
+
+        if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)){
+            state = "A";
+            new TaskChangeState().execute(id,state);
+        }else if(intent.getAction().equals(Intent.ACTION_SCREEN_OFF)){
+            state = "I";
+            new TaskChangeState().execute(id,state);
         }
-        context.startService(i);
+
+        Log.i(TAG, "User: " + userLogin.toString()+". State: "+state);
     }
 }

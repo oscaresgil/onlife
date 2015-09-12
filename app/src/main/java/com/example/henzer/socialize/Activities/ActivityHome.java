@@ -1,6 +1,5 @@
 package com.example.henzer.socialize.Activities;
 
-import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -8,7 +7,6 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.os.Looper;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
 import android.text.Html;
@@ -32,17 +30,14 @@ import com.example.henzer.socialize.Services.ServicePhoneState;
 import com.example.henzer.socialize.Tasks.TaskChangeState;
 import com.example.henzer.socialize.Tasks.TaskGetFriends;
 import com.example.henzer.socialize.Tasks.TaskSetFriends;
-import com.facebook.internal.WebDialog;
 import com.facebook.login.LoginManager;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.kenny.snackbar.SnackBar;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.henzer.socialize.Controller.StaticMethods.activateDeviceAdmin;
-import static com.example.henzer.socialize.Controller.StaticMethods.getFriend;
 
 public class ActivityHome extends ActionBarActivity {
     public static final String TAG = "ActivityHome";
@@ -56,14 +51,11 @@ public class ActivityHome extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Intent i = new Intent(this, ServicePhoneState.class);
-        i.putExtra("user","hola");
-        i.putExtra("state","A");
-        this.startService(i);
-
         setContentView(R.layout.activity_home);
 
+        startService(new Intent(this, ServicePhoneState.class));
         activateDeviceAdmin(this);
+        //activatePhoneBroadcast(this);
 
         sharedPreferences = getSharedPreferences(ActivityMain.MyPREFERENCES, Context.MODE_PRIVATE);
         Gson gson = new Gson();
@@ -72,7 +64,6 @@ public class ActivityHome extends ActionBarActivity {
 
         groups = new ArrayList<>();
         if (sharedPreferences.contains("groups")){
-            Log.e("ContainsGroups","true");
             groups = gson.fromJson(sharedPreferences.getString("groups", ""), (new TypeToken<ArrayList<ModelGroup>>(){}.getType()));
         } else {
             sharedPreferences.edit().putString("groups",gson.toJson(groups)).commit();
@@ -158,10 +149,13 @@ public class ActivityHome extends ActionBarActivity {
             Bundle extras = intent.getExtras();
             String state = extras.getString("state");
             String id = extras.getString("id");
+            Log.i(TAG, "Broadcast Receiver. ID:"+id+". State:"+state);
             List<ModelPerson> friendsT = ModelSessionData.getInstance().getFriends();
             for (ModelPerson p: friendsT){
                 if (p.getId().equals(id)){
                     p.setState(state);
+                    Log.i(TAG, "Broadcast Receiver. ID:"+p.getId()+". Name: "+p.getName()+". State:"+state);
+                    break;
                 }
             }
             adapterContact.clear();
@@ -238,6 +232,7 @@ public class ActivityHome extends ActionBarActivity {
         ModelSessionData.getInstance().clear();
         LoginManager.getInstance().logOut();
         new TaskChangeState().execute(userLogin.getId(),"O");
+        Log.i(TAG,"LogOut. User: "+userLogin.getId()+". Name: "+userLogin.getName()+". State: O");
         finish();
     }
 
@@ -251,9 +246,5 @@ public class ActivityHome extends ActionBarActivity {
 
     public void setAdapterContact(AdapterContact adapterContact) {
         this.adapterContact = adapterContact;
-    }
-
-    public void setAdapterGroup(AdapterGroup adapterGroup) {
-        this.adapterGroup = adapterGroup;
     }
 }

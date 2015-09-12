@@ -1,11 +1,14 @@
 package com.example.henzer.socialize.Controller;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.admin.DevicePolicyManager;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.ResolveInfo;
 import android.database.Cursor;
@@ -21,6 +24,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
+import com.example.henzer.socialize.BroadcastReceivers.BroadcastReceiverPhoneStatus;
 import com.example.henzer.socialize.Models.ModelGroup;
 import com.example.henzer.socialize.Models.ModelPerson;
 import com.example.henzer.socialize.Models.ModelSessionData;
@@ -49,6 +53,40 @@ public class StaticMethods {
             Log.e("DeviceAdmin", "entro a la contidicion");
             activity.startActivityForResult(intent, ACTIVATION_REQUEST);
         }
+    }
+
+    public static void activatePhoneBroadcast(Context context){
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Intent.ACTION_SCREEN_OFF);
+        filter.addAction(Intent.ACTION_SCREEN_ON);
+        BroadcastReceiver receiver = new BroadcastReceiverPhoneStatus();
+        context.registerReceiver(receiver,filter);
+    }
+
+    public static ArrayList<ModelPerson> friendsOnlyOnline(ArrayList<ModelPerson> friends){
+        ArrayList<ModelPerson> listReturn = new ArrayList<>();
+        for (ModelPerson p: friends){
+            if (!p.getState().equals("O")){
+                listReturn.add(p);
+            }
+        }
+        return  listReturn;
+    }
+
+    public static void unSelectFriends(List<ModelPerson> friends){
+        for (ModelPerson p: friends){
+            p.setSelected(false);
+        }
+    }
+
+    public static int getModelGroupIndex(ModelGroup group, List<ModelGroup> modelGroup){
+        for (int i=0; i<modelGroup.size(); i++){
+            ModelGroup g = modelGroup.get(i);
+            if (group.getName().equals(g.getName())){
+                return i;
+            }
+        }
+        return -1;
     }
 
     public static void animationStart(Context context){

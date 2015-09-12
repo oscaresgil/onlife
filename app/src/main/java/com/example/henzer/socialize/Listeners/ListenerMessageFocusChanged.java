@@ -7,11 +7,11 @@ import com.rengwuxian.materialedittext.MaterialEditText;
 
 import static com.example.henzer.socialize.Controller.StaticMethods.hideSoftKeyboard;
 
-public class MessageFocusChangedListener implements View.OnFocusChangeListener{
+public class ListenerMessageFocusChanged implements View.OnFocusChangeListener{
     private Context context;
     private MaterialEditText messageTextView;
 
-    public MessageFocusChangedListener(Context context, MaterialEditText messageTextView) {
+    public ListenerMessageFocusChanged(Context context, MaterialEditText messageTextView) {
         this.context = context;
         this.messageTextView = messageTextView;
     }

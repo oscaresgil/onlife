@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -16,10 +15,9 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.henzer.socialize.Activities.ActivityLogoScreen;
 import com.example.henzer.socialize.Adapters.AdapterEmoticon;
-import com.example.henzer.socialize.Listeners.MessageFocusChangedListener;
-import com.example.henzer.socialize.Listeners.TextWatcherListener;
+import com.example.henzer.socialize.Listeners.ListenerMessageFocusChanged;
+import com.example.henzer.socialize.Listeners.ListenerTextWatcher;
 import com.example.henzer.socialize.Models.ModelPerson;
 import com.example.henzer.socialize.R;
 import com.example.henzer.socialize.Tasks.TaskSendNotification;
@@ -53,7 +51,7 @@ public class ActivityFriendBlock extends AppCompatActivity {
     private TextView maxCharsView;
     private GridView gridView;
 
-    private TextWatcherListener textWatcherListener;
+    private ListenerTextWatcher listenerTextWatcher;
     private String gifName="";
 
     @Override
@@ -94,10 +92,10 @@ public class ActivityFriendBlock extends AppCompatActivity {
 
         maxCharsView = (TextView) findViewById(R.id.ActivityFriendBlock_TextViewMaxCharacters);
         messageTextView = (MaterialEditText) findViewById(R.id.ActivityFriendBlock_EditTextMessage);
-        messageTextView.setOnFocusChangeListener(new MessageFocusChangedListener(this,messageTextView));
-        textWatcherListener = new TextWatcherListener(this,maxCharsView,messageTextView);
+        messageTextView.setOnFocusChangeListener(new ListenerMessageFocusChanged(this,messageTextView));
+        listenerTextWatcher = new ListenerTextWatcher(this,maxCharsView,messageTextView);
 
-        messageTextView.addTextChangedListener(textWatcherListener);
+        messageTextView.addTextChangedListener(listenerTextWatcher);
 
         gridView = (GridView) findViewById(R.id.ActivityFriendBlock_GridLayout);
 
@@ -165,7 +163,7 @@ public class ActivityFriendBlock extends AppCompatActivity {
     public void block(View view) {
         if (isNetworkAvailable(this)) {
             hideSoftKeyboard(this,messageTextView);
-            if (textWatcherListener.getActualChar() <= 30) {
+            if (listenerTextWatcher.getActualChar() <= 30) {
                 if (actualUser.getState().equals("A")) {
                     try {
                         Log.i(TAG, "Block: " + friend.getName() + ". Actual User: " + actualUser.getName() + " Message: " + messageTextView.getText().toString() + ". Gif: " + gifName);

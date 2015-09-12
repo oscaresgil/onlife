@@ -82,8 +82,10 @@ public class AdapterContact extends ArrayAdapter<ModelPerson> {
         Log.i(TAG, "Adapter User: "+userData.toString());
         if (userData.getState().equals("O")){
             contactHolder.visibility.setImageBitmap(BitmapFactory.decodeResource(context.getResources(),R.drawable.ic_visib_red));
-        }else{
-            contactHolder.visibility.setImageBitmap(BitmapFactory.decodeResource(context.getResources(),R.drawable.ic_visib_green));
+        }else if (userData.getState().equals("I")){
+            contactHolder.visibility.setImageBitmap(BitmapFactory.decodeResource(context.getResources(),R.drawable.ic_action_visibility_off));
+        }else if(userData.getState().equals("A")){
+            contactHolder.visibility.setImageBitmap(BitmapFactory.decodeResource(context.getResources(),R.drawable.ic_action_visibility_on));
         }
 
         return view;

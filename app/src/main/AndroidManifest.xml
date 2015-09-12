@@ -54,8 +54,7 @@
              Este servira para enviar a la API online, el numero de registro que se acaba de activar.
              De la misma forma, este podra recibir los responds del servidor y podra mostrarlos en el telefono utilizando intents.
         -->
-        <receiver
-            android:name=".GCMClient.GcmBroadcastReceiver"
+        <receiver android:name=".BroadcastReceivers.GcmBroadcastReceiver"
             android:permission="com.google.android.c2dm.permission.SEND">
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
@@ -64,14 +63,14 @@
             </intent-filter>
         </receiver>
 
-        <receiver android:name=".BroadcastReceivers.BroadcastReceiverPhoneStatus"
+        <!--<receiver android:name=".BroadcastReceivers.BroadcastReceiverPhoneStatus"
             android:enabled="true"
             android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.SCREEN_ON"/>
                 <action android:name="android.intent.action.SCREEN_OFF"/>
             </intent-filter>
-        </receiver>
+        </receiver>-->
 
         <receiver android:name=".Controller.DeviceAdmin"
             android:label="@string/device_admin"
@@ -88,7 +87,7 @@
             android:resource="@xml/device_admin" />
 
         <!-- Se crea un nuevo servicio de la aplicacion -->
-        <service android:name=".GCMClient.GcmMessageHandler" />
+        <service android:name=".Services.GcmMessageHandler" />
         <service android:name=".Services.ServicePhoneState"/>
 
         <!-- Guarda la version de Google Play Services para poder utilizar GCM -->

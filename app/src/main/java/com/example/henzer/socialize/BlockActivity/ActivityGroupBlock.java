@@ -1,8 +1,6 @@
 package com.example.henzer.socialize.BlockActivity;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
@@ -27,8 +25,8 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.simplelist.MaterialSimpleListAdapter;
 import com.afollestad.materialdialogs.simplelist.MaterialSimpleListItem;
 import com.example.henzer.socialize.Adapters.AdapterEmoticon;
-import com.example.henzer.socialize.Listeners.MessageFocusChangedListener;
-import com.example.henzer.socialize.Listeners.TextWatcherListener;
+import com.example.henzer.socialize.Listeners.ListenerMessageFocusChanged;
+import com.example.henzer.socialize.Listeners.ListenerTextWatcher;
 import com.example.henzer.socialize.Models.ModelGroup;
 import com.example.henzer.socialize.Models.ModelPerson;
 import com.example.henzer.socialize.Models.ModelSessionData;
@@ -72,20 +70,18 @@ public class ActivityGroupBlock extends AppCompatActivity {
     private SweetSheet sweetSheet;
     private Toolbar toolbar;
 
-    //private ModelSessionData modelSessionData;
     private ModelPerson actualUser;
     private ModelGroup modelGroup;
     private List<ModelPerson> friendsInGroup;
 
     private TextView maxCharsView;
     private MaterialEditText messageTextView;
-    private TextWatcherListener textWatcherListener;
+    private ListenerTextWatcher listenerTextWatcher;
 
     private GridView gridView;
     private String gifName="";
 
     private RatioImageView avatarGroup;
-    private String path;
     private Bitmap bitmapGroup;
 
     @Override
@@ -106,7 +102,7 @@ public class ActivityGroupBlock extends AppCompatActivity {
         }
 
         Intent i = getIntent();
-        modelGroup = (ModelGroup) i.getSerializableExtra("modelgroup");
+        modelGroup = (ModelGroup) i.getSerializableExtra("model_group");
         actualUser = ModelSessionData.getInstance().getUser();
         friendsInGroup = modelGroup.getFriendsInGroup();
 
@@ -126,9 +122,9 @@ public class ActivityGroupBlock extends AppCompatActivity {
 
         maxCharsView = (TextView) findViewById(R.id.ActivityGroupBlock_TextViewMaxCharacters);
         messageTextView = (MaterialEditText) findViewById(R.id.ActivityGroupBlock_EditTextMessage);
-        messageTextView.setOnFocusChangeListener(new MessageFocusChangedListener(this,messageTextView));
-        textWatcherListener = new TextWatcherListener(this,maxCharsView,messageTextView);
-        messageTextView.addTextChangedListener(textWatcherListener);
+        messageTextView.setOnFocusChangeListener(new ListenerMessageFocusChanged(this,messageTextView));
+        listenerTextWatcher = new ListenerTextWatcher(this,maxCharsView,messageTextView);
+        messageTextView.addTextChangedListener(listenerTextWatcher);
 
         gridView = (GridView) findViewById(R.id.ActivityGroupBlock_GridLayout);
 
@@ -254,7 +250,10 @@ public class ActivityGroupBlock extends AppCompatActivity {
                 .callback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onPositive(MaterialDialog dialog) {
-                        removeGroup(modelGroup);
+
+                        Intent returnIntent = new Intent();
+                        returnIntent.putExtra("delete_group",modelGroup);
+                        setResult(RESULT_OK,returnIntent);
 
                         dialog.dismiss();
                         dialog.cancel();
@@ -276,7 +275,6 @@ public class ActivityGroupBlock extends AppCompatActivity {
         Log.i(TAG,"onActivityResult(). Request: "+requestCode+". Result: "+resultCode);
         if ((requestCode == PICK_FROM_FILE || requestCode == PICK_FROM_CAMERA) && resultCode == RESULT_OK) {
             Uri mImageCaptureUri = data.getData();
-			path = mImageCaptureUri.getPath();
             try {
                 performCrop(this,mImageCaptureUri,PIC_CROP);
 
@@ -293,7 +291,7 @@ public class ActivityGroupBlock extends AppCompatActivity {
 
     public void block(View view){
         if (isNetworkAvailable(this)) {
-            if (textWatcherListener.getActualChar() <= 30) {
+            if (listenerTextWatcher.getActualChar() <= 30) {
                 try {
                     Log.i(TAG, "Actual User: "+actualUser.getName()+" Message: "+messageTextView.getText().toString()+". Gif: "+gifName);
                     new TaskSendNotification(ActivityGroupBlock.this, actualUser.getName(), messageTextView.getText().toString(),"").execute(friendsInGroup.toArray(new ModelPerson[friendsInGroup.size()]));

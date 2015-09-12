@@ -108,7 +108,6 @@ public class AdapterStickyTitle extends RecyclerView.Adapter<AdapterStickyTitle.
             RatioImageView avatar = (RatioImageView) v.findViewById(R.id.LayoutSelectContactGroup_ImageViewFriend);
             listener.setFriend(friends.get(item));
             listener.setView(avatar);
-            listener.setHome(true);
             avatar.clearAnimation();
             avatar.setAnimation(animation1);
             avatar.startAnimation(animation1);

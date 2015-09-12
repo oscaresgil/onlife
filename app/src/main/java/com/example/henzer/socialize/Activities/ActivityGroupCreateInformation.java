@@ -1,8 +1,6 @@
 package com.example.henzer.socialize.Activities;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
@@ -10,7 +8,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.provider.Settings;
 import android.support.v7.app.ActionBarActivity;
 import android.text.Editable;
 import android.text.Html;
@@ -36,8 +33,6 @@ import com.example.henzer.socialize.Models.ModelGroup;
 import com.example.henzer.socialize.Models.ModelPerson;
 import com.example.henzer.socialize.Models.ModelSessionData;
 import com.example.henzer.socialize.R;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.kenny.snackbar.SnackBar;
 import com.melnykov.fab.FloatingActionButton;
 import com.r0adkll.slidr.Slidr;
@@ -52,10 +47,10 @@ import java.util.List;
 
 import static com.example.henzer.socialize.Controller.StaticMethods.animationEnd;
 import static com.example.henzer.socialize.Controller.StaticMethods.hideSoftKeyboard;
-import static com.example.henzer.socialize.Controller.StaticMethods.isNetworkAvailable;
 import static com.example.henzer.socialize.Controller.StaticMethods.performCrop;
 import static com.example.henzer.socialize.Controller.StaticMethods.saveImage;
 import static com.example.henzer.socialize.Controller.StaticMethods.showSoftKeyboard;
+import static com.example.henzer.socialize.Controller.StaticMethods.unSelectFriends;
 
 public class ActivityGroupCreateInformation extends ActionBarActivity {
     public static final String TAG ="ActivityGroupCreateInformation";
@@ -66,7 +61,6 @@ public class ActivityGroupCreateInformation extends ActionBarActivity {
     private Menu myMenu;
     private android.support.v7.app.ActionBar actionBar;
 
-    //private ModelSessionData modelSessionData;
     private List<ModelPerson> friends;
 
     private AdapterCheckList adapterCheckList;
@@ -136,7 +130,6 @@ public class ActivityGroupCreateInformation extends ActionBarActivity {
 
                     listener.setFriend(actualFriend);
                     listener.setView(avatar);
-                    listener.setHome(false);
 
                     avatar.clearAnimation();
                     avatar.setAnimation(animation1);
@@ -164,6 +157,7 @@ public class ActivityGroupCreateInformation extends ActionBarActivity {
             Log.i(TAG, "onCreateBackPressed() destroying");
             super.onBackPressed();
             hideSoftKeyboard(this, nameNewGroup);
+            unSelectFriends(ModelSessionData.getInstance().getFriends());
             animationEnd(this);
         }
     }
@@ -176,7 +170,6 @@ public class ActivityGroupCreateInformation extends ActionBarActivity {
         if (i == R.id.saveGroup_button) {
             List<ModelPerson> selected = new ArrayList();
             hideSoftKeyboard(this,nameNewGroup);
-
             for (ModelPerson userData: friends){
                 if (userData.isSelected()) {
                     selected.add(userData);
@@ -188,17 +181,17 @@ public class ActivityGroupCreateInformation extends ActionBarActivity {
             String state = "A";
 
             if (!name.equals("")  && !selected.isEmpty()){
-                if (isNetworkAvailable(this)) {
-                    if (alreadyGroup(name)){
-                        SnackBar.show(ActivityGroupCreateInformation.this, R.string.group_already, R.string.button_group_change_name, new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                nameNewGroup.requestFocus();
-                                showSoftKeyboard(ActivityGroupCreateInformation.this,nameNewGroup);
-                            }
-                        });
-                    }
-                    else{
+                if (alreadyGroup(name)){
+                    SnackBar.show(ActivityGroupCreateInformation.this, R.string.group_already, R.string.button_group_change_name, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            nameNewGroup.requestFocus();
+                            showSoftKeyboard(ActivityGroupCreateInformation.this,nameNewGroup);
+                        }
+                    });
+                }
+                else{
+                    if (selected.size()<6){
                         if (!path.equals("")) {
                             path = saveImage(getApplicationContext(), name, bitmap);
                         }
@@ -207,22 +200,20 @@ public class ActivityGroupCreateInformation extends ActionBarActivity {
                         }
 
                         ModelGroup newG = new ModelGroup(ModelSessionData.getInstance().getModelGroups().size(), name, selected, path, limit, state);
-                        ModelSessionData.getInstance().getModelGroups().add(newG);
+                        //ModelSessionData.getInstance().getModelGroups().add(newG);
 
-                        for (ModelPerson p: friends){
-                            p.setSelected(false);
-                        }
+                        Intent returnIntent = new Intent();
+                        returnIntent.putExtra("new_group",newG);
+                        setResult(RESULT_OK,returnIntent);
+
+                        unSelectFriends(ModelSessionData.getInstance().getFriends());
 
                         finish();
                         animationEnd(this);
                     }
-                }else{
-                    SnackBar.show(ActivityGroupCreateInformation.this, R.string.no_connection, R.string.button_change_connection, new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            startActivity(new Intent(Settings.ACTION_WIRELESS_SETTINGS));
-                        }
-                    });
+                    else{
+                        SnackBar.show(ActivityGroupCreateInformation.this,getResources().getString(R.string.toast_group_only_less_than_five_friends));
+                    }
                 }
             }
             else{
@@ -235,6 +226,7 @@ public class ActivityGroupCreateInformation extends ActionBarActivity {
             }
             else {
                 finish();
+                unSelectFriends(ModelSessionData.getInstance().getFriends());
                 animationEnd(this);
             }
         }

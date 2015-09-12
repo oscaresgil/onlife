@@ -1,15 +1,11 @@
 package com.example.henzer.socialize.Fragments;
 
-import android.app.Activity;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.WakefulBroadcastReceiver;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.text.Editable;
@@ -23,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
+import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.Toast;
@@ -30,7 +27,6 @@ import android.widget.Toast;
 import com.example.henzer.socialize.Activities.ActivityHome;
 import com.example.henzer.socialize.Adapters.AdapterContact;
 import com.example.henzer.socialize.BlockActivity.ActivityFriendBlock;
-import com.example.henzer.socialize.GCMClient.GcmMessageHandler;
 import com.example.henzer.socialize.Models.ModelPerson;
 import com.example.henzer.socialize.Models.ModelSessionData;
 import com.example.henzer.socialize.R;
@@ -95,7 +91,8 @@ public class FragmentContacts extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (!mSwipeRefreshLayout.isRefreshing()){
-                    ModelPerson user = ModelSessionData.getInstance().getFriends().get(position);
+                    //ModelPerson user = ModelSessionData.getInstance().getFriends().get(position);
+                    ModelPerson user = (ModelPerson) gridView.getAdapter().getItem(position);
                     Intent i = new Intent(getActivity(),ActivityFriendBlock.class);
                     i.putExtra("data",user);
                     i.putExtra("actualuser", actualUser);
@@ -226,8 +223,10 @@ public class FragmentContacts extends Fragment {
     public void handleMenuSearch(){
         android.support.v7.app.ActionBar actionBar = ((ActionBarActivity)getActivity()).getSupportActionBar();
         if (isSearchOpened){
+            gridView.setAdapter(((ActivityHome)getActivity()).getAdapterContact());
             friendsFiltred.clear();
             friendsFiltred.addAll(friends);
+
             actionBar.setDisplayShowCustomEnabled(false);
             actionBar.setDisplayShowTitleEnabled(true);
 
@@ -238,6 +237,7 @@ public class FragmentContacts extends Fragment {
             isSearchOpened = false;
         }
         else{
+            gridView.setAdapter(new AdapterContact(getActivity(),R.layout.layout_contact,friendsFiltred));
             actionBar.setDisplayShowCustomEnabled(true);
             actionBar.setCustomView(R.layout.layout_search_contact_bar);
             actionBar.setDisplayShowTitleEnabled(false);
@@ -252,9 +252,9 @@ public class FragmentContacts extends Fragment {
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
                     mSearchQuery = searchText.getText().toString();
-                    friendsFiltred.clear();
-                    friendsFiltred.addAll(performSearch(friends, mSearchQuery));
-                    adapter.notifyDataSetChanged();
+                    AdapterContact adapterContact = (AdapterContact) gridView.getAdapter();
+                    adapterContact.clear();
+                    adapterContact.addAll(performSearch(friends, mSearchQuery));
                 }
 
                 @Override

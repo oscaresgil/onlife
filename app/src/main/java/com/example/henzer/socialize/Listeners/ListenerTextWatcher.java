@@ -8,14 +8,14 @@ import android.widget.TextView;
 import com.example.henzer.socialize.R;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
-public class TextWatcherListener implements TextWatcher {
+public class ListenerTextWatcher implements TextWatcher {
     private int actualChar = 0;
     private String text="";
     private TextView maxCharsView;
     private MaterialEditText messageTextView;
     private Context context;
 
-    public TextWatcherListener(Context context, TextView maxCharsView, MaterialEditText messageTextView) {
+    public ListenerTextWatcher(Context context, TextView maxCharsView, MaterialEditText messageTextView) {
         this.maxCharsView = maxCharsView;
         this.context = context;
         this.messageTextView = messageTextView;
