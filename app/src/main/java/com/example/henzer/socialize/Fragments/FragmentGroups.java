@@ -99,6 +99,7 @@ public class FragmentGroups extends Fragment {
                 adapter.remove(adapter.getItem(pos));
             }
         }
+        adapter.notifyDataSetChanged();
     }
 
     public void addGroup(View view){

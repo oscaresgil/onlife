@@ -164,7 +164,7 @@ public class ActivityFriendBlock extends AppCompatActivity {
         if (isNetworkAvailable(this)) {
             hideSoftKeyboard(this,messageTextView);
             if (listenerTextWatcher.getActualChar() <= 30) {
-                if (actualUser.getState().equals("A")) {
+                if (friend.getState().equals("A")) {
                     try {
                         Log.i(TAG, "Block: " + friend.getName() + ". Actual User: " + actualUser.getName() + " Message: " + messageTextView.getText().toString() + ". Gif: " + gifName);
                         new TaskSendNotification(ActivityFriendBlock.this, actualUser.getName(), messageTextView.getText().toString(), gifName).execute(friend);
@@ -173,14 +173,13 @@ public class ActivityFriendBlock extends AppCompatActivity {
                         SnackBar.show(ActivityFriendBlock.this, R.string.error);
                     }
                 }else{
-                    LoadToast toast = new LoadToast(ActivityFriendBlock.this).setText(getResources().getString(R.string.blocking))
+                    new LoadToast(ActivityFriendBlock.this).setText(getResources().getString(R.string.blocking))
                             .setTextColor(getResources().getColor(R.color.black))
                             .setTranslationY(100)
                             .setProgressColor(getResources().getColor(R.color.orange_light))
-                            .show();
+                            .error();
 
                     SnackBar.show(ActivityFriendBlock.this,R.string.friend_inactive);
-                    toast.error();
                 }
             } else {
                 SnackBar.show(ActivityFriendBlock.this, R.string.message_max_characters, R.string.button_change_text_message, new View.OnClickListener() {

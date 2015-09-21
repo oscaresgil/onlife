@@ -55,7 +55,6 @@ public class ActivityHome extends ActionBarActivity {
 
         startService(new Intent(this, ServicePhoneState.class));
         activateDeviceAdmin(this);
-        //activatePhoneBroadcast(this);
 
         sharedPreferences = getSharedPreferences(ActivityMain.MyPREFERENCES, Context.MODE_PRIVATE);
         Gson gson = new Gson();
@@ -113,8 +112,8 @@ public class ActivityHome extends ActionBarActivity {
 
     @Override
     protected void onResume() {
-        super.onResume();
         registerReceiver(broadcastReceiver,new IntentFilter("com.example.henzer.socialize.Activities.ActivityHome"));
+        super.onResume();
     }
 
     @Override
@@ -163,8 +162,6 @@ public class ActivityHome extends ActionBarActivity {
         }
     };
 
-
-
     @Override
     public void onBackPressed() {
         moveTaskToBack(true);
@@ -173,17 +170,19 @@ public class ActivityHome extends ActionBarActivity {
     @Override
     protected void onStop() {
         Log.i(TAG,"onStop()");
-        Gson gson = new Gson();
-        sharedPreferences.edit().putString("userLogin",gson.toJson(ModelSessionData.getInstance().getUser())).commit();
-        sharedPreferences.edit().putString("friends",gson.toJson(ModelSessionData.getInstance().getFriends())).commit();
-        sharedPreferences.edit().putString("groups",gson.toJson(ModelSessionData.getInstance().getModelGroups())).commit();
-        unregisterReceiver(broadcastReceiver);
         super.onStop();
     }
 
     @Override
     protected void onDestroy() {
         Log.i(TAG,"onDestroy()");
+
+        Gson gson = new Gson();
+        sharedPreferences.edit().putString("userLogin",gson.toJson(ModelSessionData.getInstance().getUser())).commit();
+        sharedPreferences.edit().putString("friends",gson.toJson(ModelSessionData.getInstance().getFriends())).commit();
+        sharedPreferences.edit().putString("groups",gson.toJson(ModelSessionData.getInstance().getModelGroups())).commit();
+        unregisterReceiver(broadcastReceiver);
+
         super.onDestroy();
 
     }

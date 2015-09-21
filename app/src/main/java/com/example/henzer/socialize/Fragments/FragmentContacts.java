@@ -19,7 +19,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
-import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.Toast;
@@ -128,6 +127,8 @@ public class FragmentContacts extends Fragment {
         return v;
     }
 
+
+
     @Override
     public void onResume() {
         super.onResume();
@@ -180,9 +181,11 @@ public class FragmentContacts extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        /*friendsFiltred.clear();
-        friendsFiltred.addAll(friends);
-        adapter.notifyDataSetChanged();*/
+        if (friendsFiltred.size() != friends.size()){
+            gridView.setAdapter(((ActivityHome)getActivity()).getAdapterContact());
+            friendsFiltred.clear();
+            friendsFiltred.addAll(friends);
+        }
         super.onCreateOptionsMenu(menu, inflater);
     }
 

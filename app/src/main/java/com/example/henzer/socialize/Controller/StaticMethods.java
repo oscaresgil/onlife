@@ -149,15 +149,6 @@ public class StaticMethods {
         return gifNames;
     }
 
-    public static String getRealPathFromURI(Context context, Uri contentUri){
-        String [] proj      = {MediaStore.Images.Media.DATA};
-        Cursor cursor       = ((Activity)context).managedQuery( contentUri, proj, null, null,null);
-        if (cursor == null) return null;
-        int column_index    = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-        cursor.moveToFirst();
-        return cursor.getString(column_index);
-    }
-
     public static void performCrop(Context context, Uri mImageCaptureUri, int PIC_CROP){
         try {
             Intent intent = new Intent("com.android.camera.action.CROP");
@@ -195,28 +186,6 @@ public class StaticMethods {
         catch(Exception e){
             e.printStackTrace();
         }
-    }
-
-    public static ModelPerson getFriend(String id){
-        for (ModelPerson p: ModelSessionData.getInstance().getFriends()){
-            if (p.getId().equals(id)){
-                return p;
-            }
-        }
-        return null;
-    }
-
-    public static void removeGroup(ModelGroup modelGroup, SharedPreferences sharedPreferences, ModelSessionData modelSessionData){
-        List<ModelGroup> modelGroups = modelSessionData.getModelGroups();
-        for (int i=0; i< modelGroups.size(); i++){
-            if (modelGroups.get(i).getId()== modelGroup.getId()){
-                modelGroups.remove(i);
-                Log.e("RemovedGroup",modelGroups.toString());
-            }
-        }
-        Gson gson = new Gson();
-        modelSessionData.setModelGroups(modelGroups);
-        sharedPreferences.edit().putString("groups", gson.toJson(modelGroups)).commit();
     }
 
     public static void removeGroup(ModelGroup modelGroup){
@@ -257,47 +226,5 @@ public class StaticMethods {
             }
         }
         return output;
-    }
-
-    public static void turnGPSOn(Context context){
-        //context.startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-        Intent intent = new Intent("android.location.GPS_ENABLED_CHANGE");
-        intent.putExtra("enabled", true);
-        context.sendBroadcast(intent);
-
-        String provider = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
-        if (! provider.contains("gps")) { //if gps is disabled
-            final Intent poke = new Intent();
-            poke.setClassName("com.android.settings", "com.android.settings.widget.SettingsAppWidgetProvider");
-            poke.addCategory(Intent.CATEGORY_ALTERNATIVE);
-            poke.setData(Uri.parse("3"));
-            context.sendBroadcast(poke);
-        }
-    }
-
-    public static void turnGPSOff(Context context){
-        Intent intent = new Intent("android.location.GPS_ENABLED_CHANGE");
-        intent.putExtra("enabled", false);
-        context.sendBroadcast(intent);
-
-        String provider = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
-        if (provider.contains("gps")){ //if gps is enabled
-            final Intent poke = new Intent();
-            poke.setClassName("com.android.settings", "com.android.settings.widget.SettingsAppWidgetProvider");
-            poke.addCategory(Intent.CATEGORY_ALTERNATIVE);
-            poke.setData(Uri.parse("3"));
-            context.sendBroadcast(poke);
-        }
-    }
-
-    public static double distFrom(double lat1, double lng1, double lat2, double lng2) {
-        double earthRadius = 6371000; //meters
-        double dLat = Math.toRadians(lat2-lat1);
-        double dLng = Math.toRadians(lng2-lng1);
-        double a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-                Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *
-                        Math.sin(dLng/2) * Math.sin(dLng/2);
-        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-        return (earthRadius * c);
     }
 }

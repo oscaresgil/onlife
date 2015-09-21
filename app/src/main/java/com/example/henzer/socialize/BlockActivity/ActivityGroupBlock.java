@@ -55,7 +55,6 @@ import static com.example.henzer.socialize.Controller.StaticMethods.hideSoftKeyb
 import static com.example.henzer.socialize.Controller.StaticMethods.isNetworkAvailable;
 import static com.example.henzer.socialize.Controller.StaticMethods.loadImage;
 import static com.example.henzer.socialize.Controller.StaticMethods.performCrop;
-import static com.example.henzer.socialize.Controller.StaticMethods.removeGroup;
 import static com.example.henzer.socialize.Controller.StaticMethods.saveImage;
 import static com.example.henzer.socialize.Controller.StaticMethods.setGifNames;
 import static com.example.henzer.socialize.Controller.StaticMethods.showSoftKeyboard;

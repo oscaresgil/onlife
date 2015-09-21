@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.example.henzer.socialize.Activities.ActivityHome;
 import com.example.henzer.socialize.Models.ModelPerson;
 
 import net.soulwolf.widget.ratiolayout.widget.RatioImageView;
