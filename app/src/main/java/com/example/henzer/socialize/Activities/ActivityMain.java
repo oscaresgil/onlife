@@ -82,6 +82,16 @@ public class ActivityMain extends Activity{
         // Launch the activity to have the user enable our admin.
         activateDeviceAdmin(this);
 
+// REVISION SI ES PRIMERA VEZ QUE SE UTILIZA LA APP
+
+        // Get the shared preferences
+        SharedPreferences preferences =  getSharedPreferences("my_preferences", MODE_PRIVATE);
+
+        if(!preferences.getBoolean("onboarding_complete",false)) {
+            Intent onboarding = new Intent(this, ActivityOnboarding.class);
+            startActivity(onboarding);
+            finish();
+        }
         sharedPreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
         if (!sharedPreferences.contains("idGcm")){
             TaskGetGCM gcm = new TaskGetGCM(this);

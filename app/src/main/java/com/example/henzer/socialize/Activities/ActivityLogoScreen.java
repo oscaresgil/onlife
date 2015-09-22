@@ -15,6 +15,7 @@ public class ActivityLogoScreen extends Activity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         Log.e("ActivityLogoScreen","OnCreate()");
         setContentView(R.layout.activity_logo_screen);
 

@@ -55,7 +55,7 @@
     <string name="really_delete">Are you sure?</string>
     <string name="refresh_contact">Refresh Contact</string>
 
-    <string name="send_a_message_bar">Send a message..</string>
+    <string name="send_a_message_bar">Send a message...</string>
     <string name="max_characters_text">0/30</string>
     <string name="message_max_characters">Only 30 characters please</string>
     <string name="button_change_text_message">Change Text</string>
