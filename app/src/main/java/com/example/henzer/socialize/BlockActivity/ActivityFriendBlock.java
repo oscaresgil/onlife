@@ -1,6 +1,7 @@
 package com.example.henzer.socialize.BlockActivity;
 
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -31,6 +32,7 @@ import net.soulwolf.widget.ratiolayout.widget.RatioImageView;
 import net.steamcrafted.loadtoast.LoadToast;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import pl.droidsonroids.gif.GifDrawable;
@@ -86,6 +88,13 @@ public class ActivityFriendBlock extends AppCompatActivity {
         collapser.setExpandedTitleColor(getResources().getColor(R.color.white));
 
         //NestedScrollView nestedScrollView = (NestedScrollView) findViewById(R.id.ActivityFriendBlock_ScrollView);
+
+        ImageView visibility = (ImageView) findViewById(R.id.ActivityFriendBlock_RadioButton);
+        if (friend.getState().equals("I")){
+            visibility.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.ic_action_visibility_off_2));
+        }else if(friend.getState().equals("A")){
+            visibility.setImageBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.ic_action_visibility_on));
+        }
 
         RatioImageView avatar = (RatioImageView) findViewById(R.id.ActivityFriendBlock_ImageViewContact);
         avatar.setImageBitmap(loadImage(this,friend.getId()));
@@ -167,18 +176,18 @@ public class ActivityFriendBlock extends AppCompatActivity {
                 if (friend.getState().equals("A")) {
                     try {
                         Log.i(TAG, "Block: " + friend.getName() + ". Actual User: " + actualUser.getName() + " Message: " + messageTextView.getText().toString() + ". Gif: " + gifName);
-                        new TaskSendNotification(ActivityFriendBlock.this, actualUser.getName(), messageTextView.getText().toString(), gifName).execute(friend);
+                        long actualTime = Calendar.getInstance().getTimeInMillis();
+                        if (actualTime - friend.getLastBlockedTime() > 180000){
+                            new TaskSendNotification(ActivityFriendBlock.this, actualUser.getName(), messageTextView.getText().toString(), gifName).execute(friend);
+                            friend.setLastBlockedTime(actualTime);
+                        }else{
+                            SnackBar.show(ActivityFriendBlock.this,getResources().getString(R.string.toast_not_time_yet)+" "+((180000-(actualTime - friend.getLastBlockedTime()))/1000)+" s");
+                        }
                     } catch (Exception ex) {
                         ex.printStackTrace();
                         SnackBar.show(ActivityFriendBlock.this, R.string.error);
                     }
                 }else{
-                    new LoadToast(ActivityFriendBlock.this).setText(getResources().getString(R.string.blocking))
-                            .setTextColor(getResources().getColor(R.color.black))
-                            .setTranslationY(100)
-                            .setProgressColor(getResources().getColor(R.color.orange_light))
-                            .error();
-
                     SnackBar.show(ActivityFriendBlock.this,R.string.friend_inactive);
                 }
             } else {

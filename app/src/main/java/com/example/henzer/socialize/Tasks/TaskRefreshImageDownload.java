@@ -41,6 +41,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import static com.example.henzer.socialize.Controller.StaticMethods.friendsOnlyOnline;
 import static com.example.henzer.socialize.Controller.StaticMethods.saveImage;
 
 public class TaskRefreshImageDownload extends AsyncTask<String, Void, Void> {
@@ -48,7 +49,7 @@ public class TaskRefreshImageDownload extends AsyncTask<String, Void, Void> {
     private Context context;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private GridView gridView;
-    private List<ModelPerson> friends;
+    private ArrayList<ModelPerson> friends;
     private JSONParser jsonParser;
     private int size;
 
@@ -104,6 +105,8 @@ public class TaskRefreshImageDownload extends AsyncTask<String, Void, Void> {
 
     @Override protected void onPostExecute(Void aVoid) {
         mSwipeRefreshLayout.setRefreshing(false);
+
+        friends = friendsOnlyOnline(friends);
 
         Collections.sort(friends, new Comparator<ModelPerson>() {
             @Override

@@ -117,7 +117,6 @@ public class ActivityMain extends Activity{
                     sharedPreferences = getSharedPreferences(ActivityMain.MyPREFERENCES, Context.MODE_PRIVATE);
                     userLogin = new ModelPerson(profile.getId(), sharedPreferences.getString("gcmId", ""), profile.getName(), "http://graph.facebook.com/" + profile.getId() + "/picture?", "A");
                     sharedPreferences.edit().putString("userLogin", gson.toJson(userLogin)).commit();
-                    SnackBar.show(ActivityMain.this,"ActivityMainOnCurrentProfileChanged");
                     TaskAddNewUser taskAddNewUser = new TaskAddNewUser();
                     taskAddNewUser.execute(userLogin);
 

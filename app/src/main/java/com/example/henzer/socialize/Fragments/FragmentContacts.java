@@ -35,6 +35,7 @@ import com.kenny.snackbar.SnackBar;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import static com.example.henzer.socialize.Controller.StaticMethods.animationStart;
@@ -108,7 +109,21 @@ public class FragmentContacts extends Fragment {
             public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
                 if (!mSwipeRefreshLayout.isRefreshing() && isNetworkAvailable(getActivity())){
                     ModelPerson user = ModelSessionData.getInstance().getFriends().get(position);
-                    new TaskSendNotification(getActivity(), actualUser.getName(),"" , "").execute(user);
+                    if (user.getState().equals("A")){
+                        long actualTime = Calendar.getInstance().getTimeInMillis();
+                        if (actualTime - user.getLastBlockedTime() > 180000){
+                            new TaskSendNotification(getActivity(), actualUser.getName(),"" , "").execute(user);
+                            user.setLastBlockedTime(actualTime);
+                        }else{
+                            SnackBar.show(getActivity(),getResources().getString(R.string.toast_not_time_yet)+" "+((180000-(actualTime - user.getLastBlockedTime()))/1000)+" s");
+                        }
+
+
+
+
+                    }else{
+                        SnackBar.show(getActivity(),R.string.friend_inactive);
+                    }
                 }else if(!isNetworkAvailable(getActivity())){
                     SnackBar.show(getActivity(), R.string.no_connection, R.string.button_change_connection, new View.OnClickListener() {
                         @Override

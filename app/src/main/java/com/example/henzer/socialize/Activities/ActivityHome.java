@@ -79,6 +79,7 @@ public class ActivityHome extends ActionBarActivity {
             }
             TaskSetFriends taskFriends = new TaskSetFriends(this);
             taskFriends.execute(idFriends);
+            friends = new ArrayList<>();
         }else{
             new TaskGetFriends(this,null).execute(userLogin.getId());
         }
@@ -157,8 +158,7 @@ public class ActivityHome extends ActionBarActivity {
                     break;
                 }
             }
-            adapterContact.clear();
-            adapterContact.addAll(friendsT);
+            adapterContact.notifyDataSetChanged();
         }
     };
 
@@ -200,8 +200,6 @@ public class ActivityHome extends ActionBarActivity {
                     @Override
                     public void onSelection(MaterialDialog materialDialog, View view, int which, CharSequence charSequence) {
                         if (which == 0) {
-
-
                             /*List<ModelPerson> friends = ModelSessionData.getInstance().getFriends();
                             for (ModelPerson f: friends){
                                 f.setSelected(false);

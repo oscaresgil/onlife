@@ -72,6 +72,7 @@
     <string name="toast_wait_until_contacts_refreshed">¡Espera! Actualizando Amigos..</string>
     <string name="toast_group_not_yet_created">Nombre o Contactos no especificados. Intenta de nuevo.</string>
     <string name="toast_group_only_less_than_five_friends">Cinco amigos máximo</string>
+    <string name="toast_not_time_yet">Wait! Remaining Time</string>
 
     <string name="select_friend">Seleccionar Amigos</string>
     <string name="show_location">Mostrar la posición del Amigo</string>

@@ -87,7 +87,7 @@ public class TaskGetFriends extends AsyncTask<String, Void, ArrayList<ModelPerso
                 dialog.dismiss();
             }
 
-            //friends = friendsOnlyOnline(friends);
+            friends = friendsOnlyOnline(friends);
 
             Collections.sort(friends, new Comparator<ModelPerson>() {
                 @Override

@@ -66,12 +66,14 @@ public class AdapterContact extends ArrayAdapter<ModelPerson> {
             contactHolder.avatar = (RatioImageView) view.findViewById(R.id.LayoutContact_GifImageView);
             contactHolder.name = (TextView) view.findViewById(R.id.LayoutContact_TextViewNameLeft);
             contactHolder.visibility = (ImageView)view.findViewById(R.id.LayoutContact_RadioButton);
-
             view.setTag(contactHolder);
         }
         else{
             contactHolder = (ContactHolder) view.getTag();
         }
+
+        contactHolder.visibility.bringToFront();
+        contactHolder.name.bringToFront();
 
         if (imageInDisk(context, userData.getId())){
             contactHolder.avatar.setImageBitmap(loadImage(context,userData.getId()));
@@ -80,9 +82,7 @@ public class AdapterContact extends ArrayAdapter<ModelPerson> {
         }
         contactHolder.name.setText(userData.getName());
         Log.i(TAG, "Adapter User: "+userData.toString());
-        if (userData.getState().equals("O")){
-            contactHolder.visibility.setImageBitmap(BitmapFactory.decodeResource(context.getResources(),R.drawable.ic_visib_red));
-        }else if (userData.getState().equals("I")){
+        if (userData.getState().equals("I")){
             contactHolder.visibility.setImageBitmap(BitmapFactory.decodeResource(context.getResources(),R.drawable.ic_action_visibility_off));
         }else if(userData.getState().equals("A")){
             contactHolder.visibility.setImageBitmap(BitmapFactory.decodeResource(context.getResources(),R.drawable.ic_action_visibility_on));

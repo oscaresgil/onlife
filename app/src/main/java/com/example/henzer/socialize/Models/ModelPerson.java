@@ -1,6 +1,7 @@
 package com.example.henzer.socialize.Models;
 
 import java.io.Serializable;
+import java.util.Calendar;
 
 public class ModelPerson implements Serializable{
     private String id;
@@ -11,6 +12,7 @@ public class ModelPerson implements Serializable{
     private int background;
     private boolean selected;
     private boolean deleted=true;
+    private long lastBlockedTime;
 
     public ModelPerson() {
     }
@@ -22,15 +24,7 @@ public class ModelPerson implements Serializable{
         this.photo = photo;
         this.state = state;
         selected = false;
-    }
-
-    public void setAttr(String id, String id_phone, String name, String photo, String state, boolean selected) {
-        this.id = id;
-        this.id_phone = id_phone;
-        this.name = name;
-        this.photo = photo;
-        this.state = state;
-        this.selected = selected;
+        lastBlockedTime = 0;
     }
 
     public String getId() {
@@ -97,14 +91,26 @@ public class ModelPerson implements Serializable{
         this.deleted = deleted;
     }
 
-    @Override public String toString() {
-        return "Person{" +
-                "id=" + id +
+    public long getLastBlockedTime() {
+        return lastBlockedTime;
+    }
+
+    public void setLastBlockedTime(long lastBlockedTime) {
+        this.lastBlockedTime = lastBlockedTime;
+    }
+
+    @Override
+    public String toString() {
+        return "ModelPerson{" +
+                "id='" + id + '\'' +
                 ", id_phone='" + id_phone + '\'' +
                 ", name='" + name + '\'' +
                 ", photo='" + photo + '\'' +
                 ", state='" + state + '\'' +
-                ", selected='" + selected + '\'' +
+                ", background=" + background +
+                ", selected=" + selected +
+                ", deleted=" + deleted +
+                ", lastBlockedTime=" + lastBlockedTime +
                 '}';
     }
 }
