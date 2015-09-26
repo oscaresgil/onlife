@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">OnLife</string>
+    <string name="app_name">Onlife</string>
     <string name="gcm_server_id">AIzaSyBMo260wxpPNsCHle_ynoMUx4sju9W76LY</string>
 
     <string name="distance">Distance</string>
@@ -16,7 +16,7 @@
     <string name="group_name">Change Group Name..</string>
     <string name="group_already">Group already created!</string>
 	
-    <string name="device_admin">Lockscreen OnLife Authorization</string>
+    <string name="device_admin">Lockscreen Onlife Authorization</string>
     <string name="device_admin_description">This allow your phone to be locked</string>
     <string name="facebook_app_id">1690720374494757</string>
     
