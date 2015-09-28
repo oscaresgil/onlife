@@ -2,25 +2,26 @@ package com.example.henzer.socialize.BlockActivity;
 
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.DragEvent;
-import android.view.MotionEvent;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.ListView;
 
 import com.applovin.adview.AppLovinInterstitialAd;
 import com.applovin.sdk.AppLovinSdk;
+import com.example.henzer.socialize.Adapters.AdapterMessageInBlock;
+import com.example.henzer.socialize.Models.ModelMessages;
 import com.example.henzer.socialize.R;
-import com.skyfishjy.library.RippleBackground;
 
-import pl.droidsonroids.gif.GifDrawable;
-import pl.droidsonroids.gif.GifImageView;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ActivityInBlock extends Activity{
-
     public final static String TAG = "ActivityInBlock";
+
+    private ListView listView;
+    private AdapterMessageInBlock adapter;
+    private List<ModelMessages> messages;
 
     private String user;
     private String message;
@@ -39,58 +40,12 @@ public class ActivityInBlock extends Activity{
 
         Log.i(TAG,"User: "+user+". Message: "+message+". GifName: "+gifName);
 
-        TextView userView = (TextView) findViewById(R.id.ActivityInBlock_TextViewUser);
-        TextView messageView = (TextView) findViewById(R.id.ActivityInBlock_TextViewMessage);
+        messages = new ArrayList<>();
+        messages.add(new ModelMessages(user,message,gifName));
 
-        userView.setText(user);
-        messageView.setText("\""+message+"\"");
-        if (!gifName.equals("")) {
-            try {
-                GifImageView gifImageView = (GifImageView) findViewById(R.id.ActivityInBlock_GifImageView);
-                int resourceId = getResources().getIdentifier(gifName, "drawable", getPackageName());
-                GifDrawable gif = new GifDrawable(getResources(), resourceId);
-                gifImageView.setImageDrawable(gif);
-                gifImageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
-
-        final RippleBackground rippleBackground = (RippleBackground) findViewById(R.id.ActivityInBlock_BlockAnimation);
-        rippleBackground.startRippleAnimation();
-        ImageView imageView = (ImageView) findViewById(R.id.ActivityInBlock_ImageBlock);
-        imageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                rippleBackground.startRippleAnimation();
-                finish();
-            }
-        });
-        rippleBackground.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                rippleBackground.startRippleAnimation();
-                finish();
-                return false;
-            }
-        });
-        rippleBackground.setOnDragListener(new View.OnDragListener() {
-            @Override
-            public boolean onDrag(View v, DragEvent event) {
-                rippleBackground.startRippleAnimation();
-                finish();
-                return false;
-            }
-        });
-        imageView.setOnDragListener(new View.OnDragListener() {
-            @Override
-            public boolean onDrag(View v, DragEvent event) {
-                rippleBackground.startRippleAnimation();
-                finish();
-                return false;
-            }
-        });
+        listView = (ListView) findViewById(R.id.ActivityInBlock_ListView);
+        adapter = new AdapterMessageInBlock(this,R.layout.layout_messages_in_block,messages);
+        listView.setAdapter(adapter);
 
         // Inicializar el sdk de AppLovin
         AppLovinSdk.initializeSdk(this);
@@ -113,5 +68,18 @@ public class ActivityInBlock extends Activity{
 
         }
 
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        Log.i(TAG,"OnNewIntent(): ");
+        Log.i(TAG,"Bundle. User: "+user+". Message: "+message+". Gif"+gifName);
+        user = intent.getStringExtra("user");
+        message = intent.getStringExtra("message");
+        gifName = intent.getStringExtra("gif");
+
+        adapter.add(new ModelMessages(user,message,gifName));
+        adapter.notifyDataSetChanged();
     }
 }

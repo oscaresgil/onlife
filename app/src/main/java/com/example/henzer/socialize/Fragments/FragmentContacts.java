@@ -111,16 +111,12 @@ public class FragmentContacts extends Fragment {
                     ModelPerson user = ModelSessionData.getInstance().getFriends().get(position);
                     if (user.getState().equals("A")){
                         long actualTime = Calendar.getInstance().getTimeInMillis();
-                        if (actualTime - user.getLastBlockedTime() > 180000){
+                        if (actualTime - user.getLastBlockedTime() > getResources().getInteger(R.integer.block_time_remaining)){
                             new TaskSendNotification(getActivity(), actualUser.getName(),"" , "").execute(user);
                             user.setLastBlockedTime(actualTime);
                         }else{
-                            SnackBar.show(getActivity(),getResources().getString(R.string.toast_not_time_yet)+" "+((180000-(actualTime - user.getLastBlockedTime()))/1000)+" s");
+                            SnackBar.show(getActivity(),getResources().getString(R.string.toast_not_time_yet)+" "+((getResources().getInteger(R.integer.block_time_remaining)-(actualTime - user.getLastBlockedTime()))/1000)+" s");
                         }
-
-
-
-
                     }else{
                         SnackBar.show(getActivity(),R.string.friend_inactive);
                     }

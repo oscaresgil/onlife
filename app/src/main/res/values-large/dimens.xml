@@ -1,4 +1,5 @@
 <resources>
+    <!-- 640dp x 480dp -->
 
     <!-- https://www.google.com/design/tool/devices/ -->
 
@@ -43,12 +44,13 @@
     <!-- Activity In Block Dimensions -->
     <dimen name="activity_in_block_text_view_user_size">30sp</dimen>
     <dimen name="activity_in_block_text_view_user_margin">4dp</dimen>
-    <dimen name="activity_in_block_text_view_message_size">18sp</dimen>
-    <dimen name="activity_in_block_text_view_message_margin">4dp</dimen>
+    <dimen name="activity_in_block_text_view_message_size">20sp</dimen>
+    <dimen name="activity_in_block_text_view_message_margin">5dp</dimen>
     <dimen name="activity_in_block_gif_view_height_width">70dp</dimen>
-    <dimen name="activity_in_block_ripple_background_margin">5dp</dimen>
-    <dimen name="activity_in_block_ripple_background_radius">32dp</dimen>
-    <dimen name="activity_in_block_ripple_background_image_height_width">64dp</dimen>
+    <dimen name="activity_in_block_gif_margin">7dp</dimen>
+    <dimen name="activity_in_block_layout_message_width">550dp</dimen>
+    <dimen name="activity_in_block_list_view_height">450dp</dimen>
+    <dimen name="activity_in_block_main_margin">15dp</dimen>
 
     <!-- Fragment Groups Dimensions -->
     <dimen name="fragment_group_fab_margin">16dp</dimen>

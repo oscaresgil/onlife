@@ -74,6 +74,7 @@ public class AdapterContact extends ArrayAdapter<ModelPerson> {
 
         contactHolder.visibility.bringToFront();
         contactHolder.name.bringToFront();
+        contactHolder.avatar.setImageBitmap(BitmapFactory.decodeResource(context.getResources(),R.drawable.loading_friend_icon));
 
         if (imageInDisk(context, userData.getId())){
             contactHolder.avatar.setImageBitmap(loadImage(context,userData.getId()));
@@ -90,6 +91,7 @@ public class AdapterContact extends ArrayAdapter<ModelPerson> {
 
         return view;
     }
+
     static class ContactHolder{
         RatioImageView avatar;
         TextView name;

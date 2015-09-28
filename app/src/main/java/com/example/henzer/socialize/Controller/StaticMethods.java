@@ -31,6 +31,9 @@ import com.example.henzer.socialize.Models.ModelSessionData;
 import com.example.henzer.socialize.R;
 import com.google.gson.Gson;
 import com.kenny.snackbar.SnackBar;
+import com.r0adkll.slidr.Slidr;
+import com.r0adkll.slidr.model.SlidrConfig;
+import com.r0adkll.slidr.model.SlidrPosition;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -38,7 +41,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class StaticMethods {
-
+    public static final String TAG = "StaticMethods";
     public static final int ACTIVATION_REQUEST = 47;
 
     public static void activateDeviceAdmin(Activity activity){
@@ -63,14 +66,14 @@ public class StaticMethods {
         context.registerReceiver(receiver,filter);
     }
 
-    public static ArrayList<ModelPerson> friendsOnlyOnline(ArrayList<ModelPerson> friends){
-        ArrayList<ModelPerson> listReturn = new ArrayList<>();
-        for (ModelPerson p: friends){
-            if (!p.getState().equals("O")){
-                listReturn.add(p);
-            }
-        }
-        return  listReturn;
+    public static void setSlidr(Context context){
+        SlidrConfig config = new SlidrConfig.Builder()
+                .primaryColor(context.getResources().getColor(R.color.orange))
+                .secondaryColor(context.getResources().getColor(R.color.orange_light))
+                .position(SlidrPosition.LEFT)
+                .sensitivity(0.4f)
+                .build();
+        Slidr.attach((Activity)context, config);
     }
 
     public static void unSelectFriends(List<ModelPerson> friends){
@@ -113,6 +116,29 @@ public class StaticMethods {
         File dirImages = cw.getDir("Profiles",Context.MODE_APPEND);
         File myPath = new File(dirImages, name+".png");
         return myPath.exists();
+    }
+
+    public static boolean delDirImages(Context context,List<ModelPerson> friends, List<ModelGroup> groups){
+        ContextWrapper cw = new ContextWrapper(context);
+        File dirImages = cw.getDir("Profiles",Context.MODE_PRIVATE);
+        for (ModelPerson p: friends){
+            File img = new File(dirImages, p.getId()+".png");
+            boolean b = img.delete();
+            Log.i(TAG,"DELETED: "+b);
+        }
+        for (ModelGroup g: groups){
+            File img = new File(dirImages, g.getName()+".png");
+            boolean b = img.delete();
+            Log.i(TAG,"DELETED: "+b);
+        }
+        return dirImages.delete();
+    }
+
+    public static boolean delImageProfile(Context context, String id){
+        ContextWrapper cw = new ContextWrapper(context);
+        File dirImages = cw.getDir("Profiles",Context.MODE_APPEND);
+        File myPath = new File(dirImages, id+".png");
+        return myPath.delete();
     }
 
     public static Bitmap loadImage(Context context, String name){

@@ -30,14 +30,19 @@ import com.example.henzer.socialize.Services.ServicePhoneState;
 import com.example.henzer.socialize.Tasks.TaskChangeState;
 import com.example.henzer.socialize.Tasks.TaskGetFriends;
 import com.example.henzer.socialize.Tasks.TaskSetFriends;
+import com.example.henzer.socialize.Tasks.TaskSimpleImageDownload;
 import com.facebook.login.LoginManager;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import static com.example.henzer.socialize.Controller.StaticMethods.activateDeviceAdmin;
+import static com.example.henzer.socialize.Controller.StaticMethods.delDirImages;
+import static com.example.henzer.socialize.Controller.StaticMethods.delImageProfile;
 
 public class ActivityHome extends ActionBarActivity {
     public static final String TAG = "ActivityHome";
@@ -68,7 +73,6 @@ public class ActivityHome extends ActionBarActivity {
             sharedPreferences.edit().putString("groups",gson.toJson(groups)).commit();
         }
 
-        //modelSessionData = new ModelSessionData(userLogin,friends,groups);
         ModelSessionData.initInstance(userLogin,friends,groups);
 
         if (!sharedPreferences.contains("session")) {
@@ -147,16 +151,45 @@ public class ActivityHome extends ActionBarActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             Bundle extras = intent.getExtras();
-            String state = extras.getString("state");
-            String id = extras.getString("id");
-            Log.i(TAG, "Broadcast Receiver. ID:"+id+". State:"+state);
-            List<ModelPerson> friendsT = ModelSessionData.getInstance().getFriends();
-            for (ModelPerson p: friendsT){
-                if (p.getId().equals(id)){
-                    p.setState(state);
-                    Log.i(TAG, "Broadcast Receiver. ID:"+p.getId()+". Name: "+p.getName()+". State:"+state);
-                    break;
+            String tag = extras.getString("tag");
+            if (tag.equals("update")) {
+                String id = extras.getString("id");
+                String state = extras.getString("state");
+                Log.i(TAG, "Broadcast Receiver. ID:" + id + ". State:" + state);
+                List<ModelPerson> friendsT = ModelSessionData.getInstance().getFriends();
+                if (state.equals("O")) {
+                    for (int i = 0; i < friendsT.size(); i++) {
+                        ModelPerson p = friendsT.get(i);
+                        if (p.getId().equals(id)) {
+                            boolean removed = delImageProfile(ActivityHome.this,p.getId());
+                            friendsT.remove(i);
+                            adapterContact.remove(adapterContact.getItem(i));
+                            Log.i(TAG, "Broadcast Receiver. Remove ID:" + p.getId() + ". Name: " + p.getName() + ". State:" + state+  ". Image Deleted: "+removed);
+                            break;
+                        }
+                    }
+                } else {
+                    for (ModelPerson p : friendsT) {
+                        if (p.getId().equals(id)) {
+                            p.setState(state);
+                            Log.i(TAG, "Broadcast Receiver. Update ID:" + p.getId() + ". Name: " + p.getName() + ". State:" + state);
+                            break;
+                        }
+                    }
                 }
+            }else if(tag.equals("new_user")){
+                ModelPerson newUser = (ModelPerson) extras.getSerializable("new_user");
+                List<ModelPerson> friends = ModelSessionData.getInstance().getFriends();
+                friends.add(newUser);
+
+                Collections.sort(friends, new Comparator<ModelPerson>() {
+                    @Override
+                    public int compare(ModelPerson modelPerson1, ModelPerson modelPerson2) {
+                        return modelPerson1.getName().compareTo(modelPerson2.getName());
+                    }
+                });
+                adapterContact.clear();
+                adapterContact.addAll(friends);
             }
             adapterContact.notifyDataSetChanged();
         }
@@ -226,10 +259,11 @@ public class ActivityHome extends ActionBarActivity {
         sharedPreferences.edit().remove("friends").commit();
         sharedPreferences.edit().remove("groups").commit();
         sharedPreferences.edit().remove("userLogin").commit();
+        boolean delete =delDirImages(this,ModelSessionData.getInstance().getFriends(),ModelSessionData.getInstance().getModelGroups());
         ModelSessionData.getInstance().clear();
         LoginManager.getInstance().logOut();
         new TaskChangeState().execute(userLogin.getId(),"O");
-        Log.i(TAG,"LogOut. User: "+userLogin.getId()+". Name: "+userLogin.getName()+". State: O");
+        Log.i(TAG,"LogOut. User: "+userLogin.getId()+". Name: "+userLogin.getName()+". State: O. Directory Deleted: "+delete);
         finish();
     }
 

@@ -22,6 +22,7 @@ import com.example.henzer.socialize.Models.ModelPerson;
 import com.example.henzer.socialize.Models.ModelSessionData;
 import com.example.henzer.socialize.R;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
+import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -54,15 +55,29 @@ public class GcmMessageHandler extends IntentService {
                 message = extras.getString("message");
                 user = extras.getString("userName");
                 gifName = extras.getString("gifName");
-                Log.i(TAG, "User: " + user + ". Message: " + message + ". GifName: " + gifName);
+                Log.i(TAG, "BLOCK: User: " + user + ". Message: " + message + ". GifName: " + gifName);
                 if (!user.equals("") || user != null) {
                     onMessage(this);
                 }
-            } else if (tag.equals("update")) {
-                String state = extras.getString("state");
-                String idP = extras.getString("id");
 
+            } else if(tag.equals("newUser")){
+                Gson gson = new Gson();
+                String user = extras.getString("user");
+                ModelPerson newUser = gson.fromJson(user,ModelPerson.class);
+
+                Log.i(TAG, "NEW USER: "+newUser.toString());
                 Intent i = new Intent("com.example.henzer.socialize.Activities.ActivityHome");
+                i.putExtra("tag","new_user");
+                i.putExtra("new_user",newUser);
+                sendBroadcast(i);
+
+            } else if (tag.equals("update")) {
+                String idP = extras.getString("id");
+                String state = extras.getString("state");
+
+                Log.i(TAG, "UPDATE: Id: "+idP+". State: "+state);
+                Intent i = new Intent("com.example.henzer.socialize.Activities.ActivityHome");
+                i.putExtra("tag","update");
                 i.putExtra("id",idP);
                 i.putExtra("state",state);
                 sendBroadcast(i);

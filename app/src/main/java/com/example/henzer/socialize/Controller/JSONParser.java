@@ -22,7 +22,6 @@ import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 public class JSONParser {
-
     private InputStream is = null;
     private JSONObject jObj = null;
     private String json = "";
@@ -79,7 +78,7 @@ public class JSONParser {
             while ((line = reader.readLine()) != null) {
                 sb.append(line + "\n");
             }
-            Log.e("SB",sb.toString());
+            Log.e("JSONPARSER","ERROR: "+sb.toString());
             is.close();
             json = sb.toString();
         } catch (Exception e) {

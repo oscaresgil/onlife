@@ -1,5 +1,7 @@
 <resources>
 
+    <!-- 960dp x 720dp -->
+
     <!-- https://www.google.com/design/tool/devices/ -->
 
     <!-- Activity Friend Block Dimensions -->
@@ -46,9 +48,10 @@
     <dimen name="activity_in_block_text_view_message_size">20sp</dimen>
     <dimen name="activity_in_block_text_view_message_margin">5dp</dimen>
     <dimen name="activity_in_block_gif_view_height_width">80dp</dimen>
-    <dimen name="activity_in_block_ripple_background_margin">6dp</dimen>
-    <dimen name="activity_in_block_ripple_background_radius">34dp</dimen>
-    <dimen name="activity_in_block_ripple_background_image_height_width">66dp</dimen>
+    <dimen name="activity_in_block_gif_margin">8dp</dimen>
+    <dimen name="activity_in_block_layout_message_width">750dp</dimen>
+    <dimen name="activity_in_block_list_view_height">750dp</dimen>
+    <dimen name="activity_in_block_main_margin">15dp</dimen>
 
     <!-- Fragment Groups Dimensions -->
     <dimen name="fragment_group_fab_margin">17dp</dimen>

@@ -28,4 +28,7 @@
     <!-- Adapter Contact Integers -->
     <integer name="adapter_contact_size_little">501</integer>
 
+    <!-- Remaining time: 1.5s -->
+    <integer name="block_time_remaining">90000</integer>
+
 </resources>
