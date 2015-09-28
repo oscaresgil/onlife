@@ -38,7 +38,6 @@ dependencies {
     compile 'com.melnykov:floatingactionbutton:1.3.0'
     compile 'net.steamcrafted:load-toast:1.0.6'
     compile 'com.kennyc:snackbar:2.5'
-    compile 'com.skyfishjy.ripplebackground:library:1.0.1'
     compile 'com.jpardogo.listbuddies:library:1.1.1'
     compile 'ca.barrenechea.header-decor:header-decor:0.2.2'
     compile 'se.emilsjolander:android-flipview:1.1.0'

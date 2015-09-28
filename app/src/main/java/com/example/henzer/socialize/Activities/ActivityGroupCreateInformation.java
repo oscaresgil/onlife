@@ -49,6 +49,7 @@ import static com.example.henzer.socialize.Controller.StaticMethods.animationEnd
 import static com.example.henzer.socialize.Controller.StaticMethods.hideSoftKeyboard;
 import static com.example.henzer.socialize.Controller.StaticMethods.performCrop;
 import static com.example.henzer.socialize.Controller.StaticMethods.saveImage;
+import static com.example.henzer.socialize.Controller.StaticMethods.setSlidr;
 import static com.example.henzer.socialize.Controller.StaticMethods.showSoftKeyboard;
 import static com.example.henzer.socialize.Controller.StaticMethods.unSelectFriends;
 
@@ -84,13 +85,7 @@ public class ActivityGroupCreateInformation extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         Log.i(TAG, "onCreate()");
 
-        SlidrConfig config = new SlidrConfig.Builder()
-                .primaryColor(getResources().getColor(R.color.orange))
-                .secondaryColor(getResources().getColor(R.color.orange_light))
-                .position(SlidrPosition.LEFT)
-                .sensitivity(0.4f)
-                .build();
-        Slidr.attach(this, config);
+        setSlidr(this);
 
         friends = ModelSessionData.getInstance().getFriends();
 
@@ -200,7 +195,6 @@ public class ActivityGroupCreateInformation extends ActionBarActivity {
                         }
 
                         ModelGroup newG = new ModelGroup(ModelSessionData.getInstance().getModelGroups().size(), name, selected, path, limit, state);
-                        //ModelSessionData.getInstance().getModelGroups().add(newG);
 
                         Intent returnIntent = new Intent();
                         returnIntent.putExtra("new_group",newG);

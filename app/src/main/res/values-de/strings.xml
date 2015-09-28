@@ -72,6 +72,7 @@
     <string name="toast_wait_until_contacts_refreshed">Wait! reloading Contacts...</string>
     <string name="toast_group_not_yet_created">Name or Contacts not specified. Try Again</string>
     <string name="toast_group_only_less_than_five_friends">Max five friends</string>
+    <string name="toast_not_time_yet">Wait! Remaining Time</string>
 
     <string name="select_friend">Select Friends</string>
     <string name="show_location">Show Friend Location</string>

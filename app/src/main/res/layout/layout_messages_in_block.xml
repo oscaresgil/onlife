@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/LayoutMessagesInBlock_CardViewMessage"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal"
+    android:gravity="center_horizontal"
+    android:layout_margin="@dimen/activity_in_block_main_margin">
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <pl.droidsonroids.gif.GifImageView
+            android:id="@+id/LayoutMessagesInBlock_GifImageView"
+            android:layout_margin="@dimen/activity_in_block_gif_margin"
+            android:layout_height="@dimen/activity_in_block_gif_view_height_width"
+            android:layout_width="@dimen/activity_in_block_gif_view_height_width"
+            android:layout_gravity="center"
+            android:gravity="center"/>
+
+        <LinearLayout
+            android:id="@+id/LayoutMessagesInBlock_LinearLayoutMessage"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="vertical"
+            android:layout_margin="@dimen/activity_in_block_gif_margin">
+            <TextView
+                android:id="@+id/LayoutMessagesInBlock_TextViewUser"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/activity_in_block_text_view_user_size"
+                android:layout_margin="@dimen/activity_in_block_text_view_user_margin"
+                android:textColor="@color/black"/>
+            <TextView
+                android:id="@+id/LayoutMessagesInBlock_TextViewMessage"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/activity_in_block_text_view_message_size"
+                android:layout_margin="@dimen/activity_in_block_text_view_message_margin"
+                android:textColor="@color/black"/>
+        </LinearLayout>
+    </LinearLayout>
+</android.support.v7.widget.CardView>

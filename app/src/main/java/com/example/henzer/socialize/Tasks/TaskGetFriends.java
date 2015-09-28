@@ -5,16 +5,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.provider.Settings;
-import android.util.Log;
 import android.view.View;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.henzer.socialize.Activities.ActivityHome;
 import com.example.henzer.socialize.Activities.ActivityMain;
 import com.example.henzer.socialize.Adapters.AdapterContact;
-import com.example.henzer.socialize.Adapters.AdapterGroup;
 import com.example.henzer.socialize.Controller.JSONParser;
-import com.example.henzer.socialize.Fragments.FragmentContacts;
 import com.example.henzer.socialize.Models.ModelPerson;
 import com.example.henzer.socialize.Models.ModelSessionData;
 import com.example.henzer.socialize.R;
@@ -31,7 +28,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import static com.example.henzer.socialize.Controller.StaticMethods.friendsOnlyOnline;
 import static com.example.henzer.socialize.Controller.StaticMethods.isNetworkAvailable;
 
 public class TaskGetFriends extends AsyncTask<String, Void, ArrayList<ModelPerson>> {
@@ -69,8 +65,7 @@ public class TaskGetFriends extends AsyncTask<String, Void, ArrayList<ModelPerso
         try{
             jsonFriends = jsonParser.makeHttpRequest(ActivityMain.SERVER_URL, "POST", p);
             Gson gson = new Gson();
-            ArrayList<ModelPerson> friends = new ArrayList<>();
-            friends = gson.fromJson(jsonFriends.getString("friends"), (new TypeToken<ArrayList<ModelPerson>>(){}.getType()));
+            ArrayList<ModelPerson> friends = gson.fromJson(jsonFriends.getString("friends"), (new TypeToken<ArrayList<ModelPerson>>(){}.getType()));
 
             return friends;
         }catch(Exception ex){
@@ -86,8 +81,6 @@ public class TaskGetFriends extends AsyncTask<String, Void, ArrayList<ModelPerso
             if (dialog!=null) {
                 dialog.dismiss();
             }
-
-            //friends = friendsOnlyOnline(friends);
 
             Collections.sort(friends, new Comparator<ModelPerson>() {
                 @Override

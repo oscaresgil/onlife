@@ -6,15 +6,12 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
-import android.widget.Adapter;
 import android.widget.GridView;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.henzer.socialize.Activities.ActivityHome;
 import com.example.henzer.socialize.Activities.ActivityMain;
 import com.example.henzer.socialize.Adapters.AdapterContact;
 import com.example.henzer.socialize.Controller.JSONParser;
-import com.example.henzer.socialize.Fragments.FragmentContacts;
 import com.example.henzer.socialize.Models.ModelPerson;
 import com.example.henzer.socialize.Models.ModelSessionData;
 import com.example.henzer.socialize.R;
@@ -48,7 +45,7 @@ public class TaskRefreshImageDownload extends AsyncTask<String, Void, Void> {
     private Context context;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private GridView gridView;
-    private List<ModelPerson> friends;
+    private ArrayList<ModelPerson> friends;
     private JSONParser jsonParser;
     private int size;
 

@@ -1,53 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/ActivityInBlock_TextViewUser"
+    <ListView
+        android:id="@+id/ActivityInBlock_ListView"
+        android:layout_weight="1"
+        android:layout_gravity="center"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/activity_in_block_list_view_height"
+        android:layout_margin="10dp"/>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/ActivityInBlock_FAB"
+        android:layout_weight="1"
+        android:layout_height="100dp"
+        android:layout_width="100dp"
+        android:layout_gravity="center"
         android:gravity="center"
-        android:textSize="@dimen/activity_in_block_text_view_user_size"
-        android:layout_margin="@dimen/activity_in_block_text_view_user_margin"
-        android:textColor="@color/black"/>
+        android:src="@drawable/ic_lock_black_24dp"
+        app:borderWidth="@dimen/activity_friend_block_fab_block_border"
+        app:backgroundTint="@color/orange_light"/>
 
-    <TextView
-        style="@style/FriendStyle"
-        android:id="@+id/ActivityInBlock_TextViewMessage"
-        android:layout_below="@id/ActivityInBlock_TextViewUser"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:textSize="@dimen/activity_in_block_text_view_message_size"
-        android:gravity="center"
-        android:layout_margin="@dimen/activity_in_block_text_view_message_margin"
-        android:textColor="@color/black"/>
-
-    <pl.droidsonroids.gif.GifImageView
-        android:id="@+id/ActivityInBlock_GifImageView"
-        android:layout_height="@dimen/activity_in_block_gif_view_height_width"
-        android:layout_width="@dimen/activity_in_block_gif_view_height_width"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@id/ActivityInBlock_TextViewMessage"/>
-
-    <com.skyfishjy.library.RippleBackground
-        android:layout_below="@id/ActivityInBlock_GifImageView"
-        android:layout_margin="@dimen/activity_in_block_ripple_background_margin"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/ActivityInBlock_BlockAnimation"
-        app:rb_color="@color/orange_light"
-        app:rb_radius="@dimen/activity_in_block_ripple_background_radius"
-        app:rb_rippleAmount="@integer/activity_in_block_ripple_amount"
-        app:rb_duration="@integer/activity_in_block_ripple_duration"
-        app:rb_scale="@integer/activity_in_block_ripple_scale">
-        <ImageView
-            android:id="@+id/ActivityInBlock_ImageBlock"
-            android:layout_width="@dimen/activity_in_block_ripple_background_image_height_width"
-            android:layout_height="@dimen/activity_in_block_ripple_background_image_height_width"
-            android:layout_centerInParent="true"
-            android:src="@drawable/ic_lock_black_24dp"/>
-    </com.skyfishjy.library.RippleBackground>
-
-</RelativeLayout>
+</LinearLayout>

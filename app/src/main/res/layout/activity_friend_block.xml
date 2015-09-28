@@ -59,22 +59,33 @@
                         android:layout_height="wrap_content"
                         android:focusableInTouchMode="true"
                         android:clickable="false">
-                        <TextView
-                            style="@style/FriendStyle"
-                            android:id="@+id/ActivityFriendBlock_TextViewMaxCharacters"
-                            android:layout_height="wrap_content"
-                            android:layout_width="@dimen/activity_friend_block_textview_maxlength_message"
-                            android:gravity="center"
-                            android:layout_margin="@dimen/activity_friend_block_textview_maxlength_margin"
-                            android:layout_alignParentLeft="true"
-                            android:layout_alignParentStart="true"
-                            android:text="@string/max_characters_text"/>
+                        <LinearLayout
+                            android:id="@+id/ActivityFriendBlock_LayoutMaxCharacters"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+                            <ImageView
+                                android:id="@+id/ActivityFriendBlock_RadioButton"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="5dp"
+                                android:checked="true"/>
+                            <TextView
+                                style="@style/FriendStyle"
+                                android:id="@+id/ActivityFriendBlock_TextViewMaxCharacters"
+                                android:layout_height="wrap_content"
+                                android:layout_width="@dimen/activity_friend_block_textview_maxlength_message"
+                                android:gravity="center"
+                                android:layout_margin="@dimen/activity_friend_block_textview_maxlength_margin"
+                                android:layout_alignParentLeft="true"
+                                android:layout_alignParentStart="true"
+                                android:text="@string/max_characters_text"/>
+                        </LinearLayout>
                         <LinearLayout
                             android:id="@+id/ActivityFriendBlock_LinearLayoutDivider"
                             android:layout_width="fill_parent"
                             android:layout_height="@dimen/activity_friend_block_linearlayout_divider_height"
                             android:orientation="vertical"
-                            android:layout_below="@id/ActivityFriendBlock_TextViewMaxCharacters"
+                            android:layout_below="@id/ActivityFriendBlock_LayoutMaxCharacters"
                             android:layout_marginLeft="@dimen/activity_friend_block_linearlayout_divider_margin"
                             android:layout_marginRight="@dimen/activity_friend_block_linearlayout_divider_margin"
                             android:background="@color/black"
@@ -84,7 +95,7 @@
                             android:id="@+id/ActivityFriendBlock_EditTextMessage"
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
-                            android:layout_below="@id/ActivityFriendBlock_TextViewMaxCharacters"
+                            android:layout_below="@id/ActivityFriendBlock_LinearLayoutDivider"
                             android:imeOptions="actionDone"
                             android:singleLine="true"
                             android:hint="@string/send_a_message_bar"
@@ -121,7 +132,6 @@
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
-				
 				<net.soulwolf.widget.ratiolayout.widget.RatioImageView
                     android:id="@+id/ActivityFriendBlock_ImageViewContact"
                     android:layout_width="match_parent"
