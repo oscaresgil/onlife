@@ -41,10 +41,10 @@ public class ActivityMain extends Activity{
     public static final String PROJECT_NUMBER = "194566212765";
     public static final String SERVER_URL = "http://104.236.74.55/onlife/person.php";
     public static final String TAG = "ActivityMain";
-    public static final String MyPREFERENCES = "MyPrefs";
+    public static final String MyPREFERENCES = "OnlifePrefs";
     public static final String name = "nameKey";
 
-    private List<ModelPerson> friends = new ArrayList();
+    private List<ModelPerson> friends = new ArrayList<>();
     private ModelPerson userLogin;
 
     private LoginButton loginButton;
@@ -83,17 +83,16 @@ public class ActivityMain extends Activity{
         // Launch the activity to have the user enable our admin.
         activateDeviceAdmin(this);
 
-// REVISION SI ES PRIMERA VEZ QUE SE UTILIZA LA APP
+        sharedPreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
 
-        // Get the shared preferences
-        SharedPreferences preferences =  getSharedPreferences("my_preferences", MODE_PRIVATE);
-
-        if(!preferences.getBoolean("onboarding_complete",false)) {
+        // Review first instalation
+        if(!sharedPreferences.contains("onboarding_complete")) {
             Intent onboarding = new Intent(this, ActivityOnboarding.class);
             startActivity(onboarding);
             finish();
         }
-        sharedPreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+
+        // Get phone GCM
         if (!sharedPreferences.contains("idGcm")){
             TaskGetGCM gcm = new TaskGetGCM(this);
             gcm.execute();
@@ -112,14 +111,14 @@ public class ActivityMain extends Activity{
         mProfileTracker = new ProfileTracker() {
             @Override
             protected void onCurrentProfileChanged(Profile oldProfile, Profile profile) {
-                Log.e(TAG, "Cambio el perfil");
+                Log.e(TAG, "Profile Changed");
                 if (profile!=null) {
                     Gson gson = new Gson();
                     sharedPreferences = getSharedPreferences(ActivityMain.MyPREFERENCES, Context.MODE_PRIVATE);
                     userLogin = new ModelPerson(profile.getId(), sharedPreferences.getString("gcmId", ""), profile.getName(), "http://graph.facebook.com/" + profile.getId() + "/picture?", "A");
-                    sharedPreferences.edit().putString("userLogin", gson.toJson(userLogin)).commit();
-                    sharedPreferences.edit().putString("friends", gson.toJson(new ArrayList<ModelPerson>())).commit();
-                    sharedPreferences.edit().putString("groups", gson.toJson(new ArrayList<ModelGroup>())).commit();
+                    sharedPreferences.edit().putString("userLogin", gson.toJson(userLogin)).apply();
+                    sharedPreferences.edit().putString("friends", gson.toJson(new ArrayList<ModelPerson>())).apply();
+                    sharedPreferences.edit().putString("groups", gson.toJson(new ArrayList<ModelGroup>())).apply();
                     TaskAddNewUser taskAddNewUser = new TaskAddNewUser();
                     taskAddNewUser.execute(userLogin);
 

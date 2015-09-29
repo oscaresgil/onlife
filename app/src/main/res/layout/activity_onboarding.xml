@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:fbutton="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#ffc107">
+    android:background="@color/orange_light">
 
     <android.support.v4.view.ViewPager
         android:layout_width="match_parent"
@@ -23,8 +22,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
-            android:text="SKIP"
-            android:textSize="25dp"
+            android:text="@string/skip"
+            android:textSize="20dp"
             android:background="@color/white"
             android:id="@+id/skip"
             android:textColor="@color/black"
@@ -34,8 +33,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
-            android:text="NEXT"
-            android:textSize="25dp"
+            android:text="@string/next"
+            android:textSize="20dp"
             android:background="@color/white"
             android:id="@+id/next"
             android:textColor="@color/black"

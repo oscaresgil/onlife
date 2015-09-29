@@ -15,17 +15,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="20sp"
-            android:layout_marginBottom="40dp"
+            android:layout_marginBottom="30dp"
             android:textColor="@color/black"
             android:gravity="center"
-            android:text="@string/onboarding4_message"/>
+            android:text="@string/onboarding5_message"/>
 
         <ImageView
-            android:contentDescription="@string/onboarding4_image"
+            android:contentDescription="@string/onboarding5_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
-            android:src="@drawable/tutorial_3"/>
+            android:src="@drawable/tutorial_4"/>
 
     </LinearLayout>
 

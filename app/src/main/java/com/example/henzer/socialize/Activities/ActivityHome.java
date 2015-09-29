@@ -101,7 +101,7 @@ public class ActivityHome extends ActionBarActivity {
         layoutSlidingTab.setDistributeEvenly(true);
         layoutSlidingTab.setViewPager(viewPager);
 
-        sharedPreferences.edit().putBoolean("session", true).commit();
+        sharedPreferences.edit().putBoolean("session", true).apply();
 
         adapterContact = new AdapterContact(this,R.layout.layout_contact,friends);
         adapterGroup = new AdapterGroup(this,R.layout.layout_groups,groups);
@@ -204,9 +204,9 @@ public class ActivityHome extends ActionBarActivity {
         Log.i(TAG,"onDestroy()");
 
         Gson gson = new Gson();
-        sharedPreferences.edit().putString("userLogin",gson.toJson(ModelSessionData.getInstance().getUser())).commit();
-        sharedPreferences.edit().putString("friends",gson.toJson(ModelSessionData.getInstance().getFriends())).commit();
-        sharedPreferences.edit().putString("groups",gson.toJson(ModelSessionData.getInstance().getModelGroups())).commit();
+        sharedPreferences.edit().putString("userLogin",gson.toJson(ModelSessionData.getInstance().getUser())).apply();
+        sharedPreferences.edit().putString("friends",gson.toJson(ModelSessionData.getInstance().getFriends())).apply();
+        sharedPreferences.edit().putString("groups",gson.toJson(ModelSessionData.getInstance().getModelGroups())).apply();
         unregisterReceiver(broadcastReceiver);
 
         super.onDestroy();
@@ -270,10 +270,10 @@ public class ActivityHome extends ActionBarActivity {
     }
 
     public void logout(MenuItem item) {
-        sharedPreferences.edit().remove("session").commit();
-        sharedPreferences.edit().remove("friends").commit();
-        sharedPreferences.edit().remove("groups").commit();
-        sharedPreferences.edit().remove("userLogin").commit();
+        sharedPreferences.edit().remove("session").apply();
+        sharedPreferences.edit().remove("friends").apply();
+        sharedPreferences.edit().remove("groups").apply();
+        sharedPreferences.edit().remove("userLogin").apply();
         boolean delete =delDirImages(this,ModelSessionData.getInstance().getFriends(),ModelSessionData.getInstance().getModelGroups());
         ModelSessionData.getInstance().clear();
         LoginManager.getInstance().logOut();

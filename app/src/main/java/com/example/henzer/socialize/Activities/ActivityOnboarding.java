@@ -1,6 +1,7 @@
 package com.example.henzer.socialize.Activities;
 
 import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -14,6 +15,7 @@ import com.example.henzer.socialize.Fragments.Onboarding.FragmentOnboarding;
 import com.example.henzer.socialize.Fragments.Onboarding.FragmentOnboarding2;
 import com.example.henzer.socialize.Fragments.Onboarding.FragmentOnboarding3;
 import com.example.henzer.socialize.Fragments.Onboarding.FragmentOnboarding4;
+import com.example.henzer.socialize.Fragments.Onboarding.FragmentOnboarding5;
 import com.example.henzer.socialize.R;
 import com.ogaclejapan.smarttablayout.SmartTabLayout;
 
@@ -49,13 +51,14 @@ public class ActivityOnboarding extends FragmentActivity {
                     case 1 : return new FragmentOnboarding2();
                     case 2 : return new FragmentOnboarding3();
                     case 3 : return new FragmentOnboarding4();
+                    case 4 : return new FragmentOnboarding5();
                     default: return null;
                 }
             }
 
             @Override
             public int getCount() {
-                return 4;
+                return 5;
             }
         };
 
@@ -79,7 +82,7 @@ public class ActivityOnboarding extends FragmentActivity {
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(pager.getCurrentItem() == 3) { // The last screen
+                if(pager.getCurrentItem() == 4) { // The last screen
                     finishOnboarding();
                 } else {
                     pager.setCurrentItem(
@@ -93,12 +96,12 @@ public class ActivityOnboarding extends FragmentActivity {
         indicator.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
-                if(position == 3){
+                if(position == 4){
                     skip.setVisibility(View.GONE);
-                    next.setText("DONE");
+                    next.setText(R.string.done);
                 } else {
                     skip.setVisibility(View.VISIBLE);
-                    next.setText("NEXT");
+                    next.setText(R.string.next);
                 }
             }
         });
@@ -108,13 +111,10 @@ public class ActivityOnboarding extends FragmentActivity {
     }
 
     private void finishOnboarding() {
-        // Get the shared preferences
-        SharedPreferences preferences =
-                getSharedPreferences("my_preferences", MODE_PRIVATE);
 
         // Set onboarding_complete to true
-        preferences.edit()
-                .putBoolean("onboarding_complete",true).apply();
+        getSharedPreferences(ActivityMain.MyPREFERENCES, Context.MODE_PRIVATE).edit()
+                .putBoolean("onboarding_complete",true).commit();
 
         // Launch the main Activity, called MainActivity
         Intent main = new Intent(this, ActivityMain.class);

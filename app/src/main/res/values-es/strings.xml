@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">OnLife</string>
-    <string name="gcm_server_id">AIzaSyBMo260wxpPNsCHle_ynoMUx4sju9W76LY</string>
 
-    <string name="distance">Distancia</string>
     <string name="blocking">Bloqueando</string>
     <string name="group">Grupo</string>
 
@@ -18,7 +15,6 @@
 
     <string name="device_admin">Autorización para Pantalla de Bloqueo OnLife</string>
     <string name="device_admin_description">Esto permitirá que tu teléfono pueda ser bloqueado</string>
-    <string name="facebook_app_id">1690720374494757</string>
 
     <string name="login_facebook">Iniciar sesión con Facebook</string>
     <string name="action_logout">Cerrar sesión</string>
@@ -27,12 +23,11 @@
 
     <string name="action_settings">Ajustes</string>
     <string name="settings_options">Opciones</string>
-    <string name="settings_option_gps">GPS</string>
     <string name="settings_option_select_friends">Seleccionar Amigos</string>
 
     <string name="tab_contacts">Contactos</string>
     <string name="button_search_friend">Buscar Amigos</string>
-    <string name="search_contact_bar">Buscar en Contactos..</string>
+    <string name="search_contact_bar">Buscar en contactos..</string>
     <string name="tab_groups">Grupos</string>
 
     <string name="title_activity_information">Información</string>
@@ -40,30 +35,28 @@
 
     <string name="title_activity_new_group">Nuevo Grupo</string>
     <string name="button_add_group">Agregar Grupo</string>
-    <string name="photo_select_image">Seleccionar Imagen</string>
-    <string name="photo_option_camera">Desde Cámara</string>
+    <string name="photo_select_image">Seleccionar imagen</string>
+    <string name="photo_option_camera">Desde cámara</string>
     <string name="photo_option_sd">Desde tarjeta SD</string>
-    <string name="pick_image">Selecciona Imagen</string>
-    <string name="not_supported_image_crop">Lo siento, este dispositivo no acepta cortar imágenes</string>
+    <string name="pick_image">Elige una imagen</string>
+    <string name="not_supported_image_crop">Lo siento, este dispositivo no acepta cortar imágenes!</string>
 
     <string name="no">No</string>
     <string name="yes">Si</string>
-    <string name="ok">Ok</string>
+    <string name="ok">Aceptar</string>
     <string name="cancel">Cancelar</string>
     <string name="delete">Eliminar</string>
     <string name="deleted">Eliminado</string>
     <string name="really_delete">¿Estás seguro?</string>
-    <string name="refresh_contact">Actualizar Contactos</string>
+    <string name="refresh_contact">Actualizar contactos</string>
 
     <string name="send_a_message_bar">Envía un mensaje..</string>
-    <string name="max_characters_text">0/30</string>
-    <string name="message_max_characters">Solo 30 letras por favor..</string>
+    <string name="message_max_characters">Solo 30 caracteres por favor..</string>
     <string name="button_change_text_message">Cambiar Texto</string>
     <string name="button_block">Bloquear!</string>
-    <string name="blocked_here">acá te han bloqueado..</string>
     <string name="friend_inactive">Amigo Inactivo</string>
 
-    <string name="no_connection">No hay Conexión.</string>
+    <string name="no_connection">No hay conexión.</string>
     <string name="no_server">Servidor no disponible.</string>
     <string name="error">Hubo un error.</string>
     <string name="button_change_connection">Cambiar Conexión</string>
@@ -72,12 +65,28 @@
     <string name="toast_wait_until_contacts_refreshed">¡Espera! Actualizando Amigos..</string>
     <string name="toast_group_not_yet_created">Nombre o Contactos no especificados. Intenta de nuevo.</string>
     <string name="toast_group_only_less_than_five_friends">Cinco amigos máximo</string>
-    <string name="toast_not_time_yet">Wait! Remaining Time</string>
+    <string name="toast_not_time_yet">¡Espera! Tiempo restante</string>
 
     <string name="select_friend">Seleccionar Amigos</string>
-    <string name="show_location">Mostrar la posición del Amigo</string>
-    <string name="getting_actual_position">Obteniendo posición</string>
     <string name="action_invite_friends" translatable="false">Invitar Amigos</string>
     <string name="settings_option_uninstall" translatable="false">Desinstalar Aplicación</string>
+
+    <string name="slide">Desliza para comenzar...</string>
+    <string name="welcome">¡Bienvenido!</string>
+    <string name="onboarding1_message">Bloquea la pantalla de tus amigos, ¡y mira cómo reaccionan!</string>
+    <string name="onboarding2_message">Chequea cuando la estén viendo...</string>
+    <string name="onboarding3_message">¡Y bloquealos con un mensaje divertido!</string>
+    <string name="onboarding4_message">Mantenlo presionado para bloqueo rápido</string>
+    <string name="onboarding5_message">¡Crea grupos para bloquear varios amigos de una vez!</string>
+    <string name="skip">OMITIR</string>
+    <string name="next">SIGUIENTE</string>
+    <string name="onboarding2_viewing">viendo</string>
+    <string name="onboarding2_locked">bloqueado</string>
+    <string name="done">LISTO</string>
+    <string name="onboarding2_image">tutorial 1</string>
+    <string name="onboarding3_image" translatable="false">tutorial 2</string>
+    <string name="onboarding4_image">tutorial 3</string>
+    <string name="onboarding5_image">tutorial 4</string>
+>>>>>>> Stashed changes
 
 </resources>
