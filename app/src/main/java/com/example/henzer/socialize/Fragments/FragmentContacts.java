@@ -79,7 +79,6 @@ public class FragmentContacts extends Fragment {
         friends = ModelSessionData.getInstance().getFriends();
 
         friendsFiltred = new ArrayList<>();
-        friendsFiltred.addAll(friends);
 
         adapter = ((ActivityHome)getActivity()).getAdapterContact();
         gridView = (GridView) v.findViewById(R.id.FragmentContacts_GridView);
@@ -114,11 +113,14 @@ public class FragmentContacts extends Fragment {
                         if (actualTime - user.getLastBlockedTime() > getResources().getInteger(R.integer.block_time_remaining)){
                             new TaskSendNotification(getActivity(), actualUser.getName(),"" , "").execute(user);
                             user.setLastBlockedTime(actualTime);
+                            return true;
                         }else{
                             SnackBar.show(getActivity(),getResources().getString(R.string.toast_not_time_yet)+" "+((getResources().getInteger(R.integer.block_time_remaining)-(actualTime - user.getLastBlockedTime()))/1000)+" s");
+                            return true;
                         }
                     }else{
                         SnackBar.show(getActivity(),R.string.friend_inactive);
+                        return true;
                     }
                 }else if(!isNetworkAvailable(getActivity())){
                     SnackBar.show(getActivity(), R.string.no_connection, R.string.button_change_connection, new View.OnClickListener() {
@@ -127,11 +129,12 @@ public class FragmentContacts extends Fragment {
                             startActivity(new Intent(Settings.ACTION_WIRELESS_SETTINGS));
                         }
                     });
+                    return true;
                 }
                 else{
                     Toast.makeText(getActivity(),getResources().getString(R.string.toast_wait_until_contacts_refreshed),Toast.LENGTH_SHORT).show();
+                    return true;
                 }
-                return true;
             }
         });
 
@@ -239,7 +242,6 @@ public class FragmentContacts extends Fragment {
         if (isSearchOpened){
             gridView.setAdapter(((ActivityHome)getActivity()).getAdapterContact());
             friendsFiltred.clear();
-            friendsFiltred.addAll(friends);
 
             actionBar.setDisplayShowCustomEnabled(false);
             actionBar.setDisplayShowTitleEnabled(true);
@@ -251,6 +253,8 @@ public class FragmentContacts extends Fragment {
             isSearchOpened = false;
         }
         else{
+            friendsFiltred.clear();
+            friendsFiltred.addAll(friends);
             gridView.setAdapter(new AdapterContact(getActivity(),R.layout.layout_contact,friendsFiltred));
             actionBar.setDisplayShowCustomEnabled(true);
             actionBar.setCustomView(R.layout.layout_search_contact_bar);

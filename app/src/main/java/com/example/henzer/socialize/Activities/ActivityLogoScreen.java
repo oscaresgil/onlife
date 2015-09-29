@@ -24,7 +24,7 @@ public class ActivityLogoScreen extends Activity{
                 .delay(getResources().getInteger(R.integer.activity_logo_screen_path_animator_delay))
                 .duration(getResources().getInteger(R.integer.activity_logo_screen_path_animator_duration))
                 .start();
-
+        pathView.setFillAfter(true);
         TimerTask task = new TimerTask() {
             @Override
             public void run() {

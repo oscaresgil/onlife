@@ -75,7 +75,7 @@ public class ActivitySelectContacts extends Activity {
         chooseContact.attachToRecyclerView(mList);
         Bundle params = new Bundle();
         params.putString("fields","id,name");
-        new GraphRequest(AccessToken.getCurrentAccessToken(),"/me/friends",params, HttpMethod.GET, new TaskFacebookFriendRequest(ActivitySelectContacts.this,TAG)).executeAsync();
+        //new GraphRequest(AccessToken.getCurrentAccessToken(),"/me/friends",params, HttpMethod.GET, new TaskFacebookFriendRequest(ActivitySelectContacts.this,TAG)).executeAsync();
     }
 
     public void setAdapterAndDecor() {

@@ -29,6 +29,7 @@
     <string name="settings_options">Options</string>
     <string name="settings_option_gps">GPS</string>
     <string name="settings_option_select_friends">Select Friends</string>
+    <string name="action_invite_friends">Invite Friends</string>
 
     <string name="tab_contacts">Contacts</string>
     <string name="button_search_friend">Search Friend</string>
@@ -77,5 +78,6 @@
     <string name="select_friend">Select Friends</string>
     <string name="show_location">Show Friend Location</string>
     <string name="getting_actual_position">Getting Position</string>
+    <string name="settings_option_uninstall" translatable="false">Uninstall App</string>
 
 </resources>

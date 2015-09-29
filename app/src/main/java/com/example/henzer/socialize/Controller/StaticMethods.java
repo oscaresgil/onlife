@@ -58,6 +58,25 @@ public class StaticMethods {
         }
     }
 
+    public static boolean deactivateDeviceAdmin(Activity activity){
+        DevicePolicyManager dpm;
+        ComponentName admin;
+        try
+        {
+            dpm = (DevicePolicyManager) activity.getSystemService(Context.DEVICE_POLICY_SERVICE);
+            admin = new ComponentName(activity, DeviceAdmin.class);
+            if(dpm.isAdminActive(admin))
+            {
+                dpm.removeActiveAdmin(admin);
+            }
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+        return true;
+    }
+
     public static void activatePhoneBroadcast(Context context){
         IntentFilter filter = new IntentFilter();
         filter.addAction(Intent.ACTION_SCREEN_OFF);

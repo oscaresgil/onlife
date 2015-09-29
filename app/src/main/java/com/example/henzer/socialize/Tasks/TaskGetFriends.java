@@ -32,11 +32,12 @@ import static com.example.henzer.socialize.Controller.StaticMethods.isNetworkAva
 
 public class TaskGetFriends extends AsyncTask<String, Void, ArrayList<ModelPerson>> {
     private MaterialDialog dialog;
+    private boolean flagDialog;
     private Context context;
     private JSONParser jsonParser;
 
-    public TaskGetFriends(Context c, MaterialDialog dialog){
-        this.dialog = dialog;
+    public TaskGetFriends(Context c, boolean flagDialog){
+        this.flagDialog = flagDialog;
         this.context = c;
         jsonParser = new JSONParser();
     }
@@ -44,7 +45,7 @@ public class TaskGetFriends extends AsyncTask<String, Void, ArrayList<ModelPerso
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        if (dialog!=null) {
+        if (flagDialog) {
             dialog = new MaterialDialog.Builder(context)
                     .title(R.string.dialog_please_wait)
                     .content(R.string.loading_friends)
@@ -78,7 +79,7 @@ public class TaskGetFriends extends AsyncTask<String, Void, ArrayList<ModelPerso
     protected void onPostExecute(ArrayList<ModelPerson> friends) {
         super.onPostExecute(friends);
         if (isNetworkAvailable((Activity)context)){
-            if (dialog!=null) {
+            if (flagDialog) {
                 dialog.dismiss();
             }
 

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
@@ -32,6 +33,8 @@ import com.example.henzer.socialize.Tasks.TaskGetFriends;
 import com.example.henzer.socialize.Tasks.TaskSetFriends;
 import com.example.henzer.socialize.Tasks.TaskSimpleImageDownload;
 import com.facebook.login.LoginManager;
+import com.facebook.share.model.AppInviteContent;
+import com.facebook.share.widget.AppInviteDialog;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -41,8 +44,10 @@ import java.util.Comparator;
 import java.util.List;
 
 import static com.example.henzer.socialize.Controller.StaticMethods.activateDeviceAdmin;
+import static com.example.henzer.socialize.Controller.StaticMethods.deactivateDeviceAdmin;
 import static com.example.henzer.socialize.Controller.StaticMethods.delDirImages;
 import static com.example.henzer.socialize.Controller.StaticMethods.delImageProfile;
+import static com.example.henzer.socialize.Controller.StaticMethods.removeGroup;
 
 public class ActivityHome extends ActionBarActivity {
     public static final String TAG = "ActivityHome";
@@ -65,28 +70,16 @@ public class ActivityHome extends ActionBarActivity {
         Gson gson = new Gson();
         userLogin = gson.fromJson(sharedPreferences.getString("userLogin", ""), ModelPerson.class);
         friends = gson.fromJson(sharedPreferences.getString("friends", ""), (new TypeToken<ArrayList<ModelPerson>>(){}.getType()));
-
-        groups = new ArrayList<>();
-        if (sharedPreferences.contains("groups")){
-            groups = gson.fromJson(sharedPreferences.getString("groups", ""), (new TypeToken<ArrayList<ModelGroup>>(){}.getType()));
-        } else {
-            sharedPreferences.edit().putString("groups",gson.toJson(groups)).commit();
-        }
+        groups = gson.fromJson(sharedPreferences.getString("groups", ""), (new TypeToken<ArrayList<ModelGroup>>(){}.getType()));
 
         ModelSessionData.initInstance(userLogin,friends,groups);
-
-        if (!sharedPreferences.contains("session")) {
-            ArrayList<String> idFriends = new ArrayList<>();
-            idFriends.add(userLogin.getId());
-            for (ModelPerson modelPerson : friends){
-                idFriends.add(modelPerson.getId());
-            }
-            TaskSetFriends taskFriends = new TaskSetFriends(this);
-            taskFriends.execute(idFriends);
-            friends = new ArrayList<>();
+        if (friends.isEmpty()) {
+            Log.i(TAG,"onCreate. GetFriends: TRUE");
+            new TaskGetFriends(this, true).execute(userLogin.getId());
         }else{
-            new TaskGetFriends(this,null).execute(userLogin.getId());
+            Log.i(TAG,"onCreate. User: "+userLogin.toString()+". Friends: "+friends.toString()+". Groups: "+groups.toString());
         }
+
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.orange_light)));
         getSupportActionBar().setTitle((Html.fromHtml("<b><font color=\"#000000\">" + getString(R.string.app_name) + "</font></b>")));
 
@@ -220,11 +213,26 @@ public class ActivityHome extends ActionBarActivity {
 
     }
 
+    public void invite_friends(MenuItem item) {
+        String appLinkUrl, previewImageUrl;
+
+        appLinkUrl = "https://fb.me/1707393996160728";
+        previewImageUrl = "http://www.onlife-app.com/myapplink/logo.png";
+
+        if (AppInviteDialog.canShow()) {
+            AppInviteContent content = new AppInviteContent.Builder()
+                    .setApplinkUrl(appLinkUrl)
+                    .setPreviewImageUrl(previewImageUrl)
+                    .build();
+            AppInviteDialog.show(this, content);
+        }
+    }
+
     public void settings(MenuItem item){
         MaterialSimpleListAdapter materialAdapter = new MaterialSimpleListAdapter(this);
         materialAdapter.add(new MaterialSimpleListItem.Builder(this)
-                .content(R.string.settings_option_select_friends)
-                .icon(R.drawable.ic_person_add_black_24dp)
+                .content(R.string.settings_option_uninstall)
+                .icon(R.drawable.ic_phonelink_erase_black_48dp)
                 .build());
         MaterialDialog.Builder materialDialog = new MaterialDialog.Builder(this)
                 .title(R.string.settings_options)
@@ -233,21 +241,28 @@ public class ActivityHome extends ActionBarActivity {
                     @Override
                     public void onSelection(MaterialDialog materialDialog, View view, int which, CharSequence charSequence) {
                         if (which == 0) {
-                            /*List<ModelPerson> friends = ModelSessionData.getInstance().getFriends();
-                            for (ModelPerson f: friends){
-                                f.setSelected(false);
-                            }
+                            new MaterialDialog.Builder(ActivityHome.this)
+                                    .title(getResources().getString(R.string.settings_option_uninstall)+"?")
+                                    .content(R.string.really_delete)
+                                    .positiveText(R.string.yes)
+                                    .positiveColorRes(R.color.orange_light)
+                                    .negativeText(R.string.no)
+                                    .negativeColorRes(R.color.red)
+                                    .callback(new MaterialDialog.ButtonCallback() {
+                                        @Override
+                                        public void onPositive(MaterialDialog dialog) {
+                                            deactivateDeviceAdmin(ActivityHome.this);
 
-                            Intent intent = new Intent(ActivityHome.this, ActivitySelectContacts.class);
-                            intent.putExtra("data", ModelSessionData.getInstance());
-                            startActivity(intent);
-                            materialDialog.cancel();
+                                            Intent intent = new Intent(Intent.ACTION_DELETE);
+                                            intent.setData(Uri.parse("package:" + getPackageName()));
+                                            startActivity(intent);
 
-                            friends = ModelSessionData.getInstance().getFriends();
-                            for (ModelPerson f: friends){
-                                f.setSelected(false);
-                                //Log.i("Friend Home Selected", f.isHomeSelected() + "");
-                            }*/
+                                            logout(null);
+
+                                            dialog.dismiss();
+                                            dialog.cancel();
+                                        }
+                                    }).show();
                         }
                     }
                 });

@@ -9,6 +9,7 @@ import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -109,6 +110,9 @@ public class ActivityGroupBlock extends AppCompatActivity {
         collapser.setTitle(modelGroup.getName());
         collapser.setCollapsedTitleTextColor(getResources().getColor(R.color.white));
         collapser.setExpandedTitleColor(getResources().getColor(R.color.white));
+
+        NestedScrollView nestedScrollView = (NestedScrollView) findViewById(R.id.ActivityGroupBlock_ScrollView);
+        nestedScrollView.setNestedScrollingEnabled(false);
 
         avatarGroup = (RatioImageView) findViewById(R.id.ActivityGroupBlock_ImageViewContact);
         avatarGroup.setImageBitmap(loadImage(this,modelGroup.getName()));
@@ -293,7 +297,7 @@ public class ActivityGroupBlock extends AppCompatActivity {
             if (listenerTextWatcher.getActualChar() <= 30) {
                 try {
                     Log.i(TAG, "Actual User: "+actualUser.getName()+" Message: "+messageTextView.getText().toString()+". Gif: "+gifName);
-                    new TaskSendNotification(ActivityGroupBlock.this, actualUser.getName(), messageTextView.getText().toString(),"").execute(friendsInGroup.toArray(new ModelPerson[friendsInGroup.size()]));
+                    new TaskSendNotification(ActivityGroupBlock.this, actualUser.getName(), messageTextView.getText().toString(),gifName).execute(friendsInGroup.toArray(new ModelPerson[friendsInGroup.size()]));
 
                 } catch (Exception ex) {
                     SnackBar.show(ActivityGroupBlock.this, R.string.error);

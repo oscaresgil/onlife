@@ -9,6 +9,7 @@ import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 
+import com.example.henzer.socialize.Models.ModelGroup;
 import com.example.henzer.socialize.Models.ModelPerson;
 import com.example.henzer.socialize.R;
 import com.example.henzer.socialize.Tasks.TaskAddNewUser;
@@ -117,12 +118,14 @@ public class ActivityMain extends Activity{
                     sharedPreferences = getSharedPreferences(ActivityMain.MyPREFERENCES, Context.MODE_PRIVATE);
                     userLogin = new ModelPerson(profile.getId(), sharedPreferences.getString("gcmId", ""), profile.getName(), "http://graph.facebook.com/" + profile.getId() + "/picture?", "A");
                     sharedPreferences.edit().putString("userLogin", gson.toJson(userLogin)).commit();
+                    sharedPreferences.edit().putString("friends", gson.toJson(new ArrayList<ModelPerson>())).commit();
+                    sharedPreferences.edit().putString("groups", gson.toJson(new ArrayList<ModelGroup>())).commit();
                     TaskAddNewUser taskAddNewUser = new TaskAddNewUser();
                     taskAddNewUser.execute(userLogin);
 
                     Bundle params = new Bundle();
                     params.putString("fields", "id,name");
-                    new GraphRequest(AccessToken.getCurrentAccessToken(),"/me/friends",params,HttpMethod.GET, new TaskFacebookFriendRequest(ActivityMain.this,TAG)).executeAsync();
+                    new GraphRequest(AccessToken.getCurrentAccessToken(),"/me/friends",params,HttpMethod.GET, new TaskFacebookFriendRequest(ActivityMain.this,TAG,userLogin)).executeAsync();
                     mProfileTracker.stopTracking();
                 }
             }

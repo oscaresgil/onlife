@@ -77,5 +77,7 @@
     <string name="select_friend">Seleccionar Amigos</string>
     <string name="show_location">Mostrar la posición del Amigo</string>
     <string name="getting_actual_position">Obteniendo posición</string>
+    <string name="action_invite_friends" translatable="false">Invitar Amigos</string>
+    <string name="settings_option_uninstall" translatable="false">Desinstalar Aplicación</string>
 
 </resources>

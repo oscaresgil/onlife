@@ -191,7 +191,7 @@ public class ActivityGroupCreateInformation extends ActionBarActivity {
                             path = saveImage(getApplicationContext(), name, bitmap);
                         }
                         else{
-                            path = saveImage(getApplicationContext(), name, BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher));
+                            path = saveImage(getApplicationContext(), name, BitmapFactory.decodeResource(getResources(), R.drawable.logo_large));
                         }
 
                         ModelGroup newG = new ModelGroup(ModelSessionData.getInstance().getModelGroups().size(), name, selected, path, limit, state);

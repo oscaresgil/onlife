@@ -90,7 +90,7 @@ public class GcmMessageHandler extends IntentService {
     protected void onMessage(Context context) {
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
-                        .setSmallIcon(R.drawable.ic_launcher)
+                        .setSmallIcon(R.drawable.ic_notification_icon)
                         .setTicker(getResources().getString(R.string.notification_someone_block_you))
                         .setStyle(new NotificationCompat.BigTextStyle())
                         .setOnlyAlertOnce(true);

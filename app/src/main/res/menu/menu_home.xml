@@ -6,6 +6,11 @@
         android:icon="@drawable/ic_search_black_24dp"
         app:showAsAction="always"
         android:title="@string/button_search_friend"/>
+    <item android:id="@+id/MenuHome_InviteFriends"
+        android:icon="@drawable/ic_person_add_black_24dp"
+        android:onClick="invite_friends"
+        android:title="@string/action_invite_friends"
+        app:showAsAction="withText"/>
     <item
         android:id="@+id/action_settings"
         android:title="@string/action_settings"

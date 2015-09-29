@@ -26,12 +26,12 @@ public class TaskFacebookFriendRequest implements GraphRequest.Callback {
     private Context context;
     private String TAG;
     private List<ModelPerson> friends;
-    private SharedPreferences sharedPreferences;
+    private ModelPerson user;
 
-    public TaskFacebookFriendRequest(Context context, String TAG){
+    public TaskFacebookFriendRequest(Context context, String TAG, ModelPerson user){
         this.context = context;
         this.TAG = TAG;
-
+        this.user = user;
         friends = new ArrayList<>();
     }
 
@@ -39,12 +39,15 @@ public class TaskFacebookFriendRequest implements GraphRequest.Callback {
         try {
             JSONObject objectResponse = response.getJSONObject();
             JSONArray objectData = (JSONArray) objectResponse.get("data");
-            String [] ids = new String[objectData.length()];
+            ArrayList<String> ids =  new ArrayList<>();
+            //String [] ids = new String[objectData.length()];
+            ids.add(user.getId());
             Log.i("DATA", objectData.toString());
             for (int i=0; i<objectData.length(); i++){
                 JSONObject objectUser = (JSONObject) objectData.get(i);
                 String id = (String) objectUser.get("id");
-                ids[i] = id;
+                //ids[i] = id;
+                ids.add(id);
                 String name = (String) objectUser.get("name");
 
                 // http://stackoverflow.com/questions/5841710/get-user-image-from-facebook-graph-api
@@ -63,10 +66,9 @@ public class TaskFacebookFriendRequest implements GraphRequest.Callback {
 
             if (TAG.equals("ActivityMain")){
                 ActivityMain activityMain = (ActivityMain) context;
-                Gson gson = new Gson();
-                sharedPreferences = context.getSharedPreferences(ActivityMain.MyPREFERENCES, Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putString("friends", gson.toJson(friends)).commit();
+                TaskSetFriends taskFriends = new TaskSetFriends(context);
+                taskFriends.execute(ids);
+                friends = new ArrayList<>();
                 activityMain.gotoHome();
             }
             /*if(TAG.equals("ActivitySelectContacts")){
