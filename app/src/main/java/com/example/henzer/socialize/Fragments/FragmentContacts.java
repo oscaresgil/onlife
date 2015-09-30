@@ -1,7 +1,9 @@
 package com.example.henzer.socialize.Fragments;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
@@ -39,11 +41,12 @@ import java.util.Calendar;
 import java.util.List;
 
 import static com.example.henzer.socialize.Controller.StaticMethods.animationStart;
+import static com.example.henzer.socialize.Controller.StaticMethods.delImageProfile;
 import static com.example.henzer.socialize.Controller.StaticMethods.isNetworkAvailable;
 import static com.example.henzer.socialize.Controller.StaticMethods.showSoftKeyboard;
 
 public class FragmentContacts extends Fragment {
-    public static final String TAG = "ContactsFragment";
+    public static final String TAG = "FragmentContacts";
 
     private ModelPerson actualUser;
     private List<ModelPerson> friends;
@@ -142,12 +145,79 @@ public class FragmentContacts extends Fragment {
     }
 
 
+    /*private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.i(TAG,"onReceive");
+            AdapterContact adapterContact = ((ActivityHome)context).getAdapterContact();
+            adapterContact.notifyDataSetChanged();
+            gridView.setAdapter(adapterContact);
+        }
+    };*/
+
+
+    @Override
+    public void onDestroy() {
+        getActivity().unregisterReceiver(broadcastReceiver);
+        super.onDestroy();
+    }
+
+    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Bundle extras = intent.getExtras();
+            String tag = extras.getString("tag");
+            AdapterContact adapterContact = ((ActivityHome)context).getAdapterContact();
+
+            if (tag.equals("update")) {
+                String id = extras.getString("id");
+                String state = extras.getString("state");
+                Log.i(TAG, "Broadcast Receiver. ID:" + id + ". State:" + state);
+
+                List<ModelPerson> friendsT = adapterContact.getFriends();
+                if (state.equals("O")) {
+                    ModelSessionData.getInstance().removeUser(id);
+
+                    for (int i = 0; i < friendsT.size(); i++) {
+                        ModelPerson p = friendsT.get(i);
+                        if (p.getId().equals(id)) {
+                            boolean removed = delImageProfile(getActivity(),p.getId());
+                            adapterContact.remove(adapterContact.getItem(i));
+                            Log.i(TAG, "Broadcast Receiver. Remove ID:" + p.getId() + ". Name: " + p.getName() + ". State:" + state+  ". Image Deleted: "+removed);
+
+                            break;
+                        }
+                    }
+                    adapterContact.notifyDataSetChanged();
+                } else {
+                    for (ModelPerson p : friendsT) {
+                        if (p.getId().equals(id)) {
+                            p.setState(state);
+                            Log.i(TAG, "Broadcast Receiver. Update ID:" + p.getId() + ". Name: " + p.getName() + ". State:" + state);
+
+                            break;
+                        }
+                    }
+                    adapterContact.notifyDataSetChanged();
+                }
+            }else if(tag.equals("new_user")){
+                ModelPerson newUser = (ModelPerson) extras.getSerializable("new_user");
+                Log.i(TAG,"Broadcast Receiver. Add New User: "+newUser.toString());
+                ModelSessionData.getInstance().addUser(newUser);
+                adapterContact.add(newUser);
+
+                adapterContact.notifyDataSetChanged();
+                gridView.setAdapter(adapterContact);
+            }
+        }
+    };
+
 
     @Override
     public void onResume() {
         super.onResume();
         Log.i(TAG, "onResume()");
-
+        getActivity().registerReceiver(broadcastReceiver,new IntentFilter("com.example.henzer.socialize.Fragments.FragmentContacts"));
         mSwipeRefreshLayout = (SwipeRefreshLayout) getActivity().findViewById(R.id.FragmentContacts_SwipeRefreshLayout);
         gridView.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override

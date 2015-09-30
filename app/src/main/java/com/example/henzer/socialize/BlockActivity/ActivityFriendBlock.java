@@ -178,7 +178,8 @@ public class ActivityFriendBlock extends AppCompatActivity {
 
     @Override
     protected void onResume() {
-        registerReceiver(broadcastReceiver,new IntentFilter("com.example.henzer.socialize.Activities.ActivityHome"));
+        //registerReceiver(broadcastReceiver,new IntentFilter("com.example.henzer.socialize.Activities.ActivityHome"));
+        registerReceiver(broadcastReceiver,new IntentFilter("com.example.henzer.socialize.Fragments.FragmentContacts"));
         super.onResume();
     }
 

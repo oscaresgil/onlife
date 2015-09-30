@@ -2,6 +2,8 @@ package com.example.henzer.socialize.Models;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class ModelSessionData implements Serializable{
@@ -28,6 +30,25 @@ public class ModelSessionData implements Serializable{
         this.user = user;
         this.friends = friends;
         this.modelGroups = modelGroups;
+    }
+
+    public void addUser(ModelPerson user){
+        friends.add(user);
+        Collections.sort(friends, new Comparator<ModelPerson>() {
+            @Override
+            public int compare(ModelPerson modelPerson1, ModelPerson modelPerson2) {
+                return modelPerson1.getName().compareTo(modelPerson2.getName());
+            }
+        });
+    }
+
+    public void removeUser(String id){
+        for (int i=0; i<friends.size(); i++){
+            if (id.equals(friends.get(i).getId())){
+                friends.remove(i);
+                return;
+            }
+        }
     }
 
     public ModelPerson getUser() {

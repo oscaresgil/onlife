@@ -2,19 +2,12 @@ package com.example.henzer.socialize.Adapters;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.res.ColorStateList;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.example.henzer.socialize.Models.ModelPerson;
@@ -23,6 +16,8 @@ import com.example.henzer.socialize.Tasks.TaskSimpleImageDownload;
 
 import net.soulwolf.widget.ratiolayout.widget.RatioImageView;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import static com.example.henzer.socialize.Controller.StaticMethods.imageInDisk;
@@ -47,6 +42,17 @@ public class AdapterContact extends ArrayAdapter<ModelPerson> {
     }
 
     @Override
+    public void notifyDataSetChanged() {
+        Collections.sort(friends, new Comparator<ModelPerson>() {
+            @Override
+            public int compare(ModelPerson modelPerson1, ModelPerson modelPerson2) {
+                return modelPerson1.getName().compareTo(modelPerson2.getName());
+            }
+        });
+        super.notifyDataSetChanged();
+    }
+
+    @Override
     public ModelPerson getItem(int position) {
         return friends.get(position);
     }
@@ -56,10 +62,16 @@ public class AdapterContact extends ArrayAdapter<ModelPerson> {
         return position;
     }
 
+    public List<ModelPerson> getFriends() {
+        return friends;
+    }
+
     @Override
     public View getView(int position, View view, ViewGroup parent) {
         ModelPerson userData = friends.get(position);
         ContactHolder contactHolder;
+
+        Log.i(TAG,"Position: "+position+". View Null?: "+(view==null)+" User: "+userData.toString());
         if (view == null){
             view = ((Activity)context).getLayoutInflater().inflate(R.layout.layout_contact, parent, false);
             contactHolder = new ContactHolder();
@@ -82,7 +94,6 @@ public class AdapterContact extends ArrayAdapter<ModelPerson> {
             new TaskSimpleImageDownload(context,contactHolder.avatar,size).execute(userData);
         }
         contactHolder.name.setText(userData.getName());
-        Log.i(TAG, "Adapter User: "+userData.toString());
         if (userData.getState().equals("I")){
             contactHolder.visibility.setImageBitmap(BitmapFactory.decodeResource(context.getResources(),R.drawable.ic_action_visibility_off));
         }else if(userData.getState().equals("A")){

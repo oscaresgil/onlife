@@ -66,7 +66,8 @@ public class GcmMessageHandler extends IntentService {
                 ModelPerson newUser = gson.fromJson(user,ModelPerson.class);
 
                 Log.i(TAG, "NEW USER: "+newUser.toString());
-                Intent i = new Intent("com.example.henzer.socialize.Activities.ActivityHome");
+                Intent i = new Intent("com.example.henzer.socialize.Fragments.FragmentContacts");
+                //Intent i = new Intent("com.example.henzer.socialize.Activities.ActivityHome");
                 i.putExtra("tag","new_user");
                 i.putExtra("new_user",newUser);
                 sendBroadcast(i);
@@ -76,7 +77,8 @@ public class GcmMessageHandler extends IntentService {
                 String state = extras.getString("state");
 
                 Log.i(TAG, "UPDATE: Id: "+idP+". State: "+state);
-                Intent i = new Intent("com.example.henzer.socialize.Activities.ActivityHome");
+                //Intent i = new Intent("com.example.henzer.socialize.Activities.ActivityHome");
+                Intent i = new Intent("com.example.henzer.socialize.Fragments.FragmentContacts");
                 i.putExtra("tag","update");
                 i.putExtra("id",idP);
                 i.putExtra("state",state);

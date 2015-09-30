@@ -103,14 +103,14 @@ public class ActivityHome extends ActionBarActivity {
 
         sharedPreferences.edit().putBoolean("session", true).apply();
 
-        adapterContact = new AdapterContact(this,R.layout.layout_contact,friends);
-        adapterGroup = new AdapterGroup(this,R.layout.layout_groups,groups);
+        adapterContact = new AdapterContact(this,R.layout.layout_contact,ModelSessionData.getInstance().getFriends());
+        adapterGroup = new AdapterGroup(this,R.layout.layout_groups,ModelSessionData.getInstance().getModelGroups());
 
     }
 
     @Override
     protected void onResume() {
-        registerReceiver(broadcastReceiver,new IntentFilter("com.example.henzer.socialize.Activities.ActivityHome"));
+        //registerReceiver(broadcastReceiver,new IntentFilter("com.example.henzer.socialize.Activities.ActivityHome"));
         super.onResume();
     }
 
@@ -140,54 +140,6 @@ public class ActivityHome extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Bundle extras = intent.getExtras();
-            String tag = extras.getString("tag");
-            if (tag.equals("update")) {
-                String id = extras.getString("id");
-                String state = extras.getString("state");
-                Log.i(TAG, "Broadcast Receiver. ID:" + id + ". State:" + state);
-                List<ModelPerson> friendsT = ModelSessionData.getInstance().getFriends();
-                if (state.equals("O")) {
-                    for (int i = 0; i < friendsT.size(); i++) {
-                        ModelPerson p = friendsT.get(i);
-                        if (p.getId().equals(id)) {
-                            boolean removed = delImageProfile(ActivityHome.this,p.getId());
-                            friendsT.remove(i);
-                            adapterContact.remove(adapterContact.getItem(i));
-                            Log.i(TAG, "Broadcast Receiver. Remove ID:" + p.getId() + ". Name: " + p.getName() + ". State:" + state+  ". Image Deleted: "+removed);
-                            break;
-                        }
-                    }
-                } else {
-                    for (ModelPerson p : friendsT) {
-                        if (p.getId().equals(id)) {
-                            p.setState(state);
-                            Log.i(TAG, "Broadcast Receiver. Update ID:" + p.getId() + ". Name: " + p.getName() + ". State:" + state);
-                            break;
-                        }
-                    }
-                }
-            }else if(tag.equals("new_user")){
-                ModelPerson newUser = (ModelPerson) extras.getSerializable("new_user");
-                List<ModelPerson> friends = ModelSessionData.getInstance().getFriends();
-                friends.add(newUser);
-
-                Collections.sort(friends, new Comparator<ModelPerson>() {
-                    @Override
-                    public int compare(ModelPerson modelPerson1, ModelPerson modelPerson2) {
-                        return modelPerson1.getName().compareTo(modelPerson2.getName());
-                    }
-                });
-                adapterContact.clear();
-                adapterContact.addAll(friends);
-            }
-            adapterContact.notifyDataSetChanged();
-        }
-    };
-
     @Override
     public void onBackPressed() {
         moveTaskToBack(true);
@@ -207,7 +159,7 @@ public class ActivityHome extends ActionBarActivity {
         sharedPreferences.edit().putString("userLogin",gson.toJson(ModelSessionData.getInstance().getUser())).apply();
         sharedPreferences.edit().putString("friends",gson.toJson(ModelSessionData.getInstance().getFriends())).apply();
         sharedPreferences.edit().putString("groups",gson.toJson(ModelSessionData.getInstance().getModelGroups())).apply();
-        unregisterReceiver(broadcastReceiver);
+//        unregisterReceiver(broadcastReceiver);
 
         super.onDestroy();
 
