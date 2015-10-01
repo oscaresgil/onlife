@@ -26,7 +26,9 @@
     <integer name="fragment_contacts_rows">2</integer>
 
     <!-- Adapter Contact Integers -->
-    <integer name="adapter_contact_size_little">501</integer>
+    <integer name="adapter_contact_size_large">501</integer>
+    <integer name="adapter_contact_size_little">151</integer>
+    <integer name="adapter_contact_size_size">2</integer>
 
     <!-- Remaining time: 1.5s -->
     <integer name="block_time_remaining">90000</integer>

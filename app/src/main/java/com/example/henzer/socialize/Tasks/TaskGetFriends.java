@@ -79,9 +79,7 @@ public class TaskGetFriends extends AsyncTask<String, Void, ArrayList<ModelPerso
     protected void onPostExecute(ArrayList<ModelPerson> friends) {
         super.onPostExecute(friends);
         if (isNetworkAvailable((Activity)context)){
-            if (flagDialog) {
-                dialog.dismiss();
-            }
+            if (flagDialog) dialog.dismiss();
 
             Collections.sort(friends, new Comparator<ModelPerson>() {
                 @Override
@@ -102,6 +100,7 @@ public class TaskGetFriends extends AsyncTask<String, Void, ArrayList<ModelPerso
                     context.startActivity(new Intent(Settings.ACTION_WIRELESS_SETTINGS));
                 }
             });
+            if (flagDialog) dialog.dismiss();
         }
     }
 }

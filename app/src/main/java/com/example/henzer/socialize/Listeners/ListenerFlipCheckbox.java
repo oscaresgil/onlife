@@ -45,16 +45,9 @@ public class ListenerFlipCheckbox implements Animation.AnimationListener{
 
     @Override public void onAnimationEnd(Animation animation) {
         Display display = ((Activity)context).getWindowManager().getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        int sizeInt = size.x/4;
-
-        imageButton.getLayoutParams().height = sizeInt;
-        imageButton.getLayoutParams().width = sizeInt;
-
         if (animation == animation1){
             if (!f.isSelected()){
-                imageButton.setImageBitmap(loadImage(context,f.getId()));
+                imageButton.setImageBitmap(loadImage(context,f.getId()+"_"+context.getResources().getInteger(R.integer.adapter_contact_size_large)));
             }
             else{
                 imageButton.setImageBitmap(BitmapFactory.decodeResource(context.getResources(),R.drawable.ic_action_done_large));

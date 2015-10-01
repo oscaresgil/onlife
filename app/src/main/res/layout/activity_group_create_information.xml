@@ -18,8 +18,8 @@
 		<net.soulwolf.widget.ratiolayout.widget.RatioImageView
             xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/ActivityCreateGroup_ImageButtonSelectImage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/layout_select_contact_group_image_height_width"
+            android:layout_height="@dimen/layout_select_contact_group_image_height_width"
             android:scaleType="fitCenter"
             android:layout_margin="@dimen/activity_group_create_information_ratio_image_view_margin"
             app:datumRatio="datumWidth"

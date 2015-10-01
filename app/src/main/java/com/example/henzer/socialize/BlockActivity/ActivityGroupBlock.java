@@ -212,7 +212,7 @@ public class ActivityGroupBlock extends AppCompatActivity {
                     MenuEntity menuEntity = new MenuEntity();
                     ModelPerson f = friendsInGroup.get(j);
                     menuEntity.title = f.getName();
-                    menuEntity.icon = new BitmapDrawable(getResources(), loadImage(this, f.getId()));
+                    menuEntity.icon = new BitmapDrawable(getResources(), loadImage(this, f.getId()+"_"+getResources().getInteger(R.integer.adapter_contact_size_little)));
                     menuEntities.add(menuEntity);
                 }
                 sweetSheet.setMenuList(menuEntities);

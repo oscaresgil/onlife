@@ -1,5 +1,6 @@
 package com.example.henzer.socialize.Fragments;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -74,7 +75,7 @@ public class FragmentGroups extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         menu.findItem(R.id.searchContact).setVisible(false);
-        if (FragmentContacts.isIsSearchOpened()){
+        /*if (FragmentContacts.isIsSearchOpened()){
             InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(getActivity().getWindow().getCurrentFocus().getWindowToken(), 0);
         }
@@ -82,14 +83,14 @@ public class FragmentGroups extends Fragment {
         android.support.v7.app.ActionBar actionBar = ((ActionBarActivity)getActivity()).getSupportActionBar();
 
         actionBar.setDisplayShowCustomEnabled(false);
-        actionBar.setDisplayShowTitleEnabled(true);
+        actionBar.setDisplayShowTitleEnabled(true);*/
         FragmentContacts.setIsSearchOpened(false);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == getActivity().RESULT_OK){
+        if (resultCode == Activity.RESULT_OK){
             if (requestCode == CREATE_GROUP_ACTIVITY_ID){
                 ModelGroup newG = (ModelGroup) data.getSerializableExtra("new_group");
                 adapter.add(newG);
@@ -111,7 +112,7 @@ public class FragmentGroups extends Fragment {
     class LongItemClickListener implements AdapterView.OnItemLongClickListener {
         @Override
         public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-            final ModelGroup actualModelGroup = modelGroups.get(position);
+            final ModelGroup actualModelGroup = adapter.getItem(position);
 
             new MaterialDialog.Builder(getActivity())
                     .title(getResources().getString(R.string.delete)+" "+actualModelGroup.getName())
@@ -137,7 +138,7 @@ public class FragmentGroups extends Fragment {
     class ItemClickListener implements AdapterView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            ModelGroup modelGroup = modelGroups.get(position);
+            ModelGroup modelGroup = adapter.getItem(position);
             Intent intent = new Intent(getActivity(), ActivityGroupBlock.class);
             intent.putExtra("model_group", modelGroup);
             startActivityForResult(intent,GROUP_BLOCK_ACTIVITY_ID);

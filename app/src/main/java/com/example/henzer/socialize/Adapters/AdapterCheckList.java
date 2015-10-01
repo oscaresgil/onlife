@@ -2,6 +2,7 @@ package com.example.henzer.socialize.Adapters;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.view.Display;
@@ -33,20 +34,13 @@ public class AdapterCheckList extends ArrayAdapter<ModelPerson> {
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         final Holder holder;
-
-        Display display = ((Activity)context).getWindowManager().getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        int sizeT = size.x/4;
-
         if (convertView == null) {
             LayoutInflater inflater = ((Activity)context).getLayoutInflater();
             convertView = inflater.inflate(R.layout.layout_select_contact_group, parent, false);
 
             holder = new Holder();
             holder.avatar = (RatioImageView) convertView.findViewById(R.id.LayoutSelectContactGroup_ImageViewFriend);
-            holder.avatar.getLayoutParams().height = sizeT;
-            holder.avatar.getLayoutParams().width = sizeT;
+            holder.avatar.setImageBitmap(BitmapFactory.decodeResource(context.getResources(),R.drawable.loading_friend_icon));
             holder.name = (TextView) convertView.findViewById(R.id.LayoutSelectContactGroup_TextViewNameFriend);
             convertView.setTag(holder);
         }
@@ -59,7 +53,7 @@ public class AdapterCheckList extends ArrayAdapter<ModelPerson> {
             holder.avatar.setImageBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_action_done_large));
         }
         else{
-            holder.avatar.setImageBitmap(loadImage(context,friend.getId()));
+            holder.avatar.setImageBitmap(loadImage(context,friend.getId()+"_"+context.getResources().getInteger(R.integer.adapter_contact_size_little)));
         }
 
         holder.avatar.setTag(friend);

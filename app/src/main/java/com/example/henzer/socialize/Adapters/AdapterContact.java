@@ -27,13 +27,11 @@ public class AdapterContact extends ArrayAdapter<ModelPerson> {
     public static final String TAG="AdapterContact";
     private Context context;
     private List<ModelPerson> friends;
-    private int size;
 
     public AdapterContact(Context context, int resource, List<ModelPerson> friends) {
         super(context, resource, friends);
         this.context = context;
         this.friends = friends;
-        size = context.getResources().getInteger(R.integer.adapter_contact_size_little);
     }
 
     @Override
@@ -88,10 +86,11 @@ public class AdapterContact extends ArrayAdapter<ModelPerson> {
         contactHolder.name.bringToFront();
         contactHolder.avatar.setImageBitmap(BitmapFactory.decodeResource(context.getResources(),R.drawable.loading_friend_icon));
 
-        if (imageInDisk(context, userData.getId())){
-            contactHolder.avatar.setImageBitmap(loadImage(context,userData.getId()));
+        if (imageInDisk(context, userData.getId()+"_"+context.getResources().getInteger(R.integer.adapter_contact_size_large))){
+            contactHolder.avatar.setImageBitmap(loadImage(context,userData.getId()+"_"+context.getResources().getInteger(R.integer.adapter_contact_size_large)));
         }else{
-            new TaskSimpleImageDownload(context,contactHolder.avatar,size).execute(userData);
+            new TaskSimpleImageDownload(context,contactHolder.avatar,context.getResources().getInteger(R.integer.adapter_contact_size_large)).execute(userData);
+            new TaskSimpleImageDownload(context,contactHolder.avatar,context.getResources().getInteger(R.integer.adapter_contact_size_little)).execute(userData);
         }
         contactHolder.name.setText(userData.getName());
         if (userData.getState().equals("I")){

@@ -32,7 +32,12 @@ public class ModelSessionData implements Serializable{
         this.modelGroups = modelGroups;
     }
 
-    public void addUser(ModelPerson user){
+    public boolean addUser(ModelPerson user){
+        for (ModelPerson f: friends){
+            if (f.getId().equals(user.getId())){
+                return false;
+            }
+        }
         friends.add(user);
         Collections.sort(friends, new Comparator<ModelPerson>() {
             @Override
@@ -40,13 +45,27 @@ public class ModelSessionData implements Serializable{
                 return modelPerson1.getName().compareTo(modelPerson2.getName());
             }
         });
+        return true;
     }
 
     public void removeUser(String id){
         for (int i=0; i<friends.size(); i++){
             if (id.equals(friends.get(i).getId())){
                 friends.remove(i);
-                return;
+                break;
+            }
+        }
+        for (int j = 0; j<modelGroups.size(); j++){
+            ModelGroup g = modelGroups.get(j);
+            for (int i=0; i<g.getFriendsInGroup().size(); i++){
+                ModelPerson f = g.getFriendsInGroup().get(i);
+                if (f.getId().equals(id)){
+                    g.getFriendsInGroup().remove(i);
+                    if (g.getFriendsInGroup().isEmpty()){
+                        modelGroups.remove(j);
+                    }
+                    break;
+                }
             }
         }
     }

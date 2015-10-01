@@ -78,6 +78,7 @@ public class ActivityHome extends ActionBarActivity {
             new TaskGetFriends(this, true).execute(userLogin.getId());
         }else{
             Log.i(TAG,"onCreate. User: "+userLogin.toString()+". Friends: "+friends.toString()+". Groups: "+groups.toString());
+            new TaskGetFriends(this, false).execute(userLogin.getId());
         }
 
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.orange_light)));
@@ -181,7 +182,7 @@ public class ActivityHome extends ActionBarActivity {
     }
 
     public void settings(MenuItem item){
-        MaterialSimpleListAdapter materialAdapter = new MaterialSimpleListAdapter(this);
+        final MaterialSimpleListAdapter materialAdapter = new MaterialSimpleListAdapter(this);
         materialAdapter.add(new MaterialSimpleListItem.Builder(this)
                 .content(R.string.settings_option_uninstall)
                 .icon(R.drawable.ic_phonelink_erase_black_48dp)
@@ -191,7 +192,7 @@ public class ActivityHome extends ActionBarActivity {
                 .titleColorRes(R.color.orange_light)
                 .adapter(materialAdapter, new MaterialDialog.ListCallback() {
                     @Override
-                    public void onSelection(MaterialDialog materialDialog, View view, int which, CharSequence charSequence) {
+                    public void onSelection(final MaterialDialog materialDialog, View view, int which, CharSequence charSequence) {
                         if (which == 0) {
                             new MaterialDialog.Builder(ActivityHome.this)
                                     .title(getResources().getString(R.string.settings_option_uninstall)+"?")
@@ -213,6 +214,7 @@ public class ActivityHome extends ActionBarActivity {
 
                                             dialog.dismiss();
                                             dialog.cancel();
+                                            materialDialog.dismiss();
                                         }
                                     }).show();
                         }

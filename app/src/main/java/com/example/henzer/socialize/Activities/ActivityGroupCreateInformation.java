@@ -89,14 +89,11 @@ public class ActivityGroupCreateInformation extends ActionBarActivity {
 
         friends = ModelSessionData.getInstance().getFriends();
 
-        int width = getWidth();
         setContentView(R.layout.activity_group_create_information);
         setAnimationAndListeners();
         setAbTitle();
 
         avatarGroup = (RatioImageView) findViewById(R.id.ActivityCreateGroup_ImageButtonSelectImage);
-        avatarGroup.getLayoutParams().height = width;
-        avatarGroup.getLayoutParams().width = width;
         avatarGroup.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.ic_image_camera_alt_large));
         avatarGroup.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -391,14 +388,6 @@ public class ActivityGroupCreateInformation extends ActionBarActivity {
         animation2 = AnimationUtils.loadAnimation(this,R.anim.flip_left_in);
         animation1.setAnimationListener(listener); animation2.setAnimationListener(listener);
         listener.setAnimation1(animation1); listener.setAnimation2(animation2);
-    }
-
-    private int getWidth(){
-        Display display = getWindowManager().getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        Log.i(TAG, "Width: "+(size.x/5));
-        return size.x/5;
     }
 
     private void setAbTitle(){

@@ -47,14 +47,14 @@ public class TaskRefreshImageDownload extends AsyncTask<String, Void, Void> {
     private GridView gridView;
     private ArrayList<ModelPerson> friends;
     private JSONParser jsonParser;
-    private int size;
+    private int[] size;
 
     public TaskRefreshImageDownload(Context context, SwipeRefreshLayout mSwipeRefreshLayout, GridView gridView){
         Log.e(TAG,"OnConstructor");
         this.context = context;
         this.mSwipeRefreshLayout = mSwipeRefreshLayout;
         this.gridView = gridView;
-        size = context.getResources().getInteger(R.integer.adapter_contact_size_little);
+        size = new int[]{context.getResources().getInteger(R.integer.adapter_contact_size_little),context.getResources().getInteger(R.integer.adapter_contact_size_large)};
         jsonParser = new JSONParser();
     }
 
@@ -76,18 +76,20 @@ public class TaskRefreshImageDownload extends AsyncTask<String, Void, Void> {
             }.getType()));
             for (ModelPerson user : friends) {
                 String userID = user.getId();
-                String urlStr = user.getPhoto() + "width=" + size + "&height=" + size;
-                Log.e(TAG, "URL: " + urlStr);
-                Log.e(TAG, "URLSize: "+urlStr.length());
-                HttpClient client = new DefaultHttpClient();
-                HttpGet request = new HttpGet(urlStr);
-                HttpResponse response;
-                response = client.execute(request);
-                HttpEntity entity = response.getEntity();
-                BufferedHttpEntity bufferedEntity = new BufferedHttpEntity(entity);
-                InputStream inputStream = bufferedEntity.getContent();
+                for (int i=0; i<context.getResources().getInteger(R.integer.adapter_contact_size_size); i++){
+                    String urlStr = user.getPhoto() + "width=" + size[i] + "&height=" + size[i];
+                    Log.e(TAG, "URL: " + urlStr);
+                    Log.e(TAG, "URLSize: "+urlStr.length());
+                    HttpClient client = new DefaultHttpClient();
+                    HttpGet request = new HttpGet(urlStr);
+                    HttpResponse response;
+                    response = client.execute(request);
+                    HttpEntity entity = response.getEntity();
+                    BufferedHttpEntity bufferedEntity = new BufferedHttpEntity(entity);
+                    InputStream inputStream = bufferedEntity.getContent();
 
-                saveImage(context, userID, BitmapFactory.decodeStream(inputStream));
+                    saveImage(context, userID+"_"+size[i], BitmapFactory.decodeStream(inputStream));
+                }
             }
         } catch (JSONException e) {
             e.printStackTrace();

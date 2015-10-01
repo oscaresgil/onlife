@@ -10,11 +10,12 @@
 	<net.soulwolf.widget.ratiolayout.widget.RatioImageView
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/LayoutSelectContactGroup_ImageViewFriend"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/layout_select_contact_group_image_height_width"
+        android:layout_height="@dimen/layout_select_contact_group_image_height_width"
         app:datumRatio="datumWidth"
         app:widthRatio="1.0"
         app:heightRatio="1.0"
+        android:src="@drawable/loading_friend_icon"
         android:scaleType="fitCenter"
         android:layout_gravity="center"
         android:layout_marginRight="5dp"/>

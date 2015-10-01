@@ -99,4 +99,9 @@
     <dimen name="layout_friends_in_group_simple_textview_name_margin">5dp</dimen>
     <dimen name="layout_friends_in_group_simple_height">90dp</dimen>
 
+    <!--
+    Dimensiones para Layout Group Create Friends
+    -->
+    <dimen name="layout_select_contact_group_image_height_width">120dp</dimen>
+
 </resources>

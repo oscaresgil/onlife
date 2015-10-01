@@ -52,7 +52,7 @@ public class AdapterStickyTitle extends RecyclerView.Adapter<AdapterStickyTitle.
             viewHolder.imageView.setImageBitmap(BitmapFactory.decodeResource(context.getResources(),R.drawable.ic_navigation_check));
         }
         else{*/
-            viewHolder.imageView.setImageBitmap(loadImage(context, friends.get(i).getId()));
+            viewHolder.imageView.setImageBitmap(loadImage(context, friends.get(i).getId()+"_"+context.getResources().getInteger(R.integer.adapter_contact_size_large)));
         //}
     }
 
