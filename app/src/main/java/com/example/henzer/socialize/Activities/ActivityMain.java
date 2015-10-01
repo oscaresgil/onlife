@@ -136,7 +136,7 @@ public class ActivityMain extends Activity{
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (callbackManager.onActivityResult(requestCode, resultCode, data)) return;
+        callbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
@@ -174,6 +174,11 @@ public class ActivityMain extends Activity{
         }else{
             mProfileTracker.startTracking();
         }
+    }
+
+    public void privacyPolicyAction(View view){
+        Intent i = new Intent(this,ActivityPrivacyPolicy.class);
+        startActivity(i);
     }
 
     public void gotoHome(){

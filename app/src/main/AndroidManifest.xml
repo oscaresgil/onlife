@@ -153,8 +153,13 @@
 
         <meta-data android:name="applovin.sdk.key"
             android:value="C6fu6R-u5bFg0ywiTuu3z-EJsI2kI73UEkMKALCFxSxyOsetkXwgW9_MS24l98DNsah0wvFsLBol1Rbl-WQUfP"  />
-		 <activity android:name=".Activities.ActivityOnboarding"
+
+        <activity android:name=".Activities.ActivityOnboarding"
             android:screenOrientation="portrait" />
+
+        <activity android:name=".Activities.ActivityPrivacyPolicy"
+            android:screenOrientation="portrait" />
+
     </application>
 
 </manifest>

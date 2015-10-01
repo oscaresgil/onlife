@@ -68,8 +68,8 @@
     <string name="toast_not_time_yet">¡Espera! Tiempo restante</string>
 
     <string name="select_friend">Seleccionar Amigos</string>
-    <string name="action_invite_friends" translatable="false">Invitar Amigos</string>
-    <string name="settings_option_uninstall" translatable="false">Desinstalar Aplicación</string>
+    <string name="action_invite_friends">Invitar Amigos</string>
+    <string name="settings_option_uninstall">Desinstalar Aplicación</string>
 
     <string name="slide">Desliza para comenzar...</string>
     <string name="welcome">¡Bienvenido!</string>
@@ -84,9 +84,13 @@
     <string name="onboarding2_locked">bloqueado</string>
     <string name="done">LISTO</string>
     <string name="onboarding2_image">tutorial 1</string>
-    <string name="onboarding3_image" translatable="false">tutorial 2</string>
+    <string name="onboarding3_image">tutorial 2</string>
     <string name="onboarding4_image">tutorial 3</string>
     <string name="onboarding5_image">tutorial 4</string>
->>>>>>> Stashed changes
+    <string name="privacy_policy_url">https://www.iubenda.com/privacy-policy/485984</string>
+    <string name="privacy_policy"><u>Política de Privacidad</u></string>
+    <string name="logo_image">Imágen de logo</string>
+    <string name="logo_text">Texto del logo</string>
+    >>>>>>> Stashed changes
 
 </resources>

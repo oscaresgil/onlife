@@ -91,5 +91,9 @@
     <string name="onboarding3_image">onboarding 2</string>
     <string name="onboarding4_image">onboarding 3</string>
     <string name="onboarding5_image">onboarding 4</string>
+    <string name="privacy_policy_url">https://www.iubenda.com/privacy-policy/405416</string>
+    <string name="privacy_policy"><u>Privacy Policy</u></string>
+    <string name="logo_image">Logo image</string>
+    <string name="logo_text">Logo text</string>
 
 </resources>
