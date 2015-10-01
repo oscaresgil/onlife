@@ -141,13 +141,16 @@ public class StaticMethods {
         ContextWrapper cw = new ContextWrapper(context);
         File dirImages = cw.getDir("Profiles",Context.MODE_PRIVATE);
         for (ModelPerson p: friends){
-            File img = new File(dirImages, p.getId()+".png");
+            File img = new File(dirImages, p.getId()+"_"+context.getResources().getInteger(R.integer.adapter_contact_size_large)+".png");
             boolean b = img.delete();
-            Log.i(TAG,"DELETED: "+b);
+            img = new File(dirImages, p.getId()+"_"+context.getResources().getInteger(R.integer.adapter_contact_size_little)+".png");
+            b = img.delete();
         }
         for (ModelGroup g: groups){
-            File img = new File(dirImages, g.getName()+".png");
+            File img = new File(dirImages, g.getName()+"_"+context.getResources().getInteger(R.integer.adapter_contact_size_large)+".png");
             boolean b = img.delete();
+            img = new File(dirImages, g.getName()+"_"+context.getResources().getInteger(R.integer.adapter_contact_size_little)+".png");
+            b = img.delete();
             Log.i(TAG,"DELETED: "+b);
         }
         return dirImages.delete();
@@ -156,7 +159,9 @@ public class StaticMethods {
     public static boolean delImageProfile(Context context, String id){
         ContextWrapper cw = new ContextWrapper(context);
         File dirImages = cw.getDir("Profiles",Context.MODE_APPEND);
-        File myPath = new File(dirImages, id+".png");
+        File myPath = new File(dirImages, id+"_"+context.getResources().getInteger(R.integer.adapter_contact_size_large)+".png");
+        myPath.delete();
+        myPath = new File(dirImages, id+"_"+context.getResources().getInteger(R.integer.adapter_contact_size_little)+".png");
         return myPath.delete();
     }
 

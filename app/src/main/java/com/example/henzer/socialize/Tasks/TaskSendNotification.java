@@ -1,5 +1,6 @@
 package com.example.henzer.socialize.Tasks;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -19,14 +20,17 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.example.henzer.socialize.Controller.StaticMethods.animationEnd;
+import static com.example.henzer.socialize.Controller.StaticMethods.hideSoftKeyboard;
+
 public class TaskSendNotification extends AsyncTask<ModelPerson, String, Boolean>{
     public final static String TAG = "TaskSendNotification";
-    private Context context;
+    private Activity context;
     private LoadToast toast;
     private JSONParser jsonParser;
     private String message="",actualUser, gifName="";
 
-    public TaskSendNotification(Context c, String actualUser, String message, String gifName){
+    public TaskSendNotification(Activity c, String actualUser, String message, String gifName){
         this.context = c;
         this.message = message;
         this.actualUser = actualUser;

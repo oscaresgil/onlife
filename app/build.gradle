@@ -45,7 +45,7 @@ dependencies {
     compile 'com.github.zzz40500:AndroidSweetSheet:1.1.0'
     compile 'pl.droidsonroids.gif:android-gif-drawable:1.1.9'
     compile 'com.github.manuelpeinado.fadingactionbar:fadingactionbar:3.1.2'
-    compile 'com.android.support:design:22.2.0'
+    compile 'com.android.support:design:22.2.1'
     compile 'net.soulwolf.widget:ratiolayout:1.0.0'
     compile 'com.google.code.gson:gson:2.3'
     compile 'com.eftimoff:android-pathview:1.0.6@aar'

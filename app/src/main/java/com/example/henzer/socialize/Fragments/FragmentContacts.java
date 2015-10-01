@@ -144,18 +144,6 @@ public class FragmentContacts extends Fragment {
         return v;
     }
 
-
-    /*private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Log.i(TAG,"onReceive");
-            AdapterContact adapterContact = ((ActivityHome)context).getAdapterContact();
-            adapterContact.notifyDataSetChanged();
-            gridView.setAdapter(adapterContact);
-        }
-    };*/
-
-
     @Override
     public void onDestroy() {
         getActivity().unregisterReceiver(broadcastReceiver);
@@ -203,11 +191,13 @@ public class FragmentContacts extends Fragment {
             }else if(tag.equals("new_user")){
                 ModelPerson newUser = (ModelPerson) extras.getSerializable("new_user");
                 Log.i(TAG,"Broadcast Receiver. Add New User: "+newUser.toString());
-                ModelSessionData.getInstance().addUser(newUser);
-                adapterContact.add(newUser);
+                boolean addFlag = ModelSessionData.getInstance().addUser(newUser);
+                if (addFlag) {
+                    adapterContact.add(newUser);
 
-                adapterContact.notifyDataSetChanged();
-                gridView.setAdapter(adapterContact);
+                    adapterContact.notifyDataSetChanged();
+                    gridView.setAdapter(adapterContact);
+                }
             }
         }
     };
@@ -263,7 +253,7 @@ public class FragmentContacts extends Fragment {
         super.onPrepareOptionsMenu(menu);
     }
 
-    @Override
+    /*@Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         if (friendsFiltred.size() != friends.size()){
             gridView.setAdapter(((ActivityHome)getActivity()).getAdapterContact());
@@ -271,7 +261,7 @@ public class FragmentContacts extends Fragment {
             friendsFiltred.addAll(friends);
         }
         super.onCreateOptionsMenu(menu, inflater);
-    }
+    }*/
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
