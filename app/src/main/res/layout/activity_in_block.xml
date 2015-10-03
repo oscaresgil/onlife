@@ -6,22 +6,19 @@
 
     <ListView
         android:id="@+id/ActivityInBlock_ListView"
-        android:layout_weight="1"
         android:layout_gravity="center"
         android:layout_width="fill_parent"
         android:layout_height="@dimen/activity_in_block_list_view_height"
-        android:layout_margin="10dp"/>
+        android:layout_margin="@dimen/activity_in_block_list_view_margin"/>
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/ActivityFriendBlock_ButtonBlock"
-        android:layout_width="120dp"
-        android:layout_height="120dp"
+    <at.markushi.ui.CircleButton
         android:layout_gravity="center"
         android:gravity="center"
-        android:src="@drawable/ic_lock_black_24dp"
-        app:borderWidth="0dp"
-        app:fabSize="normal"
-        app:backgroundTint="@color/orange_light"/>
-
+        android:layout_width="@dimen/activity_in_block_button_height_width"
+        android:layout_height="@dimen/activity_in_block_button_height_width"
+        android:src="@drawable/ic_lock_open_black_48dp"
+        android:onClick="removeActivity"
+        app:cb_color="@color/orange_light"
+        app:cb_pressedRingWidth="@dimen/activity_in_block_button_ring" />
 
 </LinearLayout>

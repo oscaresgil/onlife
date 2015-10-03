@@ -115,6 +115,8 @@
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
 
+    <!--android:layout_height="@dimen/activity_friend_block_app_bar_layout_height"-->
+
     <android.support.design.widget.AppBarLayout
         android:id="@+id/ActivityFriendBlock_AppBar"
         android:layout_height="@dimen/activity_friend_block_app_bar_layout_height"
@@ -137,7 +139,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:fitsSystemWindows="true"
-                    android:scaleType="centerCrop"
                     app:datumRatio="datumWidth"
                     app:widthRatio="1.0"
                     app:heightRatio="1.0"

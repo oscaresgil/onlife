@@ -8,10 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.example.henzer.socialize.R;
 
-/**
- * Created by fer on 08/09/2015.
- */
-
 public class FragmentOnboarding2 extends Fragment {
 
 

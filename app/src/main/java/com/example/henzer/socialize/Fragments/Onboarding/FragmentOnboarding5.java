@@ -8,9 +8,6 @@ import android.view.ViewGroup;
 
 import com.example.henzer.socialize.R;
 
-/**
- * Created by Oscar on 9/24/2015.
- */
 public class FragmentOnboarding5 extends Fragment{
     @Override
     public View onCreateView(LayoutInflater inflater,

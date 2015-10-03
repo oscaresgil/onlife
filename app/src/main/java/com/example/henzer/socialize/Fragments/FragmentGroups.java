@@ -1,18 +1,14 @@
 package com.example.henzer.socialize.Fragments;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
@@ -33,7 +29,6 @@ import static com.example.henzer.socialize.Controller.StaticMethods.getModelGrou
 import static com.example.henzer.socialize.Controller.StaticMethods.removeGroup;
 
 public class FragmentGroups extends Fragment {
-    public static final String TAG = "GroupsFragment";
     public static final int CREATE_GROUP_ACTIVITY_ID = 1;
     public static final int GROUP_BLOCK_ACTIVITY_ID = 3;
 
@@ -47,13 +42,10 @@ public class FragmentGroups extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        Log.e(TAG, "OnCreateView");
         setHasOptionsMenu(true);
         View v = inflater.inflate(R.layout.fragment_groups, container, false);
-        //modelSessionData = (ModelSessionData) getArguments().getSerializable("data");
 
         modelGroups = ModelSessionData.getInstance().getModelGroups();
-        //adapter = new AdapterGroup(getActivity(), R.layout.layout_groups, modelGroups);
         adapter = ((ActivityHome)getActivity()).getAdapterGroup();
         list = (ListView)v.findViewById(R.id.FragmentGroups_ListGroup);
         list.setAdapter(adapter);

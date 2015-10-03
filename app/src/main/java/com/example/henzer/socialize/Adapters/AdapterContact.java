@@ -3,7 +3,6 @@ package com.example.henzer.socialize.Adapters;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.BitmapFactory;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -24,7 +23,6 @@ import static com.example.henzer.socialize.Controller.StaticMethods.imageInDisk;
 import static com.example.henzer.socialize.Controller.StaticMethods.loadImage;
 
 public class AdapterContact extends ArrayAdapter<ModelPerson> {
-    public static final String TAG="AdapterContact";
     private Context context;
     private List<ModelPerson> friends;
 
@@ -69,7 +67,6 @@ public class AdapterContact extends ArrayAdapter<ModelPerson> {
         ModelPerson userData = friends.get(position);
         ContactHolder contactHolder;
 
-        Log.i(TAG,"Position: "+position+". View Null?: "+(view==null)+" User: "+userData.toString());
         if (view == null){
             view = ((Activity)context).getLayoutInflater().inflate(R.layout.layout_contact, parent, false);
             contactHolder = new ContactHolder();

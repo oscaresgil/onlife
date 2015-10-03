@@ -3,7 +3,6 @@ package com.example.henzer.socialize.Activities;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -12,8 +11,6 @@ import android.support.v7.app.ActionBarActivity;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
-import android.util.Log;
-import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -35,9 +32,6 @@ import com.example.henzer.socialize.Models.ModelSessionData;
 import com.example.henzer.socialize.R;
 import com.kenny.snackbar.SnackBar;
 import com.melnykov.fab.FloatingActionButton;
-import com.r0adkll.slidr.Slidr;
-import com.r0adkll.slidr.model.SlidrConfig;
-import com.r0adkll.slidr.model.SlidrPosition;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
 import net.soulwolf.widget.ratiolayout.widget.RatioImageView;
@@ -54,7 +48,6 @@ import static com.example.henzer.socialize.Controller.StaticMethods.showSoftKeyb
 import static com.example.henzer.socialize.Controller.StaticMethods.unSelectFriends;
 
 public class ActivityGroupCreateInformation extends ActionBarActivity {
-    public static final String TAG ="ActivityGroupCreateInformation";
     private static final int PICK_FROM_CAMERA = 1;
     private static final int PICK_FROM_FILE = 2;
     private static final int PIC_CROP = 3;
@@ -83,7 +76,6 @@ public class ActivityGroupCreateInformation extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.i(TAG, "onCreate()");
 
         setSlidr(this);
 
@@ -133,7 +125,6 @@ public class ActivityGroupCreateInformation extends ActionBarActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        Log.i(TAG, "onCreateOptionsMenu()");
         getMenuInflater().inflate(R.menu.menu_group, menu);
         this.myMenu = menu;
         return true;
@@ -142,11 +133,9 @@ public class ActivityGroupCreateInformation extends ActionBarActivity {
     @Override
     public void onBackPressed() {
         if (isSearchOpened){
-            Log.i(TAG, "onCreateBackPressed() showing search");
             handleMenuSearch();
         }
         else{
-            Log.i(TAG, "onCreateBackPressed() destroying");
             super.onBackPressed();
             hideSoftKeyboard(this, nameNewGroup);
             unSelectFriends(ModelSessionData.getInstance().getFriends());
@@ -156,8 +145,6 @@ public class ActivityGroupCreateInformation extends ActionBarActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Log.i(TAG, "onOptionsItemSelected(). Item:"+item.getItemId());
-
         int i = item.getItemId();
         if (i == R.id.saveGroup_button) {
             List<ModelPerson> selected = new ArrayList();
@@ -188,7 +175,7 @@ public class ActivityGroupCreateInformation extends ActionBarActivity {
                             path = saveImage(getApplicationContext(), name, bitmap);
                         }
                         else{
-                            path = saveImage(getApplicationContext(), name, BitmapFactory.decodeResource(getResources(), R.drawable.logo_large));
+                            path = saveImage(getApplicationContext(), name, BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher));
                         }
 
                         ModelGroup newG = new ModelGroup(ModelSessionData.getInstance().getModelGroups().size(), name, selected, path, limit, state);
@@ -226,8 +213,6 @@ public class ActivityGroupCreateInformation extends ActionBarActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.i(TAG, "onActivityResult(). Request: "+requestCode+". Result: "+resultCode);
-
         if ((requestCode == PICK_FROM_FILE || requestCode == PICK_FROM_CAMERA) && resultCode == RESULT_OK) {
             Uri mImageCaptureUri = data.getData();
             path = mImageCaptureUri.getPath();
@@ -267,7 +252,6 @@ public class ActivityGroupCreateInformation extends ActionBarActivity {
                 if (numberOfMatches == 0){
                     filtred.add(actual);
                 }
-
             }
         }
         return filtred;
@@ -355,12 +339,10 @@ public class ActivityGroupCreateInformation extends ActionBarActivity {
                     @Override
                     public void onSelection(MaterialDialog materialDialog, View view, int which, CharSequence charSequence) {
                         if (which == 0) {
-                            Log.i(TAG, "CameraIntent");
                             Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 							startActivityForResult(cameraIntent,PICK_FROM_CAMERA);
                             materialDialog.cancel();
                         } else {
-                            Log.i(TAG, "SDIntent");
                             Intent intent = new Intent();
                             intent.setType("image/*");
                             intent.setAction(Intent.ACTION_GET_CONTENT);

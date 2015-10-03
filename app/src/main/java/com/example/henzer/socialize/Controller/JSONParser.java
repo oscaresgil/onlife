@@ -1,7 +1,5 @@
 package com.example.henzer.socialize.Controller;
 
-import android.util.Log;
-
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -78,18 +76,15 @@ public class JSONParser {
             while ((line = reader.readLine()) != null) {
                 sb.append(line + "\n");
             }
-            Log.e("JSONPARSER","ERROR: "+sb.toString());
             is.close();
             json = sb.toString();
         } catch (Exception e) {
-            Log.e("Buffer Error", "Error converting result " + e.toString());
         }
 
         // try parse the string to a JSON object
         try {
             jObj = new JSONObject(json);
         } catch (JSONException e) {
-            Log.e("JSON Parser", "Error parsing data " + e.toString() + "\n" + json);
         }
 
         // return JSON String

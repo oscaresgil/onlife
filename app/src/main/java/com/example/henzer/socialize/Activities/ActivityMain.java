@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.util.Log;
 import android.view.View;
 
 import com.example.henzer.socialize.Models.ModelGroup;
@@ -24,8 +23,6 @@ import com.facebook.GraphRequest;
 import com.facebook.HttpMethod;
 import com.facebook.Profile;
 import com.facebook.ProfileTracker;
-import com.facebook.internal.WebDialog;
-import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.gson.Gson;
@@ -55,18 +52,12 @@ public class ActivityMain extends Activity{
 
 
     private FacebookCallback<LoginResult> facebookCallback = new FacebookCallback<LoginResult>() {
-
-
         @Override
         public void onSuccess(LoginResult loginResult) {
-            Log.i("Login", "Login Success");
-            //mProfileTracker.startTracking();
         }
 
         @Override
         public void onCancel() {
-            Log.d("Login", "Login Canceled");
-
         }
 
         @Override
@@ -111,7 +102,6 @@ public class ActivityMain extends Activity{
         mProfileTracker = new ProfileTracker() {
             @Override
             protected void onCurrentProfileChanged(Profile oldProfile, Profile profile) {
-                Log.e(TAG, "Profile Changed");
                 if (profile!=null) {
                     Gson gson = new Gson();
                     sharedPreferences = getSharedPreferences(ActivityMain.MyPREFERENCES, Context.MODE_PRIVATE);
@@ -147,7 +137,6 @@ public class ActivityMain extends Activity{
     @Override
     protected void onResume() {
         super.onResume();
-        Log.e(TAG, "onResume()");
 
         if (isNetworkAvailable(ActivityMain.this)) {
             loginButton.registerCallback(callbackManager, facebookCallback);

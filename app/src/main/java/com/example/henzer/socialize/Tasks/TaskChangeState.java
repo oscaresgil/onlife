@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TaskChangeState extends AsyncTask<String,Void,Boolean> {
-    public static final String TAG = "TaskChangeState";
     private JSONParser jsonParser;
 
     public TaskChangeState() {
@@ -24,7 +23,6 @@ public class TaskChangeState extends AsyncTask<String,Void,Boolean> {
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        Log.i(TAG, "onPreExecute()");
     }
 
     @Override
@@ -33,7 +31,6 @@ public class TaskChangeState extends AsyncTask<String,Void,Boolean> {
         String state = params[1];
 
         List<NameValuePair> p = new ArrayList<>();
-        Log.i(TAG, "onBackground(). Id: "+id+". State: "+state);
         p.add(new BasicNameValuePair("tag", "changeState"));
         p.add(new BasicNameValuePair("id", id));
         p.add(new BasicNameValuePair("state",state));
@@ -41,8 +38,6 @@ public class TaskChangeState extends AsyncTask<String,Void,Boolean> {
         try{
             JSONObject response = null;
             response = jsonParser.makeHttpRequest(ActivityMain.SERVER_URL, "POST", p);
-            Log.i(TAG, "Response: "+response.toString());
-            Log.i(TAG, "Error: "+response.getBoolean("error"));
             return response.getBoolean("error");
         }catch(Exception ex){
             ex.printStackTrace();

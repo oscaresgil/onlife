@@ -1,7 +1,6 @@
 package com.example.henzer.socialize.Controller;
 
 import android.app.Activity;
-import android.app.ActivityManager;
 import android.app.admin.DevicePolicyManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -9,18 +8,13 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.content.pm.ResolveInfo;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
-import android.provider.MediaStore;
-import android.provider.Settings;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
@@ -29,7 +23,6 @@ import com.example.henzer.socialize.Models.ModelGroup;
 import com.example.henzer.socialize.Models.ModelPerson;
 import com.example.henzer.socialize.Models.ModelSessionData;
 import com.example.henzer.socialize.R;
-import com.google.gson.Gson;
 import com.kenny.snackbar.SnackBar;
 import com.r0adkll.slidr.Slidr;
 import com.r0adkll.slidr.model.SlidrConfig;
@@ -41,7 +34,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class StaticMethods {
-    public static final String TAG = "StaticMethods";
     public static final int ACTIVATION_REQUEST = 47;
 
     public static void activateDeviceAdmin(Activity activity){
@@ -53,7 +45,6 @@ public class StaticMethods {
             intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, myDeviceAdmin);
             intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION,
                     activity.getString(R.string.device_admin_description));
-            Log.e("DeviceAdmin", "entro a la contidicion");
             activity.startActivityForResult(intent, ACTIVATION_REQUEST);
         }
     }
@@ -142,16 +133,15 @@ public class StaticMethods {
         File dirImages = cw.getDir("Profiles",Context.MODE_PRIVATE);
         for (ModelPerson p: friends){
             File img = new File(dirImages, p.getId()+"_"+context.getResources().getInteger(R.integer.adapter_contact_size_large)+".png");
-            boolean b = img.delete();
+            img.delete();
             img = new File(dirImages, p.getId()+"_"+context.getResources().getInteger(R.integer.adapter_contact_size_little)+".png");
-            b = img.delete();
+            img.delete();
         }
         for (ModelGroup g: groups){
             File img = new File(dirImages, g.getName()+"_"+context.getResources().getInteger(R.integer.adapter_contact_size_large)+".png");
-            boolean b = img.delete();
+            img.delete();
             img = new File(dirImages, g.getName()+"_"+context.getResources().getInteger(R.integer.adapter_contact_size_little)+".png");
-            b = img.delete();
-            Log.i(TAG,"DELETED: "+b);
+            img.delete();
         }
         return dirImages.delete();
     }
@@ -204,7 +194,6 @@ public class StaticMethods {
             Intent intent = new Intent("com.android.camera.action.CROP");
             intent.setType("image/*");
 
-            Log.e("Version",""+(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT));
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                 if (mImageCaptureUri.toString().substring(0,21).equals("content://com.android")) {
                     String imageUriString = "content://media/external/images/media/"+mImageCaptureUri.toString().split("%3A")[1];
@@ -243,7 +232,6 @@ public class StaticMethods {
         for (int i=0; i< modelGroups.size(); i++){
             if (modelGroups.get(i).getId()== modelGroup.getId()){
                 modelGroups.remove(i);
-                Log.e("RemovedGroup",modelGroups.toString());
             }
         }
         ModelSessionData.getInstance().setModelGroups(modelGroups);

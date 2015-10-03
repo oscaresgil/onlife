@@ -25,18 +25,6 @@ public class TaskSetFriends extends AsyncTask<ArrayList<String>, Void, String> {
         jsonParser = new JSONParser();
     }
 
-    /*@Override
-   protected void onPreExecute(){
-       super.onPreExecute();
-       Log.e("MainActivity", "Mostrando el Progress Dialog");
-       materialDialog = new MaterialDialog.Builder(context)
-               .title("Get GCM")
-               .content(R.string.dialog_title_loading_friends)
-               .progress(true,0)
-               .widgetColorRes(R.color.orange_light)
-               .cancelable(false)
-               .show();
-   }*/
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
@@ -74,9 +62,5 @@ public class TaskSetFriends extends AsyncTask<ArrayList<String>, Void, String> {
     protected void onPostExecute(String userId) {
         super.onPostExecute(userId);
         dialog.dismiss();
-        //TaskGetFriends taskGetFriends = new TaskGetFriends(context, dialog);
-        //taskGetFriends.execute(userId);
-
     }
-
 }

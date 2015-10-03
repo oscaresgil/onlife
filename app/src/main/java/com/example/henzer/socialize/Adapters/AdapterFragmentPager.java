@@ -6,7 +6,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.ViewGroup;
 
 import com.example.henzer.socialize.Fragments.FragmentContacts;
@@ -18,7 +17,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class AdapterFragmentPager extends FragmentPagerAdapter{
-    public static final String TAG = "AdapterFragmentPager";
     private Context context;
     private FragmentManager fm;
     private Map<Integer,String> fragmentTags;
@@ -39,14 +37,11 @@ public class AdapterFragmentPager extends FragmentPagerAdapter{
     }
 
     @Override public Fragment getItem(int position) {
-        Log.i(TAG, "getItem()");
         if (position==0) {
             return Fragment.instantiate(context,FragmentContacts.class.getName(),null);
-            //return new FragmentContacts();
         }
         else {
             return Fragment.instantiate(context,FragmentGroups.class.getName(),null);
-            //return new FragmentGroups();
         }
     }
 
@@ -59,14 +54,6 @@ public class AdapterFragmentPager extends FragmentPagerAdapter{
             fragmentTags.put(position,tag);
         }
         return object;
-    }
-
-    public Fragment getFragmentPosition(int position){
-        String tag = fragmentTags.get(position);
-        if (tag==null){
-            return null;
-        }
-        return fm.findFragmentByTag(tag);
     }
 
     @Override public CharSequence getPageTitle(int position) {

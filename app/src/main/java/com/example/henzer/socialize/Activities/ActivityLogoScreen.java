@@ -3,7 +3,6 @@ package com.example.henzer.socialize.Activities;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.eftimoff.androipathview.PathView;
 import com.example.henzer.socialize.R;
@@ -15,8 +14,6 @@ public class ActivityLogoScreen extends Activity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        Log.e("ActivityLogoScreen","OnCreate()");
         setContentView(R.layout.activity_logo_screen);
 
         PathView pathView = (PathView) findViewById(R.id.ActivityLogoScreen_PathView);

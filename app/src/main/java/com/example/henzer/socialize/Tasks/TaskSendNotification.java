@@ -3,7 +3,6 @@ package com.example.henzer.socialize.Tasks;
 import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
 
 import com.example.henzer.socialize.Controller.JSONParser;
 import com.example.henzer.socialize.Models.ModelPerson;
@@ -24,7 +23,6 @@ import static com.example.henzer.socialize.Controller.StaticMethods.animationEnd
 import static com.example.henzer.socialize.Controller.StaticMethods.hideSoftKeyboard;
 
 public class TaskSendNotification extends AsyncTask<ModelPerson, String, Boolean>{
-    public final static String TAG = "TaskSendNotification";
     private Activity context;
     private LoadToast toast;
     private JSONParser jsonParser;
@@ -62,8 +60,6 @@ public class TaskSendNotification extends AsyncTask<ModelPerson, String, Boolean
         p.add(new BasicNameValuePair("gifName", gifName));
 
         JSONObject json = jsonParser.makeHttpRequest("http://104.236.74.55/onlife/gcm.php", "POST", p);
-        Log.e(TAG, "Response: "+json.toString());
-        //for (int i=0; i<30000; i++);
         try {
             boolean error = json.getBoolean("error");
             if(error==false){
@@ -78,7 +74,6 @@ public class TaskSendNotification extends AsyncTask<ModelPerson, String, Boolean
 
     @Override
     protected void onPostExecute(Boolean result){
-        Log.e("MainActivity", "Quitando el Progress Dialog");
         toast.success();
     }
 }

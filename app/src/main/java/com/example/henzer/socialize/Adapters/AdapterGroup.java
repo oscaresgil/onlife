@@ -2,8 +2,6 @@ package com.example.henzer.socialize.Adapters;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Point;
-import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -34,11 +32,6 @@ public class AdapterGroup extends ArrayAdapter<ModelGroup> {
     public View getView(int position, View convertView, ViewGroup parent) {
         HolderGroup holderGroup;
 
-        Display display = ((Activity)context).getWindowManager().getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        int sizeInt = size.x/3;
-
         if (convertView==null){
             holderGroup = new HolderGroup();
 
@@ -50,8 +43,6 @@ public class AdapterGroup extends ArrayAdapter<ModelGroup> {
             holderGroup = (HolderGroup) convertView.getTag();
         }
 
-		holderGroup.imageView.getLayoutParams().width = sizeInt;
-        holderGroup.imageView.getLayoutParams().height = sizeInt;
         holderGroup.imageView.setImageBitmap(null);
         holderGroup.imageView.setImageBitmap(loadImage(getContext(),objects.get(position).getName()));
         

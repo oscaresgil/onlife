@@ -2,17 +2,11 @@ package com.example.henzer.socialize.Activities;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.Button;
 
 import com.example.henzer.socialize.R;
 
-/**
- * Objective 4
- * Created by Oscar on 9/30/2015.
- */
 public class ActivityPrivacyPolicy extends Activity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {

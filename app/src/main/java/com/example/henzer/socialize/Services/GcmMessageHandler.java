@@ -11,7 +11,6 @@ import android.media.RingtoneManager;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
 import android.widget.Adapter;
 import android.widget.Toast;
 
@@ -29,9 +28,7 @@ import org.json.JSONObject;
 
 import java.util.List;
 
-
 public class GcmMessageHandler extends IntentService {
-    private final String TAG = "GcmMessageHandler";
     private NotificationManager myNotificationManager;
     private String user, message, gifName,tag;
 
@@ -47,15 +44,12 @@ public class GcmMessageHandler extends IntentService {
         Bundle extras = intent.getExtras();
         GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(this);
         String messageType = gcm.getMessageType(intent);
-        Log.i(TAG,"MessageType: "+messageType);
         tag = extras.getString("tag");
         if (tag!=null) {
-            Log.i(TAG,"Tag: "+tag);
             if (tag.equals("block")) {
                 message = extras.getString("message");
                 user = extras.getString("userName");
                 gifName = extras.getString("gifName");
-                Log.i(TAG, "BLOCK: User: " + user + ". Message: " + message + ". GifName: " + gifName);
                 if (!user.equals("") || user != null) {
                     onMessage(this);
                 }
@@ -65,9 +59,7 @@ public class GcmMessageHandler extends IntentService {
                 String user = extras.getString("user");
                 ModelPerson newUser = gson.fromJson(user,ModelPerson.class);
 
-                Log.i(TAG, "NEW USER: "+newUser.toString());
                 Intent i = new Intent("com.example.henzer.socialize.Fragments.FragmentContacts");
-                //Intent i = new Intent("com.example.henzer.socialize.Activities.ActivityHome");
                 i.putExtra("tag","new_user");
                 i.putExtra("new_user",newUser);
                 sendBroadcast(i);
@@ -76,8 +68,6 @@ public class GcmMessageHandler extends IntentService {
                 String idP = extras.getString("id");
                 String state = extras.getString("state");
 
-                Log.i(TAG, "UPDATE: Id: "+idP+". State: "+state);
-                //Intent i = new Intent("com.example.henzer.socialize.Activities.ActivityHome");
                 Intent i = new Intent("com.example.henzer.socialize.Fragments.FragmentContacts");
                 i.putExtra("tag","update");
                 i.putExtra("id",idP);

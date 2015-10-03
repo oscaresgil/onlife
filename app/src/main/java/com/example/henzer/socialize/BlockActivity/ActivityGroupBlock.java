@@ -12,7 +12,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -38,9 +37,6 @@ import com.mingle.entity.MenuEntity;
 import com.mingle.sweetpick.DimEffect;
 import com.mingle.sweetpick.RecyclerViewDelegate;
 import com.mingle.sweetpick.SweetSheet;
-import com.r0adkll.slidr.Slidr;
-import com.r0adkll.slidr.model.SlidrConfig;
-import com.r0adkll.slidr.model.SlidrPosition;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
 import net.soulwolf.widget.ratiolayout.widget.RatioImageView;
@@ -58,10 +54,10 @@ import static com.example.henzer.socialize.Controller.StaticMethods.loadImage;
 import static com.example.henzer.socialize.Controller.StaticMethods.performCrop;
 import static com.example.henzer.socialize.Controller.StaticMethods.saveImage;
 import static com.example.henzer.socialize.Controller.StaticMethods.setGifNames;
+import static com.example.henzer.socialize.Controller.StaticMethods.setSlidr;
 import static com.example.henzer.socialize.Controller.StaticMethods.showSoftKeyboard;
 
 public class ActivityGroupBlock extends AppCompatActivity {
-    public static final String TAG = "ActivityGroupBlock";
     private static final int PICK_FROM_CAMERA = 1;
     private static final int PICK_FROM_FILE = 2;
     private static final int PIC_CROP = 3;
@@ -87,11 +83,8 @@ public class ActivityGroupBlock extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.i(TAG,"onCreate()");
 
-        SlidrConfig config = new SlidrConfig.Builder().primaryColor(getResources().getColor(R.color.orange)).secondaryColor(getResources().getColor(R.color.orange_light)).position(SlidrPosition.LEFT).sensitivity(0.4f).build();
-        Slidr.attach(this, config);
-
+        setSlidr(this);
         setContentView(R.layout.activity_group_block);
 
         toolbar = (Toolbar) findViewById(R.id.ActivityGroupBlock_ToolBar);
@@ -182,11 +175,9 @@ public class ActivityGroupBlock extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         if (sweetSheet.isShow()){
-            Log.i(TAG,"onBackPressed() with sweetSheet");
             sweetSheet.dismiss();
         }
         else {
-            Log.i(TAG,"onCreate() destroying");
             super.onBackPressed();
             hideSoftKeyboard(this,messageTextView);
             animationEnd(this);
@@ -195,7 +186,6 @@ public class ActivityGroupBlock extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        Log.i(TAG,"onCreateOptionsMenu()");
         menu.clear();
         getMenuInflater().inflate(R.menu.menu_in_group, menu);
         return true;
@@ -203,7 +193,6 @@ public class ActivityGroupBlock extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Log.i(TAG,"onOptionsItemSelected(). Item: "+item.getItemId());
         int i = item.getItemId();
         if (i == R.id.information_button){
             if (!sweetSheet.isShow()) {
@@ -275,7 +264,6 @@ public class ActivityGroupBlock extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.i(TAG,"onActivityResult(). Request: "+requestCode+". Result: "+resultCode);
         if ((requestCode == PICK_FROM_FILE || requestCode == PICK_FROM_CAMERA) && resultCode == RESULT_OK) {
             Uri mImageCaptureUri = data.getData();
             try {
@@ -296,7 +284,6 @@ public class ActivityGroupBlock extends AppCompatActivity {
         if (isNetworkAvailable(this)) {
             if (listenerTextWatcher.getActualChar() <= 30) {
                 try {
-                    Log.i(TAG, "Actual User: "+actualUser.getName()+" Message: "+messageTextView.getText().toString()+". Gif: "+gifName);
                     new TaskSendNotification(ActivityGroupBlock.this, actualUser.getName(), messageTextView.getText().toString(),gifName).execute(friendsInGroup.toArray(new ModelPerson[friendsInGroup.size()]));
 
                 } catch (Exception ex) {
@@ -338,12 +325,10 @@ public class ActivityGroupBlock extends AppCompatActivity {
                     @Override
                     public void onSelection(MaterialDialog materialDialog, View view, int which, CharSequence charSequence) {
                         if (which == 0) {
-                            Log.i(TAG, "CameraIntent");
                             Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 							startActivityForResult(cameraIntent,PICK_FROM_CAMERA);
                             materialDialog.cancel();
                         } else {
-                            Log.i(TAG, "SDIntent");
                             Intent intent = new Intent();
                             intent.setType("image/*");
                             intent.setAction(Intent.ACTION_GET_CONTENT);

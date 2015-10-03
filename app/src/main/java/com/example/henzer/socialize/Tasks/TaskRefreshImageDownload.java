@@ -41,7 +41,6 @@ import java.util.List;
 import static com.example.henzer.socialize.Controller.StaticMethods.saveImage;
 
 public class TaskRefreshImageDownload extends AsyncTask<String, Void, Void> {
-    public final static String TAG = "TaskImageDownload";
     private Context context;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private GridView gridView;
@@ -50,7 +49,6 @@ public class TaskRefreshImageDownload extends AsyncTask<String, Void, Void> {
     private int[] size;
 
     public TaskRefreshImageDownload(Context context, SwipeRefreshLayout mSwipeRefreshLayout, GridView gridView){
-        Log.e(TAG,"OnConstructor");
         this.context = context;
         this.mSwipeRefreshLayout = mSwipeRefreshLayout;
         this.gridView = gridView;
@@ -78,8 +76,6 @@ public class TaskRefreshImageDownload extends AsyncTask<String, Void, Void> {
                 String userID = user.getId();
                 for (int i=0; i<context.getResources().getInteger(R.integer.adapter_contact_size_size); i++){
                     String urlStr = user.getPhoto() + "width=" + size[i] + "&height=" + size[i];
-                    Log.e(TAG, "URL: " + urlStr);
-                    Log.e(TAG, "URLSize: "+urlStr.length());
                     HttpClient client = new DefaultHttpClient();
                     HttpGet request = new HttpGet(urlStr);
                     HttpResponse response;
@@ -110,8 +106,6 @@ public class TaskRefreshImageDownload extends AsyncTask<String, Void, Void> {
                 return modelPerson1.getName().compareTo(modelPerson2.getName());
             }
         });
-
-        Log.i(TAG,"FriendsOnPost: "+friends.toString());
 
         ModelSessionData.getInstance().setFriends(friends);
         AdapterContact adapter = new AdapterContact(context,R.layout.layout_contact,friends);

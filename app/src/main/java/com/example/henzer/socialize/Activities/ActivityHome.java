@@ -1,9 +1,7 @@
 package com.example.henzer.socialize.Activities;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
@@ -11,7 +9,6 @@ import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
 import android.text.Html;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -30,8 +27,6 @@ import com.example.henzer.socialize.R;
 import com.example.henzer.socialize.Services.ServicePhoneState;
 import com.example.henzer.socialize.Tasks.TaskChangeState;
 import com.example.henzer.socialize.Tasks.TaskGetFriends;
-import com.example.henzer.socialize.Tasks.TaskSetFriends;
-import com.example.henzer.socialize.Tasks.TaskSimpleImageDownload;
 import com.facebook.login.LoginManager;
 import com.facebook.share.model.AppInviteContent;
 import com.facebook.share.widget.AppInviteDialog;
@@ -39,21 +34,14 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import static com.example.henzer.socialize.Controller.StaticMethods.activateDeviceAdmin;
 import static com.example.henzer.socialize.Controller.StaticMethods.deactivateDeviceAdmin;
 import static com.example.henzer.socialize.Controller.StaticMethods.delDirImages;
-import static com.example.henzer.socialize.Controller.StaticMethods.delImageProfile;
-import static com.example.henzer.socialize.Controller.StaticMethods.removeGroup;
 
 public class ActivityHome extends ActionBarActivity {
-    public static final String TAG = "ActivityHome";
     private ModelPerson userLogin;
-    private List<ModelPerson> friends;
-    private List<ModelGroup> groups;
     private SharedPreferences sharedPreferences;
     private AdapterContact adapterContact;
     private AdapterGroup adapterGroup;
@@ -69,15 +57,15 @@ public class ActivityHome extends ActionBarActivity {
         sharedPreferences = getSharedPreferences(ActivityMain.MyPREFERENCES, Context.MODE_PRIVATE);
         Gson gson = new Gson();
         userLogin = gson.fromJson(sharedPreferences.getString("userLogin", ""), ModelPerson.class);
-        friends = gson.fromJson(sharedPreferences.getString("friends", ""), (new TypeToken<ArrayList<ModelPerson>>(){}.getType()));
-        groups = gson.fromJson(sharedPreferences.getString("groups", ""), (new TypeToken<ArrayList<ModelGroup>>(){}.getType()));
+        List<ModelPerson> friends = gson.fromJson(sharedPreferences.getString("friends", ""), (new TypeToken<ArrayList<ModelPerson>>() {
+        }.getType()));
+        List<ModelGroup> groups = gson.fromJson(sharedPreferences.getString("groups", ""), (new TypeToken<ArrayList<ModelGroup>>() {
+        }.getType()));
 
-        ModelSessionData.initInstance(userLogin,friends,groups);
+        ModelSessionData.initInstance(userLogin, friends, groups);
         if (friends.isEmpty()) {
-            Log.i(TAG,"onCreate. GetFriends: TRUE");
             new TaskGetFriends(this, true).execute(userLogin.getId());
         }else{
-            Log.i(TAG,"onCreate. User: "+userLogin.toString()+". Friends: "+friends.toString()+". Groups: "+groups.toString());
             new TaskGetFriends(this, false).execute(userLogin.getId());
         }
 
@@ -107,12 +95,6 @@ public class ActivityHome extends ActionBarActivity {
         adapterContact = new AdapterContact(this,R.layout.layout_contact,ModelSessionData.getInstance().getFriends());
         adapterGroup = new AdapterGroup(this,R.layout.layout_groups,ModelSessionData.getInstance().getModelGroups());
 
-    }
-
-    @Override
-    protected void onResume() {
-        //registerReceiver(broadcastReceiver,new IntentFilter("com.example.henzer.socialize.Activities.ActivityHome"));
-        super.onResume();
     }
 
     @Override
@@ -147,21 +129,11 @@ public class ActivityHome extends ActionBarActivity {
     }
 
     @Override
-    protected void onStop() {
-        Log.i(TAG,"onStop()");
-        super.onStop();
-    }
-
-    @Override
     protected void onDestroy() {
-        Log.i(TAG,"onDestroy()");
-
         Gson gson = new Gson();
         sharedPreferences.edit().putString("userLogin",gson.toJson(ModelSessionData.getInstance().getUser())).apply();
         sharedPreferences.edit().putString("friends",gson.toJson(ModelSessionData.getInstance().getFriends())).apply();
         sharedPreferences.edit().putString("groups",gson.toJson(ModelSessionData.getInstance().getModelGroups())).apply();
-//        unregisterReceiver(broadcastReceiver);
-
         super.onDestroy();
 
     }
@@ -228,11 +200,10 @@ public class ActivityHome extends ActionBarActivity {
         sharedPreferences.edit().remove("friends").apply();
         sharedPreferences.edit().remove("groups").apply();
         sharedPreferences.edit().remove("userLogin").apply();
-        boolean delete =delDirImages(this,ModelSessionData.getInstance().getFriends(),ModelSessionData.getInstance().getModelGroups());
+        delDirImages(this,ModelSessionData.getInstance().getFriends(),ModelSessionData.getInstance().getModelGroups());
         ModelSessionData.getInstance().clear();
         LoginManager.getInstance().logOut();
-        new TaskChangeState().execute(userLogin.getId(),"O");
-        Log.i(TAG,"LogOut. User: "+userLogin.getId()+". Name: "+userLogin.getName()+". State: O. Directory Deleted: "+delete);
+        new TaskChangeState().execute(userLogin.getId(), "O");
         finish();
     }
 

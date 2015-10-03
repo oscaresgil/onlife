@@ -6,16 +6,13 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,8 +43,6 @@ import static com.example.henzer.socialize.Controller.StaticMethods.isNetworkAva
 import static com.example.henzer.socialize.Controller.StaticMethods.showSoftKeyboard;
 
 public class FragmentContacts extends Fragment {
-    public static final String TAG = "FragmentContacts";
-
     private ModelPerson actualUser;
     private List<ModelPerson> friends;
 
@@ -65,15 +60,8 @@ public class FragmentContacts extends Fragment {
     public FragmentContacts(){}
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        Log.i(TAG,"OnCreate()");
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        Log.i(TAG, "onCreateView()");
 
         setHasOptionsMenu(true);
         View v = inflater.inflate(R.layout.fragment_contacts, container, false);
@@ -160,7 +148,6 @@ public class FragmentContacts extends Fragment {
             if (tag.equals("update")) {
                 String id = extras.getString("id");
                 String state = extras.getString("state");
-                Log.i(TAG, "Broadcast Receiver. ID:" + id + ". State:" + state);
 
                 List<ModelPerson> friendsT = adapterContact.getFriends();
                 if (state.equals("O")) {
@@ -171,8 +158,6 @@ public class FragmentContacts extends Fragment {
                         if (p.getId().equals(id)) {
                             boolean removed = delImageProfile(getActivity(),p.getId());
                             adapterContact.remove(adapterContact.getItem(i));
-                            Log.i(TAG, "Broadcast Receiver. Remove ID:" + p.getId() + ". Name: " + p.getName() + ". State:" + state+  ". Image Deleted: "+removed);
-
                             break;
                         }
                     }
@@ -181,8 +166,6 @@ public class FragmentContacts extends Fragment {
                     for (ModelPerson p : friendsT) {
                         if (p.getId().equals(id)) {
                             p.setState(state);
-                            Log.i(TAG, "Broadcast Receiver. Update ID:" + p.getId() + ". Name: " + p.getName() + ". State:" + state);
-
                             break;
                         }
                     }
@@ -190,7 +173,6 @@ public class FragmentContacts extends Fragment {
                 }
             }else if(tag.equals("new_user")){
                 ModelPerson newUser = (ModelPerson) extras.getSerializable("new_user");
-                Log.i(TAG,"Broadcast Receiver. Add New User: "+newUser.toString());
                 boolean addFlag = ModelSessionData.getInstance().addUser(newUser);
                 if (addFlag) {
                     adapterContact.add(newUser);
@@ -206,7 +188,6 @@ public class FragmentContacts extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        Log.i(TAG, "onResume()");
         getActivity().registerReceiver(broadcastReceiver,new IntentFilter("com.example.henzer.socialize.Fragments.FragmentContacts"));
         mSwipeRefreshLayout = (SwipeRefreshLayout) getActivity().findViewById(R.id.FragmentContacts_SwipeRefreshLayout);
         gridView.setOnScrollListener(new AbsListView.OnScrollListener() {
@@ -239,7 +220,6 @@ public class FragmentContacts extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        Log.i(TAG, "onPause()");
         if (mSwipeRefreshLayout!=null) {
             mSwipeRefreshLayout.setRefreshing(false);
             mSwipeRefreshLayout.destroyDrawingCache();
@@ -252,16 +232,6 @@ public class FragmentContacts extends Fragment {
         mSearchAction = menu.findItem(R.id.searchContact);
         super.onPrepareOptionsMenu(menu);
     }
-
-    /*@Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        if (friendsFiltred.size() != friends.size()){
-            gridView.setAdapter(((ActivityHome)getActivity()).getAdapterContact());
-            friendsFiltred.clear();
-            friendsFiltred.addAll(friends);
-        }
-        super.onCreateOptionsMenu(menu, inflater);
-    }*/
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

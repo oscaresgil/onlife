@@ -14,27 +14,12 @@ import java.io.IOException;
 
 
 public class TaskGetGCM extends AsyncTask<Void, Void, String> {
-
-    private static final String TAG = "GetGCM";
     private Context context;
     private SharedPreferences sharedPreferences;
 
     public TaskGetGCM(Context context){
         this.context = context;
     }
-
-    /*@Override
-    protected void onPreExecute(){
-        super.onPreExecute();
-        Log.e("MainActivity", "Mostrando el Progress Dialog");
-        materialDialog = new MaterialDialog.Builder(context)
-                .title("Get GCM")
-                .content(R.string.dialog_title_loading_friends)
-                .progress(true,0)
-                .widgetColorRes(R.color.orange_light)
-                .cancelable(false)
-                .show();
-    }*/
 
     @Override
     protected String doInBackground(Void... params) {

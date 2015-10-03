@@ -2,7 +2,6 @@ package com.example.henzer.socialize.Adapters;
 
 import android.app.Activity;
 import android.content.Context;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -17,7 +16,6 @@ import pl.droidsonroids.gif.GifDrawable;
 import pl.droidsonroids.gif.GifImageView;
 
 public class AdapterMessageInBlock extends ArrayAdapter<ModelMessages> {
-    public static final String TAG = "AdapterMessageInBlock";
     private List<ModelMessages> messages;
     private int resource;
 
@@ -45,7 +43,6 @@ public class AdapterMessageInBlock extends ArrayAdapter<ModelMessages> {
     @Override
     public View getView(int position, View v, ViewGroup parent) {
         ModelMessages message = messages.get(position);
-        Log.i(TAG, "Actual Message: " + message.toString());
         MessageHolder holder;
         if (v==null){
             v = ((Activity)getContext()).getLayoutInflater().inflate(resource, parent, false);

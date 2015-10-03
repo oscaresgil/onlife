@@ -60,7 +60,6 @@ public class ListenerFlipCheckbox implements Animation.AnimationListener{
             f.setDeleted(!f.isSelected());
         }
     }
-    //}
 
     @Override public void onAnimationRepeat(Animation animation) {
 

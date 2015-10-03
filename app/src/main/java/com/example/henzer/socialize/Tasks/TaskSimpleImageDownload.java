@@ -26,28 +26,21 @@ import java.io.InputStream;
 import static com.example.henzer.socialize.Controller.StaticMethods.saveImage;
 
 public class TaskSimpleImageDownload extends AsyncTask<ModelPerson,Void,Void> {
-    public final static String TAG="TaskSimpleImageDownload";
     private Context context;
     private RatioImageView avatar;
     private int size;
     private Bitmap imageBitmap;
-    private long startTime, stopTime;
 
     public TaskSimpleImageDownload(Context context, RatioImageView avatar, int size) {
         this.context = context;
         this.avatar = avatar;
         this.size = size;
-        startTime = System.currentTimeMillis();
     }
 
     @Override
     protected Void doInBackground(ModelPerson... params) {
-        Log.i(TAG,"InBackground()");
         ModelPerson p = params[0];
-        Log.i(TAG,"FriendImage: "+p.toString());
-
         String urlStr = p.getPhoto()+"width="+size+"&height="+size;
-        Log.i(TAG,"FriendUrlImage: "+urlStr);
 
         HttpClient client = new DefaultHttpClient();
         HttpGet request = new HttpGet(urlStr);
@@ -69,9 +62,6 @@ public class TaskSimpleImageDownload extends AsyncTask<ModelPerson,Void,Void> {
 
     @Override
     protected void onPostExecute(Void aVoid) {
-        Log.i(TAG,"OnPost()");
         if (size == context.getResources().getInteger(R.integer.adapter_contact_size_large)) avatar.setImageBitmap(imageBitmap);
-        stopTime = System.currentTimeMillis();
-        Log.i(TAG,"Time: "+(stopTime-startTime)/1000);
     }
 }

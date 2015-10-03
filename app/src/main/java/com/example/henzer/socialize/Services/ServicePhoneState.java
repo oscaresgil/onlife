@@ -15,18 +15,15 @@ import com.example.henzer.socialize.Tasks.TaskChangeState;
 import static com.example.henzer.socialize.Controller.StaticMethods.activatePhoneBroadcast;
 
 public class ServicePhoneState extends Service {
-    public static final String TAG = "ServicePhoneState";
 
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.i(TAG,"onCreate()");
         activatePhoneBroadcast(this);
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.i(TAG,"onStartCommand()");
         return START_STICKY;
     }
 

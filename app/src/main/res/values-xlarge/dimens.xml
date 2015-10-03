@@ -16,7 +16,7 @@
     <dimen name="activity_friend_block_linearlayout_divider_margin">6dp</dimen>
     <dimen name="activity_friend_block_edittext_message_margin">6dp</dimen>
     <dimen name="activity_friend_block_gif_view_height_width">80dp</dimen>
-    <dimen name="activity_friend_block_app_bar_layout_height">364dp</dimen>
+    <dimen name="activity_friend_block_app_bar_layout_height">512dp</dimen>
     <dimen name="activity_friend_block_fab_block_border">0dp</dimen>
 
     <!-- Activity Group Block Dimensions -->
@@ -51,7 +51,10 @@
     <dimen name="activity_in_block_gif_margin">8dp</dimen>
     <dimen name="activity_in_block_layout_message_width">750dp</dimen>
     <dimen name="activity_in_block_list_view_height">750dp</dimen>
+    <dimen name="activity_in_block_list_view_margin">15dp</dimen>
     <dimen name="activity_in_block_main_margin">15dp</dimen>
+    <dimen name="activity_in_block_button_height_width">160dp</dimen>
+    <dimen name="activity_in_block_button_ring">12dp</dimen>
 
     <!-- Fragment Groups Dimensions -->
     <dimen name="fragment_group_fab_margin">17dp</dimen>
@@ -105,5 +108,8 @@
     Dimensiones para Layout Group Create Friends
     -->
     <dimen name="layout_select_contact_group_image_height_width">150dp</dimen>
+
+    <!-- Dimensiones para Layout Group -->
+    <dimen name="layout_group_image_height_width">100dp</dimen>
 
 </resources>

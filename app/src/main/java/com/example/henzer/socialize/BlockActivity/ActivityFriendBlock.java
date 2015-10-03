@@ -12,7 +12,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -48,10 +47,10 @@ import static com.example.henzer.socialize.Controller.StaticMethods.hideSoftKeyb
 import static com.example.henzer.socialize.Controller.StaticMethods.isNetworkAvailable;
 import static com.example.henzer.socialize.Controller.StaticMethods.loadImage;
 import static com.example.henzer.socialize.Controller.StaticMethods.setGifNames;
+import static com.example.henzer.socialize.Controller.StaticMethods.setSlidr;
 import static com.example.henzer.socialize.Controller.StaticMethods.showSoftKeyboard;
 
 public class ActivityFriendBlock extends AppCompatActivity {
-    public static final String TAG = "ActivityFriendBlock";
     private ModelPerson friend,actualUser;
 
     private ImageView visibility;
@@ -66,15 +65,7 @@ public class ActivityFriendBlock extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Log.i(TAG, "onCreate()");
-
-        SlidrConfig config = new SlidrConfig.Builder()
-                .primaryColor(getResources().getColor(R.color.orange))
-                .secondaryColor(getResources().getColor(R.color.orange_light))
-                .position(SlidrPosition.LEFT)
-                .sensitivity(0.4f)
-                .build();
-        Slidr.attach(this, config);
+        setSlidr(this);
 
         setContentView(R.layout.activity_friend_block);
 
@@ -178,8 +169,7 @@ public class ActivityFriendBlock extends AppCompatActivity {
 
     @Override
     protected void onResume() {
-        //registerReceiver(broadcastReceiver,new IntentFilter("com.example.henzer.socialize.Activities.ActivityHome"));
-        registerReceiver(broadcastReceiver,new IntentFilter("com.example.henzer.socialize.Fragments.FragmentContacts"));
+        registerReceiver(broadcastReceiver, new IntentFilter("com.example.henzer.socialize.Fragments.FragmentContacts"));
         super.onResume();
     }
 
@@ -192,14 +182,12 @@ public class ActivityFriendBlock extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        Log.i(TAG, "onBackPressed()");
-        hideSoftKeyboard(this,messageTextView);
+        hideSoftKeyboard(this, messageTextView);
         animationEnd(this);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Log.i(TAG, "onOptionsItemSelected(): Back button");
         hideSoftKeyboard(this,messageTextView);
         finish();
         animationEnd(this);
@@ -212,7 +200,6 @@ public class ActivityFriendBlock extends AppCompatActivity {
             if (listenerTextWatcher.getActualChar() <= 30) {
                 if (friend.getState().equals("A")) {
                     try {
-                        Log.i(TAG, "Block: " + friend.getName() + ". Actual User: " + actualUser.getName() + " Message: " + messageTextView.getText().toString() + ". Gif: " + gifName);
                         long actualTime = Calendar.getInstance().getTimeInMillis();
                         if (actualTime - friend.getLastBlockedTime() > getResources().getInteger(R.integer.block_time_remaining)){
                             new TaskSendNotification(ActivityFriendBlock.this, actualUser.getName(), messageTextView.getText().toString(), gifName).execute(friend);

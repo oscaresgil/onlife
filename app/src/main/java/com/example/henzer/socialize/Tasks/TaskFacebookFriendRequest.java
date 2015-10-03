@@ -2,7 +2,6 @@ package com.example.henzer.socialize.Tasks;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 
 import com.example.henzer.socialize.Activities.ActivityMain;
 import com.example.henzer.socialize.Activities.ActivitySelectContacts;
@@ -40,13 +39,10 @@ public class TaskFacebookFriendRequest implements GraphRequest.Callback {
             JSONObject objectResponse = response.getJSONObject();
             JSONArray objectData = (JSONArray) objectResponse.get("data");
             ArrayList<String> ids =  new ArrayList<>();
-            //String [] ids = new String[objectData.length()];
             ids.add(user.getId());
-            Log.i("DATA", objectData.toString());
             for (int i=0; i<objectData.length(); i++){
                 JSONObject objectUser = (JSONObject) objectData.get(i);
                 String id = (String) objectUser.get("id");
-                //ids[i] = id;
                 ids.add(id);
                 String name = (String) objectUser.get("name");
 
@@ -71,11 +67,6 @@ public class TaskFacebookFriendRequest implements GraphRequest.Callback {
                 friends = new ArrayList<>();
                 activityMain.gotoHome();
             }
-            /*if(TAG.equals("ActivitySelectContacts")){
-                ActivitySelectContacts activitySelectContacts = (ActivitySelectContacts)context;
-                activitySelectContacts.setAllFriends(friends);
-                activitySelectContacts.setAdapterAndDecor();
-            }*/
 
         }catch(Exception e){e.printStackTrace();}
     }

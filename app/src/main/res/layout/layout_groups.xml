@@ -19,8 +19,8 @@
                 <net.soulwolf.widget.ratiolayout.widget.RatioImageView
                     xmlns:app="http://schemas.android.com/apk/res-auto"
                     android:id="@+id/LayoutGroups_CircleImageViewGroup"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_width="@dimen/layout_group_image_height_width"
+                    android:layout_height="@dimen/layout_group_image_height_width"
                     android:layout_weight="1"
                     android:scaleType="fitCenter"
                     android:layout_margin="5dp"

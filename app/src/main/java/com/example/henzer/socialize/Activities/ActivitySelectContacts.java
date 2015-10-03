@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -16,10 +15,6 @@ import com.example.henzer.socialize.Listeners.ListenerFlipCheckbox;
 import com.example.henzer.socialize.Models.ModelPerson;
 import com.example.henzer.socialize.Models.ModelSessionData;
 import com.example.henzer.socialize.R;
-import com.example.henzer.socialize.Tasks.TaskFacebookFriendRequest;
-import com.facebook.AccessToken;
-import com.facebook.GraphRequest;
-import com.facebook.HttpMethod;
 import com.melnykov.fab.FloatingActionButton;
 
 import java.util.List;
@@ -28,8 +23,6 @@ import ca.barrenechea.widget.recyclerview.decoration.DividerDecoration;
 import ca.barrenechea.widget.recyclerview.decoration.StickyHeaderDecoration;
 
 public class ActivitySelectContacts extends Activity {
-
-    private final String TAG = "ActivitySelectContacts";
     private StickyHeaderDecoration decor;
     private RecyclerView mList;
     private List<ModelPerson> friends;
@@ -42,7 +35,6 @@ public class ActivitySelectContacts extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_contact);
 
-        //modelSessionData = (ModelSessionData)getIntent().getExtras().getSerializable("data");
         friends = ModelSessionData.getInstance().getFriends();
 
         mList = (RecyclerView) findViewById(R.id.ActivitySelectContact_RecyclerViewList);
@@ -75,7 +67,6 @@ public class ActivitySelectContacts extends Activity {
         chooseContact.attachToRecyclerView(mList);
         Bundle params = new Bundle();
         params.putString("fields","id,name");
-        //new GraphRequest(AccessToken.getCurrentAccessToken(),"/me/friends",params, HttpMethod.GET, new TaskFacebookFriendRequest(ActivitySelectContacts.this,TAG)).executeAsync();
     }
 
     public void setAdapterAndDecor() {

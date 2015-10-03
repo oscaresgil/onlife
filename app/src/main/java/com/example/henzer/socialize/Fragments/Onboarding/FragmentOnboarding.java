@@ -1,10 +1,5 @@
 package com.example.henzer.socialize.Fragments.Onboarding;
 
-/**
- * Created by fer on 08/09/2015.
- */
-
-
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;

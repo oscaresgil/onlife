@@ -1,9 +1,7 @@
 package com.example.henzer.socialize.Activities;
 
-import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -19,11 +17,7 @@ import com.example.henzer.socialize.Fragments.Onboarding.FragmentOnboarding5;
 import com.example.henzer.socialize.R;
 import com.ogaclejapan.smarttablayout.SmartTabLayout;
 
-/**
- * Created by fer on 08/09/2015.
- */
 public class ActivityOnboarding extends FragmentActivity {
-
     private ViewPager pager;
     private SmartTabLayout indicator;
     private Button skip;
@@ -46,7 +40,6 @@ public class ActivityOnboarding extends FragmentActivity {
             @Override
             public android.support.v4.app.Fragment getItem(int position) {
                 switch (position) {
-
                     case 0 : return new FragmentOnboarding();
                     case 1 : return new FragmentOnboarding2();
                     case 2 : return new FragmentOnboarding3();
@@ -63,7 +56,6 @@ public class ActivityOnboarding extends FragmentActivity {
         };
 
         pager.setAdapter(adapter);
-
         indicator.setViewPager(pager);
 
     }
