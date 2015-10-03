@@ -5,7 +5,7 @@ android {
     buildToolsVersion "21.1.2"
 
     defaultConfig {
-        applicationId "com.example.henzer.socialize"
+        applicationId "com.objective4.app.onlife"
         minSdkVersion 15
         targetSdkVersion 22
         versionCode 1
@@ -26,7 +26,7 @@ repositories {
 }
 
 dependencies {
-    compile 'com.google.android.gms:play-services:7.5.0'
+    compile 'com.google.android.gms:play-services:8.1.0'
     compile 'com.facebook.android:facebook-android-sdk:4.5.0'
     compile 'com.yalantis:flipviewpager:1.0.0'
     compile 'com.r0adkll:slidableactivity:2.0.2'

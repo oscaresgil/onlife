@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <com.example.henzer.socialize.Layouts.LayoutSlidingTab
+    <com.objective4.app.onlife.Layouts.LayoutSlidingTab
         android:id="@+id/ActivityHome_SlindingTabs"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
