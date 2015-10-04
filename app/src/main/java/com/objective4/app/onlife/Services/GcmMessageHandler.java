@@ -7,12 +7,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
+import android.widget.Toast;
 
+import com.google.android.gms.gcm.GoogleCloudMessaging;
+import com.google.gson.Gson;
 import com.objective4.app.onlife.BlockActivity.ActivityInBlock;
 import com.objective4.app.onlife.Models.ModelPerson;
 import com.objective4.app.onlife.R;
-import com.google.android.gms.gcm.GoogleCloudMessaging;
-import com.google.gson.Gson;
+
+import static com.objective4.app.onlife.Controller.StaticMethods.checkDeviceAdmin;
 
 public class GcmMessageHandler extends IntentService {
     private NotificationManager myNotificationManager;
@@ -36,9 +39,13 @@ public class GcmMessageHandler extends IntentService {
                 message = extras.getString("message");
                 user = extras.getString("userName");
                 gifName = extras.getString("gifName");
-                if (!user.equals("") || user != null) {
+                boolean adminChecked = checkDeviceAdmin(this);
+                if ((!user.equals("") || user != null) && adminChecked) {
                     onMessage(this);
+                }else if(!adminChecked){
+                    Toast.makeText(GcmMessageHandler.this, getResources().getString(R.string.in_block_device_admin_not_activated), Toast.LENGTH_LONG).show();
                 }
+
 
             } else if(tag.equals("newUser")){
                 Gson gson = new Gson();

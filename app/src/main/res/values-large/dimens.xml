@@ -49,8 +49,8 @@
     <dimen name="activity_in_block_gif_view_height_width">70dp</dimen>
     <dimen name="activity_in_block_gif_margin">7dp</dimen>
     <dimen name="activity_in_block_layout_message_width">550dp</dimen>
-    <dimen name="activity_in_block_list_view_height">450dp</dimen>
-    <dimen name="activity_in_block_list_view_margin">12dp</dimen>
+    <dimen name="activity_in_block_list_view_height">550dp</dimen>
+    <dimen name="activity_in_block_list_view_margin">10dp</dimen>
     <dimen name="activity_in_block_main_margin">15dp</dimen>
     <dimen name="activity_in_block_button_height_width">160dp</dimen>
     <dimen name="activity_in_block_button_ring">10dp</dimen>

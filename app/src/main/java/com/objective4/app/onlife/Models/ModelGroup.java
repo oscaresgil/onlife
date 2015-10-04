@@ -10,6 +10,7 @@ public class ModelGroup implements Serializable {
     private String nameImage;
     private int limit;
     private String state;
+    private long lastBlockedTime;
 
     public ModelGroup(int id, String name, List<ModelPerson> friendsInGroup, String nameImage, int limit, String state) {
         this.id = id;
@@ -18,6 +19,7 @@ public class ModelGroup implements Serializable {
         this.nameImage = nameImage;
         this.limit = limit;
         this.state = state;
+        lastBlockedTime = 0;
     }
 
     public int getId() {
@@ -54,6 +56,14 @@ public class ModelGroup implements Serializable {
 
     public String getNameImage() {
         return nameImage;
+    }
+
+    public long getLastBlockedTime() {
+        return lastBlockedTime;
+    }
+
+    public void setLastBlockedTime(long lastBlockedTime) {
+        this.lastBlockedTime = lastBlockedTime;
     }
 
     @Override public String toString() {

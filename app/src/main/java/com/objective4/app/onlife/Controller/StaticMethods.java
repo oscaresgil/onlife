@@ -18,6 +18,7 @@ import android.os.Build;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
+import com.objective4.app.onlife.BlockActivity.ActivityGroupBlock;
 import com.objective4.app.onlife.BroadcastReceivers.BroadcastReceiverPhoneStatus;
 import com.objective4.app.onlife.Models.ModelGroup;
 import com.objective4.app.onlife.Models.ModelPerson;
@@ -66,6 +67,25 @@ public class StaticMethods {
             e.printStackTrace();
         }
         return true;
+    }
+
+    public static boolean checkDeviceAdmin(Context activity){
+        DevicePolicyManager dpm;
+        ComponentName admin;
+        try
+        {
+            dpm = (DevicePolicyManager) activity.getSystemService(Context.DEVICE_POLICY_SERVICE);
+            admin = new ComponentName(activity, DeviceAdmin.class);
+            if(dpm.isAdminActive(admin))
+            {
+                return true;
+            }
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     public static void activatePhoneBroadcast(Context context){

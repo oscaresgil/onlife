@@ -42,6 +42,7 @@ import com.rengwuxian.materialedittext.MaterialEditText;
 import net.soulwolf.widget.ratiolayout.widget.RatioImageView;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import pl.droidsonroids.gif.GifDrawable;
@@ -284,8 +285,13 @@ public class ActivityGroupBlock extends AppCompatActivity {
         if (isNetworkAvailable(this)) {
             if (listenerTextWatcher.getActualChar() <= 30) {
                 try {
-                    new TaskSendNotification(ActivityGroupBlock.this, actualUser.getName(), messageTextView.getText().toString(),gifName).execute(friendsInGroup.toArray(new ModelPerson[friendsInGroup.size()]));
-
+                    long actualTime = Calendar.getInstance().getTimeInMillis();
+                    if (actualTime - modelGroup.getLastBlockedTime() > getResources().getInteger(R.integer.block_time_group_remaining)){
+                        new TaskSendNotification(ActivityGroupBlock.this, actualUser.getName(), messageTextView.getText().toString(),gifName).execute(friendsInGroup.toArray(new ModelPerson[friendsInGroup.size()]));
+                        modelGroup.setLastBlockedTime(actualTime);
+                    }else{
+                        SnackBar.show(ActivityGroupBlock.this,getResources().getString(R.string.toast_not_time_yet)+" "+((getResources().getInteger(R.integer.block_time_group_remaining)-(actualTime - modelGroup.getLastBlockedTime()))/1000)+" s");
+                    }
                 } catch (Exception ex) {
                     SnackBar.show(ActivityGroupBlock.this, R.string.error);
                 }

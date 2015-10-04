@@ -91,5 +91,6 @@
     <string name="privacy_policy"><u>Política de Privacidad</u></string>
     <string name="logo_image">Imágen de logo</string>
     <string name="logo_text">Texto del logo</string>
+    <string name="in_block_device_admin_not_activated" translatable="false">Admin. de Dispositivos no Activado</string>
 
 </resources>
