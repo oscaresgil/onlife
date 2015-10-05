@@ -5,12 +5,11 @@ import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.objective4.app.onlife.Models.ModelGroup;
 import com.objective4.app.onlife.R;
-
-import net.soulwolf.widget.ratiolayout.widget.RatioImageView;
 
 import java.util.List;
 
@@ -35,23 +34,21 @@ public class AdapterGroup extends ArrayAdapter<ModelGroup> {
         if (convertView==null){
             holderGroup = new HolderGroup();
 
-            convertView = ((Activity)context).getLayoutInflater().inflate(resource,null,true);
+            convertView = ((Activity)context).getLayoutInflater().inflate(resource,parent,false);
             holderGroup.textView = (TextView) convertView.findViewById(R.id.LayoutGroups_TextViewGroupName);
-            holderGroup.imageView = (RatioImageView) convertView.findViewById(R.id.LayoutGroups_CircleImageViewGroup);
+            holderGroup.imageView = (ImageView) convertView.findViewById(R.id.LayoutGroups_CircleImageViewGroup);
             convertView.setTag(holderGroup);
         }else{
             holderGroup = (HolderGroup) convertView.getTag();
         }
 
-        holderGroup.imageView.setImageBitmap(null);
         holderGroup.imageView.setImageBitmap(loadImage(getContext(),objects.get(position).getName()));
-        
         holderGroup.textView.setText(objects.get(position).getName());
 
         return convertView;
     }
     static class HolderGroup{
         TextView textView;
-		RatioImageView imageView;
+		ImageView imageView;
     }
 }

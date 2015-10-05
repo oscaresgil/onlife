@@ -13,8 +13,6 @@ import com.objective4.app.onlife.Models.ModelPerson;
 import com.objective4.app.onlife.R;
 import com.objective4.app.onlife.Tasks.TaskSimpleImageDownload;
 
-import net.soulwolf.widget.ratiolayout.widget.RatioImageView;
-
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -70,9 +68,9 @@ public class AdapterContact extends ArrayAdapter<ModelPerson> {
         if (view == null){
             view = ((Activity)context).getLayoutInflater().inflate(R.layout.layout_contact, parent, false);
             contactHolder = new ContactHolder();
-            contactHolder.avatar = (RatioImageView) view.findViewById(R.id.LayoutContact_GifImageView);
-            contactHolder.name = (TextView) view.findViewById(R.id.LayoutContact_TextViewNameLeft);
-            contactHolder.visibility = (ImageView)view.findViewById(R.id.LayoutContact_RadioButton);
+            contactHolder.avatar = (ImageView) view.findViewById(R.id.LayoutContact_ImageViewFriend);
+            contactHolder.name = (TextView) view.findViewById(R.id.LayoutContact_TextViewNameFriend);
+            contactHolder.visibility = (ImageView)view.findViewById(R.id.LayoutContact_VisibilityImageView);
             view.setTag(contactHolder);
         }
         else{
@@ -83,11 +81,11 @@ public class AdapterContact extends ArrayAdapter<ModelPerson> {
         contactHolder.name.bringToFront();
         contactHolder.avatar.setImageBitmap(BitmapFactory.decodeResource(context.getResources(),R.drawable.loading_friend_icon));
 
-        if (imageInDisk(context, userData.getId()+"_"+context.getResources().getInteger(R.integer.adapter_contact_size_large))){
-            contactHolder.avatar.setImageBitmap(loadImage(context,userData.getId()+"_"+context.getResources().getInteger(R.integer.adapter_contact_size_large)));
+        if (imageInDisk(context, userData.getId()+"_"+context.getResources().getInteger(R.integer.adapter_contact_size_little))){
+            contactHolder.avatar.setImageBitmap(loadImage(context,userData.getId()+"_"+context.getResources().getInteger(R.integer.adapter_contact_size_little)));
         }else{
-            new TaskSimpleImageDownload(context,contactHolder.avatar,context.getResources().getInteger(R.integer.adapter_contact_size_large)).execute(userData);
             new TaskSimpleImageDownload(context,contactHolder.avatar,context.getResources().getInteger(R.integer.adapter_contact_size_little)).execute(userData);
+            new TaskSimpleImageDownload(context,contactHolder.avatar,context.getResources().getInteger(R.integer.adapter_contact_size_large)).execute(userData);
         }
         contactHolder.name.setText(userData.getName());
         if (userData.getState().equals("I")){
@@ -100,7 +98,7 @@ public class AdapterContact extends ArrayAdapter<ModelPerson> {
     }
 
     static class ContactHolder{
-        RatioImageView avatar;
+        ImageView avatar;
         TextView name;
         ImageView visibility;
     }

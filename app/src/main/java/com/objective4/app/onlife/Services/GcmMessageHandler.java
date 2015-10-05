@@ -15,11 +15,13 @@ import com.objective4.app.onlife.BlockActivity.ActivityInBlock;
 import com.objective4.app.onlife.Models.ModelPerson;
 import com.objective4.app.onlife.R;
 
+import static com.objective4.app.onlife.Controller.StaticMethods.activateDeviceAdmin;
 import static com.objective4.app.onlife.Controller.StaticMethods.checkDeviceAdmin;
 
 public class GcmMessageHandler extends IntentService {
-    private NotificationManager myNotificationManager;
-    private String user, message, gifName,tag;
+    private String user;
+    private String message;
+    private String gifName;
 
     public GcmMessageHandler() {
         super("GcmMessageHandler");
@@ -33,8 +35,8 @@ public class GcmMessageHandler extends IntentService {
         Bundle extras = intent.getExtras();
         GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(this);
         String messageType = gcm.getMessageType(intent);
-        tag = extras.getString("tag");
-        if (tag!=null) {
+        String tag = extras.getString("tag");
+        if (tag !=null) {
             if (tag.equals("block")) {
                 message = extras.getString("message");
                 user = extras.getString("userName");
@@ -43,10 +45,10 @@ public class GcmMessageHandler extends IntentService {
                 if ((!user.equals("") || user != null) && adminChecked) {
                     onMessage(this);
                 }else if(!adminChecked){
-                    Toast.makeText(GcmMessageHandler.this, getResources().getString(R.string.in_block_device_admin_not_activated), Toast.LENGTH_LONG).show();
+                    Intent i = new Intent("com.objective4.app.onlife.Fragments.FragmentContacts");
+                    i.putExtra("tag","no_device_admin");
+                    sendBroadcast(i);
                 }
-
-
             } else if(tag.equals("newUser")){
                 Gson gson = new Gson();
                 String user = extras.getString("user");
@@ -80,8 +82,7 @@ public class GcmMessageHandler extends IntentService {
                         .setStyle(new NotificationCompat.BigTextStyle())
                         .setOnlyAlertOnce(true);
 
-        myNotificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationManager myNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
         myNotificationManager.notify(0, mBuilder.build());
         myNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);

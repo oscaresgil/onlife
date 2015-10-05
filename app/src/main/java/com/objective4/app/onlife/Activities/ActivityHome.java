@@ -90,7 +90,7 @@ public class ActivityHome extends ActionBarActivity {
         layoutSlidingTab.setDistributeEvenly(true);
         layoutSlidingTab.setViewPager(viewPager);
 
-        sharedPreferences.edit().putBoolean("session", true).apply();
+        sharedPreferences.edit().putBoolean("session", true).commit();
 
         adapterContact = new AdapterContact(this,R.layout.layout_contact,ModelSessionData.getInstance().getFriends());
         adapterGroup = new AdapterGroup(this,R.layout.layout_groups,ModelSessionData.getInstance().getModelGroups());

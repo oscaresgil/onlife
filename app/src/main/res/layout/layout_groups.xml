@@ -2,42 +2,32 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/LayoutGroups_LayoutMain"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
-    <LinearLayout
-        android:orientation="vertical"
+    android:layout_height="@dimen/layout_group_card_height"
+    android:layout_margin="@dimen/layout_group_card_margin">
+    <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="3dp">
-        <android.support.v7.widget.CardView
+        android:descendantFocusability="blocksDescendants">
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            <LinearLayout
-                android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+            <net.soulwolf.widget.ratiolayout.widget.RatioImageView
+                android:id="@+id/LayoutGroups_CircleImageViewGroup"
+                android:layout_width="@dimen/layout_group_card_height"
                 android:layout_height="match_parent"
-                android:orientation="horizontal"
-                android:gravity="left">
-                <net.soulwolf.widget.ratiolayout.widget.RatioImageView
-                    xmlns:app="http://schemas.android.com/apk/res-auto"
-                    android:id="@+id/LayoutGroups_CircleImageViewGroup"
-                    android:layout_width="@dimen/layout_group_image_height_width"
-                    android:layout_height="@dimen/layout_group_image_height_width"
-                    android:layout_weight="1"
-                    android:scaleType="fitCenter"
-                    android:layout_margin="5dp"
-                    android:layout_gravity="center"
-                    app:datumRatio="datumWidth"
-                    app:widthRatio="1.0"
-                    app:heightRatio="1.0"/>
-                <TextView
-                    style="@style/AppTheme"
-                    android:id="@+id/LayoutGroups_TextViewGroupName"
-                    android:layout_width="fill_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="3"
-                    android:layout_gravity="center"
-                    android:gravity="center" />
+                android:layout_weight="1"
+                android:scaleType="fitCenter"
+                android:layout_marginRight="@dimen/layout_group_margin_picture"
+                android:layout_marginLeft="@dimen/layout_group_margin_picture"/>
+            <TextView
+                android:id="@+id/LayoutGroups_TextViewGroupName"
+                android:layout_width="fill_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="3"
+                android:gravity="center_vertical"
+                android:textSize="@dimen/layout_group_text_size"/>
 
-            </LinearLayout>
-        </android.support.v7.widget.CardView>
-    </LinearLayout>
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
 </LinearLayout>

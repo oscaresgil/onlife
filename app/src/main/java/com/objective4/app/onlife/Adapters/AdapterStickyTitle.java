@@ -14,8 +14,6 @@ import com.objective4.app.onlife.Listeners.ListenerFlipCheckbox;
 import com.objective4.app.onlife.Models.ModelPerson;
 import com.objective4.app.onlife.R;
 
-import net.soulwolf.widget.ratiolayout.widget.RatioImageView;
-
 import java.util.List;
 
 import ca.barrenechea.widget.recyclerview.decoration.StickyHeaderAdapter;
@@ -80,8 +78,8 @@ public class AdapterStickyTitle extends RecyclerView.Adapter<AdapterStickyTitle.
             super(itemView);
 
             LinearLayout linearLayout = (LinearLayout) itemView;
-            imageView = (ImageView) linearLayout.findViewById(R.id.LayoutSelectContactGroup_ImageViewFriend);
-            textView = (TextView) linearLayout.findViewById(R.id.LayoutSelectContactGroup_TextViewNameFriend);
+            imageView = (ImageView) linearLayout.findViewById(R.id.LayoutContact_ImageViewFriend);
+            textView = (TextView) linearLayout.findViewById(R.id.LayoutContact_TextViewNameFriend);
         }
     }
 
@@ -104,12 +102,12 @@ public class AdapterStickyTitle extends RecyclerView.Adapter<AdapterStickyTitle.
             int item = recyclerView.getChildAdapterPosition(v);
             friends.get(item).setSelected(!friends.get(item).isSelected());
 
-            RatioImageView avatar = (RatioImageView) v.findViewById(R.id.LayoutSelectContactGroup_ImageViewFriend);
+            /*RatioImageView avatar = (RatioImageView) v.findViewById(R.id.LayoutContact_ImageViewFriend);
             listener.setFriend(friends.get(item));
             listener.setView(avatar);
             avatar.clearAnimation();
             avatar.setAnimation(animation1);
-            avatar.startAnimation(animation1);
+            avatar.startAnimation(animation1);*/
         }
     }
 }

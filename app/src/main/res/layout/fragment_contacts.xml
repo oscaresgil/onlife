@@ -3,11 +3,10 @@
     android:id="@+id/FragmentContacts_SwipeRefreshLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <GridView
-        android:id="@+id/FragmentContacts_GridView"
+    <ListView
+        android:id="@+id/FragmentContacts_ListView"
         android:isScrollContainer="false"
         android:divider="@color/transparent"
-        android:numColumns="@integer/fragment_contacts_rows"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"/>
 </android.support.v4.widget.SwipeRefreshLayout>

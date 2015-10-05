@@ -18,6 +18,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
@@ -33,8 +34,6 @@ import com.objective4.app.onlife.R;
 import com.kenny.snackbar.SnackBar;
 import com.melnykov.fab.FloatingActionButton;
 import com.rengwuxian.materialedittext.MaterialEditText;
-
-import net.soulwolf.widget.ratiolayout.widget.RatioImageView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,7 +61,7 @@ public class ActivityGroupCreateInformation extends ActionBarActivity {
     private Animation animation1;
     private Animation animation2;
 
-    private RatioImageView avatarGroup;
+    private ImageView avatarGroup;
     private MaterialEditText nameNewGroup;
 
     private List<ModelPerson> friendsFiltred;
@@ -85,7 +84,7 @@ public class ActivityGroupCreateInformation extends ActionBarActivity {
         setAnimationAndListeners();
         setAbTitle();
 
-        avatarGroup = (RatioImageView) findViewById(R.id.ActivityCreateGroup_ImageButtonSelectImage);
+        avatarGroup = (ImageView) findViewById(R.id.ActivityCreateGroup_ImageButtonSelectImage);
         avatarGroup.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.ic_image_camera_alt_large));
         avatarGroup.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -108,7 +107,7 @@ public class ActivityGroupCreateInformation extends ActionBarActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (view != null) {
-                    RatioImageView avatar = (RatioImageView) view.findViewById(R.id.LayoutSelectContactGroup_ImageViewFriend);
+                    ImageView avatar = (ImageView) view.findViewById(R.id.LayoutContact_ImageViewFriend);
                     ModelPerson actualFriend = (ModelPerson)avatar.getTag();
                     actualFriend.setSelected(!actualFriend.isSelected());
 

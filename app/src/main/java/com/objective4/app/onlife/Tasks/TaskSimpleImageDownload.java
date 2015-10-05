@@ -4,11 +4,10 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.widget.ImageView;
 
 import com.objective4.app.onlife.Models.ModelPerson;
 import com.objective4.app.onlife.R;
-
-import net.soulwolf.widget.ratiolayout.widget.RatioImageView;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -25,11 +24,11 @@ import static com.objective4.app.onlife.Controller.StaticMethods.saveImage;
 
 public class TaskSimpleImageDownload extends AsyncTask<ModelPerson,Void,Void> {
     private Context context;
-    private RatioImageView avatar;
+    private ImageView avatar;
     private int size;
     private Bitmap imageBitmap;
 
-    public TaskSimpleImageDownload(Context context, RatioImageView avatar, int size) {
+    public TaskSimpleImageDownload(Context context, ImageView avatar, int size) {
         this.context = context;
         this.avatar = avatar;
         this.size = size;
@@ -60,6 +59,6 @@ public class TaskSimpleImageDownload extends AsyncTask<ModelPerson,Void,Void> {
 
     @Override
     protected void onPostExecute(Void aVoid) {
-        if (size == context.getResources().getInteger(R.integer.adapter_contact_size_large)) avatar.setImageBitmap(imageBitmap);
+        if (size == context.getResources().getInteger(R.integer.adapter_contact_size_little)) avatar.setImageBitmap(imageBitmap);
     }
 }

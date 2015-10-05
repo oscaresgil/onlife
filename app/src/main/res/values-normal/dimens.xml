@@ -63,11 +63,6 @@
     <dimen name="layout_emoticon_gif_view_height_width">50dp</dimen>
     <dimen name="layout_emoticon_gif_view_margin">13dp</dimen>
 
-    <!-- Layout Contact Dimensions -->
-    <dimen name="layout_contact_text_size">13sp</dimen>
-    <dimen name="layout_contact_text_padding">5dp</dimen>
-
-
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
@@ -105,12 +100,22 @@
     <dimen name="layout_friends_in_group_simple_textview_name_margin">5dp</dimen>
     <dimen name="layout_friends_in_group_simple_height">90dp</dimen>
 
-    <!--
-    Dimensiones para Layout Group Create Friends
-    -->
-    <dimen name="layout_select_contact_group_image_height_width">80dp</dimen>
+    <!-- Dimensiones para Layout Select Contact Group -->
+    <dimen name="layout_select_contact_group_image_height_width">60dp</dimen>
+    <dimen name="layout_select_contact_image_margin">5dp</dimen>
+
+    <!-- Layout Contact Dimensions -->
+    <dimen name="layout_contact_card_margin">5dp</dimen>
+    <dimen name="layout_contact_card_height">60dp</dimen>
+    <dimen name="layout_contact_text_size">12sp</dimen>
+    <dimen name="layout_contact_margin_picture">3dp</dimen>
+    <dimen name="layout_contact_margin_visibility">10dp</dimen>
 
     <!-- Dimensiones para Layout Group -->
+    <dimen name="layout_group_card_margin">5dp</dimen>
+    <dimen name="layout_group_card_height">60dp</dimen>
+    <dimen name="layout_group_text_size">12sp</dimen>
+    <dimen name="layout_group_margin_picture">3dp</dimen>
     <dimen name="layout_group_image_height_width">100dp</dimen>
 
 </resources>

@@ -5,7 +5,7 @@ import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.view.Display;
 import android.view.animation.Animation;
-import net.soulwolf.widget.ratiolayout.widget.RatioImageView;
+import android.widget.ImageView;
 
 import com.objective4.app.onlife.Models.ModelPerson;
 import com.objective4.app.onlife.R;
@@ -15,7 +15,7 @@ import static com.objective4.app.onlife.Controller.StaticMethods.loadImage;
 public class ListenerFlipCheckbox implements Animation.AnimationListener{
     private Context context;
     private ModelPerson f;
-    private RatioImageView imageButton;
+    private ImageView imageButton;
     private Animation animation1,animation2;
 
     public ListenerFlipCheckbox(Context context){
@@ -26,7 +26,7 @@ public class ListenerFlipCheckbox implements Animation.AnimationListener{
         this.f = f;
     }
 
-    public void setView(RatioImageView imageButton){
+    public void setView(ImageView imageButton){
         this.imageButton = imageButton;
     }
 

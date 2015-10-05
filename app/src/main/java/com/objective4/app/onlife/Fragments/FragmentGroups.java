@@ -13,18 +13,24 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.kenny.snackbar.SnackBar;
 import com.objective4.app.onlife.Activities.ActivityGroupCreateInformation;
 import com.objective4.app.onlife.Activities.ActivityHome;
 import com.objective4.app.onlife.Adapters.AdapterGroup;
 import com.objective4.app.onlife.BlockActivity.ActivityGroupBlock;
 import com.objective4.app.onlife.Models.ModelGroup;
+import com.objective4.app.onlife.Models.ModelPerson;
 import com.objective4.app.onlife.Models.ModelSessionData;
 import com.objective4.app.onlife.R;
 import com.melnykov.fab.FloatingActionButton;
+import com.objective4.app.onlife.Tasks.TaskSendNotification;
 
+import java.util.Calendar;
 import java.util.List;
 
+import static com.objective4.app.onlife.Controller.StaticMethods.activateDeviceAdmin;
 import static com.objective4.app.onlife.Controller.StaticMethods.animationStart;
+import static com.objective4.app.onlife.Controller.StaticMethods.checkDeviceAdmin;
 import static com.objective4.app.onlife.Controller.StaticMethods.getModelGroupIndex;
 import static com.objective4.app.onlife.Controller.StaticMethods.removeGroup;
 
@@ -104,25 +110,20 @@ public class FragmentGroups extends Fragment {
     class LongItemClickListener implements AdapterView.OnItemLongClickListener {
         @Override
         public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-            final ModelGroup actualModelGroup = adapter.getItem(position);
-
-            new MaterialDialog.Builder(getActivity())
-                    .title(getResources().getString(R.string.delete)+" "+actualModelGroup.getName())
-                    .content(R.string.really_delete)
-                    .positiveText(R.string.yes)
-                    .positiveColorRes(R.color.orange_light)
-                    .negativeText(R.string.no)
-                    .negativeColorRes(R.color.red)
-                    .callback(new MaterialDialog.ButtonCallback() {
-                        @Override
-                        public void onPositive(MaterialDialog dialog) {
-                            removeGroup(actualModelGroup);
-                            adapter.remove(actualModelGroup);
-                            adapter.notifyDataSetChanged();
-                            dialog.dismiss();
-                            dialog.cancel();
-                        }
-                    }).show();
+            ModelGroup actualModelGroup = adapter.getItem(position);
+            boolean activeDev = checkDeviceAdmin(getActivity());
+            if (activeDev) {
+                long actualTime = Calendar.getInstance().getTimeInMillis();
+                if (actualTime - actualModelGroup.getLastBlockedTime() > getResources().getInteger(R.integer.block_time_group_remaining)) {
+                    new TaskSendNotification(getActivity(), ModelSessionData.getInstance().getUser().getName(), "", "").execute(actualModelGroup.getFriendsInGroup().toArray(new ModelPerson[actualModelGroup.getFriendsInGroup().size()]));
+                    actualModelGroup.setLastBlockedTime(actualTime);
+                } else {
+                    SnackBar.show(getActivity(), getResources().getString(R.string.toast_not_time_yet) + " " + ((getResources().getInteger(R.integer.block_time_group_remaining) - (actualTime - actualModelGroup.getLastBlockedTime())) / 1000) + " s");
+                }
+            } else{
+                SnackBar.show(getActivity(),R.string.in_block_device_admin_not_activated);
+                activateDeviceAdmin(getActivity());
+            }
 
             return true;
         }

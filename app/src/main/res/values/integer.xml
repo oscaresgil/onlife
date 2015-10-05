@@ -27,7 +27,7 @@
 
     <!-- Adapter Contact Integers -->
     <integer name="adapter_contact_size_large">501</integer>
-    <integer name="adapter_contact_size_little">151</integer>
+    <integer name="adapter_contact_size_little">101</integer>
     <integer name="adapter_contact_size_size">2</integer>
 
     <!-- Remaining time: 1.5s -->

@@ -39,12 +39,12 @@ public class TaskGetFriends extends AsyncTask<String, Void, ArrayList<ModelPerso
     public TaskGetFriends(Context c, boolean flagDialog){
         this.flagDialog = flagDialog;
         this.context = c;
-        jsonParser = new JSONParser();
     }
 
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
+        jsonParser = new JSONParser();
         if (flagDialog) {
             dialog = new MaterialDialog.Builder(context)
                     .title(R.string.dialog_please_wait)
@@ -66,12 +66,11 @@ public class TaskGetFriends extends AsyncTask<String, Void, ArrayList<ModelPerso
         try{
             jsonFriends = jsonParser.makeHttpRequest(ActivityMain.SERVER_URL, "POST", p);
             Gson gson = new Gson();
-            ArrayList<ModelPerson> friends = gson.fromJson(jsonFriends.getString("friends"), (new TypeToken<ArrayList<ModelPerson>>(){}.getType()));
 
-            return friends;
+            return gson.fromJson(jsonFriends.getString("friends"), (new TypeToken<ArrayList<ModelPerson>>(){}.getType()));
         }catch(Exception ex){
             ex.printStackTrace();
-            return null;
+            return new ArrayList<ModelPerson>();
         }
     }
 

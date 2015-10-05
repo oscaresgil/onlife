@@ -51,39 +51,20 @@ public class StaticMethods {
     }
 
     public static boolean deactivateDeviceAdmin(Activity activity){
-        DevicePolicyManager dpm;
-        ComponentName admin;
-        try
-        {
-            dpm = (DevicePolicyManager) activity.getSystemService(Context.DEVICE_POLICY_SERVICE);
-            admin = new ComponentName(activity, DeviceAdmin.class);
-            if(dpm.isAdminActive(admin))
-            {
-                dpm.removeActiveAdmin(admin);
-            }
+        DevicePolicyManager devicePolicyManager = (DevicePolicyManager) activity.getSystemService(Context.DEVICE_POLICY_SERVICE);
+        ComponentName myDeviceAdmin = new ComponentName(activity, DeviceAdmin.class);
+        if (devicePolicyManager.isAdminActive(myDeviceAdmin)) {
+            devicePolicyManager.removeActiveAdmin(myDeviceAdmin);
+            return true;
         }
-        catch(Exception e)
-        {
-            e.printStackTrace();
-        }
-        return true;
+        return false;
     }
 
     public static boolean checkDeviceAdmin(Context activity){
-        DevicePolicyManager dpm;
-        ComponentName admin;
-        try
-        {
-            dpm = (DevicePolicyManager) activity.getSystemService(Context.DEVICE_POLICY_SERVICE);
-            admin = new ComponentName(activity, DeviceAdmin.class);
-            if(dpm.isAdminActive(admin))
-            {
-                return true;
-            }
-        }
-        catch(Exception e)
-        {
-            e.printStackTrace();
+        DevicePolicyManager devicePolicyManager = (DevicePolicyManager) activity.getSystemService(Context.DEVICE_POLICY_SERVICE);
+        ComponentName myDeviceAdmin = new ComponentName(activity, DeviceAdmin.class);
+        if (devicePolicyManager.isAdminActive(myDeviceAdmin)) {
+            return true;
         }
         return false;
     }

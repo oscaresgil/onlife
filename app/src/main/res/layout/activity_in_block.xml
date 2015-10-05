@@ -1,24 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/ActivityInBlock_RelativeLayoutMain"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:padding="20dp">
 
-    <ListView
-        android:id="@+id/ActivityInBlock_ListView"
-        android:layout_gravity="center"
-        android:layout_width="fill_parent"
-        android:layout_height="@dimen/activity_in_block_list_view_height"
-        android:layout_margin="@dimen/activity_in_block_list_view_margin"/>
+    <TextView
+        android:id="@+id/ActivityInBlock_TextViewNumberMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:layout_alignParentRight="true" />
 
-    <at.markushi.ui.CircleButton
-        android:layout_gravity="center"
+    <LinearLayout
+        android:id="@+id/ActivityInBlock_LinearLayoutMessage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
         android:gravity="center"
-        android:layout_width="@dimen/activity_in_block_button_height_width"
-        android:layout_height="@dimen/activity_in_block_button_height_width"
-        android:src="@drawable/ic_lock_open_black_48dp"
-        android:onClick="removeActivity"
-        app:cb_color="@color/orange_light"
-        app:cb_pressedRingWidth="@dimen/activity_in_block_button_ring" />
+        android:layout_marginTop="30dp">
 
-</LinearLayout>
+        <TextView
+            android:id="@+id/ActivityInBlock_TextViewMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="New Text"
+            android:layout_marginBottom="20dp"
+            android:gravity="center"
+            android:textSize="30sp"
+            android:textColor="@color/white"/>
+        <TextView
+            android:id="@+id/ActivityInBlock_TextViewName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"/>
+
+    </LinearLayout>
+
+</RelativeLayout>

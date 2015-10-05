@@ -19,7 +19,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.GridView;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.objective4.app.onlife.Activities.ActivityHome;
@@ -37,7 +37,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import static com.objective4.app.onlife.Controller.StaticMethods.activateDeviceAdmin;
 import static com.objective4.app.onlife.Controller.StaticMethods.animationStart;
+import static com.objective4.app.onlife.Controller.StaticMethods.checkDeviceAdmin;
 import static com.objective4.app.onlife.Controller.StaticMethods.delImageProfile;
 import static com.objective4.app.onlife.Controller.StaticMethods.isNetworkAvailable;
 import static com.objective4.app.onlife.Controller.StaticMethods.showSoftKeyboard;
@@ -49,7 +51,7 @@ public class FragmentContacts extends Fragment {
     private AdapterContact adapter;
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
-    private GridView gridView;
+    private ListView listView;
 
     private MenuItem mSearchAction;
     private MaterialEditText searchText;
@@ -72,60 +74,58 @@ public class FragmentContacts extends Fragment {
         friendsFiltred = new ArrayList<>();
 
         adapter = ((ActivityHome)getActivity()).getAdapterContact();
-        gridView = (GridView) v.findViewById(R.id.FragmentContacts_GridView);
-        gridView.setAdapter(adapter);
-        gridView.setSelector(R.drawable.list_selector);
-        gridView.setLongClickable(true);
+        listView = (ListView) v.findViewById(R.id.FragmentContacts_ListView);
+        listView.setAdapter(adapter);
+        listView.setSelector(R.drawable.list_selector);
+        listView.setLongClickable(true);
 
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (!mSwipeRefreshLayout.isRefreshing()){
-                    //ModelPerson user = ModelSessionData.getInstance().getFriends().get(position);
-                    ModelPerson user = (ModelPerson) gridView.getAdapter().getItem(position);
-                    Intent i = new Intent(getActivity(),ActivityFriendBlock.class);
-                    i.putExtra("data",user);
+                if (!mSwipeRefreshLayout.isRefreshing()) {
+                    ModelPerson user = (ModelPerson) listView.getAdapter().getItem(position);
+                    Intent i = new Intent(getActivity(), ActivityFriendBlock.class);
+                    i.putExtra("data", user);
                     i.putExtra("actualuser", actualUser);
                     startActivity(i);
                     animationStart(getActivity());
-                }else{
-                    Toast.makeText(getActivity(),getResources().getString(R.string.toast_wait_until_contacts_refreshed),Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getActivity(), getResources().getString(R.string.toast_wait_until_contacts_refreshed), Toast.LENGTH_SHORT).show();
                 }
             }
         });
 
-        gridView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
-                if (!mSwipeRefreshLayout.isRefreshing() && isNetworkAvailable(getActivity())){
+                if (!mSwipeRefreshLayout.isRefreshing() && isNetworkAvailable(getActivity())) {
                     ModelPerson user = ModelSessionData.getInstance().getFriends().get(position);
-                    if (user.getState().equals("A")){
+                    boolean devAdmin = checkDeviceAdmin(getActivity());
+                    if (user.getState().equals("A") && devAdmin) {
                         long actualTime = Calendar.getInstance().getTimeInMillis();
-                        if (actualTime - user.getLastBlockedTime() > getResources().getInteger(R.integer.block_time_remaining)){
-                            new TaskSendNotification(getActivity(), actualUser.getName(),"" , "").execute(user);
+                        if (actualTime - user.getLastBlockedTime() > getResources().getInteger(R.integer.block_time_remaining)) {
+                            new TaskSendNotification(getActivity(), actualUser.getName(), "", "").execute(user);
                             user.setLastBlockedTime(actualTime);
-                            return true;
-                        }else{
-                            SnackBar.show(getActivity(),getResources().getString(R.string.toast_not_time_yet)+" "+((getResources().getInteger(R.integer.block_time_remaining)-(actualTime - user.getLastBlockedTime()))/1000)+" s");
-                            return true;
+                        } else {
+                            SnackBar.show(getActivity(), getResources().getString(R.string.toast_not_time_yet) + " " + ((getResources().getInteger(R.integer.block_time_remaining) - (actualTime - user.getLastBlockedTime())) / 1000) + " s");
                         }
-                    }else{
-                        SnackBar.show(getActivity(),R.string.friend_inactive);
-                        return true;
+                    } else if (!devAdmin) {
+                        SnackBar.show(getActivity(), R.string.in_block_device_admin_not_activated);
+                        activateDeviceAdmin(getActivity());
+                    } else {
+                        SnackBar.show(getActivity(), R.string.friend_inactive);
                     }
-                }else if(!isNetworkAvailable(getActivity())){
+                } else if (!isNetworkAvailable(getActivity())) {
                     SnackBar.show(getActivity(), R.string.no_connection, R.string.button_change_connection, new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             startActivity(new Intent(Settings.ACTION_WIRELESS_SETTINGS));
                         }
                     });
-                    return true;
+                } else {
+                    Toast.makeText(getActivity(), getResources().getString(R.string.toast_wait_until_contacts_refreshed), Toast.LENGTH_SHORT).show();
                 }
-                else{
-                    Toast.makeText(getActivity(),getResources().getString(R.string.toast_wait_until_contacts_refreshed),Toast.LENGTH_SHORT).show();
-                    return true;
-                }
+                return true;
             }
         });
 
@@ -156,7 +156,7 @@ public class FragmentContacts extends Fragment {
                     for (int i = 0; i < friendsT.size(); i++) {
                         ModelPerson p = friendsT.get(i);
                         if (p.getId().equals(id)) {
-                            boolean removed = delImageProfile(getActivity(),p.getId());
+                            delImageProfile(getActivity(),p.getId());
                             adapterContact.remove(adapterContact.getItem(i));
                             break;
                         }
@@ -178,8 +178,11 @@ public class FragmentContacts extends Fragment {
                     adapterContact.add(newUser);
 
                     adapterContact.notifyDataSetChanged();
-                    gridView.setAdapter(adapterContact);
+                    listView.setAdapter(adapterContact);
                 }
+            }else if(tag.equals("no_device_admin")){
+                SnackBar.show(getActivity(),R.string.in_block_device_admin_not_activated);
+                activateDeviceAdmin(getActivity());
             }
         }
     };
@@ -190,7 +193,7 @@ public class FragmentContacts extends Fragment {
         super.onResume();
         getActivity().registerReceiver(broadcastReceiver,new IntentFilter("com.objective4.app.onlife.Fragments.FragmentContacts"));
         mSwipeRefreshLayout = (SwipeRefreshLayout) getActivity().findViewById(R.id.FragmentContacts_SwipeRefreshLayout);
-        gridView.setOnScrollListener(new AbsListView.OnScrollListener() {
+        listView.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
             }
@@ -198,9 +201,9 @@ public class FragmentContacts extends Fragment {
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
                 boolean enable = false;
-                if (gridView != null && gridView.getChildCount() > 0) {
-                    boolean firstItemVisible = gridView.getFirstVisiblePosition() == 0;
-                    boolean topOfFirstItemVisible = gridView.getChildAt(0).getTop() == 0;
+                if (listView != null && listView.getChildCount() > 0) {
+                    boolean firstItemVisible = listView.getFirstVisiblePosition() == 0;
+                    boolean topOfFirstItemVisible = listView.getChildAt(0).getTop() == 0;
                     enable = firstItemVisible && topOfFirstItemVisible;
                 }
                 mSwipeRefreshLayout.setEnabled(enable);
@@ -270,7 +273,7 @@ public class FragmentContacts extends Fragment {
     public void handleMenuSearch(){
         android.support.v7.app.ActionBar actionBar = ((ActionBarActivity)getActivity()).getSupportActionBar();
         if (isSearchOpened){
-            gridView.setAdapter(((ActivityHome)getActivity()).getAdapterContact());
+            listView.setAdapter(((ActivityHome) getActivity()).getAdapterContact());
             friendsFiltred.clear();
 
             actionBar.setDisplayShowCustomEnabled(false);
@@ -285,7 +288,7 @@ public class FragmentContacts extends Fragment {
         else{
             friendsFiltred.clear();
             friendsFiltred.addAll(friends);
-            gridView.setAdapter(new AdapterContact(getActivity(),R.layout.layout_contact,friendsFiltred));
+            listView.setAdapter(new AdapterContact(getActivity(), R.layout.layout_contact, friendsFiltred));
             actionBar.setDisplayShowCustomEnabled(true);
             actionBar.setCustomView(R.layout.layout_search_contact_bar);
             actionBar.setDisplayShowTitleEnabled(false);
@@ -300,7 +303,7 @@ public class FragmentContacts extends Fragment {
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
                     mSearchQuery = searchText.getText().toString();
-                    AdapterContact adapterContact = (AdapterContact) gridView.getAdapter();
+                    AdapterContact adapterContact = (AdapterContact) listView.getAdapter();
                     adapterContact.clear();
                     adapterContact.addAll(performSearch(friends, mSearchQuery));
                 }
@@ -318,7 +321,7 @@ public class FragmentContacts extends Fragment {
 
     public void refreshContact(){
         if (isNetworkAvailable(getActivity())) {
-            new TaskRefreshImageDownload(getActivity(),mSwipeRefreshLayout,gridView).execute(actualUser.getId());
+            new TaskRefreshImageDownload(getActivity(),mSwipeRefreshLayout, listView).execute(actualUser.getId());
         }else{
             mSwipeRefreshLayout.setRefreshing(false);
             SnackBar.show(getActivity(), R.string.no_connection, R.string.button_change_connection, new View.OnClickListener() {

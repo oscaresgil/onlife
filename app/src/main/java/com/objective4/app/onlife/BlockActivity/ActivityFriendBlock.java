@@ -37,7 +37,9 @@ import java.util.List;
 import pl.droidsonroids.gif.GifDrawable;
 import pl.droidsonroids.gif.GifImageView;
 
+import static com.objective4.app.onlife.Controller.StaticMethods.activateDeviceAdmin;
 import static com.objective4.app.onlife.Controller.StaticMethods.animationEnd;
+import static com.objective4.app.onlife.Controller.StaticMethods.checkDeviceAdmin;
 import static com.objective4.app.onlife.Controller.StaticMethods.hideSoftKeyboard;
 import static com.objective4.app.onlife.Controller.StaticMethods.isNetworkAvailable;
 import static com.objective4.app.onlife.Controller.StaticMethods.loadImage;
@@ -193,7 +195,8 @@ public class ActivityFriendBlock extends AppCompatActivity {
         if (isNetworkAvailable(this)) {
             hideSoftKeyboard(this,messageTextView);
             if (listenerTextWatcher.getActualChar() <= 30) {
-                if (friend.getState().equals("A")) {
+                boolean devAdmin = checkDeviceAdmin(this);
+                if (friend.getState().equals("A") && devAdmin) {
                     try {
                         long actualTime = Calendar.getInstance().getTimeInMillis();
                         if (actualTime - friend.getLastBlockedTime() > getResources().getInteger(R.integer.block_time_remaining)){
@@ -206,6 +209,9 @@ public class ActivityFriendBlock extends AppCompatActivity {
                         ex.printStackTrace();
                         SnackBar.show(ActivityFriendBlock.this, R.string.error);
                     }
+                }else if(!devAdmin){
+                    SnackBar.show(this,R.string.in_block_device_admin_not_activated);
+                    activateDeviceAdmin(this);
                 }else{
                     SnackBar.show(ActivityFriendBlock.this,R.string.friend_inactive);
                 }

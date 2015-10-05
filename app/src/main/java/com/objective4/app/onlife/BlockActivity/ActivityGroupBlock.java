@@ -48,7 +48,9 @@ import java.util.List;
 import pl.droidsonroids.gif.GifDrawable;
 import pl.droidsonroids.gif.GifImageView;
 
+import static com.objective4.app.onlife.Controller.StaticMethods.activateDeviceAdmin;
 import static com.objective4.app.onlife.Controller.StaticMethods.animationEnd;
+import static com.objective4.app.onlife.Controller.StaticMethods.checkDeviceAdmin;
 import static com.objective4.app.onlife.Controller.StaticMethods.hideSoftKeyboard;
 import static com.objective4.app.onlife.Controller.StaticMethods.isNetworkAvailable;
 import static com.objective4.app.onlife.Controller.StaticMethods.loadImage;
@@ -269,7 +271,6 @@ public class ActivityGroupBlock extends AppCompatActivity {
             Uri mImageCaptureUri = data.getData();
             try {
                 performCrop(this,mImageCaptureUri,PIC_CROP);
-
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -283,7 +284,9 @@ public class ActivityGroupBlock extends AppCompatActivity {
 
     public void block(View view){
         if (isNetworkAvailable(this)) {
-            if (listenerTextWatcher.getActualChar() <= 30) {
+            hideSoftKeyboard(this,messageTextView);
+            boolean devAdmin = checkDeviceAdmin(this);
+            if (listenerTextWatcher.getActualChar() <= 30 && devAdmin) {
                 try {
                     long actualTime = Calendar.getInstance().getTimeInMillis();
                     if (actualTime - modelGroup.getLastBlockedTime() > getResources().getInteger(R.integer.block_time_group_remaining)){
@@ -295,6 +298,9 @@ public class ActivityGroupBlock extends AppCompatActivity {
                 } catch (Exception ex) {
                     SnackBar.show(ActivityGroupBlock.this, R.string.error);
                 }
+            }else if(!devAdmin){
+                SnackBar.show(this,R.string.in_block_device_admin_not_activated);
+                activateDeviceAdmin(this);
             } else {
                 SnackBar.show(ActivityGroupBlock.this, R.string.message_max_characters, R.string.button_change_text_message, new View.OnClickListener() {
                     @Override

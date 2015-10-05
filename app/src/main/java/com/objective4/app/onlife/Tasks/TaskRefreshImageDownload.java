@@ -5,7 +5,7 @@ import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.widget.GridView;
+import android.widget.ListView;
 
 import com.objective4.app.onlife.Activities.ActivityHome;
 import com.objective4.app.onlife.Activities.ActivityMain;
@@ -42,15 +42,15 @@ import static com.objective4.app.onlife.Controller.StaticMethods.saveImage;
 public class TaskRefreshImageDownload extends AsyncTask<String, Void, Void> {
     private Context context;
     private SwipeRefreshLayout mSwipeRefreshLayout;
-    private GridView gridView;
+    private ListView listView;
     private ArrayList<ModelPerson> friends;
     private JSONParser jsonParser;
     private int[] size;
 
-    public TaskRefreshImageDownload(Context context, SwipeRefreshLayout mSwipeRefreshLayout, GridView gridView){
+    public TaskRefreshImageDownload(Context context, SwipeRefreshLayout mSwipeRefreshLayout, ListView listView){
         this.context = context;
         this.mSwipeRefreshLayout = mSwipeRefreshLayout;
-        this.gridView = gridView;
+        this.listView = listView;
         size = new int[]{context.getResources().getInteger(R.integer.adapter_contact_size_little),context.getResources().getInteger(R.integer.adapter_contact_size_large)};
         jsonParser = new JSONParser();
     }
@@ -109,7 +109,7 @@ public class TaskRefreshImageDownload extends AsyncTask<String, Void, Void> {
         ModelSessionData.getInstance().setFriends(friends);
         AdapterContact adapter = new AdapterContact(context,R.layout.layout_contact,friends);
         ((ActivityHome)context).setAdapterContact(adapter);
-        gridView.setAdapter(adapter);
+        listView.setAdapter(adapter);
 
         SnackBar.show((Activity)context, R.string.toast_contacts_refreshed);
     }
