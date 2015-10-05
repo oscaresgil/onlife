@@ -35,37 +35,43 @@ public class GcmMessageHandler extends IntentService {
         String messageType = gcm.getMessageType(intent);
         tag = extras.getString("tag");
         if (tag!=null) {
-            if (tag.equals("block")) {
-                message = extras.getString("message");
-                user = extras.getString("userName");
-                gifName = extras.getString("gifName");
-                boolean adminChecked = checkDeviceAdmin(this);
-                if ((!user.equals("") || user != null) && adminChecked) {
-                    onMessage(this);
-                }else if(!adminChecked){
-                    Toast.makeText(GcmMessageHandler.this, getResources().getString(R.string.device_admin_not_activated), Toast.LENGTH_LONG).show();
+            switch (tag) {
+                case "block":
+                    message = extras.getString("message");
+                    user = extras.getString("userName");
+                    gifName = extras.getString("gifName");
+                    boolean adminChecked = checkDeviceAdmin(this);
+                    if ((!user.equals("") || user != null) && adminChecked) {
+                        onMessage(this);
+                    } else if (!adminChecked) {
+                        Toast.makeText(GcmMessageHandler.this, getResources().getString(R.string.device_admin_not_activated), Toast.LENGTH_LONG).show();
+                    }
+
+
+                    break;
+                case "newUser": {
+                    Gson gson = new Gson();
+                    String user = extras.getString("user");
+                    ModelPerson newUser = gson.fromJson(user, ModelPerson.class);
+
+                    Intent i = new Intent("com.objective4.app.onlife.Fragments.FragmentContacts");
+                    i.putExtra("tag", "new_user");
+                    i.putExtra("new_user", newUser);
+                    sendBroadcast(i);
+
+                    break;
                 }
+                case "update": {
+                    String idP = extras.getString("id");
+                    String state = extras.getString("state");
 
-
-            } else if(tag.equals("newUser")){
-                Gson gson = new Gson();
-                String user = extras.getString("user");
-                ModelPerson newUser = gson.fromJson(user,ModelPerson.class);
-
-                Intent i = new Intent("com.objective4.app.onlife.Fragments.FragmentContacts");
-                i.putExtra("tag","new_user");
-                i.putExtra("new_user",newUser);
-                sendBroadcast(i);
-
-            } else if (tag.equals("update")) {
-                String idP = extras.getString("id");
-                String state = extras.getString("state");
-
-                Intent i = new Intent("com.objective4.app.onlife.Fragments.FragmentContacts");
-                i.putExtra("tag","update");
-                i.putExtra("id",idP);
-                i.putExtra("state",state);
-                sendBroadcast(i);
+                    Intent i = new Intent("com.objective4.app.onlife.Fragments.FragmentContacts");
+                    i.putExtra("tag", "update");
+                    i.putExtra("id", idP);
+                    i.putExtra("state", state);
+                    sendBroadcast(i);
+                    break;
+                }
             }
         }
     }
@@ -96,8 +102,7 @@ public class GcmMessageHandler extends IntentService {
                 (DevicePolicyManager)getSystemService(Context.DEVICE_POLICY_SERVICE);
         try {
             Thread.sleep(2000);
-        } catch (InterruptedException ex) {
-        }
+        } catch (InterruptedException ignored) {}
         mDPM.lockNow();
         startActivity(i);
     }
