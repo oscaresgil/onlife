@@ -43,7 +43,7 @@ public class GcmMessageHandler extends IntentService {
                 if ((!user.equals("") || user != null) && adminChecked) {
                     onMessage(this);
                 }else if(!adminChecked){
-                    Toast.makeText(GcmMessageHandler.this, getResources().getString(R.string.in_block_device_admin_not_activated), Toast.LENGTH_LONG).show();
+                    Toast.makeText(GcmMessageHandler.this, getResources().getString(R.string.device_admin_not_activated), Toast.LENGTH_LONG).show();
                 }
 
 

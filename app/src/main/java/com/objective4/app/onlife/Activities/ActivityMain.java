@@ -50,7 +50,6 @@ public class ActivityMain extends Activity{
 
     private ProfileTracker mProfileTracker;
 
-
     private FacebookCallback<LoginResult> facebookCallback = new FacebookCallback<LoginResult>() {
         @Override
         public void onSuccess(LoginResult loginResult) {

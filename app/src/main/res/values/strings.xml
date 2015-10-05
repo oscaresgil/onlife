@@ -95,6 +95,6 @@
     <string name="privacy_policy"><u>Privacy Policy</u></string>
     <string name="logo_image">Logo image</string>
     <string name="logo_text">Logo text</string>
-    <string name="in_block_device_admin_not_activated" translatable="false">Device Admin. Not Activated</string>
+    <string name="device_admin_not_activated">Device Administrator not activated.</string>
 
 </resources>
