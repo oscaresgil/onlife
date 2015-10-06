@@ -10,7 +10,7 @@
             android:layout_height="match_parent"
             android:gravity="center"
             android:orientation="vertical"
-            android:layout_gravity="center"
+            android:layout_marginBottom="60dp"
             android:weightSum="1">
 
 
@@ -21,7 +21,7 @@
                 android:layout_height="wrap_content"
                 android:adjustViewBounds="true"
                 android:src="@drawable/ic_logo_onlife"
-                android:layout_marginTop="50dp"
+                android:layout_marginTop="30dp"
                 android:layout_weight="0.20" />
 
             <ImageView

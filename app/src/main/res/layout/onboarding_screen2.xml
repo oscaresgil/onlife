@@ -2,23 +2,25 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="20dp">
+    android:paddingRight="20dp"
+    android:paddingLeft="20dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:layout_marginBottom="80dp"
+        android:layout_marginBottom="60dp"
         android:gravity="center">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="20sp"
-            android:layout_marginBottom="40dp"
+            android:layout_marginBottom="30dp"
             android:textColor="@color/black"
             android:gravity="center"
-            android:text="@string/onboarding2_message"/>
+            android:text="@string/onboarding2_message"
+            android:maxLines="1"/>
 
         <ImageView
             android:contentDescription="@string/onboarding2_image"
@@ -41,7 +43,7 @@
                     android:drawableStart="@drawable/ic_action_visibility_on"
                     android:text="@string/onboarding2_viewing"
                     android:gravity="center"
-                    android:textSize="18sp"/>
+                    android:textSize="20sp"/>
 
                 <TextView
                     android:layout_width="wrap_content"
