@@ -59,7 +59,7 @@ public class ActivityInBlock extends Activity{
         messages = new ArrayList<>();
         messages.add(new ModelMessages(user, message, emoticonName,colors[0]));
 
-        textViewNumber.setText((numPage+1) + "/" + messages.size());
+        textViewNumber.setText(String.format("%d/%d", numPage + 1, messages.size()));
         textViewUser.setText(user);
         textViewMessage.setText(message);
 
@@ -87,7 +87,7 @@ public class ActivityInBlock extends Activity{
         emoticonName = intent.getStringExtra("gif");
 
         messages.add(new ModelMessages(user, message, emoticonName,colors[new Random().nextInt(20)]));
-        textViewNumber.setText((numPage+1)+"/"+messages.size());
+        textViewNumber.setText(String.format("%d/%d", numPage + 1, messages.size()));
     }
 
     class OnClickListenerMessage implements View.OnClickListener{
@@ -98,7 +98,7 @@ public class ActivityInBlock extends Activity{
                 finish();
             }else {
                 ModelMessages m = messages.get(numPage);
-                textViewNumber.setText((numPage + 1) + "/" + messages.size());
+                textViewNumber.setText(String.format("%d/%d", numPage + 1, messages.size()));
                 textViewUser.setText(m.getUserName());
                 textViewMessage.setText(m.getMessage());
                 relativeLayout.setBackgroundColor(Color.parseColor(m.getColor()));

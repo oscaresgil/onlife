@@ -18,6 +18,8 @@ import android.os.Build;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
+import com.facebook.share.model.AppInviteContent;
+import com.facebook.share.widget.AppInviteDialog;
 import com.objective4.app.onlife.BlockActivity.ActivityGroupBlock;
 import com.objective4.app.onlife.BroadcastReceivers.BroadcastReceiverPhoneStatus;
 import com.objective4.app.onlife.Models.ModelGroup;
@@ -63,10 +65,23 @@ public class StaticMethods {
     public static boolean checkDeviceAdmin(Context activity){
         DevicePolicyManager devicePolicyManager = (DevicePolicyManager) activity.getSystemService(Context.DEVICE_POLICY_SERVICE);
         ComponentName myDeviceAdmin = new ComponentName(activity, DeviceAdmin.class);
-        if (devicePolicyManager.isAdminActive(myDeviceAdmin)) {
-            return true;
+        return devicePolicyManager.isAdminActive(myDeviceAdmin);
+    }
+
+    public static void inviteFacebookFriends(Context context){
+        String appLinkUrl, previewImageUrl;
+
+        appLinkUrl = context.getString(R.string.app_link_url);
+        previewImageUrl = context.getString(R.string.app_link_image_url);
+
+        if (AppInviteDialog.canShow()) {
+            AppInviteContent content = new AppInviteContent.Builder()
+                    .setApplinkUrl(appLinkUrl)
+                    .setPreviewImageUrl(previewImageUrl)
+                    .build();
+            if (context instanceof Activity)
+                AppInviteDialog.show((Activity) context, content);
         }
-        return false;
     }
 
     public static void activatePhoneBroadcast(Context context){

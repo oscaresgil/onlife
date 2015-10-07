@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
-import android.widget.Toast;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.gson.Gson;
@@ -15,7 +14,6 @@ import com.objective4.app.onlife.BlockActivity.ActivityInBlock;
 import com.objective4.app.onlife.Models.ModelPerson;
 import com.objective4.app.onlife.R;
 
-import static com.objective4.app.onlife.Controller.StaticMethods.activateDeviceAdmin;
 import static com.objective4.app.onlife.Controller.StaticMethods.checkDeviceAdmin;
 
 public class GcmMessageHandler extends IntentService {
@@ -33,26 +31,26 @@ public class GcmMessageHandler extends IntentService {
 
     @Override protected void onHandleIntent(Intent intent) {
         Bundle extras = intent.getExtras();
-        GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(this);
-        String messageType = gcm.getMessageType(intent);
         String tag = extras.getString("tag");
-        if (tag !=null) {
-            if (tag.equals("block")) {
-                message = extras.getString("message");
-                user = extras.getString("userName");
-                gifName = extras.getString("gifName");
-                boolean adminChecked = checkDeviceAdmin(this);
-                if ((!user.equals("") || user != null) && adminChecked) {
-                    onMessage(this);
-                }else if(!adminChecked){
-                    Intent i = new Intent("com.objective4.app.onlife.Fragments.FragmentContacts");
-                    i.putExtra("tag","no_device_admin");
-                    sendBroadcast(i);
-                }
-            } else if(tag.equals("newUser")){
-                Gson gson = new Gson();
-                String user = extras.getString("user");
-                ModelPerson newUser = gson.fromJson(user,ModelPerson.class);
+        if (tag != null) {
+            switch (tag) {
+                case "block":
+                    message = extras.getString("message");
+                    user = extras.getString("userName");
+                    gifName = extras.getString("gifName");
+                    boolean adminChecked = checkDeviceAdmin(this);
+                    if ((!user.equals("") || user != null) && adminChecked) {
+                        onMessage(this);
+                    } else if (!adminChecked) {
+                        Intent i = new Intent("com.objective4.app.onlife.Fragments.FragmentContacts");
+                        i.putExtra("tag", "no_device_admin");
+                        sendBroadcast(i);
+                    }
+                    break;
+                case "newUser":
+                    Gson gson = new Gson();
+                    String user = extras.getString("user");
+                    ModelPerson newUser = gson.fromJson(user, ModelPerson.class);
 
                     Intent i = new Intent("com.objective4.app.onlife.Fragments.FragmentContacts");
                     i.putExtra("tag", "new_user");
@@ -60,21 +58,22 @@ public class GcmMessageHandler extends IntentService {
                     sendBroadcast(i);
 
                     break;
-                }
                 case "update": {
                     String idP = extras.getString("id");
                     String state = extras.getString("state");
 
-                    Intent i = new Intent("com.objective4.app.onlife.Fragments.FragmentContacts");
-                    i.putExtra("tag", "update");
-                    i.putExtra("id", idP);
-                    i.putExtra("state", state);
-                    sendBroadcast(i);
+                    Intent i2 = new Intent("com.objective4.app.onlife.Fragments.FragmentContacts");
+                    i2.putExtra("tag", "update");
+                    i2.putExtra("id", idP);
+                    i2.putExtra("state", state);
+                    sendBroadcast(i2);
                     break;
                 }
             }
         }
     }
+
+
 
 
 

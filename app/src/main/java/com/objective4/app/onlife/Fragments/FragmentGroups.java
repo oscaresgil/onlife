@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.kenny.snackbar.SnackBar;
 import com.objective4.app.onlife.Activities.ActivityGroupCreateInformation;
 import com.objective4.app.onlife.Activities.ActivityHome;
@@ -32,15 +31,12 @@ import static com.objective4.app.onlife.Controller.StaticMethods.activateDeviceA
 import static com.objective4.app.onlife.Controller.StaticMethods.animationStart;
 import static com.objective4.app.onlife.Controller.StaticMethods.checkDeviceAdmin;
 import static com.objective4.app.onlife.Controller.StaticMethods.getModelGroupIndex;
-import static com.objective4.app.onlife.Controller.StaticMethods.removeGroup;
 
 public class FragmentGroups extends Fragment {
     public static final int CREATE_GROUP_ACTIVITY_ID = 1;
     public static final int GROUP_BLOCK_ACTIVITY_ID = 3;
 
     private AdapterGroup adapter;
-    private ListView list;
-    private FloatingActionButton addGroupButton;
     private List<ModelGroup> modelGroups;
 
     public FragmentGroups(){}
@@ -53,18 +49,18 @@ public class FragmentGroups extends Fragment {
 
         modelGroups = ModelSessionData.getInstance().getModelGroups();
         adapter = ((ActivityHome)getActivity()).getAdapterGroup();
-        list = (ListView)v.findViewById(R.id.FragmentGroups_ListGroup);
+        ListView list = (ListView) v.findViewById(R.id.FragmentGroups_ListGroup);
         list.setAdapter(adapter);
         list.setLongClickable(true);
         list.setOnItemLongClickListener(new LongItemClickListener());
         list.setOnItemClickListener(new ItemClickListener());
 
-        addGroupButton = (FloatingActionButton) v.findViewById(R.id.FragmentGroup_ButtonAddGroup);
+        FloatingActionButton addGroupButton = (FloatingActionButton) v.findViewById(R.id.FragmentGroup_ButtonAddGroup);
         addGroupButton.attachToListView(list);
         addGroupButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addGroup(v);
+                addGroup();
             }
         });
         return v;
@@ -88,20 +84,18 @@ public class FragmentGroups extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == Activity.RESULT_OK){
-            if (requestCode == CREATE_GROUP_ACTIVITY_ID){
-                ModelGroup newG = (ModelGroup) data.getSerializableExtra("new_group");
-                adapter.add(newG);
-            }else if(requestCode == GROUP_BLOCK_ACTIVITY_ID){
-                ModelGroup delG = (ModelGroup) data.getSerializableExtra("delete_group");
-                int pos = getModelGroupIndex(delG,modelGroups);
-                adapter.remove(adapter.getItem(pos));
-            }
+        if (resultCode == Activity.RESULT_OK) if (requestCode == CREATE_GROUP_ACTIVITY_ID) {
+            ModelGroup newG = (ModelGroup) data.getSerializableExtra("new_group");
+            adapter.add(newG);
+        } else if (requestCode == GROUP_BLOCK_ACTIVITY_ID) {
+            ModelGroup delG = (ModelGroup) data.getSerializableExtra("delete_group");
+            int pos = getModelGroupIndex(delG, modelGroups);
+            adapter.remove(adapter.getItem(pos));
         }
         adapter.notifyDataSetChanged();
     }
 
-    public void addGroup(View view){
+    public void addGroup(){
         Intent i = new Intent(getActivity(), ActivityGroupCreateInformation.class);
         startActivityForResult(i, CREATE_GROUP_ACTIVITY_ID);
         animationStart(getActivity());
@@ -121,7 +115,7 @@ public class FragmentGroups extends Fragment {
                     SnackBar.show(getActivity(), getResources().getString(R.string.toast_not_time_yet) + " " + ((getResources().getInteger(R.integer.block_time_group_remaining) - (actualTime - actualModelGroup.getLastBlockedTime())) / 1000) + " s");
                 }
             } else{
-                SnackBar.show(getActivity(),R.string.in_block_device_admin_not_activated);
+                SnackBar.show(getActivity(),R.string.device_admin_not_activated);
                 activateDeviceAdmin(getActivity());
             }
 

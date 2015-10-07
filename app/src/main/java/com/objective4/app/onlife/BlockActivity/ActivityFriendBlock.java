@@ -34,9 +34,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import pl.droidsonroids.gif.GifDrawable;
-import pl.droidsonroids.gif.GifImageView;
-
 import static com.objective4.app.onlife.Controller.StaticMethods.activateDeviceAdmin;
 import static com.objective4.app.onlife.Controller.StaticMethods.animationEnd;
 import static com.objective4.app.onlife.Controller.StaticMethods.checkDeviceAdmin;
@@ -52,7 +49,6 @@ public class ActivityFriendBlock extends AppCompatActivity {
 
     private ImageView visibility;
     private MaterialEditText messageTextView;
-    private TextView maxCharsView;
     private GridView gridView;
 
     private ListenerTextWatcher listenerTextWatcher;
@@ -94,10 +90,10 @@ public class ActivityFriendBlock extends AppCompatActivity {
         RatioImageView avatar = (RatioImageView) findViewById(R.id.ActivityFriendBlock_ImageViewContact);
         avatar.setImageBitmap(loadImage(this,friend.getId()+"_"+getResources().getInteger(R.integer.adapter_contact_size_large)));
 
-        maxCharsView = (TextView) findViewById(R.id.ActivityFriendBlock_TextViewMaxCharacters);
+        TextView maxCharsView = (TextView) findViewById(R.id.ActivityFriendBlock_TextViewMaxCharacters);
         messageTextView = (MaterialEditText) findViewById(R.id.ActivityFriendBlock_EditTextMessage);
         messageTextView.setOnFocusChangeListener(new ListenerMessageFocusChanged(this,messageTextView));
-        listenerTextWatcher = new ListenerTextWatcher(this,maxCharsView,messageTextView);
+        listenerTextWatcher = new ListenerTextWatcher(this, maxCharsView,messageTextView);
 
         messageTextView.addTextChangedListener(listenerTextWatcher);
 
@@ -116,21 +112,10 @@ public class ActivityFriendBlock extends AppCompatActivity {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                             try{
-                                gifName = gifNames.get(position);
-                                final GifImageView gifImageView = (GifImageView) findViewById(R.id.ActivityFriendBlock_GifImage);
+                                gifName = (String) gridView.getAdapter().getItem(position);
+                                ImageView emoticonImageView = (ImageView) findViewById(R.id.ActivityFriendBlock_EmoticonImageView);
                                 int resourceId = getResources().getIdentifier(gifName, "drawable", getPackageName());
-                                GifDrawable gif = new GifDrawable(getResources(), resourceId);
-                                gifImageView.setImageDrawable(gif);
-                                gifImageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
-
-                                gifImageView.setOnLongClickListener(new View.OnLongClickListener() {
-                                    @Override
-                                    public boolean onLongClick(View v) {
-                                        gifImageView.setImageBitmap(null);
-                                        gifName = "";
-                                        return false;
-                                    }
-                                });
+                                emoticonImageView.setImageDrawable(getResources().getDrawable(resourceId));
                             }catch (Exception e){
                                 e.printStackTrace();
                             }
@@ -155,9 +140,9 @@ public class ActivityFriendBlock extends AppCompatActivity {
             String id = extras.getString("id");
             if (friend.getId().equals(id)){
                 friend.setState(state);
-                if (state.equals("I")){
+                if ("I".equals(state)){
                     visibility.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.ic_action_visibility_off_2));
-                }else if(state.equals("A")){
+                }else if("A".equals(state)){
                     visibility.setImageBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.ic_action_visibility_on));
                 }
             }
@@ -210,7 +195,7 @@ public class ActivityFriendBlock extends AppCompatActivity {
                         SnackBar.show(ActivityFriendBlock.this, R.string.error);
                     }
                 }else if(!devAdmin){
-                    SnackBar.show(this,R.string.in_block_device_admin_not_activated);
+                    SnackBar.show(this,R.string.device_admin_not_activated);
                     activateDeviceAdmin(this);
                 }else{
                     SnackBar.show(ActivityFriendBlock.this,R.string.friend_inactive);

@@ -65,15 +65,12 @@ public class ActivityGroupBlock extends AppCompatActivity {
     private static final int PICK_FROM_FILE = 2;
     private static final int PIC_CROP = 3;
 
-    private RelativeLayout rl;
     private SweetSheet sweetSheet;
-    private Toolbar toolbar;
 
     private ModelPerson actualUser;
     private ModelGroup modelGroup;
     private List<ModelPerson> friendsInGroup;
 
-    private TextView maxCharsView;
     private MaterialEditText messageTextView;
     private ListenerTextWatcher listenerTextWatcher;
 
@@ -81,7 +78,6 @@ public class ActivityGroupBlock extends AppCompatActivity {
     private String gifName="";
 
     private RatioImageView avatarGroup;
-    private Bitmap bitmapGroup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,7 +86,7 @@ public class ActivityGroupBlock extends AppCompatActivity {
         setSlidr(this);
         setContentView(R.layout.activity_group_block);
 
-        toolbar = (Toolbar) findViewById(R.id.ActivityGroupBlock_ToolBar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.ActivityGroupBlock_ToolBar);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null){
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -119,10 +115,10 @@ public class ActivityGroupBlock extends AppCompatActivity {
             }
         });
 
-        maxCharsView = (TextView) findViewById(R.id.ActivityGroupBlock_TextViewMaxCharacters);
+        TextView maxCharsView = (TextView) findViewById(R.id.ActivityGroupBlock_TextViewMaxCharacters);
         messageTextView = (MaterialEditText) findViewById(R.id.ActivityGroupBlock_EditTextMessage);
         messageTextView.setOnFocusChangeListener(new ListenerMessageFocusChanged(this,messageTextView));
-        listenerTextWatcher = new ListenerTextWatcher(this,maxCharsView,messageTextView);
+        listenerTextWatcher = new ListenerTextWatcher(this, maxCharsView,messageTextView);
         messageTextView.addTextChangedListener(listenerTextWatcher);
 
         gridView = (GridView) findViewById(R.id.ActivityGroupBlock_GridLayout);
@@ -141,7 +137,7 @@ public class ActivityGroupBlock extends AppCompatActivity {
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                             try{
                                 gifName = gifNames.get(position);
-                                final GifImageView gifImageView = (GifImageView) findViewById(R.id.ActivityFriendBlock_GifImage);
+                                final GifImageView gifImageView = (GifImageView) findViewById(R.id.ActivityFriendBlock_EmoticonImageView);
                                 int resourceId = getResources().getIdentifier(gifName, "drawable", getPackageName());
                                 GifDrawable gif = new GifDrawable(getResources(), resourceId);
                                 gifImageView.setImageDrawable(gif);
@@ -170,7 +166,7 @@ public class ActivityGroupBlock extends AppCompatActivity {
             }
         });
 
-        rl = (RelativeLayout) findViewById(R.id.ActivityGroupBlock_RelativeLayoutMain);
+        RelativeLayout rl = (RelativeLayout) findViewById(R.id.ActivityGroupBlock_RelativeLayoutMain);
         sweetSheet = new SweetSheet(rl);
         sweetSheet.setBackgroundClickEnable(true);
     }
@@ -276,9 +272,9 @@ public class ActivityGroupBlock extends AppCompatActivity {
             }
         } else if (requestCode == PIC_CROP && resultCode == RESULT_OK) {
             Bundle extras = data.getExtras();
-            bitmapGroup = extras.getParcelable("data");
+            Bitmap bitmapGroup = extras.getParcelable("data");
             avatarGroup.setImageBitmap(bitmapGroup);
-            saveImage(this,modelGroup.getName(),bitmapGroup);
+            saveImage(this,modelGroup.getName(), bitmapGroup);
         }
     }
 
@@ -299,7 +295,7 @@ public class ActivityGroupBlock extends AppCompatActivity {
                     SnackBar.show(ActivityGroupBlock.this, R.string.error);
                 }
             }else if(!devAdmin){
-                SnackBar.show(this,R.string.in_block_device_admin_not_activated);
+                SnackBar.show(this,R.string.device_admin_not_activated);
                 activateDeviceAdmin(this);
             } else {
                 SnackBar.show(ActivityGroupBlock.this, R.string.message_max_characters, R.string.button_change_text_message, new View.OnClickListener() {
