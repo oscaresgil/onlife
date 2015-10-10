@@ -7,46 +7,28 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.provider.Settings;
-import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.widget.NestedScrollView;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.GridView;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.simplelist.MaterialSimpleListAdapter;
 import com.afollestad.materialdialogs.simplelist.MaterialSimpleListItem;
-import com.objective4.app.onlife.Adapters.AdapterEmoticon;
-import com.objective4.app.onlife.Listeners.ListenerMessageFocusChanged;
-import com.objective4.app.onlife.Listeners.ListenerTextWatcher;
-import com.objective4.app.onlife.Models.ModelGroup;
-import com.objective4.app.onlife.Models.ModelPerson;
-import com.objective4.app.onlife.Models.ModelSessionData;
-import com.objective4.app.onlife.R;
-import com.objective4.app.onlife.Tasks.TaskSendNotification;
 import com.kenny.snackbar.SnackBar;
 import com.mingle.entity.MenuEntity;
 import com.mingle.sweetpick.DimEffect;
 import com.mingle.sweetpick.RecyclerViewDelegate;
 import com.mingle.sweetpick.SweetSheet;
-import com.rengwuxian.materialedittext.MaterialEditText;
+import com.objective4.app.onlife.Models.ModelGroup;
+import com.objective4.app.onlife.Models.ModelPerson;
+import com.objective4.app.onlife.R;
+import com.objective4.app.onlife.Tasks.TaskSendNotification;
 
 import net.soulwolf.widget.ratiolayout.widget.RatioImageView;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
-
-import pl.droidsonroids.gif.GifDrawable;
-import pl.droidsonroids.gif.GifImageView;
 
 import static com.objective4.app.onlife.Controller.StaticMethods.activateDeviceAdmin;
 import static com.objective4.app.onlife.Controller.StaticMethods.animationEnd;
@@ -56,58 +38,26 @@ import static com.objective4.app.onlife.Controller.StaticMethods.isNetworkAvaila
 import static com.objective4.app.onlife.Controller.StaticMethods.loadImage;
 import static com.objective4.app.onlife.Controller.StaticMethods.performCrop;
 import static com.objective4.app.onlife.Controller.StaticMethods.saveImage;
-import static com.objective4.app.onlife.Controller.StaticMethods.setGifNames;
-import static com.objective4.app.onlife.Controller.StaticMethods.setSlidr;
 import static com.objective4.app.onlife.Controller.StaticMethods.showSoftKeyboard;
 
-public class ActivityGroupBlock extends AppCompatActivity {
+public class ActivityGroupBlock extends ActivityBlockBase<ModelGroup> {
     private static final int PICK_FROM_CAMERA = 1;
     private static final int PICK_FROM_FILE = 2;
     private static final int PIC_CROP = 3;
 
     private SweetSheet sweetSheet;
-
-    private ModelPerson actualUser;
-    private ModelGroup modelGroup;
     private List<ModelPerson> friendsInGroup;
-
-    private MaterialEditText messageTextView;
-    private ListenerTextWatcher listenerTextWatcher;
-
-    private GridView gridView;
-    private String gifName="";
-
     private RatioImageView avatarGroup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        collapser.setTitle(actualObject.getName());
 
-        setSlidr(this);
-        setContentView(R.layout.activity_group_block);
+        friendsInGroup = actualObject.getFriendsInGroup();
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.ActivityGroupBlock_ToolBar);
-        setSupportActionBar(toolbar);
-        if (getSupportActionBar() != null){
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp);
-        }
-
-        Intent i = getIntent();
-        modelGroup = (ModelGroup) i.getSerializableExtra("model_group");
-        actualUser = ModelSessionData.getInstance().getUser();
-        friendsInGroup = modelGroup.getFriendsInGroup();
-
-        CollapsingToolbarLayout collapser = (CollapsingToolbarLayout) findViewById(R.id.ActivityGroupBlock_CollapsingToolBarLayout);
-        collapser.setTitle(modelGroup.getName());
-        collapser.setCollapsedTitleTextColor(getResources().getColor(R.color.white));
-        collapser.setExpandedTitleColor(getResources().getColor(R.color.white));
-
-        NestedScrollView nestedScrollView = (NestedScrollView) findViewById(R.id.ActivityGroupBlock_ScrollView);
-        nestedScrollView.setNestedScrollingEnabled(false);
-
-        avatarGroup = (RatioImageView) findViewById(R.id.ActivityGroupBlock_ImageViewContact);
-        avatarGroup.setImageBitmap(loadImage(this,modelGroup.getName()));
+        avatarGroup = (RatioImageView) findViewById(R.id.ActivityBlockBase_ImageViewContact);
+        avatarGroup.setImageBitmap(loadImage(this, actualObject.getName()));
         avatarGroup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -115,58 +65,7 @@ public class ActivityGroupBlock extends AppCompatActivity {
             }
         });
 
-        TextView maxCharsView = (TextView) findViewById(R.id.ActivityGroupBlock_TextViewMaxCharacters);
-        messageTextView = (MaterialEditText) findViewById(R.id.ActivityGroupBlock_EditTextMessage);
-        messageTextView.setOnFocusChangeListener(new ListenerMessageFocusChanged(this,messageTextView));
-        listenerTextWatcher = new ListenerTextWatcher(this, maxCharsView,messageTextView);
-        messageTextView.addTextChangedListener(listenerTextWatcher);
-
-        gridView = (GridView) findViewById(R.id.ActivityGroupBlock_GridLayout);
-
-        FloatingActionButton fabGif = (FloatingActionButton) findViewById(R.id.ActivityGroupBlock_FABEmoticon);
-        fabGif.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (gridView.getVisibility() != View.VISIBLE) {
-                    gridView.setVisibility(View.VISIBLE);
-                    final List<String> gifNames = setGifNames();
-
-                    gridView.setAdapter(new AdapterEmoticon(ActivityGroupBlock.this,gifNames));
-                    gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                            try{
-                                gifName = gifNames.get(position);
-                                final GifImageView gifImageView = (GifImageView) findViewById(R.id.ActivityFriendBlock_EmoticonImage);
-                                int resourceId = getResources().getIdentifier(gifName, "drawable", getPackageName());
-                                GifDrawable gif = new GifDrawable(getResources(), resourceId);
-                                gifImageView.setImageDrawable(gif);
-                                gifImageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
-
-                                gifImageView.setOnLongClickListener(new View.OnLongClickListener() {
-                                    @Override
-                                    public boolean onLongClick(View v) {
-                                        gifImageView.setImageBitmap(null);
-                                        gifName = "";
-                                        return false;
-                                    }
-                                });
-                            }catch (Exception e){
-                                e.printStackTrace();
-                            }
-                            gridView.setVisibility(View.GONE);
-                        }
-                    });
-
-                }else{
-                    gridView.setVisibility(View.GONE);
-                    List<String> array = new ArrayList<>();
-                    gridView.setAdapter(new AdapterEmoticon(ActivityGroupBlock.this,array));
-                }
-            }
-        });
-
-        RelativeLayout rl = (RelativeLayout) findViewById(R.id.ActivityGroupBlock_RelativeLayoutMain);
+        RelativeLayout rl = (RelativeLayout) findViewById(R.id.ActivityBlockBase_RelativeLayoutMain);
         sweetSheet = new SweetSheet(rl);
         sweetSheet.setBackgroundClickEnable(true);
     }
@@ -175,6 +74,9 @@ public class ActivityGroupBlock extends AppCompatActivity {
     public void onBackPressed() {
         if (sweetSheet.isShow()){
             sweetSheet.dismiss();
+        }
+        else if(emoticonFlag){
+            hideEmoticon();
         }
         else {
             super.onBackPressed();
@@ -232,7 +134,7 @@ public class ActivityGroupBlock extends AppCompatActivity {
         }
         else if(i == R.id.delete_group){
             new MaterialDialog.Builder(this)
-                .title(getResources().getString(R.string.delete) + " " + modelGroup.getName())
+                .title(getResources().getString(R.string.delete) + " " + actualObject.getName())
                 .content(R.string.really_delete)
                 .positiveText(R.string.yes)
                 .positiveColorRes(R.color.orange_light)
@@ -243,7 +145,7 @@ public class ActivityGroupBlock extends AppCompatActivity {
                     public void onPositive(MaterialDialog dialog) {
 
                         Intent returnIntent = new Intent();
-                        returnIntent.putExtra("delete_group",modelGroup);
+                        returnIntent.putExtra("delete_group",actualObject);
                         setResult(RESULT_OK,returnIntent);
 
                         dialog.dismiss();
@@ -274,7 +176,7 @@ public class ActivityGroupBlock extends AppCompatActivity {
             Bundle extras = data.getExtras();
             Bitmap bitmapGroup = extras.getParcelable("data");
             avatarGroup.setImageBitmap(bitmapGroup);
-            saveImage(this,modelGroup.getName(), bitmapGroup);
+            saveImage(this,actualObject.getName(), bitmapGroup);
         }
     }
 
@@ -284,7 +186,7 @@ public class ActivityGroupBlock extends AppCompatActivity {
             boolean devAdmin = checkDeviceAdmin(this);
             if (listenerTextWatcher.getActualChar() <= 30 && devAdmin) {
                 try {
-                    new TaskSendNotification(ActivityGroupBlock.this, actualUser.getName(), messageTextView.getText().toString(),gifName).execute(friendsInGroup.toArray(new ModelPerson[friendsInGroup.size()]));
+                    new TaskSendNotification(ActivityGroupBlock.this, actualUser.getName(), messageTextView.getText().toString(),emoticonId).execute(friendsInGroup.toArray(new ModelPerson[friendsInGroup.size()]));
                 } catch (Exception ex) {
                     SnackBar.show(ActivityGroupBlock.this, R.string.error);
                 }
@@ -308,6 +210,7 @@ public class ActivityGroupBlock extends AppCompatActivity {
             });
         }
     }
+
     private void selectTypeImage(){
         MaterialSimpleListAdapter materialAdapter = new MaterialSimpleListAdapter(this);
         materialAdapter.add(new MaterialSimpleListItem.Builder(this)

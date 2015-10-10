@@ -6,8 +6,8 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.view.ViewGroup;
 
-import com.objective4.app.onlife.Fragments.FragmentContacts;
-import com.objective4.app.onlife.Fragments.FragmentGroups;
+import com.objective4.app.onlife.Fragments.Social.FragmentContacts;
+import com.objective4.app.onlife.Fragments.Social.FragmentGroups;
 import com.objective4.app.onlife.R;
 
 import java.util.HashMap;

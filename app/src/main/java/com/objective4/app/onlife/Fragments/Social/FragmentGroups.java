@@ -1,4 +1,4 @@
-package com.objective4.app.onlife.Fragments;
+package com.objective4.app.onlife.Fragments.Social;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import com.kenny.snackbar.SnackBar;
+import com.melnykov.fab.FloatingActionButton;
 import com.objective4.app.onlife.Activities.ActivityGroupCreateInformation;
 import com.objective4.app.onlife.Activities.ActivityHome;
 import com.objective4.app.onlife.Adapters.AdapterGroup;
@@ -21,10 +21,8 @@ import com.objective4.app.onlife.Models.ModelGroup;
 import com.objective4.app.onlife.Models.ModelPerson;
 import com.objective4.app.onlife.Models.ModelSessionData;
 import com.objective4.app.onlife.R;
-import com.melnykov.fab.FloatingActionButton;
 import com.objective4.app.onlife.Tasks.TaskSendNotification;
 
-import java.util.Calendar;
 import java.util.List;
 
 import static com.objective4.app.onlife.Controller.StaticMethods.activateDeviceAdmin;
@@ -122,7 +120,7 @@ public class FragmentGroups extends Fragment {
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             ModelGroup modelGroup = adapter.getItem(position);
             Intent intent = new Intent(getActivity(), ActivityGroupBlock.class);
-            intent.putExtra("model_group", modelGroup);
+            intent.putExtra("data", modelGroup);
             startActivityForResult(intent,GROUP_BLOCK_ACTIVITY_ID);
             getActivity().overridePendingTransition(R.animator.push_right, R.animator.push_left);
         }

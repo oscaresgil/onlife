@@ -9,10 +9,8 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 
-import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.objective4.app.onlife.Activities.ActivityMain;
 import com.objective4.app.onlife.BlockActivity.ActivityInBlock;
 import com.objective4.app.onlife.Models.ModelGroup;
 import com.objective4.app.onlife.Models.ModelPerson;
@@ -56,7 +54,7 @@ public class GcmMessageHandler extends IntentService {
                     if ((!user.equals("") || user != null) && adminChecked) {
                         onMessage(this);
                     } else if (!adminChecked) {
-                        Intent i = new Intent("com.objective4.app.onlife.Fragments.FragmentContacts");
+                        Intent i = new Intent("com.objective4.app.onlife.Fragments.Social.FragmentContacts");
                         i.putExtra("tag", "no_device_admin");
                         sendBroadcast(i);
                     }
@@ -78,7 +76,7 @@ public class GcmMessageHandler extends IntentService {
                         sharedPreferences.edit().putString("friends",gson.toJson(friends)).apply();
                     }
 
-                    Intent i = new Intent("com.objective4.app.onlife.Fragments.FragmentContacts");
+                    Intent i = new Intent("com.objective4.app.onlife.Fragments.Social.FragmentContacts");
                     i.putExtra("tag", "new_user");
                     i.putExtra("new_user", newUser);
                     sendBroadcast(i);
@@ -97,7 +95,7 @@ public class GcmMessageHandler extends IntentService {
                         sharedPreferences.edit().putString("groups",gson.toJson(groupsR)).apply();
                     }
 
-                    Intent i2 = new Intent("com.objective4.app.onlife.Fragments.FragmentContacts");
+                    Intent i2 = new Intent("com.objective4.app.onlife.Fragments.Social.FragmentContacts");
                     i2.putExtra("tag", "update");
                     i2.putExtra("id", idP);
                     i2.putExtra("state", state);

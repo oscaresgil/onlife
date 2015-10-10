@@ -1,4 +1,4 @@
-package com.objective4.app.onlife.Fragments;
+package com.objective4.app.onlife.Fragments.Social;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -22,16 +22,15 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.kenny.snackbar.SnackBar;
 import com.objective4.app.onlife.Activities.ActivityHome;
 import com.objective4.app.onlife.Adapters.AdapterContact;
 import com.objective4.app.onlife.BlockActivity.ActivityFriendBlock;
 import com.objective4.app.onlife.Models.ModelPerson;
 import com.objective4.app.onlife.Models.ModelSessionData;
 import com.objective4.app.onlife.R;
-import com.objective4.app.onlife.Tasks.TaskGetFriends;
 import com.objective4.app.onlife.Tasks.TaskRefresh;
 import com.objective4.app.onlife.Tasks.TaskSendNotification;
-import com.kenny.snackbar.SnackBar;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
 import java.util.ArrayList;
@@ -120,7 +119,7 @@ public class FragmentContacts extends Fragment {
                 return true;
             }
         });
-        getActivity().registerReceiver(broadcastReceiver, new IntentFilter("com.objective4.app.onlife.Fragments.FragmentContacts"));
+        getActivity().registerReceiver(broadcastReceiver, new IntentFilter("com.objective4.app.onlife.Fragments.Social.FragmentContacts"));
 
         return v;
     }
@@ -171,8 +170,7 @@ public class FragmentContacts extends Fragment {
 
                     adapterContact.notifyDataSetChanged();
                     listView.setAdapter(adapterContact);
-                }
-            }else if("no_device_admin".equals(tag)){
+                } else if("no_device_admin".equals(tag)){
                 activateDeviceAdmin(getActivity());
             }
         }
