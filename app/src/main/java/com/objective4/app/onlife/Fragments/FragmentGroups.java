@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.kenny.snackbar.SnackBar;
 import com.objective4.app.onlife.Activities.ActivityGroupCreateInformation;
 import com.objective4.app.onlife.Activities.ActivityHome;
@@ -32,15 +31,12 @@ import static com.objective4.app.onlife.Controller.StaticMethods.activateDeviceA
 import static com.objective4.app.onlife.Controller.StaticMethods.animationStart;
 import static com.objective4.app.onlife.Controller.StaticMethods.checkDeviceAdmin;
 import static com.objective4.app.onlife.Controller.StaticMethods.getModelGroupIndex;
-import static com.objective4.app.onlife.Controller.StaticMethods.removeGroup;
 
 public class FragmentGroups extends Fragment {
     public static final int CREATE_GROUP_ACTIVITY_ID = 1;
     public static final int GROUP_BLOCK_ACTIVITY_ID = 3;
 
     private AdapterGroup adapter;
-    private ListView list;
-    private FloatingActionButton addGroupButton;
     private List<ModelGroup> modelGroups;
 
     public FragmentGroups(){}
@@ -53,18 +49,18 @@ public class FragmentGroups extends Fragment {
 
         modelGroups = ModelSessionData.getInstance().getModelGroups();
         adapter = ((ActivityHome)getActivity()).getAdapterGroup();
-        list = (ListView)v.findViewById(R.id.FragmentGroups_ListGroup);
+        ListView list = (ListView) v.findViewById(R.id.FragmentGroups_ListGroup);
         list.setAdapter(adapter);
         list.setLongClickable(true);
         list.setOnItemLongClickListener(new LongItemClickListener());
         list.setOnItemClickListener(new ItemClickListener());
 
-        addGroupButton = (FloatingActionButton) v.findViewById(R.id.FragmentGroup_ButtonAddGroup);
+        FloatingActionButton addGroupButton = (FloatingActionButton) v.findViewById(R.id.FragmentGroup_ButtonAddGroup);
         addGroupButton.attachToListView(list);
         addGroupButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addGroup(v);
+                addGroup();
             }
         });
         return v;
@@ -101,7 +97,7 @@ public class FragmentGroups extends Fragment {
         adapter.notifyDataSetChanged();
     }
 
-    public void addGroup(View view){
+    public void addGroup(){
         Intent i = new Intent(getActivity(), ActivityGroupCreateInformation.class);
         startActivityForResult(i, CREATE_GROUP_ACTIVITY_ID);
         animationStart(getActivity());

@@ -116,7 +116,7 @@ public class ActivityFriendBlock extends AppCompatActivity {
         maxCharsView = (TextView) findViewById(R.id.ActivityFriendBlock_TextViewMaxCharacters);
         messageTextView = (MaterialEditText) findViewById(R.id.ActivityFriendBlock_EditTextMessage);
         messageTextView.setOnFocusChangeListener(new ListenerMessageFocusChanged(this,messageTextView));
-        listenerTextWatcher = new ListenerTextWatcher(this,maxCharsView,messageTextView);
+        listenerTextWatcher = new ListenerTextWatcher(this, maxCharsView,messageTextView);
 
         messageTextView.addTextChangedListener(listenerTextWatcher);
 
@@ -147,9 +147,9 @@ public class ActivityFriendBlock extends AppCompatActivity {
             String id = extras.getString("id");
             if (friend.getId().equals(id)){
                 friend.setState(state);
-                if (state.equals("I")){
+                if ("I".equals(state)){
                     visibility.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.ic_action_visibility_off_2));
-                }else if(state.equals("A")){
+                }else if("A".equals(state)){
                     visibility.setImageBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.ic_action_visibility_on));
                 }
             }

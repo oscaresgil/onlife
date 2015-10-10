@@ -3,12 +3,10 @@ package com.objective4.app.onlife.Activities;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
-import android.text.Html;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,8 +26,6 @@ import com.objective4.app.onlife.Services.ServicePhoneState;
 import com.objective4.app.onlife.Tasks.TaskChangeState;
 import com.objective4.app.onlife.Tasks.TaskGetFriends;
 import com.facebook.login.LoginManager;
-import com.facebook.share.model.AppInviteContent;
-import com.facebook.share.widget.AppInviteDialog;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -39,6 +35,7 @@ import java.util.List;
 import static com.objective4.app.onlife.Controller.StaticMethods.activateDeviceAdmin;
 import static com.objective4.app.onlife.Controller.StaticMethods.deactivateDeviceAdmin;
 import static com.objective4.app.onlife.Controller.StaticMethods.delDirImages;
+import static com.objective4.app.onlife.Controller.StaticMethods.inviteFacebookFriends;
 
 public class ActivityHome extends ActionBarActivity {
     private ModelPerson userLogin;
@@ -67,9 +64,6 @@ public class ActivityHome extends ActionBarActivity {
 
         ModelSessionData.initInstance(userLogin, friends, groups);
 
-        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.orange_light)));
-        getSupportActionBar().setTitle((Html.fromHtml("<b><font color=\"#000000\">" + getString(R.string.app_name) + "</font></b>")));
-
         // Get the ViewPager and set it's PagerAdapter so that it can display items
         ViewPager viewPager = (ViewPager) findViewById(R.id.ActivityHome_ViewPager);
         AdapterFragmentPager pgAdapter = new AdapterFragmentPager(getSupportFragmentManager(), ActivityHome.this);
@@ -88,7 +82,7 @@ public class ActivityHome extends ActionBarActivity {
         layoutSlidingTab.setDistributeEvenly(true);
         layoutSlidingTab.setViewPager(viewPager);
 
-        sharedPreferences.edit().putBoolean("session", true).commit();
+        sharedPreferences.edit().putBoolean("session", true).apply();
 
         adapterContact = new AdapterContact(this,R.layout.layout_contact,ModelSessionData.getInstance().getFriends());
         adapterGroup = new AdapterGroup(this,R.layout.layout_groups,ModelSessionData.getInstance().getModelGroups());
@@ -137,18 +131,7 @@ public class ActivityHome extends ActionBarActivity {
     }
 
     public void invite_friends(MenuItem item) {
-        String appLinkUrl, previewImageUrl;
-
-        appLinkUrl = "https://fb.me/1707393996160728";
-        previewImageUrl = "http://www.onlife-app.com/myapplink/logo.png";
-
-        if (AppInviteDialog.canShow()) {
-            AppInviteContent content = new AppInviteContent.Builder()
-                    .setApplinkUrl(appLinkUrl)
-                    .setPreviewImageUrl(previewImageUrl)
-                    .build();
-            AppInviteDialog.show(this, content);
-        }
+        inviteFacebookFriends(this);
     }
 
     public void settings(MenuItem item){

@@ -138,12 +138,13 @@ public class FragmentContacts extends Fragment {
             String tag = extras.getString("tag");
             AdapterContact adapterContact = ((ActivityHome)context).getAdapterContact();
 
-            if (tag.equals("update")) {
+            if ("update".equals(tag)) {
                 String id = extras.getString("id");
                 String state = extras.getString("state");
 
                 List<ModelPerson> friendsT = adapterContact.getFriends();
-                if (state.equals("O")) {
+                if ("O".equals(state)) {
+                    ModelSessionData.getInstance().removeUser(id);
 
                     for (int i = 0; i < friendsT.size(); i++) {
                         ModelPerson p = friendsT.get(i);
@@ -162,14 +163,16 @@ public class FragmentContacts extends Fragment {
                     }
                     adapterContact.notifyDataSetChanged();
                 }
-            }else if(tag .equals("new_user")){
+            }else if("new_user".equals(tag)){
                 ModelPerson newUser = (ModelPerson) extras.getSerializable("new_user");
                 adapterContact.add(newUser);
                 adapterContact.notifyDataSetChanged();
                 listView.setAdapter(adapterContact);
 
-            }else if(tag.equals("no_device_admin")){
-                SnackBar.show(getActivity(),R.string.device_admin_not_activated);
+                    adapterContact.notifyDataSetChanged();
+                    listView.setAdapter(adapterContact);
+                }
+            }else if("no_device_admin".equals(tag)){
                 activateDeviceAdmin(getActivity());
             }
         }
@@ -263,6 +266,7 @@ public class FragmentContacts extends Fragment {
             listView.setAdapter(((ActivityHome) getActivity()).getAdapterContact());
             friendsFiltred.clear();
 
+            assert actionBar != null;
             actionBar.setDisplayShowCustomEnabled(false);
             actionBar.setDisplayShowTitleEnabled(true);
 
@@ -276,6 +280,7 @@ public class FragmentContacts extends Fragment {
             friendsFiltred.clear();
             friendsFiltred.addAll(friends);
             listView.setAdapter(new AdapterContact(getActivity(), R.layout.layout_contact, friendsFiltred));
+            assert actionBar != null;
             actionBar.setDisplayShowCustomEnabled(true);
             actionBar.setCustomView(R.layout.layout_search_contact_bar);
             actionBar.setDisplayShowTitleEnabled(false);
