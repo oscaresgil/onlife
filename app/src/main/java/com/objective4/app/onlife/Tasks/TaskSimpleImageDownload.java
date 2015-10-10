@@ -4,6 +4,8 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
 import com.objective4.app.onlife.Models.ModelPerson;
@@ -59,6 +61,8 @@ public class TaskSimpleImageDownload extends AsyncTask<ModelPerson,Void,Void> {
 
     @Override
     protected void onPostExecute(Void aVoid) {
-        if (size == context.getResources().getInteger(R.integer.adapter_contact_size_little)) avatar.setImageBitmap(imageBitmap);
+        Animation myFadeInAnimation = AnimationUtils.loadAnimation(context, R.anim.fadein);
+        avatar.startAnimation(myFadeInAnimation);
+        avatar.setImageBitmap(imageBitmap);
     }
 }

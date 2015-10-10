@@ -32,22 +32,6 @@ public class ModelSessionData implements Serializable{
         this.modelGroups = modelGroups;
     }
 
-    public boolean addUser(ModelPerson user){
-        for (ModelPerson f: friends){
-            if (f.getId().equals(user.getId())){
-                return false;
-            }
-        }
-        friends.add(user);
-        Collections.sort(friends, new Comparator<ModelPerson>() {
-            @Override
-            public int compare(ModelPerson modelPerson1, ModelPerson modelPerson2) {
-                return modelPerson1.getName().compareTo(modelPerson2.getName());
-            }
-        });
-        return true;
-    }
-
     public void removeUser(String id){
         for (int i=0; i<friends.size(); i++){
             if (id.equals(friends.get(i).getId())){

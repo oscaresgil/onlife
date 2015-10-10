@@ -92,5 +92,6 @@
     <string name="logo_image">Imágen de logo</string>
     <string name="logo_text">Texto del logo</string>
     <string name="device_admin_not_activated">Administrador de dispositivo no activado</string>
+    <string name="friends_blocked_number" translatable="false">Amigos Bloqueados: </string>
 
 </resources>

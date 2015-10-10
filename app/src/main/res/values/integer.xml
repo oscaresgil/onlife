@@ -34,4 +34,14 @@
     <integer name="block_time_remaining">90000</integer>
     <integer name="block_time_group_remaining">65000</integer>
 
+    <!-- Adapter Num Fragments -->
+    <integer name="fragment_numbers_emoticons">2</integer>
+    <!-- Emoticon Smiley Number -->
+    <integer name="emoticon_smiley_number">38</integer>
+    <!-- Emoticon Animal Number -->
+    <integer name="emoticon_animal_number">34</integer>
+
+    <!-- Animation Fade In Images Integer -->
+    <integer name="fade_in_animation_duration">1500</integer>
+
 </resources>

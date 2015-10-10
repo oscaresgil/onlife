@@ -1,6 +1,7 @@
 package com.objective4.app.onlife.Controller;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.admin.DevicePolicyManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -27,6 +28,7 @@ import com.objective4.app.onlife.R;
 import com.kenny.snackbar.SnackBar;
 import com.r0adkll.slidr.Slidr;
 import com.r0adkll.slidr.model.SlidrConfig;
+import com.r0adkll.slidr.model.SlidrInterface;
 import com.r0adkll.slidr.model.SlidrPosition;
 
 import java.io.File;
@@ -77,19 +79,58 @@ public class StaticMethods {
         context.registerReceiver(receiver,filter);
     }
 
-    public static void setSlidr(Context context){
+    public static SlidrInterface setSlidr(Context context){
         SlidrConfig config = new SlidrConfig.Builder()
                 .primaryColor(context.getResources().getColor(R.color.orange))
                 .secondaryColor(context.getResources().getColor(R.color.orange_light))
                 .position(SlidrPosition.LEFT)
                 .sensitivity(0.4f)
                 .build();
-        Slidr.attach((Activity)context, config);
+        return Slidr.attach((Activity) context, config);
+    }
+
+    public static int getRelativeTop(View myView) {
+        if (myView.getParent() == myView.getRootView())
+            return myView.getTop();
+        else
+            return myView.getTop() + getRelativeTop((View) myView.getParent());
     }
 
     public static void unSelectFriends(List<ModelPerson> friends){
         for (ModelPerson p: friends){
             p.setSelected(false);
+        }
+    }
+
+    public static boolean isFriendAlready(List<ModelPerson> friends, ModelPerson friend){
+        for (ModelPerson f: friends){
+            if (f.getId().equals(friend.getId())){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static void removeFriend(Context context, List<ModelPerson> friends, List<ModelGroup> groups, String id){
+        for (int i=0; i<friends.size(); i++){
+            if (id.equals(friends.get(i).getId())){
+                friends.remove(i);
+                delImageProfile(context,id);
+                break;
+            }
+        }
+        for (int i = 0; i<groups.size(); i++){
+            ModelGroup g = groups.get(i);
+            for (int j=0; j<g.getFriendsInGroup().size(); j++){
+                ModelPerson f = g.getFriendsInGroup().get(j);
+                if (f.getId().equals(id)){
+                    g.getFriendsInGroup().remove(j);
+                    if (g.getFriendsInGroup().isEmpty()){
+                        groups.remove(j);
+                    }
+                    break;
+                }
+            }
         }
     }
 
@@ -184,8 +225,8 @@ public class StaticMethods {
 
     public static List<String> setGifNames(){
         List<String> gifNames = new ArrayList<>();
-        for (int j=1; j<35; j++){
-            gifNames.add("gif"+j);
+        for (int j=1; j<3; j++){
+            gifNames.add("e"+j);
         }
         return gifNames;
     }
@@ -243,27 +284,5 @@ public class StaticMethods {
         ConnectivityManager connectivityManager = (ConnectivityManager) activity.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
-    }
-
-    public static String deleteAccent(String input) {
-        String output = input;
-        for (int i=0; i<output.length(); i++){
-            if ((int)output.charAt(i) == 237){
-                output = output.replace(output.charAt(i),'i');
-            }
-            else if((int)output.charAt(i) == 243){
-                output = output.replace(output.charAt(i),'o');
-            }
-            else if((int)output.charAt(i) == 250){
-                output = output.replace(output.charAt(i),'u');
-            }
-            else if((int)output.charAt(i) == 225){
-                output = output.replace(output.charAt(i),'a');
-            }
-            else if((int)output.charAt(i) == 233){
-                output = output.replace(output.charAt(i),'e');
-            }
-        }
-        return output;
     }
 }

@@ -3,6 +3,7 @@ package com.objective4.app.onlife.Tasks;
 import android.app.Activity;
 import android.os.AsyncTask;
 
+import com.kenny.snackbar.SnackBar;
 import com.objective4.app.onlife.Controller.JSONParser;
 import com.objective4.app.onlife.Models.ModelPerson;
 import com.objective4.app.onlife.R;
@@ -15,13 +16,15 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
-public class TaskSendNotification extends AsyncTask<ModelPerson, String, Boolean>{
+public class TaskSendNotification extends AsyncTask<ModelPerson, String, String[]>{
     private Activity context;
     private LoadToast toast;
     private JSONParser jsonParser;
     private String message="",actualUser, gifName="";
+    private int numBlocked;
 
     public TaskSendNotification(Activity c, String actualUser, String message, String gifName){
         this.context = c;
@@ -29,6 +32,7 @@ public class TaskSendNotification extends AsyncTask<ModelPerson, String, Boolean
         this.actualUser = actualUser;
         this.gifName = gifName;
         jsonParser = new JSONParser();
+        numBlocked = 0;
     }
 
     @Override
@@ -43,11 +47,29 @@ public class TaskSendNotification extends AsyncTask<ModelPerson, String, Boolean
     }
 
     @Override
-    protected Boolean doInBackground(ModelPerson... params) {
+    protected String[] doInBackground(ModelPerson... params) {
         //Parametros a enviar
+        String returnMessage = "";
+        long actualTime = Calendar.getInstance().getTimeInMillis();
         List<NameValuePair> p = new ArrayList<>();
-        for(int i = 0; i<params.length; i++){
-            p.add(new BasicNameValuePair("id[]",params[i].getId_phone()));
+        if (params.length==1){
+            ModelPerson f = params[0];
+            if (actualTime - f.getLastBlockedTime() > context.getResources().getInteger(R.integer.block_time_remaining)){
+                p.add(new BasicNameValuePair("id[]",f.getId_phone()));
+                f.setLastBlockedTime(actualTime);
+            }else{
+                returnMessage = context.getResources().getString(R.string.toast_not_time_yet)+" "+((context.getResources().getInteger(R.integer.block_time_remaining)-(actualTime - f.getLastBlockedTime()))/1000)+" s";
+            }
+        }else {
+            for (int i = 0; i < params.length; i++) {
+                ModelPerson f = params[i];
+                if (actualTime - f.getLastBlockedTime() > context.getResources().getInteger(R.integer.block_time_remaining)){
+                    p.add(new BasicNameValuePair("id[]", f.getId_phone()));
+                    f.setLastBlockedTime(actualTime);
+                    numBlocked++;
+                }
+            }
+            returnMessage = context.getResources().getString(R.string.friends_blocked_number)+" "+numBlocked+"/"+params.length;
         }
 
         p.add(new BasicNameValuePair("userName", actualUser));
@@ -56,20 +78,24 @@ public class TaskSendNotification extends AsyncTask<ModelPerson, String, Boolean
 
         JSONObject json = jsonParser.makeHttpRequest("http://104.236.74.55/onlife/gcm.php", "POST", p);
         try {
-            boolean error = json.getBoolean("error");
-            if(error==false){
-                return true;
+            if(!json.getBoolean("error")){
+                return new String[]{"true",returnMessage};
             }
-            message = json.getString("message");
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return false;
+        return new String[]{"false",returnMessage};
     }
 
     @Override
-    protected void onPostExecute(Boolean result){
-        toast.success();
+    protected void onPostExecute(String[] result){
+        SnackBar.cancelSnackBars(context);
+        if (result[0].equals("false")){
+            toast.error();
+            SnackBar.show(context,result[1]);
+        }else{
+            toast.success();
+            if (!result[1].equals("")) SnackBar.show(context,result[1]);
+        }
     }
 }
-

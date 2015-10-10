@@ -113,15 +113,8 @@ public class FragmentGroups extends Fragment {
             ModelGroup actualModelGroup = adapter.getItem(position);
             boolean activeDev = checkDeviceAdmin(getActivity());
             if (activeDev) {
-                long actualTime = Calendar.getInstance().getTimeInMillis();
-                if (actualTime - actualModelGroup.getLastBlockedTime() > getResources().getInteger(R.integer.block_time_group_remaining)) {
-                    new TaskSendNotification(getActivity(), ModelSessionData.getInstance().getUser().getName(), "", "").execute(actualModelGroup.getFriendsInGroup().toArray(new ModelPerson[actualModelGroup.getFriendsInGroup().size()]));
-                    actualModelGroup.setLastBlockedTime(actualTime);
-                } else {
-                    SnackBar.show(getActivity(), getResources().getString(R.string.toast_not_time_yet) + " " + ((getResources().getInteger(R.integer.block_time_group_remaining) - (actualTime - actualModelGroup.getLastBlockedTime())) / 1000) + " s");
-                }
+                new TaskSendNotification(getActivity(), ModelSessionData.getInstance().getUser().getName(), "", "").execute(actualModelGroup.getFriendsInGroup().toArray(new ModelPerson[actualModelGroup.getFriendsInGroup().size()]));
             } else{
-                SnackBar.show(getActivity(),R.string.in_block_device_admin_not_activated);
                 activateDeviceAdmin(getActivity());
             }
 

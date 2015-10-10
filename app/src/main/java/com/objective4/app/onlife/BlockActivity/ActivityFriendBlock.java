@@ -9,51 +9,60 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.GridView;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.objective4.app.onlife.Adapters.AdapterEmoticon;
+import com.objective4.app.onlife.Adapters.AdapterFragmentEmoticon;
 import com.objective4.app.onlife.Listeners.ListenerMessageFocusChanged;
 import com.objective4.app.onlife.Listeners.ListenerTextWatcher;
 import com.objective4.app.onlife.Models.ModelPerson;
 import com.objective4.app.onlife.R;
 import com.objective4.app.onlife.Tasks.TaskSendNotification;
 import com.kenny.snackbar.SnackBar;
+import com.objective4.app.onlife.Tasks.TaskSimpleImageDownload;
+import com.r0adkll.slidr.model.SlidrInterface;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
 import net.soulwolf.widget.ratiolayout.widget.RatioImageView;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-
-import pl.droidsonroids.gif.GifDrawable;
-import pl.droidsonroids.gif.GifImageView;
+import it.neokree.materialtabs.MaterialTab;
+import it.neokree.materialtabs.MaterialTabHost;
+import it.neokree.materialtabs.MaterialTabListener;
 
 import static com.objective4.app.onlife.Controller.StaticMethods.activateDeviceAdmin;
 import static com.objective4.app.onlife.Controller.StaticMethods.animationEnd;
 import static com.objective4.app.onlife.Controller.StaticMethods.checkDeviceAdmin;
+import static com.objective4.app.onlife.Controller.StaticMethods.getRelativeTop;
 import static com.objective4.app.onlife.Controller.StaticMethods.hideSoftKeyboard;
+import static com.objective4.app.onlife.Controller.StaticMethods.imageInDisk;
 import static com.objective4.app.onlife.Controller.StaticMethods.isNetworkAvailable;
 import static com.objective4.app.onlife.Controller.StaticMethods.loadImage;
-import static com.objective4.app.onlife.Controller.StaticMethods.setGifNames;
 import static com.objective4.app.onlife.Controller.StaticMethods.setSlidr;
 import static com.objective4.app.onlife.Controller.StaticMethods.showSoftKeyboard;
 
 public class ActivityFriendBlock extends AppCompatActivity {
     private ModelPerson friend,actualUser;
 
+    private NestedScrollView nestedScrollView;
     private ImageView visibility;
     private MaterialEditText messageTextView;
     private TextView maxCharsView;
-    private GridView gridView;
+    private LinearLayout emoticonLayout;
+    private MaterialTabHost tabHost;
+    private ViewPager viewPager;
+    private SlidrInterface slidrInterface;
+    private boolean emoticonFlag=false;
+    private CollapsingToolbarLayout collapser;
 
     private ListenerTextWatcher listenerTextWatcher;
     private String gifName="";
@@ -62,8 +71,7 @@ public class ActivityFriendBlock extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setSlidr(this);
-
+        slidrInterface = setSlidr(this);
         setContentView(R.layout.activity_friend_block);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.ActivityFriendBlock_ToolBar);
@@ -75,14 +83,28 @@ public class ActivityFriendBlock extends AppCompatActivity {
 
         friend = (ModelPerson)getIntent().getSerializableExtra("data");
         actualUser = (ModelPerson) getIntent().getSerializableExtra("actualuser");
+        emoticonFlag = false;
 
-        CollapsingToolbarLayout collapser = (CollapsingToolbarLayout) findViewById(R.id.ActivityFriendBlock_CollapsingToolBarLayout);
+        RatioImageView avatar = (RatioImageView) findViewById(R.id.ActivityFriendBlock_ImageViewContact);
+        if (friend.refreshImageBig() || !imageInDisk(this,friend.getId()+"_"+getResources().getInteger(R.integer.adapter_contact_size_large))){
+            if (imageInDisk(this,friend.getId()+"_"+getResources().getInteger(R.integer.adapter_contact_size_little)))
+                avatar.setImageBitmap(loadImage(this,friend.getId()+"_"+getResources().getInteger(R.integer.adapter_contact_size_little)));
+            friend.setRefreshImageBig(false);
+            new TaskSimpleImageDownload(this,avatar,getResources().getInteger(R.integer.adapter_contact_size_large)).execute(friend);
+        }else{
+            avatar.setImageBitmap(loadImage(this,friend.getId()+"_"+getResources().getInteger(R.integer.adapter_contact_size_large)));
+        }
+
+        emoticonLayout = (LinearLayout) findViewById(R.id.ActivityFriendBlock_LayoutEmoticon);
+        tabHost = (MaterialTabHost) findViewById(R.id.ActivityFriendBlock_TabHost);
+        viewPager = (ViewPager) findViewById(R.id.ActivityFriendBlock_ViewPager);
+
+        collapser = (CollapsingToolbarLayout) findViewById(R.id.ActivityFriendBlock_CollapsingToolBarLayout);
         collapser.setTitle(friend.getName());
         collapser.setCollapsedTitleTextColor(getResources().getColor(R.color.white));
         collapser.setExpandedTitleColor(getResources().getColor(R.color.white));
 
-        NestedScrollView nestedScrollView = (NestedScrollView) findViewById(R.id.ActivityFriendBlock_ScrollView);
-        nestedScrollView.setNestedScrollingEnabled(false);
+        nestedScrollView = (NestedScrollView) findViewById(R.id.ActivityFriendBlock_ScrollView);
 
         visibility= (ImageView) findViewById(R.id.ActivityFriendBlock_RadioButton);
         if (friend.getState().equals("I")){
@@ -91,9 +113,6 @@ public class ActivityFriendBlock extends AppCompatActivity {
             visibility.setImageBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.ic_action_visibility_on));
         }
 
-        RatioImageView avatar = (RatioImageView) findViewById(R.id.ActivityFriendBlock_ImageViewContact);
-        avatar.setImageBitmap(loadImage(this,friend.getId()+"_"+getResources().getInteger(R.integer.adapter_contact_size_large)));
-
         maxCharsView = (TextView) findViewById(R.id.ActivityFriendBlock_TextViewMaxCharacters);
         messageTextView = (MaterialEditText) findViewById(R.id.ActivityFriendBlock_EditTextMessage);
         messageTextView.setOnFocusChangeListener(new ListenerMessageFocusChanged(this,messageTextView));
@@ -101,47 +120,20 @@ public class ActivityFriendBlock extends AppCompatActivity {
 
         messageTextView.addTextChangedListener(listenerTextWatcher);
 
-        gridView = (GridView) findViewById(R.id.ActivityFriendBlock_GridLayout);
-
-        FloatingActionButton fabGif = (FloatingActionButton) findViewById(R.id.ActivityFriendBlock_FABEmoticon);
-        fabGif.setOnClickListener(new View.OnClickListener() {
+        ImageButton emoticonButton = (ImageButton) findViewById(R.id.ActivityFriendBlock_EmoticonButton);
+        emoticonButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (gridView.getVisibility() != View.VISIBLE) {
-                    gridView.setVisibility(View.VISIBLE);
-                    final List<String> gifNames = setGifNames();
-
-                    gridView.setAdapter(new AdapterEmoticon(ActivityFriendBlock.this,gifNames));
-                    gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                if (emoticonLayout.getVisibility() == View.GONE) {
+                    nestedScrollView.post(new Runnable() {
                         @Override
-                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                            try{
-                                gifName = gifNames.get(position);
-                                final GifImageView gifImageView = (GifImageView) findViewById(R.id.ActivityFriendBlock_GifImage);
-                                int resourceId = getResources().getIdentifier(gifName, "drawable", getPackageName());
-                                GifDrawable gif = new GifDrawable(getResources(), resourceId);
-                                gifImageView.setImageDrawable(gif);
-                                gifImageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
-
-                                gifImageView.setOnLongClickListener(new View.OnLongClickListener() {
-                                    @Override
-                                    public boolean onLongClick(View v) {
-                                        gifImageView.setImageBitmap(null);
-                                        gifName = "";
-                                        return false;
-                                    }
-                                });
-                            }catch (Exception e){
-                                e.printStackTrace();
-                            }
-                            gridView.setVisibility(View.GONE);
+                        public void run() {
+                            nestedScrollView.smoothScrollTo(0, getRelativeTop(tabHost));
                         }
                     });
-
-                }else{
-                    gridView.setVisibility(View.GONE);
-                    List<String> array = new ArrayList<>();
-                    gridView.setAdapter(new AdapterEmoticon(ActivityFriendBlock.this,array));
+                    showEmoticon();
+                } else {
+                    hideEmoticon();
                 }
             }
         });
@@ -164,6 +156,66 @@ public class ActivityFriendBlock extends AppCompatActivity {
         }
     };
 
+    protected void setEmoticonTab(){
+        AdapterFragmentEmoticon adapter = new AdapterFragmentEmoticon(getSupportFragmentManager(),this);
+        viewPager.setAdapter(adapter);
+        viewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+            @Override
+            public void onPageSelected(int position) {
+                tabHost.setSelectedNavigationItem(position);
+            }
+        });
+
+        for (int i=0; i<adapter.getCount(); i++){
+            tabHost.addTab(tabHost.newTab().setIcon(getResources().getDrawable(R.drawable.ic_insert_emoticon_black_24dp)).setTabListener(new MaterialTabListener() {
+                @Override
+                public void onTabSelected(MaterialTab tab) {
+                    viewPager.setCurrentItem(tab.getPosition());
+                }
+
+                @Override
+                public void onTabReselected(MaterialTab tab) {
+                }
+
+                @Override
+                public void onTabUnselected(MaterialTab tab) {
+
+                }
+            }));
+        }
+    }
+
+    public void setImage(String emoticonName){
+        hideEmoticon();
+        ImageView emoticon = (ImageView) findViewById(R.id.ActivityFriendBlock_EmoticonImage);
+        int resourceId = getResources().getIdentifier(emoticonName, "drawable", getPackageName());
+        emoticon.setImageDrawable(getResources().getDrawable(resourceId));
+    }
+
+    public void showEmoticon(){
+        nestedScrollView.setNestedScrollingEnabled(true);
+        hideSoftKeyboard(ActivityFriendBlock.this, messageTextView);
+        slidrInterface.lock();
+        setEmoticonTab();
+        emoticonFlag=true;
+        emoticonLayout.setVisibility(View.VISIBLE);
+        nestedScrollView.fullScroll(ScrollView.FOCUS_DOWN);
+        nestedScrollView.post(new Runnable() {
+            @Override
+            public void run() {
+                nestedScrollView.smoothScrollTo(0, getRelativeTop(tabHost));
+            }
+        });
+    }
+
+    public void hideEmoticon(){
+        emoticonFlag = false;
+        slidrInterface.unlock();
+        nestedScrollView.setSmoothScrollingEnabled(true);
+        nestedScrollView.fullScroll(ScrollView.FOCUS_UP);
+        emoticonLayout.setVisibility(View.GONE);
+    }
+
     @Override
     protected void onResume() {
         registerReceiver(broadcastReceiver, new IntentFilter("com.objective4.app.onlife.Fragments.FragmentContacts"));
@@ -178,39 +230,41 @@ public class ActivityFriendBlock extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        hideSoftKeyboard(this, messageTextView);
-        animationEnd(this);
+        if (emoticonFlag){
+            hideEmoticon();
+        }else{
+            super.onBackPressed();
+            hideSoftKeyboard(this, messageTextView);
+            animationEnd(this);
+        }
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        hideSoftKeyboard(this,messageTextView);
-        finish();
-        animationEnd(this);
+        hideSoftKeyboard(this, messageTextView);
+        if (emoticonFlag){
+            hideEmoticon();
+        }else{
+            finish();
+            hideSoftKeyboard(this, messageTextView);
+            animationEnd(this);
+        }
         return super.onOptionsItemSelected(item);
     }
 
     public void block(View view) {
         if (isNetworkAvailable(this)) {
             hideSoftKeyboard(this,messageTextView);
-            if (listenerTextWatcher.getActualChar() <= 30) {
+            if (listenerTextWatcher.getActualChar() < 31) {
                 boolean devAdmin = checkDeviceAdmin(this);
                 if (friend.getState().equals("A") && devAdmin) {
                     try {
-                        long actualTime = Calendar.getInstance().getTimeInMillis();
-                        if (actualTime - friend.getLastBlockedTime() > getResources().getInteger(R.integer.block_time_remaining)){
-                            new TaskSendNotification(ActivityFriendBlock.this, actualUser.getName(), messageTextView.getText().toString(), gifName).execute(friend);
-                            friend.setLastBlockedTime(actualTime);
-                        }else{
-                            SnackBar.show(ActivityFriendBlock.this,getResources().getString(R.string.toast_not_time_yet)+" "+((getResources().getInteger(R.integer.block_time_remaining)-(actualTime - friend.getLastBlockedTime()))/1000)+" s");
-                        }
+                        new TaskSendNotification(ActivityFriendBlock.this, actualUser.getName(), messageTextView.getText().toString(), gifName).execute(friend);
                     } catch (Exception ex) {
                         ex.printStackTrace();
                         SnackBar.show(ActivityFriendBlock.this, R.string.error);
                     }
                 }else if(!devAdmin){
-                    SnackBar.show(this,R.string.in_block_device_admin_not_activated);
                     activateDeviceAdmin(this);
                 }else{
                     SnackBar.show(ActivityFriendBlock.this,R.string.friend_inactive);

@@ -15,8 +15,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import static com.objective4.app.onlife.Controller.StaticMethods.deleteAccent;
-
 public class TaskFacebookFriendRequest implements GraphRequest.Callback {
     private Context context;
     private String TAG;
@@ -45,7 +43,7 @@ public class TaskFacebookFriendRequest implements GraphRequest.Callback {
                 // http://stackoverflow.com/questions/5841710/get-user-image-from-facebook-graph-api
                 // http://stackoverflow.com/questions/23559736/android-skimagedecoderfactory-returned-null-error
                 String path = "https://graph.facebook.com/" + id + "/picture?";
-                ModelPerson contact = new ModelPerson(id, null, deleteAccent(name), path, "A");
+                ModelPerson contact = new ModelPerson(id, null, name, path, "A");
                 friends.add(contact);
             }
 

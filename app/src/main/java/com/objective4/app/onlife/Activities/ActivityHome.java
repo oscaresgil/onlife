@@ -57,17 +57,15 @@ public class ActivityHome extends ActionBarActivity {
         sharedPreferences = getSharedPreferences(ActivityMain.MyPREFERENCES, Context.MODE_PRIVATE);
         Gson gson = new Gson();
         userLogin = gson.fromJson(sharedPreferences.getString("userLogin", ""), ModelPerson.class);
-        List<ModelPerson> friends = gson.fromJson(sharedPreferences.getString("friends", ""), (new TypeToken<ArrayList<ModelPerson>>() {
-        }.getType()));
-        List<ModelGroup> groups = gson.fromJson(sharedPreferences.getString("groups", ""), (new TypeToken<ArrayList<ModelGroup>>() {
-        }.getType()));
+        List<ModelPerson> friends = gson.fromJson(sharedPreferences.getString("friends", ""), (new TypeToken<ArrayList<ModelPerson>>() {}.getType()));
+        List<ModelGroup> groups = gson.fromJson(sharedPreferences.getString("groups", ""), (new TypeToken<ArrayList<ModelGroup>>() {}.getType()));
+
+        if (sharedPreferences.getBoolean("first_login",false)){
+            new TaskGetFriends(this, true).execute(userLogin.getId());
+            sharedPreferences.edit().putBoolean("first_login",false).apply();
+        }
 
         ModelSessionData.initInstance(userLogin, friends, groups);
-        if (friends.isEmpty()) {
-            new TaskGetFriends(this, true).execute(userLogin.getId());
-        }else{
-            new TaskGetFriends(this, false).execute(userLogin.getId());
-        }
 
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.orange_light)));
         getSupportActionBar().setTitle((Html.fromHtml("<b><font color=\"#000000\">" + getString(R.string.app_name) + "</font></b>")));

@@ -141,7 +141,7 @@ public class ActivityGroupBlock extends AppCompatActivity {
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                             try{
                                 gifName = gifNames.get(position);
-                                final GifImageView gifImageView = (GifImageView) findViewById(R.id.ActivityFriendBlock_GifImage);
+                                final GifImageView gifImageView = (GifImageView) findViewById(R.id.ActivityFriendBlock_EmoticonImage);
                                 int resourceId = getResources().getIdentifier(gifName, "drawable", getPackageName());
                                 GifDrawable gif = new GifDrawable(getResources(), resourceId);
                                 gifImageView.setImageDrawable(gif);
@@ -288,18 +288,11 @@ public class ActivityGroupBlock extends AppCompatActivity {
             boolean devAdmin = checkDeviceAdmin(this);
             if (listenerTextWatcher.getActualChar() <= 30 && devAdmin) {
                 try {
-                    long actualTime = Calendar.getInstance().getTimeInMillis();
-                    if (actualTime - modelGroup.getLastBlockedTime() > getResources().getInteger(R.integer.block_time_group_remaining)){
-                        new TaskSendNotification(ActivityGroupBlock.this, actualUser.getName(), messageTextView.getText().toString(),gifName).execute(friendsInGroup.toArray(new ModelPerson[friendsInGroup.size()]));
-                        modelGroup.setLastBlockedTime(actualTime);
-                    }else{
-                        SnackBar.show(ActivityGroupBlock.this,getResources().getString(R.string.toast_not_time_yet)+" "+((getResources().getInteger(R.integer.block_time_group_remaining)-(actualTime - modelGroup.getLastBlockedTime()))/1000)+" s");
-                    }
+                    new TaskSendNotification(ActivityGroupBlock.this, actualUser.getName(), messageTextView.getText().toString(),gifName).execute(friendsInGroup.toArray(new ModelPerson[friendsInGroup.size()]));
                 } catch (Exception ex) {
                     SnackBar.show(ActivityGroupBlock.this, R.string.error);
                 }
             }else if(!devAdmin){
-                SnackBar.show(this,R.string.in_block_device_admin_not_activated);
                 activateDeviceAdmin(this);
             } else {
                 SnackBar.show(ActivityGroupBlock.this, R.string.message_max_characters, R.string.button_change_text_message, new View.OnClickListener() {

@@ -5,6 +5,8 @@ import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -79,14 +81,15 @@ public class AdapterContact extends ArrayAdapter<ModelPerson> {
 
         contactHolder.visibility.bringToFront();
         contactHolder.name.bringToFront();
-        contactHolder.avatar.setImageBitmap(BitmapFactory.decodeResource(context.getResources(),R.drawable.loading_friend_icon));
+        contactHolder.avatar.setImageBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.loading_friend_icon));
 
-        if (imageInDisk(context, userData.getId()+"_"+context.getResources().getInteger(R.integer.adapter_contact_size_little))){
-            contactHolder.avatar.setImageBitmap(loadImage(context,userData.getId()+"_"+context.getResources().getInteger(R.integer.adapter_contact_size_little)));
-        }else{
+        if (userData.refreshImage() || !imageInDisk(context, userData.getId() + "_" + context.getResources().getInteger(R.integer.adapter_contact_size_little))){
             new TaskSimpleImageDownload(context,contactHolder.avatar,context.getResources().getInteger(R.integer.adapter_contact_size_little)).execute(userData);
-            new TaskSimpleImageDownload(context,contactHolder.avatar,context.getResources().getInteger(R.integer.adapter_contact_size_large)).execute(userData);
+            userData.setRefreshImage(false);
+        }else{
+            contactHolder.avatar.setImageBitmap(loadImage(context, userData.getId() + "_" + context.getResources().getInteger(R.integer.adapter_contact_size_little)));
         }
+
         contactHolder.name.setText(userData.getName());
         if (userData.getState().equals("I")){
             contactHolder.visibility.setImageBitmap(BitmapFactory.decodeResource(context.getResources(),R.drawable.ic_action_visibility_off));

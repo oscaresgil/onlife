@@ -10,7 +10,7 @@ public class ModelPerson implements Serializable{
     private String state;
     private int background;
     private boolean selected;
-    private boolean deleted=true;
+    private boolean refreshImage,refreshImageBig;
     private long lastBlockedTime;
 
     public ModelPerson() {
@@ -24,6 +24,8 @@ public class ModelPerson implements Serializable{
         this.state = state;
         selected = false;
         lastBlockedTime = 0;
+        refreshImage = true;
+        refreshImageBig = true;
     }
 
     public String getId() {
@@ -38,10 +40,6 @@ public class ModelPerson implements Serializable{
         return id_phone;
     }
 
-    public void setId_phone(String id_phone) {
-        this.id_phone = id_phone;
-    }
-
     public String getName() {
         return name;
     }
@@ -52,10 +50,6 @@ public class ModelPerson implements Serializable{
 
     public String getPhoto() {
         return photo;
-    }
-
-    public void setPhoto(String photo) {
-        this.photo = photo;
     }
 
     public String getState() {
@@ -82,20 +76,28 @@ public class ModelPerson implements Serializable{
         this.selected = selected;
     }
 
-    public boolean isDeleted() {
-        return deleted;
-    }
-
-    public void setDeleted(boolean deleted) {
-        this.deleted = deleted;
-    }
-
     public long getLastBlockedTime() {
         return lastBlockedTime;
     }
 
     public void setLastBlockedTime(long lastBlockedTime) {
         this.lastBlockedTime = lastBlockedTime;
+    }
+
+    public boolean refreshImage() {
+        return refreshImage;
+    }
+
+    public void setRefreshImage(boolean refreshImage) {
+        this.refreshImage = refreshImage;
+    }
+
+    public boolean refreshImageBig() {
+        return refreshImageBig;
+    }
+
+    public void setRefreshImageBig(boolean refreshImageBig) {
+        this.refreshImageBig = refreshImageBig;
     }
 
     @Override
@@ -108,7 +110,7 @@ public class ModelPerson implements Serializable{
                 ", state='" + state + '\'' +
                 ", background=" + background +
                 ", selected=" + selected +
-                ", deleted=" + deleted +
+                ", refresh=" + refreshImage +
                 ", lastBlockedTime=" + lastBlockedTime +
                 '}';
     }

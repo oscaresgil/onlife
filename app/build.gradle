@@ -8,8 +8,8 @@ android {
         applicationId "com.objective4.app.onlife"
         minSdkVersion 15
         targetSdkVersion 22
-        versionCode 3
-        versionName "1.2"
+        versionCode 4
+        versionName "2.0"
     }
     buildTypes {
         release {
@@ -50,5 +50,6 @@ dependencies {
     compile 'com.ogaclejapan.smarttablayout:library:1.3.0@aar'
     compile 'uk.co.chrisjenx:calligraphy:2.1.0'
     compile 'com.github.markushi:circlebutton:1.1'
+    compile 'it.neokree:MaterialTabs:0.11'
 }
 

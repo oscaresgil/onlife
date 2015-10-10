@@ -108,6 +108,7 @@ public class ActivityMain extends Activity{
                     sharedPreferences.edit().putString("userLogin", gson.toJson(userLogin)).apply();
                     sharedPreferences.edit().putString("friends", gson.toJson(new ArrayList<ModelPerson>())).apply();
                     sharedPreferences.edit().putString("groups", gson.toJson(new ArrayList<ModelGroup>())).apply();
+                    sharedPreferences.edit().putBoolean("first_login",true).apply();
                     TaskAddNewUser taskAddNewUser = new TaskAddNewUser();
                     taskAddNewUser.execute(userLogin);
 

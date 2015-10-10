@@ -25,7 +25,7 @@ public class ActivityInBlock extends Activity{
     private String message;
     private String emoticonName;
     private List<ModelMessages> messages;
-    private String[] colors = {"#1abc9c" ,"#2ecc71", "#3498db", "#9b59b6", "#34495e", "#16a085", "#27ae60", "#2980b9", "#8e44ad", "#2c3e50", "#f1c40f", "#e67e22", "#e74c3c", "#ecf0f1", "#95a5a6", "#f39c12", "#d35400", "#c0392b", "#bdc3c7", "#7f8c8d"};
+    private String[] colors = {"#1abc9c" ,"#2ecc71", "#3498db", "#9b59b6", "#34495e", "#16a085", "#27ae60", "#2980b9", "#8e44ad", "#2c3e50", "#f1c40f", "#e67e22", "#e74c3c", "#95a5a6", "#f39c12", "#d35400", "#c0392b", "#bdc3c7", "#7f8c8d"};
     private boolean flagForAds;
 
     private TextView textViewMessage,textViewUser,textViewNumber;
@@ -33,6 +33,7 @@ public class ActivityInBlock extends Activity{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        AppLovinSdk.initializeSdk(this);
         this.flagForAds=true;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_in_block);
@@ -57,13 +58,13 @@ public class ActivityInBlock extends Activity{
         emoticonName = getIntent().getStringExtra("gif");
 
         messages = new ArrayList<>();
-        messages.add(new ModelMessages(user, message, emoticonName,colors[0]));
+        messages.add(new ModelMessages(user, message, emoticonName, colors[0]));
 
         textViewNumber.setText((numPage+1) + "/" + messages.size());
         textViewUser.setText(user);
         textViewMessage.setText(message);
 
-        AppLovinSdk.initializeSdk(this);
+
     }
 
     @Override

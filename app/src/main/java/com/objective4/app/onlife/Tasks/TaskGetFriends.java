@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.provider.Settings;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -62,15 +63,18 @@ public class TaskGetFriends extends AsyncTask<String, Void, ArrayList<ModelPerso
         List<NameValuePair> p = new ArrayList<>();
         p.add(new BasicNameValuePair("tag", "getFriends"));
         p.add(new BasicNameValuePair("myId", id));
-        JSONObject jsonFriends = null;
+        JSONObject jsonFriends;
         try{
-            jsonFriends = jsonParser.makeHttpRequest(ActivityMain.SERVER_URL, "POST", p);
+            do{
+                jsonFriends = jsonParser.makeHttpRequest(ActivityMain.SERVER_URL, "POST", p);
+            }
+            while(!isNetworkAvailable((Activity) context));
             Gson gson = new Gson();
 
             return gson.fromJson(jsonFriends.getString("friends"), (new TypeToken<ArrayList<ModelPerson>>(){}.getType()));
         }catch(Exception ex){
             ex.printStackTrace();
-            return new ArrayList<ModelPerson>();
+            return new ArrayList<>();
         }
     }
 
@@ -80,6 +84,7 @@ public class TaskGetFriends extends AsyncTask<String, Void, ArrayList<ModelPerso
         if (isNetworkAvailable((Activity)context)){
             if (flagDialog) dialog.dismiss();
 
+            for (ModelPerson f: friends) { f.setRefreshImage(true); f.setRefreshImageBig(true); }
             Collections.sort(friends, new Comparator<ModelPerson>() {
                 @Override
                 public int compare(ModelPerson modelPerson1, ModelPerson modelPerson2) {

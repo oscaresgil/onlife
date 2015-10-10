@@ -28,19 +28,18 @@ import com.objective4.app.onlife.BlockActivity.ActivityFriendBlock;
 import com.objective4.app.onlife.Models.ModelPerson;
 import com.objective4.app.onlife.Models.ModelSessionData;
 import com.objective4.app.onlife.R;
-import com.objective4.app.onlife.Tasks.TaskRefreshImageDownload;
+import com.objective4.app.onlife.Tasks.TaskGetFriends;
+import com.objective4.app.onlife.Tasks.TaskRefresh;
 import com.objective4.app.onlife.Tasks.TaskSendNotification;
 import com.kenny.snackbar.SnackBar;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import static com.objective4.app.onlife.Controller.StaticMethods.activateDeviceAdmin;
 import static com.objective4.app.onlife.Controller.StaticMethods.animationStart;
 import static com.objective4.app.onlife.Controller.StaticMethods.checkDeviceAdmin;
-import static com.objective4.app.onlife.Controller.StaticMethods.delImageProfile;
 import static com.objective4.app.onlife.Controller.StaticMethods.isNetworkAvailable;
 import static com.objective4.app.onlife.Controller.StaticMethods.showSoftKeyboard;
 
@@ -83,7 +82,7 @@ public class FragmentContacts extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (!mSwipeRefreshLayout.isRefreshing()) {
-                    ModelPerson user = (ModelPerson) listView.getAdapter().getItem(position);
+                    ModelPerson user = adapter.getItem(position);
                     Intent i = new Intent(getActivity(), ActivityFriendBlock.class);
                     i.putExtra("data", user);
                     i.putExtra("actualuser", actualUser);
@@ -102,15 +101,8 @@ public class FragmentContacts extends Fragment {
                     ModelPerson user = ModelSessionData.getInstance().getFriends().get(position);
                     boolean devAdmin = checkDeviceAdmin(getActivity());
                     if (user.getState().equals("A") && devAdmin) {
-                        long actualTime = Calendar.getInstance().getTimeInMillis();
-                        if (actualTime - user.getLastBlockedTime() > getResources().getInteger(R.integer.block_time_remaining)) {
-                            new TaskSendNotification(getActivity(), actualUser.getName(), "", "").execute(user);
-                            user.setLastBlockedTime(actualTime);
-                        } else {
-                            SnackBar.show(getActivity(), getResources().getString(R.string.toast_not_time_yet) + " " + ((getResources().getInteger(R.integer.block_time_remaining) - (actualTime - user.getLastBlockedTime())) / 1000) + " s");
-                        }
+                        new TaskSendNotification(getActivity(), actualUser.getName(), "", "").execute(user);
                     } else if (!devAdmin) {
-                        SnackBar.show(getActivity(), R.string.in_block_device_admin_not_activated);
                         activateDeviceAdmin(getActivity());
                     } else {
                         SnackBar.show(getActivity(), R.string.friend_inactive);
@@ -128,6 +120,7 @@ public class FragmentContacts extends Fragment {
                 return true;
             }
         });
+        getActivity().registerReceiver(broadcastReceiver, new IntentFilter("com.objective4.app.onlife.Fragments.FragmentContacts"));
 
         return v;
     }
@@ -151,12 +144,10 @@ public class FragmentContacts extends Fragment {
 
                 List<ModelPerson> friendsT = adapterContact.getFriends();
                 if (state.equals("O")) {
-                    ModelSessionData.getInstance().removeUser(id);
 
                     for (int i = 0; i < friendsT.size(); i++) {
                         ModelPerson p = friendsT.get(i);
-                        if (p.getId().equals(id)) {
-                            delImageProfile(getActivity(),p.getId());
+                        if (id.equals(p.getId())){
                             adapterContact.remove(adapterContact.getItem(i));
                             break;
                         }
@@ -171,17 +162,14 @@ public class FragmentContacts extends Fragment {
                     }
                     adapterContact.notifyDataSetChanged();
                 }
-            }else if(tag.equals("new_user")){
+            }else if(tag .equals("new_user")){
                 ModelPerson newUser = (ModelPerson) extras.getSerializable("new_user");
-                boolean addFlag = ModelSessionData.getInstance().addUser(newUser);
-                if (addFlag) {
-                    adapterContact.add(newUser);
+                adapterContact.add(newUser);
+                adapterContact.notifyDataSetChanged();
+                listView.setAdapter(adapterContact);
 
-                    adapterContact.notifyDataSetChanged();
-                    listView.setAdapter(adapterContact);
-                }
             }else if(tag.equals("no_device_admin")){
-                SnackBar.show(getActivity(),R.string.in_block_device_admin_not_activated);
+                SnackBar.show(getActivity(),R.string.device_admin_not_activated);
                 activateDeviceAdmin(getActivity());
             }
         }
@@ -191,7 +179,6 @@ public class FragmentContacts extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        getActivity().registerReceiver(broadcastReceiver,new IntentFilter("com.objective4.app.onlife.Fragments.FragmentContacts"));
         mSwipeRefreshLayout = (SwipeRefreshLayout) getActivity().findViewById(R.id.FragmentContacts_SwipeRefreshLayout);
         listView.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
@@ -321,7 +308,7 @@ public class FragmentContacts extends Fragment {
 
     public void refreshContact(){
         if (isNetworkAvailable(getActivity())) {
-            new TaskRefreshImageDownload(getActivity(),mSwipeRefreshLayout, listView).execute(actualUser.getId());
+            new TaskRefresh(getActivity(),mSwipeRefreshLayout, listView).execute(actualUser.getId());
         }else{
             mSwipeRefreshLayout.setRefreshing(false);
             SnackBar.show(getActivity(), R.string.no_connection, R.string.button_change_connection, new View.OnClickListener() {
