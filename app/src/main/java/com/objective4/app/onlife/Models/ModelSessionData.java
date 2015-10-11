@@ -2,8 +2,6 @@ package com.objective4.app.onlife.Models;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 public class ModelSessionData implements Serializable{
@@ -32,34 +30,8 @@ public class ModelSessionData implements Serializable{
         this.modelGroups = modelGroups;
     }
 
-    public void removeUser(String id){
-        for (int i=0; i<friends.size(); i++){
-            if (id.equals(friends.get(i).getId())){
-                friends.remove(i);
-                break;
-            }
-        }
-        for (int j = 0; j<modelGroups.size(); j++){
-            ModelGroup g = modelGroups.get(j);
-            for (int i=0; i<g.getFriendsInGroup().size(); i++){
-                ModelPerson f = g.getFriendsInGroup().get(i);
-                if (f.getId().equals(id)){
-                    g.getFriendsInGroup().remove(i);
-                    if (g.getFriendsInGroup().isEmpty()){
-                        modelGroups.remove(j);
-                    }
-                    break;
-                }
-            }
-        }
-    }
-
     public ModelPerson getUser() {
         return user;
-    }
-
-    public void setUser(ModelPerson user) {
-        this.user = user;
     }
 
     public List<ModelPerson> getFriends() {

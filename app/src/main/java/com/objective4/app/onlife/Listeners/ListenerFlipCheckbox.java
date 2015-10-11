@@ -1,15 +1,14 @@
 package com.objective4.app.onlife.Listeners;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.BitmapFactory;
-import android.view.Display;
 import android.view.animation.Animation;
 import android.widget.ImageView;
 
 import com.objective4.app.onlife.Models.ModelPerson;
 import com.objective4.app.onlife.R;
 
+import static com.objective4.app.onlife.Controller.StaticMethods.imageInDisk;
 import static com.objective4.app.onlife.Controller.StaticMethods.loadImage;
 
 public class ListenerFlipCheckbox implements Animation.AnimationListener{
@@ -45,7 +44,11 @@ public class ListenerFlipCheckbox implements Animation.AnimationListener{
     @Override public void onAnimationEnd(Animation animation) {
         if (animation == animation1){
             if (!f.isSelected()){
-                imageButton.setImageBitmap(loadImage(context,f.getId()+"_"+context.getResources().getInteger(R.integer.adapter_contact_size_large)));
+                if (imageInDisk(context,f.getId()+"_"+context.getResources().getInteger(R.integer.adapter_contact_size_little))){
+                    imageButton.setImageBitmap(loadImage(context,f.getId()+"_"+context.getResources().getInteger(R.integer.adapter_contact_size_little)));
+                }else{
+                    imageButton.setImageDrawable(context.getResources().getDrawable(R.drawable.loading_friend_icon));
+                }
             }
             else{
                 imageButton.setImageBitmap(BitmapFactory.decodeResource(context.getResources(),R.drawable.ic_action_done_large));

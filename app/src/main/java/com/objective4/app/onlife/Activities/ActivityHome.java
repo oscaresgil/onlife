@@ -5,8 +5,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,10 +16,11 @@ import android.view.View;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.simplelist.MaterialSimpleListAdapter;
 import com.afollestad.materialdialogs.simplelist.MaterialSimpleListItem;
-import com.objective4.app.onlife.Adapters.AdapterContact;
+import com.facebook.login.LoginManager;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.objective4.app.onlife.Adapters.AdapterBaseElements;
 import com.objective4.app.onlife.Adapters.AdapterFragmentPager;
-import com.objective4.app.onlife.Adapters.AdapterGroup;
-import com.objective4.app.onlife.Layouts.LayoutSlidingTab;
 import com.objective4.app.onlife.Models.ModelGroup;
 import com.objective4.app.onlife.Models.ModelPerson;
 import com.objective4.app.onlife.Models.ModelSessionData;
@@ -25,9 +28,6 @@ import com.objective4.app.onlife.R;
 import com.objective4.app.onlife.Services.ServicePhoneState;
 import com.objective4.app.onlife.Tasks.TaskChangeState;
 import com.objective4.app.onlife.Tasks.TaskGetFriends;
-import com.facebook.login.LoginManager;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,56 +37,42 @@ import static com.objective4.app.onlife.Controller.StaticMethods.deactivateDevic
 import static com.objective4.app.onlife.Controller.StaticMethods.delDirImages;
 import static com.objective4.app.onlife.Controller.StaticMethods.inviteFacebookFriends;
 
-public class ActivityHome extends ActionBarActivity {
+public class ActivityHome extends AppCompatActivity{
     private ModelPerson userLogin;
     private SharedPreferences sharedPreferences;
-    private AdapterContact adapterContact;
-    private AdapterGroup adapterGroup;
+    private AdapterBaseElements adapterContact;
+    private AdapterBaseElements adapterGroup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+        setSupportActionBar((Toolbar) findViewById(R.id.ActivityHome_ToolBar));
         startService(new Intent(this, ServicePhoneState.class));
         activateDeviceAdmin(this);
 
         sharedPreferences = getSharedPreferences(ActivityMain.MyPREFERENCES, Context.MODE_PRIVATE);
         Gson gson = new Gson();
         userLogin = gson.fromJson(sharedPreferences.getString("userLogin", ""), ModelPerson.class);
-        List<ModelPerson> friends = gson.fromJson(sharedPreferences.getString("friends", ""), (new TypeToken<ArrayList<ModelPerson>>() {}.getType()));
-        List<ModelGroup> groups = gson.fromJson(sharedPreferences.getString("groups", ""), (new TypeToken<ArrayList<ModelGroup>>() {}.getType()));
+        List<ModelPerson> friends = gson.fromJson(sharedPreferences.getString("friends", ""), (new TypeToken<ArrayList<ModelPerson>>() {
+        }.getType()));
+        List<ModelGroup> groups = gson.fromJson(sharedPreferences.getString("groups", ""), (new TypeToken<ArrayList<ModelGroup>>() {
+        }.getType()));
 
-        if (sharedPreferences.getBoolean("first_login",false)){
+        if (sharedPreferences.getBoolean("first_login", false)) {
             new TaskGetFriends(this, true).execute(userLogin.getId());
-            sharedPreferences.edit().putBoolean("first_login",false).apply();
+            sharedPreferences.edit().putBoolean("first_login", false).apply();
         }
 
         ModelSessionData.initInstance(userLogin, friends, groups);
 
-        // Get the ViewPager and set it's PagerAdapter so that it can display items
         ViewPager viewPager = (ViewPager) findViewById(R.id.ActivityHome_ViewPager);
-        AdapterFragmentPager pgAdapter = new AdapterFragmentPager(getSupportFragmentManager(), ActivityHome.this);
-
-        viewPager.setAdapter(pgAdapter);
-
-        // Give the SlidingTabLayout the ViewPager
-        LayoutSlidingTab layoutSlidingTab = (LayoutSlidingTab) findViewById(R.id.ActivityHome_SlindingTabs);
-        layoutSlidingTab.setCustomTabColorizer(new LayoutSlidingTab.TabColorizer() {
-            @Override
-            public int getIndicatorColor(int position) {
-                return getResources().getColor(R.color.orange_light);
-            }
-        });
-        // Center the tabs in the layout
-        layoutSlidingTab.setDistributeEvenly(true);
-        layoutSlidingTab.setViewPager(viewPager);
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.ActivityHome_SlindingTabs);
+        viewPager.setAdapter(new AdapterFragmentPager(getSupportFragmentManager(), this));
+        tabLayout.setupWithViewPager(viewPager);
 
         sharedPreferences.edit().putBoolean("session", true).apply();
-
-        adapterContact = new AdapterContact(this,R.layout.layout_contact,ModelSessionData.getInstance().getFriends());
-        adapterGroup = new AdapterGroup(this,R.layout.layout_groups,ModelSessionData.getInstance().getModelGroups());
-
     }
 
     @Override
@@ -102,17 +88,7 @@ public class ActivityHome extends ActionBarActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
+        return item.getItemId() == R.id.action_settings || super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -123,9 +99,9 @@ public class ActivityHome extends ActionBarActivity {
     @Override
     protected void onDestroy() {
         Gson gson = new Gson();
-        sharedPreferences.edit().putString("userLogin",gson.toJson(ModelSessionData.getInstance().getUser())).apply();
-        sharedPreferences.edit().putString("friends",gson.toJson(ModelSessionData.getInstance().getFriends())).apply();
-        sharedPreferences.edit().putString("groups",gson.toJson(ModelSessionData.getInstance().getModelGroups())).apply();
+        sharedPreferences.edit().putString("userLogin", gson.toJson(ModelSessionData.getInstance().getUser())).apply();
+        sharedPreferences.edit().putString("friends", gson.toJson(ModelSessionData.getInstance().getFriends())).apply();
+        sharedPreferences.edit().putString("groups", gson.toJson(ModelSessionData.getInstance().getModelGroups())).apply();
         super.onDestroy();
 
     }
@@ -134,7 +110,7 @@ public class ActivityHome extends ActionBarActivity {
         inviteFacebookFriends(this);
     }
 
-    public void settings(MenuItem item){
+    public void settings(MenuItem item) {
         final MaterialSimpleListAdapter materialAdapter = new MaterialSimpleListAdapter(this);
         materialAdapter.add(new MaterialSimpleListItem.Builder(this)
                 .content(R.string.settings_option_uninstall)
@@ -148,7 +124,7 @@ public class ActivityHome extends ActionBarActivity {
                     public void onSelection(final MaterialDialog materialDialog, View view, int which, CharSequence charSequence) {
                         if (which == 0) {
                             new MaterialDialog.Builder(ActivityHome.this)
-                                    .title(getResources().getString(R.string.settings_option_uninstall)+"?")
+                                    .title(getResources().getString(R.string.settings_option_uninstall) + "?")
                                     .content(R.string.really_delete)
                                     .positiveText(R.string.yes)
                                     .positiveColorRes(R.color.orange_light)
@@ -181,22 +157,26 @@ public class ActivityHome extends ActionBarActivity {
         sharedPreferences.edit().remove("friends").apply();
         sharedPreferences.edit().remove("groups").apply();
         sharedPreferences.edit().remove("userLogin").apply();
-        delDirImages(this,ModelSessionData.getInstance().getFriends(),ModelSessionData.getInstance().getModelGroups());
+        delDirImages(this, ModelSessionData.getInstance().getFriends(), ModelSessionData.getInstance().getModelGroups());
         ModelSessionData.getInstance().clear();
         LoginManager.getInstance().logOut();
         new TaskChangeState().execute(userLogin.getId(), "O");
         finish();
     }
 
-    public AdapterContact getAdapterContact() {
+    public AdapterBaseElements getAdapterContact() {
         return adapterContact;
     }
 
-    public AdapterGroup getAdapterGroup() {
+    public void setAdapterContact(AdapterBaseElements adapterContact) {
+        this.adapterContact = adapterContact;
+    }
+
+    public AdapterBaseElements getAdapterGroup() {
         return adapterGroup;
     }
 
-    public void setAdapterContact(AdapterContact adapterContact) {
-        this.adapterContact = adapterContact;
+    public void setAdapterGroup(AdapterBaseElements adapterGroup) {
+        this.adapterGroup = adapterGroup;
     }
 }

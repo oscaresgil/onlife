@@ -1,7 +1,6 @@
 package com.objective4.app.onlife.Controller;
 
 import android.app.Activity;
-import android.app.ActivityManager;
 import android.app.admin.DevicePolicyManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -21,13 +20,12 @@ import android.view.inputmethod.InputMethodManager;
 
 import com.facebook.share.model.AppInviteContent;
 import com.facebook.share.widget.AppInviteDialog;
-import com.objective4.app.onlife.BlockActivity.ActivityGroupBlock;
+import com.kenny.snackbar.SnackBar;
 import com.objective4.app.onlife.BroadcastReceivers.BroadcastReceiverPhoneStatus;
 import com.objective4.app.onlife.Models.ModelGroup;
 import com.objective4.app.onlife.Models.ModelPerson;
 import com.objective4.app.onlife.Models.ModelSessionData;
 import com.objective4.app.onlife.R;
-import com.kenny.snackbar.SnackBar;
 import com.r0adkll.slidr.Slidr;
 import com.r0adkll.slidr.model.SlidrConfig;
 import com.r0adkll.slidr.model.SlidrInterface;
@@ -36,6 +34,8 @@ import com.r0adkll.slidr.model.SlidrPosition;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class StaticMethods {
@@ -115,6 +115,22 @@ public class StaticMethods {
         for (ModelPerson p: friends){
             p.setSelected(false);
         }
+    }
+
+    public static int getItemPosition(List<ModelPerson> friends, String id){
+        Collections.sort(friends, new Comparator<ModelPerson>() {
+            @Override
+            public int compare(ModelPerson modelPerson1, ModelPerson modelPerson2) {
+                return modelPerson1.getName().compareTo(modelPerson2.getName());
+            }
+        });
+        for (int i=0; i<friends.size(); i++){
+            ModelPerson p = friends.get(i);
+            if (id.equals(p.getId())){
+                return i;
+            }
+        }
+        return -1;
     }
 
     public static boolean isFriendAlready(List<ModelPerson> friends, ModelPerson friend){

@@ -9,7 +9,7 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 
 import com.objective4.app.onlife.Adapters.AdapterEmoticon;
-import com.objective4.app.onlife.BlockActivity.ActivityFriendBlock;
+import com.objective4.app.onlife.BlockActivity.ActivityBlockBase;
 import com.objective4.app.onlife.R;
 
 import java.util.ArrayList;
@@ -35,7 +35,7 @@ public class FragmentSmiley extends Fragment{
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ((ActivityFriendBlock) getActivity()).setImage(adapterEmoticon.getItem(position));
+                ((ActivityBlockBase) getActivity()).setImage(adapterEmoticon.getItem(position));
             }
         });
         return gridView;

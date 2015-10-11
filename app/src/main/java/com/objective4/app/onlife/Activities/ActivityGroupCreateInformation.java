@@ -25,14 +25,14 @@ import android.widget.ListView;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.simplelist.MaterialSimpleListAdapter;
 import com.afollestad.materialdialogs.simplelist.MaterialSimpleListItem;
+import com.kenny.snackbar.SnackBar;
+import com.melnykov.fab.FloatingActionButton;
 import com.objective4.app.onlife.Adapters.AdapterCheckList;
 import com.objective4.app.onlife.Listeners.ListenerFlipCheckbox;
 import com.objective4.app.onlife.Models.ModelGroup;
 import com.objective4.app.onlife.Models.ModelPerson;
 import com.objective4.app.onlife.Models.ModelSessionData;
 import com.objective4.app.onlife.R;
-import com.kenny.snackbar.SnackBar;
-import com.melnykov.fab.FloatingActionButton;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
 import java.util.ArrayList;
@@ -107,7 +107,7 @@ public class ActivityGroupCreateInformation extends ActionBarActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (view != null) {
-                    ImageView avatar = (ImageView) view.findViewById(R.id.LayoutContact_ImageViewFriend);
+                    ImageView avatar = (ImageView) view.findViewById(R.id.LayoutBase_ImageViewFriend);
                     ModelPerson actualFriend = (ModelPerson)avatar.getTag();
                     actualFriend.setSelected(!actualFriend.isSelected());
 

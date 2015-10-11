@@ -3,7 +3,6 @@ package com.objective4.app.onlife.Tasks;
 import android.app.Activity;
 import android.content.Context;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.widget.ListView;
 
 import com.kenny.snackbar.SnackBar;
 import com.objective4.app.onlife.Models.ModelPerson;
@@ -15,7 +14,7 @@ public class TaskRefresh extends TaskGetFriends {
     private Context context;
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
-    public TaskRefresh(Context context, SwipeRefreshLayout mSwipeRefreshLayout, ListView listView){
+    public TaskRefresh(Context context, SwipeRefreshLayout mSwipeRefreshLayout){
         super(context,false);
         this.context = context;
         this.mSwipeRefreshLayout = mSwipeRefreshLayout;

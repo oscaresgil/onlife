@@ -7,7 +7,7 @@
     android:descendantFocusability="blocksDescendants">
 
 	<ImageView
-        android:id="@+id/LayoutContact_ImageViewFriend"
+        android:id="@+id/LayoutBase_ImageViewFriend"
         android:layout_width="@dimen/layout_select_contact_group_image_height_width"
         android:layout_height="@dimen/layout_select_contact_group_image_height_width"
         android:src="@drawable/loading_friend_icon"
@@ -17,7 +17,7 @@
 
     <TextView
         style="@style/FriendStyle"
-        android:id="@+id/LayoutContact_TextViewNameFriend"
+        android:id="@+id/LayoutBase_TextViewNameFriend"
         android:layout_gravity="center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>

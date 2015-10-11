@@ -3,12 +3,12 @@
     android:id="@+id/FragmentContacts_SwipeRefreshLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_gray">
-    <ListView
+    android:background="@color/gray">
+    <!-- http://www.hermosaprogramacion.com/2015/02/android-recyclerview-cardview/ -->
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/FragmentContacts_ListView"
-        android:isScrollContainer="false"
-        android:divider="@color/transparent"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:scrollbars="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:background="@color/background_gray"/>
 </android.support.v4.widget.SwipeRefreshLayout>

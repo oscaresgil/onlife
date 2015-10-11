@@ -5,20 +5,19 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.provider.Settings;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.kenny.snackbar.SnackBar;
 import com.objective4.app.onlife.Activities.ActivityHome;
 import com.objective4.app.onlife.Activities.ActivityMain;
-import com.objective4.app.onlife.Adapters.AdapterContact;
+import com.objective4.app.onlife.Adapters.AdapterBaseElements;
 import com.objective4.app.onlife.Controller.JSONParser;
 import com.objective4.app.onlife.Models.ModelPerson;
 import com.objective4.app.onlife.Models.ModelSessionData;
 import com.objective4.app.onlife.R;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import com.kenny.snackbar.SnackBar;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -93,7 +92,7 @@ public class TaskGetFriends extends AsyncTask<String, Void, ArrayList<ModelPerso
             });
 
             ModelSessionData.getInstance().setFriends(friends);
-            AdapterContact adapterContact = ((ActivityHome) context).getAdapterContact();
+            AdapterBaseElements adapterContact = ((ActivityHome) context).getAdapterContact();
             adapterContact.clear();
             adapterContact.addAll(friends);
         }
