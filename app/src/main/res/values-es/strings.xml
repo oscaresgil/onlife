@@ -7,10 +7,10 @@
     <string name="loading_friends">Cargando Amigos</string>
     <string name="uploading_friends">Subiendo Amigos</string>
     <string name="getting_images">Obteniendo Imágenes de Amigos</string>
-    <string name="dialog_please_wait">Por favor espera..</string>
+    <string name="dialog_please_wait">Por favor espera…</string>
 
     <string name="dialog_title_creating_group">Creando Grupo</string>
-    <string name="group_name">Cambia el Nombre del Grupo..</string>
+    <string name="group_name">Cambia el Nombre del Grupo…</string>
     <string name="group_already">Grupo ya creado!</string>
 
     <string name="device_admin">Autorización para Pantalla de Bloqueo OnLife</string>
@@ -27,7 +27,7 @@
 
     <string name="tab_contacts">Contactos</string>
     <string name="button_search_friend">Buscar Amigos</string>
-    <string name="search_contact_bar">Buscar en contactos..</string>
+    <string name="search_contact_bar">Buscar en contactos…</string>
     <string name="tab_groups">Grupos</string>
 
     <string name="title_activity_information">Información</string>
@@ -50,8 +50,8 @@
     <string name="really_delete">¿Estás seguro?</string>
     <string name="refresh_contact">Actualizar contactos</string>
 
-    <string name="send_a_message_bar">Envía un mensaje..</string>
-    <string name="message_max_characters">Solo 30 caracteres por favor..</string>
+    <string name="send_a_message_bar">Envía un mensaje…</string>
+    <string name="message_max_characters">Solo 30 caracteres por favor</string>
     <string name="button_change_text_message">Cambiar Texto</string>
     <string name="button_block">Bloquear!</string>
     <string name="friend_inactive">Amigo Inactivo</string>
@@ -62,7 +62,7 @@
     <string name="button_change_connection">Cambiar Conexión</string>
     <string name="button_group_change_name">Cambiar el nombre del Grupo!</string>
     <string name="toast_contacts_refreshed">Contactos Actualizados!</string>
-    <string name="toast_wait_until_contacts_refreshed">¡Espera! Actualizando Amigos..</string>
+    <string name="toast_wait_until_contacts_refreshed">¡Espera! Actualizando Amigos…</string>
     <string name="toast_group_not_yet_created">Nombre o Contactos no especificados. Intenta de nuevo.</string>
     <string name="toast_group_only_less_than_five_friends">Cinco amigos máximo</string>
     <string name="toast_not_time_yet">¡Espera! Tiempo restante</string>
@@ -71,27 +71,28 @@
     <string name="action_invite_friends">Invitar Amigos</string>
     <string name="settings_option_uninstall">Desinstalar Aplicación</string>
 
-    <string name="slide">Desliza para comenzar...</string>
+    <string name="slide">Desliza para comenzar…</string>
     <string name="welcome">¡Bienvenido!</string>
     <string name="onboarding1_message">Bloquea la pantalla de tus amigos, ¡y mira cómo reaccionan!</string>
-    <string name="onboarding2_message">Chequea cuando la estén viendo...</string>
-    <string name="onboarding3_message">¡Y bloquealos con un mensaje divertido!</string>
-    <string name="onboarding4_message">Mantenlo presionado para bloqueo rápido</string>
-    <string name="onboarding5_message">¡Crea grupos para bloquear varios amigos al mismo tiempo!</string>
-    <string name="skip">OMITIR</string>
-    <string name="next">SIGUIENTE</string>
+    <string name="onboarding2_message">Chequea cuando la estén viendo…</string>
     <string name="onboarding2_viewing">viendo</string>
     <string name="onboarding2_locked">bloqueado</string>
-    <string name="done">LISTO</string>
     <string name="onboarding2_image">tutorial 1</string>
+    <string name="onboarding3_message">¡Y bloquealos con un mensaje divertido!</string>
     <string name="onboarding3_image">tutorial 2</string>
+    <string name="onboarding4_message">Mantenlo presionado para bloqueo rápido</string>
     <string name="onboarding4_image">tutorial 3</string>
+    <string name="onboarding5_message">¡Crea grupos para bloquear varios amigos al mismo tiempo!</string>
     <string name="onboarding5_image">tutorial 4</string>
+    <string name="skip">OMITIR</string>
+    <string name="next">SIGUIENTE</string>
+    <string name="done">LISTO</string>
+
     <string name="privacy_policy_url">https://www.iubenda.com/privacy-policy/485984</string>
     <string name="privacy_policy"><u>Política de Privacidad</u></string>
-    <string name="logo_image">Imágen de logo</string>
+    <string name="logo_image">Imagen de logo</string>
     <string name="logo_text">Texto del logo</string>
     <string name="device_admin_not_activated">Administrador de dispositivo no activado</string>
-    <string name="friends_blocked_number" translatable="false">Amigos Bloqueados: </string>
+    <string name="friends_blocked_number">Amigos Bloqueados: </string>
 
 </resources>
