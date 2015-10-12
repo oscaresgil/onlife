@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.kenny.snackbar.SnackBar;
+import com.objective4.app.onlife.BlockActivity.ActivityGroupBlock;
 import com.objective4.app.onlife.Fragments.Social.FragmentContacts;
 import com.objective4.app.onlife.Fragments.Social.FragmentGroups;
 import com.objective4.app.onlife.Models.ModelGroup;
@@ -99,6 +100,7 @@ public class AdapterBaseElements<T> extends RecyclerView.Adapter<AdapterBaseElem
     }
 
     public class ElementHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener, View.OnClickListener{
+        public static final int GROUP_BLOCK_ACTIVITY_ID = 3;
         private ImageView avatar;
         private TextView name;
         private ImageView visibility;
@@ -119,7 +121,12 @@ public class AdapterBaseElements<T> extends RecyclerView.Adapter<AdapterBaseElem
             Intent i = new Intent(context, intentClass);
             i.putExtra("data", (Serializable) elements.get(getLayoutPosition()));
             i.putExtra("actualuser", ModelSessionData.getInstance().getUser());
-            context.startActivity(i);
+            if (intentClass == ActivityGroupBlock.class){
+                ((Activity)context).startActivityForResult(i,GROUP_BLOCK_ACTIVITY_ID);
+            }else{
+                context.startActivity(i);
+            }
+
             animationStart(context);
         }
 
@@ -151,6 +158,4 @@ public class AdapterBaseElements<T> extends RecyclerView.Adapter<AdapterBaseElem
             return true;
         }
     }
-
-
 }

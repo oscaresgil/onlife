@@ -1,5 +1,6 @@
 package com.objective4.app.onlife.Activities;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -21,6 +22,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.objective4.app.onlife.Adapters.AdapterBaseElements;
 import com.objective4.app.onlife.Adapters.AdapterFragmentPager;
+import com.objective4.app.onlife.Fragments.Social.FragmentGroups;
 import com.objective4.app.onlife.Models.ModelGroup;
 import com.objective4.app.onlife.Models.ModelPerson;
 import com.objective4.app.onlife.Models.ModelSessionData;
@@ -35,6 +37,7 @@ import java.util.List;
 import static com.objective4.app.onlife.Controller.StaticMethods.activateDeviceAdmin;
 import static com.objective4.app.onlife.Controller.StaticMethods.deactivateDeviceAdmin;
 import static com.objective4.app.onlife.Controller.StaticMethods.delDirImages;
+import static com.objective4.app.onlife.Controller.StaticMethods.getModelGroupIndex;
 import static com.objective4.app.onlife.Controller.StaticMethods.inviteFacebookFriends;
 
 public class ActivityHome extends AppCompatActivity{
@@ -162,6 +165,18 @@ public class ActivityHome extends AppCompatActivity{
         LoginManager.getInstance().logOut();
         new TaskChangeState().execute(userLogin.getId(), "O");
         finish();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == FragmentGroups.GROUP_BLOCK_ACTIVITY_ID) {
+                ModelGroup delG = (ModelGroup) data.getSerializableExtra("delete_group");
+                int pos = getModelGroupIndex(delG, ModelSessionData.getInstance().getModelGroups());
+                ModelSessionData.getInstance().getModelGroups().remove(pos);
+                getAdapterGroup().notifyItemRemoved(pos);
+            }
+        }
     }
 
     public AdapterBaseElements getAdapterContact() {

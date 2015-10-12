@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.objective4.app.onlife.Activities.ActivityGroupCreateInformation;
+import com.objective4.app.onlife.Activities.ActivityHome;
 import com.objective4.app.onlife.Adapters.AdapterBaseElements;
 import com.objective4.app.onlife.BlockActivity.ActivityGroupBlock;
 import com.objective4.app.onlife.Models.ModelGroup;
@@ -23,7 +24,6 @@ import com.objective4.app.onlife.R;
 import java.util.List;
 
 import static com.objective4.app.onlife.Controller.StaticMethods.animationStart;
-import static com.objective4.app.onlife.Controller.StaticMethods.getModelGroupIndex;
 
 public class FragmentGroups extends Fragment {
     public static final int CREATE_GROUP_ACTIVITY_ID = 1;
@@ -42,6 +42,8 @@ public class FragmentGroups extends Fragment {
 
         modelGroups = ModelSessionData.getInstance().getModelGroups();
         adapter = new AdapterBaseElements<>(getActivity(), ModelSessionData.getInstance().getModelGroups(), FragmentGroups.class, ActivityGroupBlock.class);
+        ((ActivityHome)getActivity()).setAdapterGroup(adapter);
+
         RecyclerView list = (RecyclerView) v.findViewById(R.id.FragmentGroups_ListGroup);
         list.setHasFixedSize(true);
         list.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -90,30 +92,13 @@ public class FragmentGroups extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK){
-            if (requestCode == CREATE_GROUP_ACTIVITY_ID){
+            if (requestCode == CREATE_GROUP_ACTIVITY_ID) {
                 ModelGroup newG = (ModelGroup) data.getSerializableExtra("new_group");
                 List<ModelGroup> groups = ModelSessionData.getInstance().getModelGroups();
                 groups.add(newG);
                 adapter.notifyItemInserted(groups.size());
-            }else if(requestCode == GROUP_BLOCK_ACTIVITY_ID){
-                String tag = data.getStringExtra("tag");
-                switch (tag){
-                    case "delete":
-                        ModelGroup delG = (ModelGroup) data.getSerializableExtra("delete_group");
-                        int pos = getModelGroupIndex(delG,modelGroups);
-                        ModelSessionData.getInstance().getModelGroups().remove(pos);
-                        adapter.notifyItemRemoved(pos);
-                        break;
-                    case "image":
-                        int position = data.getIntExtra("position",-1);
-                        adapter.notifyItemChanged(position);
-                        break;
-                    default:
-                        break;
-                }
             }
         }
-        adapter.notifyDataSetChanged();
     }
 
     public void addGroup(){

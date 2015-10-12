@@ -107,12 +107,11 @@ public class FragmentContacts extends Fragment {
                         }
                     }
                 } else {
-                    int pos = 0;
                     for (int i=0; i<friendsT.size(); i++) {
                         ModelPerson p = friendsT.get(i);
                         if (p.getId().equals(id)) {
                             p.setState(state);
-                            adapter.notifyItemChanged(pos);
+                            adapter.notifyItemChanged(i);
                             break;
                         }
                     }
