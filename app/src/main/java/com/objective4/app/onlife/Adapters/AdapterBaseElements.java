@@ -3,7 +3,11 @@ package com.objective4.app.onlife.Adapters;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +27,7 @@ import com.objective4.app.onlife.Tasks.TaskSendNotification;
 import com.objective4.app.onlife.Tasks.TaskSimpleImageDownload;
 
 import java.io.Serializable;
+import java.lang.ref.WeakReference;
 import java.util.List;
 
 import static com.objective4.app.onlife.Controller.StaticMethods.activateDeviceAdmin;
@@ -57,9 +62,13 @@ public class AdapterBaseElements<T> extends RecyclerView.Adapter<AdapterBaseElem
         if (typeClass == FragmentContacts.class){
             ModelPerson userData = (ModelPerson) elements.get(position);
             if (userData.refreshImage() || !imageInDisk(context, userData.getId() + "_" + context.getResources().getInteger(R.integer.adapter_contact_size_little))){
-                holder.avatar.setImageBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.loading_friend_icon));
-                new TaskSimpleImageDownload(context,holder.avatar,context.getResources().getInteger(R.integer.adapter_contact_size_little)).execute(userData);
-                userData.setRefreshImage(false);
+                if (AsyncDrawable.cancelPotentialWork(userData.getId(), holder.avatar)){
+                    final TaskSimpleImageDownload task = new TaskSimpleImageDownload(context,holder.avatar,context.getResources().getInteger(R.integer.adapter_contact_size_little));
+                    final AsyncDrawable asyncDrawable = new AsyncDrawable(context.getResources(),BitmapFactory.decodeResource(context.getResources(), R.drawable.loading_friend_icon),task);
+                    holder.avatar.setImageDrawable(asyncDrawable);
+                    task.execute(userData);
+                    userData.setRefreshImage(false);
+                }
             }else{
                 holder.avatar.setImageBitmap(loadImage(context, userData.getId() + "_" + context.getResources().getInteger(R.integer.adapter_contact_size_little)));
             }
@@ -107,7 +116,6 @@ public class AdapterBaseElements<T> extends RecyclerView.Adapter<AdapterBaseElem
 
         public ElementHolder(View view) {
             super(view);
-
             avatar = (ImageView) view.findViewById(R.id.LayoutBase_ImageViewFriend);
             name = (TextView) view.findViewById(R.id.LayoutBase_TextViewNameFriend);
             visibility = (ImageView)view.findViewById(R.id.LayoutBase_VisibilityImageView);
@@ -117,22 +125,34 @@ public class AdapterBaseElements<T> extends RecyclerView.Adapter<AdapterBaseElem
 
         @Override
         public void onClick(View v) {
-            //v.startAnimation(AnimationUtils.loadAnimation(context,R.anim.on_click));
             Intent i = new Intent(context, intentClass);
             i.putExtra("data", (Serializable) elements.get(getLayoutPosition()));
             i.putExtra("actualuser", ModelSessionData.getInstance().getUser());
-            if (intentClass == ActivityGroupBlock.class){
-                ((Activity)context).startActivityForResult(i,GROUP_BLOCK_ACTIVITY_ID);
-            }else{
-                context.startActivity(i);
-            }
+            i.putExtra("position",getLayoutPosition());
+            /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                ActivityOptionsCompat options = ActivityOptionsCompat.makeCustomAnimation(context, R.anim.slide_right, R.anim.slide_left);
+
+                if (intentClass == ActivityGroupBlock.class){
+                    i.putExtra("position", getLayoutPosition());
+                    ActivityCompat.startActivityForResult((Activity)context, i, GROUP_BLOCK_ACTIVITY_ID, options.toBundle());
+
+                }else{
+                    ActivityCompat.startActivity((Activity)context, i, options.toBundle());
+
+                }
+            } else {*/
+                if (intentClass == ActivityGroupBlock.class){
+                    ((Activity)context).startActivityForResult(i, GROUP_BLOCK_ACTIVITY_ID);
+                }else{
+                    context.startActivity(i);
+                }
+            //}
 
             animationStart(context);
         }
 
         @Override
         public boolean onLongClick(View v) {
-            //v.startAnimation(AnimationUtils.loadAnimation(context,R.anim.on_long_click));
             Activity activity = (Activity)context;
 
             if (typeClass == FragmentContacts.class){
@@ -155,6 +175,45 @@ public class AdapterBaseElements<T> extends RecyclerView.Adapter<AdapterBaseElem
                 }
             }
 
+            return true;
+        }
+    }
+
+    public static class AsyncDrawable extends BitmapDrawable{
+        private final WeakReference<TaskSimpleImageDownload> bitmapWorkerTaskReference;
+
+        public AsyncDrawable(Resources res, Bitmap bitmap, TaskSimpleImageDownload bitmapWorkerTask) {
+            super(res, bitmap);
+            bitmapWorkerTaskReference =new WeakReference<>(bitmapWorkerTask);
+        }
+
+        public TaskSimpleImageDownload getBitmapWorkerTask() {
+            return bitmapWorkerTaskReference.get();
+        }
+
+        public static TaskSimpleImageDownload getBitmapWorkerTask(ImageView imageView){
+            if (imageView != null){
+                final Drawable drawable = imageView.getDrawable();
+                if (drawable instanceof AdapterBaseElements.AsyncDrawable){
+                    final AsyncDrawable asyncDrawable = (AsyncDrawable) drawable;
+                    return asyncDrawable.getBitmapWorkerTask();
+                }
+            }
+            return null;
+        }
+
+        public static boolean cancelPotentialWork(String id, ImageView imageView){
+            final TaskSimpleImageDownload bitmapTask = getBitmapWorkerTask(imageView);
+            if (bitmapTask != null){
+                final String bitmapData = bitmapTask.data;
+                if ("".equals(bitmapData) || !id.equals(bitmapData)){
+                    bitmapTask.cancel(true);
+                }
+                else{
+                    return false;
+                }
+
+            }
             return true;
         }
     }

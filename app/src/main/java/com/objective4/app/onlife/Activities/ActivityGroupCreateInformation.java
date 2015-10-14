@@ -178,13 +178,11 @@ public class ActivityGroupCreateInformation extends ActionBarActivity {
                         }
 
                         ModelGroup newG = new ModelGroup(ModelSessionData.getInstance().getModelGroups().size(), name, selected, path, limit, state);
-
-                        Intent returnIntent = new Intent();
-                        returnIntent.putExtra("new_group",newG);
-                        setResult(RESULT_OK,returnIntent);
-
                         unSelectFriends(ModelSessionData.getInstance().getFriends());
 
+                        Intent returnIntent = new Intent();
+                        returnIntent.putExtra("new_group", newG);
+                        setResult(RESULT_OK, returnIntent);
                         finish();
                         animationEnd(this);
                     }

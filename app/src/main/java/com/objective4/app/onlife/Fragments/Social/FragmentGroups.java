@@ -1,6 +1,5 @@
 package com.objective4.app.onlife.Fragments.Social;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -65,8 +64,9 @@ public class FragmentGroups extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
         if (i==R.id.addGroup){
-            addGroup();
-            adapter.notifyDataSetChanged();
+            Intent intent = new Intent(getActivity(), ActivityGroupCreateInformation.class);
+            getActivity().startActivityForResult(intent, CREATE_GROUP_ACTIVITY_ID);
+            animationStart(getActivity());
         }
 
         return super.onOptionsItemSelected(item);
@@ -87,23 +87,5 @@ public class FragmentGroups extends Fragment {
         actionBar.setDisplayShowTitleEnabled(true);*/
         FragmentContacts.setIsSearchOpened(false);
         super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == Activity.RESULT_OK){
-            if (requestCode == CREATE_GROUP_ACTIVITY_ID) {
-                ModelGroup newG = (ModelGroup) data.getSerializableExtra("new_group");
-                List<ModelGroup> groups = ModelSessionData.getInstance().getModelGroups();
-                groups.add(newG);
-                adapter.notifyItemInserted(groups.size());
-            }
-        }
-    }
-
-    public void addGroup(){
-        Intent i = new Intent(getActivity(), ActivityGroupCreateInformation.class);
-        startActivityForResult(i, CREATE_GROUP_ACTIVITY_ID);
-        animationStart(getActivity());
     }
 }

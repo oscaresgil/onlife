@@ -7,11 +7,15 @@ import android.content.IntentFilter;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.widget.TextView;
 
 import com.kenny.snackbar.SnackBar;
 import com.objective4.app.onlife.Models.ModelPerson;
+import com.objective4.app.onlife.Models.ModelSessionData;
 import com.objective4.app.onlife.R;
 import com.objective4.app.onlife.Tasks.TaskSendNotification;
 import com.objective4.app.onlife.Tasks.TaskSimpleImageDownload;
@@ -35,6 +39,8 @@ public class ActivityFriendBlock extends ActivityBlockBase<ModelPerson> {
 
         findViewById(R.id.ActivityBlockBase_RadioButton).setVisibility(View.VISIBLE);
 
+        int position = getIntent().getIntExtra("position",-1);
+
         if (actualObject.getState().equals("I")){
             visibility.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.ic_action_visibility_off_2));
         }else if(actualObject.getState().equals("A")){
@@ -45,11 +51,20 @@ public class ActivityFriendBlock extends ActivityBlockBase<ModelPerson> {
         if (actualObject.refreshImageBig() || !imageInDisk(this,actualObject.getId()+"_"+getResources().getInteger(R.integer.adapter_contact_size_large))){
             if (imageInDisk(this,actualObject.getId()+"_"+getResources().getInteger(R.integer.adapter_contact_size_little)))
                 avatar.setImageBitmap(loadImage(this,actualObject.getId()+"_"+getResources().getInteger(R.integer.adapter_contact_size_little)));
-            actualObject.setRefreshImageBig(false);
+            ModelSessionData.getInstance().getFriends().get(position).setRefreshImageBig(false);
             new TaskSimpleImageDownload(this,avatar,getResources().getInteger(R.integer.adapter_contact_size_large)).execute(actualObject);
         }else{
             avatar.setImageBitmap(loadImage(this,actualObject.getId()+"_"+getResources().getInteger(R.integer.adapter_contact_size_large)));
         }
+
+        messageTextView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE){
+                    block(v);
+                }
+                return true;
+            }
+        });
     }
 
     @Override
@@ -102,6 +117,7 @@ public class ActivityFriendBlock extends ActivityBlockBase<ModelPerson> {
                 if (actualObject.getState().equals("A") && devAdmin) {
                     try {
                         new TaskSendNotification(ActivityFriendBlock.this, actualUser.getName(), messageTextView.getText().toString(), emoticonId).execute(actualObject);
+                        messageTextView.setText("");
                     } catch (Exception ex) {
                         ex.printStackTrace();
                         SnackBar.show(ActivityFriendBlock.this, R.string.error);

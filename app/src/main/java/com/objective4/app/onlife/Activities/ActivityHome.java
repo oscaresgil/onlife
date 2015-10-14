@@ -97,6 +97,13 @@ public class ActivityHome extends AppCompatActivity{
     @Override
     public void onBackPressed() {
         moveTaskToBack(true);
+        onTrimMemory(TRIM_MEMORY_UI_HIDDEN);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        onTrimMemory(TRIM_MEMORY_UI_HIDDEN);
     }
 
     @Override
@@ -171,10 +178,22 @@ public class ActivityHome extends AppCompatActivity{
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == FragmentGroups.GROUP_BLOCK_ACTIVITY_ID) {
-                ModelGroup delG = (ModelGroup) data.getSerializableExtra("delete_group");
-                int pos = getModelGroupIndex(delG, ModelSessionData.getInstance().getModelGroups());
-                ModelSessionData.getInstance().getModelGroups().remove(pos);
-                getAdapterGroup().notifyItemRemoved(pos);
+                String tag = data.getStringExtra("tag");
+                if ("image".equals(tag)){
+                    int position = data.getIntExtra("position",-1);
+                    getAdapterGroup().notifyItemChanged(position);
+                }else if("delete".equals(tag)){
+                    ModelGroup delG = (ModelGroup) data.getSerializableExtra("delete_group");
+                    int pos = getModelGroupIndex(delG, ModelSessionData.getInstance().getModelGroups());
+                    ModelSessionData.getInstance().getModelGroups().remove(pos);
+                    getAdapterGroup().notifyItemRemoved(pos);
+                }
+            }
+            else if (requestCode == FragmentGroups.CREATE_GROUP_ACTIVITY_ID) {
+                ModelGroup newG = (ModelGroup) data.getSerializableExtra("new_group");
+                List<ModelGroup> groups = ModelSessionData.getInstance().getModelGroups();
+                groups.add(newG);
+                getAdapterGroup().notifyItemInserted(groups.size());
             }
         }
     }

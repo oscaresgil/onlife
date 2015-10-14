@@ -8,6 +8,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
+import com.objective4.app.onlife.Adapters.AdapterBaseElements;
 import com.objective4.app.onlife.Models.ModelPerson;
 import com.objective4.app.onlife.R;
 
@@ -21,24 +22,27 @@ import org.apache.http.impl.client.DefaultHttpClient;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.ref.WeakReference;
 
 import static com.objective4.app.onlife.Controller.StaticMethods.saveImage;
 
-public class TaskSimpleImageDownload extends AsyncTask<ModelPerson,Void,Void> {
+public class TaskSimpleImageDownload extends AsyncTask<ModelPerson,Void,Bitmap> {
+    public String data = "";
     private Context context;
-    private ImageView avatar;
+    private WeakReference<ImageView> imageViewReference;
     private int size;
     private Bitmap imageBitmap;
 
     public TaskSimpleImageDownload(Context context, ImageView avatar, int size) {
         this.context = context;
-        this.avatar = avatar;
         this.size = size;
+        imageViewReference = new WeakReference<>(avatar);
     }
 
     @Override
-    protected Void doInBackground(ModelPerson... params) {
+    protected Bitmap doInBackground(ModelPerson... params) {
         ModelPerson p = params[0];
+        data = p.getId();
         String urlStr = p.getPhoto()+"width="+size+"&height="+size;
 
         HttpClient client = new DefaultHttpClient();
@@ -51,6 +55,7 @@ public class TaskSimpleImageDownload extends AsyncTask<ModelPerson,Void,Void> {
             InputStream inputStream = bufferedEntity.getContent();
             imageBitmap = BitmapFactory.decodeStream(inputStream);
             saveImage(context, p.getId()+"_"+size, imageBitmap);
+            return imageBitmap;
         } catch (ClientProtocolException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -60,9 +65,22 @@ public class TaskSimpleImageDownload extends AsyncTask<ModelPerson,Void,Void> {
     }
 
     @Override
-    protected void onPostExecute(Void aVoid) {
-        Animation myFadeInAnimation = AnimationUtils.loadAnimation(context, R.anim.fadein);
+    protected void onPostExecute(Bitmap bitmap) {
+        if (isCancelled()){
+            bitmap = null;
+        }
+        if (imageViewReference != null && bitmap != null) {
+            final ImageView imageView = imageViewReference.get();
+            final TaskSimpleImageDownload bitmapWorkerTask =
+                    AdapterBaseElements.AsyncDrawable.getBitmapWorkerTask(imageView);
+            if (this == bitmapWorkerTask && imageView != null) {
+                Animation myFadeInAnimation = AnimationUtils.loadAnimation(context, R.anim.fadein);
+                imageView.startAnimation(myFadeInAnimation);
+                imageView.setImageBitmap(bitmap);
+            }
+        }
+        /*Animation myFadeInAnimation = AnimationUtils.loadAnimation(context, R.anim.fadein);
         avatar.startAnimation(myFadeInAnimation);
-        avatar.setImageBitmap(imageBitmap);
+        avatar.setImageBitmap(imageBitmap);*/
     }
 }

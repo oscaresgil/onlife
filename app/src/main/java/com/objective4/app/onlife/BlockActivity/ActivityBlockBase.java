@@ -174,6 +174,7 @@ public class ActivityBlockBase<T> extends AppCompatActivity {
         nestedScrollView.setSmoothScrollingEnabled(true);
         nestedScrollView.fullScroll(ScrollView.FOCUS_UP);
         emoticonLayout.setVisibility(View.GONE);
+        viewPager.setAdapter(null);
     }
 
 }

@@ -7,10 +7,13 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.provider.Settings;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.simplelist.MaterialSimpleListAdapter;
@@ -68,6 +71,15 @@ public class ActivityGroupBlock extends ActivityBlockBase<ModelGroup> {
         RelativeLayout rl = (RelativeLayout) findViewById(R.id.ActivityBlockBase_RelativeLayoutMain);
         sweetSheet = new SweetSheet(rl);
         sweetSheet.setBackgroundClickEnable(true);
+
+        messageTextView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE){
+                    block(v);
+                }
+                return true;
+            }
+        });
     }
 
     @Override
@@ -145,6 +157,7 @@ public class ActivityGroupBlock extends ActivityBlockBase<ModelGroup> {
                     public void onPositive(MaterialDialog dialog) {
 
                         Intent returnIntent = new Intent();
+                        returnIntent.putExtra("tag","delete");
                         returnIntent.putExtra("delete_group",actualObject);
                         setResult(RESULT_OK,returnIntent);
 
@@ -176,7 +189,12 @@ public class ActivityGroupBlock extends ActivityBlockBase<ModelGroup> {
             Bundle extras = data.getExtras();
             Bitmap bitmapGroup = extras.getParcelable("data");
             avatarGroup.setImageBitmap(bitmapGroup);
-            saveImage(this,actualObject.getName(), bitmapGroup);
+            saveImage(this, actualObject.getName(), bitmapGroup);
+
+            Intent returnIntent = new Intent();
+            returnIntent.putExtra("tag","image");
+            returnIntent.putExtra("position",getIntent().getIntExtra("position", -1));
+            setResult(RESULT_OK, returnIntent);
         }
     }
 
@@ -187,6 +205,7 @@ public class ActivityGroupBlock extends ActivityBlockBase<ModelGroup> {
             if (listenerTextWatcher.getActualChar() <= 30 && devAdmin) {
                 try {
                     new TaskSendNotification(ActivityGroupBlock.this, actualUser.getName(), messageTextView.getText().toString(),emoticonId).execute(friendsInGroup.toArray(new ModelPerson[friendsInGroup.size()]));
+                    messageTextView.setText("");
                 } catch (Exception ex) {
                     SnackBar.show(ActivityGroupBlock.this, R.string.error);
                 }
