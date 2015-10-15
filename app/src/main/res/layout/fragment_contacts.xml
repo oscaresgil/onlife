@@ -1,14 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/FragmentContacts_SwipeRefreshLayout"
+
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/gray">
-    <!-- http://www.hermosaprogramacion.com/2015/02/android-recyclerview-cardview/ -->
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/FragmentContacts_ListView"
-        android:scrollbars="vertical"
+    android:layout_gravity="center">
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/FragmentContacts_SwipeRefreshLayout"
         android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/gray">
+        <!-- http://www.hermosaprogramacion.com/2015/02/android-recyclerview-cardview/ -->
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/FragmentContacts_ListView"
+            android:scrollbars="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/background_gray"/>
+
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+    <TextView
+        android:id="@+id/addFriendsButton"
+        android:drawableTop="@drawable/ic_facebook_logo"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@color/background_gray"/>
-</android.support.v4.widget.SwipeRefreshLayout>
+        android:text="@string/invite_friends"
+        android:textSize="18sp"
+        android:layout_gravity="top|center_horizontal"
+        android:layout_marginTop="25dp"
+        android:gravity="center"
+        android:visibility="gone"
+        android:textColor="@color/black"
+        android:textAllCaps="false"
+        android:onClick="inviteFriends"
+        android:clickable="true"
+        />
+
+</FrameLayout>
+

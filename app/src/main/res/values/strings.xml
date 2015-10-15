@@ -99,5 +99,6 @@
     <string name="app_link_url" translatable="false">https://fb.me/1707393996160728</string>
     <string name="app_link_image_url" translatable="false">http://www.onlife-app.com/myapplink/logo.png</string>
     <string name="friends_blocked_number">Friends Blocked:</string>
+    <string name="invite_friends">Invite Friends</string>
 
 </resources>

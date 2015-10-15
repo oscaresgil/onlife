@@ -13,7 +13,7 @@
         android:title="@string/title_activity_new_group"/>
     <item android:id="@+id/MenuHome_InviteFriends"
         android:icon="@drawable/ic_person_add_black_24dp"
-        android:onClick="invite_friends"
+        android:onClick="inviteFriends"
         android:title="@string/action_invite_friends"
         app:showAsAction="withText"/>
     <item
