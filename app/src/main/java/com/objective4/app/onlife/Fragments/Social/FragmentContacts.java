@@ -19,6 +19,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.TextView;
+
 
 import com.kenny.snackbar.SnackBar;
 import com.objective4.app.onlife.Activities.ActivityHome;
@@ -51,18 +53,22 @@ public class FragmentContacts extends Fragment {
     private List<ModelPerson> friendsFiltred;
     public static boolean isSearchOpened = false;
     private String mSearchQuery;
+    private TextView addFriends;
 
     public FragmentContacts(){}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-
         setHasOptionsMenu(true);
-        View v = inflater.inflate(R.layout.fragment_contacts, container, false);
-
+        View v = inflater.inflate (R.layout.fragment_contacts, container, false);
         actualUser = ModelSessionData.getInstance().getUser();
         friends = ModelSessionData.getInstance().getFriends();
+
+        if(friends.isEmpty()){
+            addFriends= (TextView)v.findViewById(R.id.addFriendsButton);
+            addFriends.setVisibility(View.VISIBLE);
+        }
 
         friendsFiltred = new ArrayList<>();
 
@@ -84,6 +90,7 @@ public class FragmentContacts extends Fragment {
         getActivity().unregisterReceiver(broadcastReceiver);
         super.onDestroy();
     }
+
 
     private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
@@ -145,6 +152,9 @@ public class FragmentContacts extends Fragment {
                     boolean firstItemVisible = actionBar.isShowing();
                     boolean topOfFirstItemVisible = listView.getChildAt(0).getTop() == 0;
                     enable = firstItemVisible && topOfFirstItemVisible;
+
+                    addFriends= (TextView)getActivity().findViewById(R.id.addFriendsButton);
+                    addFriends.setVisibility(View.INVISIBLE);
                 }
                 mSwipeRefreshLayout.setEnabled(enable);
             }
@@ -279,4 +289,6 @@ public class FragmentContacts extends Fragment {
     public static void setIsSearchOpened(boolean isSearchOpened) {
         FragmentContacts.isSearchOpened = isSearchOpened;
     }
+
+
 }

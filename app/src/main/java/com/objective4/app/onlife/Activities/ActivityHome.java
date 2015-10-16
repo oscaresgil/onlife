@@ -60,6 +60,8 @@ public class ActivityHome extends AppCompatActivity{
         userLogin = gson.fromJson(sharedPreferences.getString("userLogin", ""), ModelPerson.class);
         List<ModelPerson> friends = gson.fromJson(sharedPreferences.getString("friends", ""), (new TypeToken<ArrayList<ModelPerson>>() {
         }.getType()));
+
+
         List<ModelGroup> groups = gson.fromJson(sharedPreferences.getString("groups", ""), (new TypeToken<ArrayList<ModelGroup>>() {
         }.getType()));
 
@@ -116,7 +118,7 @@ public class ActivityHome extends AppCompatActivity{
 
     }
 
-    public void invite_friends(MenuItem item) {
+    public void inviteFriends(MenuItem item) {
         inviteFacebookFriends(this);
     }
 
@@ -212,5 +214,9 @@ public class ActivityHome extends AppCompatActivity{
 
     public void setAdapterGroup(AdapterBaseElements adapterGroup) {
         this.adapterGroup = adapterGroup;
+    }
+
+    public void inviteFriends(View view){
+        inviteFacebookFriends(this);
     }
 }

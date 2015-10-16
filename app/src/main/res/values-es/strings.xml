@@ -94,5 +94,6 @@
     <string name="logo_text">Texto del logo</string>
     <string name="device_admin_not_activated">Administrador de dispositivo no activado</string>
     <string name="friends_blocked_number">Amigos Bloqueados: </string>
+    <string name="invite_friends">Invitar Amigos</string>
 
 </resources>
