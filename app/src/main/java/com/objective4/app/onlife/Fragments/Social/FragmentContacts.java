@@ -104,7 +104,6 @@ public class FragmentContacts extends Fragment {
                     if (pos!=-1) {
                         ModelSessionData.getInstance().getFriends().remove(pos);
                         adapter.removeFriend(id);
-                        adapter.notifyItemRemoved(pos);
                     }
                 } else {
                     int pos = getModelPersonIndex(ModelSessionData.getInstance().getFriends(), id);
@@ -119,8 +118,6 @@ public class FragmentContacts extends Fragment {
                 if (pos==-1){
                     ModelSessionData.getInstance().addFriend(newUser);
                     adapter.addFriend(newUser);
-                    pos = getModelPersonIndex(ModelSessionData.getInstance().getFriends(),newUser.getId());
-                    adapter.notifyItemInserted(pos);
                 }
             } else if("friends_updated".equals(tag)){
                 if(ModelSessionData.getInstance().getFriends().isEmpty()){

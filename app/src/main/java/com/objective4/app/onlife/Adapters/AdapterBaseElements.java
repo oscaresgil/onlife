@@ -96,9 +96,11 @@ public class AdapterBaseElements<T> extends RecyclerView.Adapter<AdapterBaseElem
 
     public void addFriend(T element){
         ModelPerson p = (ModelPerson) element;
-        boolean b = isFriendAlready((List<ModelPerson>) elements,p.getId());
-        if (!b){
+        int pos = getModelPersonIndex((List<ModelPerson>) elements, p.getId());
+        if (pos==-1){
             elements.add(element);
+            pos = getModelPersonIndex((List<ModelPerson>) elements, p.getId());
+            notifyItemInserted(pos);
         }
     }
 
@@ -106,6 +108,7 @@ public class AdapterBaseElements<T> extends RecyclerView.Adapter<AdapterBaseElem
         int pos = getModelPersonIndex((List<ModelPerson>) elements,id);
         if (pos!=-1){
             elements.remove(pos);
+            notifyItemRemoved(pos);
         }
     }
 
