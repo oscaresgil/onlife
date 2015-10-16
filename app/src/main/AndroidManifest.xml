@@ -33,7 +33,7 @@
              Este servira para enviar a la API online, el numero de registro que se acaba de activar.
              De la misma forma, este podra recibir los responds del servidor y podra mostrarlos en el telefono utilizando intents.
         -->
-        <receiver android:name="com.objective4.app.onlife.BroadcastReceivers.GcmBroadcastReceiver"
+        <receiver android:name=".BroadcastReceivers.BroadcastReceiverGcm"
             android:permission="com.google.android.c2dm.permission.SEND">
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />

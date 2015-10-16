@@ -33,7 +33,9 @@ import java.util.List;
 import static com.objective4.app.onlife.Controller.StaticMethods.activateDeviceAdmin;
 import static com.objective4.app.onlife.Controller.StaticMethods.animationStart;
 import static com.objective4.app.onlife.Controller.StaticMethods.checkDeviceAdmin;
+import static com.objective4.app.onlife.Controller.StaticMethods.getModelPersonIndex;
 import static com.objective4.app.onlife.Controller.StaticMethods.imageInDisk;
+import static com.objective4.app.onlife.Controller.StaticMethods.isFriendAlready;
 import static com.objective4.app.onlife.Controller.StaticMethods.loadImage;
 
 public class AdapterBaseElements<T> extends RecyclerView.Adapter<AdapterBaseElements.ElementHolder> {
@@ -87,26 +89,32 @@ public class AdapterBaseElements<T> extends RecyclerView.Adapter<AdapterBaseElem
         }
     }
 
-
     @Override
     public int getItemCount() {
         return elements.size();
     }
 
-    public void addAll(List<T> modelPersons) {
-        elements.addAll(modelPersons);
-        notifyDataSetChanged();
-    }
-
-    public void clear(){
-        if (elements!=null) {
-            elements.clear();
-            notifyDataSetChanged();
+    public void addFriend(T element){
+        ModelPerson p = (ModelPerson) element;
+        boolean b = isFriendAlready((List<ModelPerson>) elements,p.getId());
+        if (!b){
+            elements.add(element);
         }
     }
 
-    public List<T> getFriends() {
-        return elements;
+    public void removeFriend(String id){
+        int pos = getModelPersonIndex((List<ModelPerson>) elements,id);
+        if (pos!=-1){
+            elements.remove(pos);
+        }
+    }
+
+    public void updateElements(List<T> modelPersons) {
+        if (elements!=null) {
+            elements.clear();
+            elements.addAll(modelPersons);
+            notifyDataSetChanged();
+        }
     }
 
     public class ElementHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener, View.OnClickListener{

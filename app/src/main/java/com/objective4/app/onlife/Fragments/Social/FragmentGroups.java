@@ -63,7 +63,7 @@ public class FragmentGroups extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
-        if (i==R.id.addGroup){
+        if (i==R.id.MenuHome_AddGroup){
             Intent intent = new Intent(getActivity(), ActivityGroupCreateInformation.class);
             getActivity().startActivityForResult(intent, CREATE_GROUP_ACTIVITY_ID);
             animationStart(getActivity());
@@ -75,7 +75,7 @@ public class FragmentGroups extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        menu.findItem(R.id.searchContact).setVisible(false);
+        menu.findItem(R.id.MenuHome_SearchContact).setVisible(false);
         /*if (FragmentContacts.isIsSearchOpened()){
             InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(getActivity().getWindow().getCurrentFocus().getWindowToken(), 0);

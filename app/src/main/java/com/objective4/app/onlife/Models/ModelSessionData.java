@@ -2,6 +2,8 @@ package com.objective4.app.onlife.Models;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class ModelSessionData implements Serializable{
@@ -30,14 +32,14 @@ public class ModelSessionData implements Serializable{
         this.modelGroups = modelGroups;
     }
 
-    public boolean addFriend(ModelPerson p){
-        for (ModelPerson f: friends){
-            if (p.getId().equals(f.getId())){
-                return false;
-            }
-        }
+    public void addFriend(ModelPerson p){
         friends.add(p);
-        return true;
+        Collections.sort(friends, new Comparator<ModelPerson>() {
+            @Override
+            public int compare(ModelPerson modelPerson1, ModelPerson modelPerson2) {
+                return modelPerson1.getName().compareTo(modelPerson2.getName());
+            }
+        });
     }
 
     public ModelPerson getUser() {

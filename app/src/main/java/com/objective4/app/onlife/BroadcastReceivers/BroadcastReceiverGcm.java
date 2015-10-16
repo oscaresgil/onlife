@@ -8,7 +8,7 @@ import android.support.v4.content.WakefulBroadcastReceiver;
 
 import com.objective4.app.onlife.Services.GcmMessageHandler;
 
-public class GcmBroadcastReceiver extends WakefulBroadcastReceiver {
+public class BroadcastReceiverGcm extends WakefulBroadcastReceiver {
 
     @Override public void onReceive(Context context, Intent intent) {
         //Determina explicitamente que GcmMessageHandler hara el intent

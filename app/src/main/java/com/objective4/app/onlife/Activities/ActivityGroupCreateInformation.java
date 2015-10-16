@@ -16,7 +16,6 @@ import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.Animation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -25,7 +24,6 @@ import com.afollestad.materialdialogs.simplelist.MaterialSimpleListAdapter;
 import com.afollestad.materialdialogs.simplelist.MaterialSimpleListItem;
 import com.kenny.snackbar.SnackBar;
 import com.objective4.app.onlife.Adapters.AdapterSelectFriend;
-import com.objective4.app.onlife.Listeners.ListenerFlipCheckbox;
 import com.objective4.app.onlife.Models.ModelGroup;
 import com.objective4.app.onlife.Models.ModelPerson;
 import com.objective4.app.onlife.Models.ModelSessionData;
@@ -49,17 +47,10 @@ public class ActivityGroupCreateInformation extends AppCompatActivity {
     private static final int PIC_CROP = 3;
     private FloatingActionButton fab;
 
-    private Menu myMenu;
-    //private android.support.v7.app.ActionBar actionBar;
-
     private List<ModelPerson> friends;
     private MenuItem searchItem;
 
     private AdapterSelectFriend adapterCheckList;
-    private ListenerFlipCheckbox listener;
-    private Animation animation1;
-    private Animation animation2;
-
     private ImageView avatarGroup;
     private MaterialEditText nameNewGroup;
 
@@ -78,12 +69,10 @@ public class ActivityGroupCreateInformation extends AppCompatActivity {
 
         setSlidr(this);
         setSupportActionBar((Toolbar) findViewById(R.id.ActivityCreateGroup_ToolBar));
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        //getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_black_24dp);
+        if (getSupportActionBar() != null)
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         friends = ModelSessionData.getInstance().getFriends();
-
-        //setAnimationAndListeners();
 
         avatarGroup = (ImageView) findViewById(R.id.ActivityCreateGroup_ImageButtonSelectImage);
         avatarGroup.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.ic_image_camera_alt_large));
@@ -96,8 +85,6 @@ public class ActivityGroupCreateInformation extends AppCompatActivity {
         fab = (FloatingActionButton) findViewById(R.id.ActivityCreateGroup_ButtonDone);
         fab.bringToFront();
         nameNewGroup = (com.rengwuxian.materialedittext.MaterialEditText) findViewById(R.id.ActivityCreateGroup_EditTextNameGroup);
-
-        //(findViewById(R.id.ActivityCreateGroup_FABSearchFriend)).bringToFront();
 
         friendsFiltred = new ArrayList<>();
         friendsFiltred.addAll(friends);
@@ -215,10 +202,6 @@ public class ActivityGroupCreateInformation extends AppCompatActivity {
         }
     }
 
-    public void search(View view){
-        handleMenuSearch();
-    }
-
     private List<ModelPerson> performSearch(List<ModelPerson> actualFriends, String query){
         String[] queryByWords = query.toLowerCase().split("\\s+");
         List<ModelPerson> filtred = new ArrayList<>();
@@ -312,7 +295,6 @@ public class ActivityGroupCreateInformation extends AppCompatActivity {
             });
             searchText.requestFocus();
             showSoftKeyboard(this, searchText);
-            //searchButton.bringToFront();
 
             isSearchOpened = true;
         }

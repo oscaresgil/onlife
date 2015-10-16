@@ -65,7 +65,7 @@ public class GcmMessageHandler extends IntentService {
 
                     sharedPreferences = getSharedPreferences("OnlifePrefs", Context.MODE_PRIVATE);
                     List<ModelPerson> friends = gson.fromJson(sharedPreferences.getString("friends", ""), (new TypeToken<ArrayList<ModelPerson>>() {}.getType()));
-                    if (!isFriendAlready(friends,newUser)){
+                    if (!isFriendAlready(friends,newUser.getId())){
                         friends.add(newUser);
                         Collections.sort(friends, new Comparator<ModelPerson>() {
                             @Override

@@ -24,7 +24,6 @@ import com.kenny.snackbar.SnackBar;
 import com.objective4.app.onlife.BroadcastReceivers.BroadcastReceiverPhoneStatus;
 import com.objective4.app.onlife.Models.ModelGroup;
 import com.objective4.app.onlife.Models.ModelPerson;
-import com.objective4.app.onlife.Models.ModelSessionData;
 import com.objective4.app.onlife.R;
 import com.r0adkll.slidr.Slidr;
 import com.r0adkll.slidr.model.SlidrConfig;
@@ -33,7 +32,6 @@ import com.r0adkll.slidr.model.SlidrPosition;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -106,38 +104,15 @@ public class StaticMethods {
         return Slidr.attach((Activity) context, config);
     }
 
-    public static int getRelativeTop(View myView) {
-        if (myView.getParent() == myView.getRootView())
-            return myView.getTop();
-        else
-            return myView.getTop() + getRelativeTop((View) myView.getParent());
-    }
-
     public static void unSelectFriends(List<ModelPerson> friends){
         for (ModelPerson p: friends){
             p.setSelected(false);
         }
     }
 
-    public static int getItemPosition(List<ModelPerson> friends, String id){
-        Collections.sort(friends, new Comparator<ModelPerson>() {
-            @Override
-            public int compare(ModelPerson modelPerson1, ModelPerson modelPerson2) {
-                return modelPerson1.getName().compareTo(modelPerson2.getName());
-            }
-        });
-        for (int i=0; i<friends.size(); i++){
-            ModelPerson p = friends.get(i);
-            if (id.equals(p.getId())){
-                return i;
-            }
-        }
-        return -1;
-    }
-
-    public static boolean isFriendAlready(List<ModelPerson> friends, ModelPerson friend){
+    public static boolean isFriendAlready(List<ModelPerson> friends, String id){
         for (ModelPerson f: friends){
-            if (f.getId().equals(friend.getId())){
+            if (id.equals(f.getId())){
                 return true;
             }
         }
@@ -167,6 +142,22 @@ public class StaticMethods {
         }
     }
 
+    public static int getModelPersonIndex(List<ModelPerson> friends, String id){
+        Collections.sort(friends, new Comparator<ModelPerson>() {
+            @Override
+            public int compare(ModelPerson modelPerson1, ModelPerson modelPerson2) {
+                return modelPerson1.getName().compareTo(modelPerson2.getName());
+            }
+        });
+        for (int i=0; i<friends.size(); i++){
+            ModelPerson p = friends.get(i);
+            if (id.equals(p.getId())){
+                return i;
+            }
+        }
+        return -1;
+    }
+
     public static int getModelGroupIndex(ModelGroup group, List<ModelGroup> modelGroup){
         for (int i=0; i<modelGroup.size(); i++){
             ModelGroup g = modelGroup.get(i);
@@ -190,6 +181,7 @@ public class StaticMethods {
                 Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
     }
+
     public static void showSoftKeyboard(Context context, View v){
         InputMethodManager imm = (InputMethodManager)context.getSystemService(
                 Context.INPUT_METHOD_SERVICE);
@@ -256,14 +248,6 @@ public class StaticMethods {
         return myPath.getAbsolutePath();
     }
 
-    public static List<String> setGifNames(){
-        List<String> gifNames = new ArrayList<>();
-        for (int j=1; j<3; j++){
-            gifNames.add("e"+j);
-        }
-        return gifNames;
-    }
-
     public static void performCrop(Context context, Uri mImageCaptureUri, int PIC_CROP){
         try {
             Intent intent = new Intent("com.android.camera.action.CROP");
@@ -301,17 +285,6 @@ public class StaticMethods {
             e.printStackTrace();
         }
     }
-
-    public static void removeGroup(ModelGroup modelGroup){
-        List<ModelGroup> modelGroups = ModelSessionData.getInstance().getModelGroups();
-        for (int i=0; i< modelGroups.size(); i++){
-            if (modelGroups.get(i).getId()== modelGroup.getId()){
-                modelGroups.remove(i);
-            }
-        }
-        ModelSessionData.getInstance().setModelGroups(modelGroups);
-    }
-
 
     public static boolean isNetworkAvailable(Activity activity) {
         ConnectivityManager connectivityManager = (ConnectivityManager) activity.getSystemService(Context.CONNECTIVITY_SERVICE);

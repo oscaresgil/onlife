@@ -21,7 +21,6 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 
-
 import com.kenny.snackbar.SnackBar;
 import com.objective4.app.onlife.Activities.ActivityHome;
 import com.objective4.app.onlife.Adapters.AdapterBaseElements;
@@ -36,7 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.objective4.app.onlife.Controller.StaticMethods.activateDeviceAdmin;
-import static com.objective4.app.onlife.Controller.StaticMethods.getItemPosition;
+import static com.objective4.app.onlife.Controller.StaticMethods.getModelPersonIndex;
 import static com.objective4.app.onlife.Controller.StaticMethods.isNetworkAvailable;
 import static com.objective4.app.onlife.Controller.StaticMethods.showSoftKeyboard;
 
@@ -51,6 +50,7 @@ public class FragmentContacts extends Fragment {
     private MenuItem mSearchAction;
     private MaterialEditText searchText;
     private List<ModelPerson> friendsFiltred;
+    private LinearLayoutManager linearLayoutManager;
     public static boolean isSearchOpened = false;
     private String mSearchQuery;
     private TextView addFriends;
@@ -64,11 +64,7 @@ public class FragmentContacts extends Fragment {
         View v = inflater.inflate (R.layout.fragment_contacts, container, false);
         actualUser = ModelSessionData.getInstance().getUser();
         friends = ModelSessionData.getInstance().getFriends();
-
-        if(friends.isEmpty()){
-            addFriends= (TextView)v.findViewById(R.id.addFriendsButton);
-            addFriends.setVisibility(View.VISIBLE);
-        }
+        addFriends= (TextView)v.findViewById(R.id.addFriendsButton);
 
         friendsFiltred = new ArrayList<>();
 
@@ -77,7 +73,8 @@ public class FragmentContacts extends Fragment {
 
         listView = (RecyclerView) v.findViewById(R.id.FragmentContacts_ListView);
         listView.setHasFixedSize(true);
-        listView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        linearLayoutManager = new LinearLayoutManager(getActivity());
+        listView.setLayoutManager(linearLayoutManager);
         listView.setAdapter(adapter);
 
         getActivity().registerReceiver(broadcastReceiver, new IntentFilter("com.objective4.app.onlife.Fragments.Social.FragmentContacts"));
@@ -97,39 +94,41 @@ public class FragmentContacts extends Fragment {
         public void onReceive(Context context, Intent intent) {
             Bundle extras = intent.getExtras();
             String tag = extras.getString("tag");
+
+            AdapterBaseElements adapter = ((ActivityHome) getActivity()).getAdapterContact();
             if ("update".equals(tag)) {
                 String id = extras.getString("id");
                 String state = extras.getString("state");
-
-                List<ModelPerson> friendsT = ModelSessionData.getInstance().getFriends();
                 if ("O".equals(state)) {
-                    for (int i = 0; i < friendsT.size(); i++) {
-                        ModelPerson p = friendsT.get(i);
-                        if (id.equals(p.getId())){
-                            ModelSessionData.getInstance().getFriends().remove(i);
-                            adapter.notifyItemRemoved(i);
-                            break;
-                        }
+                    int pos = getModelPersonIndex(ModelSessionData.getInstance().getFriends(), id);
+                    if (pos!=-1) {
+                        ModelSessionData.getInstance().getFriends().remove(pos);
+                        adapter.removeFriend(id);
+                        adapter.notifyItemRemoved(pos);
                     }
                 } else {
-                    for (int i=0; i<friendsT.size(); i++) {
-                        ModelPerson p = friendsT.get(i);
-                        if (p.getId().equals(id)) {
-                            p.setState(state);
-                            adapter.notifyItemChanged(i);
-                            break;
-                        }
+                    int pos = getModelPersonIndex(ModelSessionData.getInstance().getFriends(), id);
+                    if (pos!=-1){
+                        ModelSessionData.getInstance().getFriends().get(pos).setState(state);
+                        adapter.notifyItemChanged(pos);
                     }
                 }
             }else if("new_user".equals(tag)){
                 ModelPerson newUser = (ModelPerson) extras.getSerializable("new_user");
-
-                boolean b = ModelSessionData.getInstance().addFriend(newUser);
-                if (b){
-                    int pos = getItemPosition(ModelSessionData.getInstance().getFriends(),newUser.getId());
+                int pos = getModelPersonIndex(ModelSessionData.getInstance().getFriends(),newUser.getId());
+                if (pos==-1){
+                    ModelSessionData.getInstance().addFriend(newUser);
+                    adapter.addFriend(newUser);
+                    pos = getModelPersonIndex(ModelSessionData.getInstance().getFriends(),newUser.getId());
                     adapter.notifyItemInserted(pos);
                 }
-            } else if("no_device_admin".equals(tag)){
+            } else if("friends_updated".equals(tag)){
+                if(ModelSessionData.getInstance().getFriends().isEmpty()){
+                    addFriends.setVisibility(View.VISIBLE);
+                }else{
+                    addFriends.setVisibility(View.GONE);
+                }
+            } else if("no_device_admin".equals(tag)) {
                 activateDeviceAdmin(getActivity());
             }
         }
@@ -183,15 +182,15 @@ public class FragmentContacts extends Fragment {
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
-        mSearchAction = menu.findItem(R.id.searchContact);
-        menu.findItem(R.id.addGroup).setVisible(false);
+        mSearchAction = menu.findItem(R.id.MenuHome_SearchContact);
+        menu.findItem(R.id.MenuHome_AddGroup).setVisible(false);
         super.onPrepareOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
-        if (i==R.id.searchContact){
+        if (i==R.id.MenuHome_SearchContact){
             handleMenuSearch();
         }
 
@@ -257,8 +256,7 @@ public class FragmentContacts extends Fragment {
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
                     mSearchQuery = searchText.getText().toString();
                     AdapterBaseElements adapterContact = (AdapterBaseElements) listView.getAdapter();
-                    adapterContact.clear();
-                    adapterContact.addAll(performSearch(friends, mSearchQuery));
+                    adapterContact.updateElements(performSearch(friends, mSearchQuery));
                 }
 
                 @Override

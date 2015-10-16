@@ -93,7 +93,7 @@ public class ActivityHome extends AppCompatActivity{
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        return item.getItemId() == R.id.action_settings || super.onOptionsItemSelected(item);
+        return item.getItemId() == R.id.MenuHome_ActionSettings || super.onOptionsItemSelected(item);
     }
 
     @Override

@@ -44,6 +44,7 @@
 -keep public class * extends android.widget.LinearLayout
 -keep public class * extends android.app.IntentService
 -keep public class * extends android.os.AsyncTask
+-keep public class * extends android.support.v7.widget.RecyclerView.*
 
 -dontwarn applovin-sdk-6.1.1.**
 -dontwarn applovin-sdk-6.1.1-javadoc.**

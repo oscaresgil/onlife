@@ -93,8 +93,7 @@ public class TaskGetFriends extends AsyncTask<String, Void, ArrayList<ModelPerso
 
             ModelSessionData.getInstance().setFriends(friends);
             AdapterBaseElements adapterContact = ((ActivityHome) context).getAdapterContact();
-            adapterContact.clear();
-            adapterContact.addAll(friends);
+            adapterContact.updateElements(friends);
         }
         else{
             SnackBar.show((Activity)context, R.string.no_connection, R.string.button_change_connection, new View.OnClickListener() {

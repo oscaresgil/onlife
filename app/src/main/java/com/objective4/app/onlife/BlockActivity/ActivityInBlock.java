@@ -104,7 +104,6 @@ public class ActivityInBlock extends Activity{
             numPage++;
             if (numPage>=messages.size()){
                 finish();
-                System.exit(0);
             }else {
                 ModelMessages m = messages.get(numPage);
                 textViewNumber.setText(String.format("%d/%d", numPage + 1, messages.size()));
