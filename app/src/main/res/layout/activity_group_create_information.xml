@@ -36,6 +36,7 @@
                 android:layout_margin="@dimen/activity_group_create_information_ratio_image_view_margin"
                 android:src="@drawable/ic_camera_alt_black_24dp"/>
             <com.rengwuxian.materialedittext.MaterialEditText
+                style="@style/FriendStyle"
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/ActivityCreateGroup_EditTextNameGroup"
                 android:layout_margin="@dimen/activity_group_create_information_edit_text_name_group_margin"

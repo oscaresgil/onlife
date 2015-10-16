@@ -39,6 +39,7 @@ public class ActivityBlockBase<T> extends AppCompatActivity {
     protected LinearLayout emoticonLayout;
 
     protected ImageView visibility;
+    protected ImageView emoticon;
 
     protected MaterialEditText messageTextView;
     protected ListenerTextWatcher listenerTextWatcher;
@@ -72,6 +73,7 @@ public class ActivityBlockBase<T> extends AppCompatActivity {
         nestedScrollView = (NestedScrollView) findViewById(R.id.ActivityBlockBase_ScrollView);
 
         visibility = (ImageView) findViewById(R.id.ActivityBlockBase_RadioButton);
+        emoticon = (ImageView) findViewById(R.id.ActivityBlockBase_EmoticonImage);
 
         emoticonLayout = (LinearLayout) findViewById(R.id.ActivityBlockBase_LayoutEmoticon);
         tabHost = (MaterialTabHost) findViewById(R.id.ActivityBlockBase_TabHost);
@@ -158,7 +160,6 @@ public class ActivityBlockBase<T> extends AppCompatActivity {
     public void setImage(String emoticonName){
         this.emoticonName = emoticonName;
         hideEmoticon();
-        ImageView emoticon = (ImageView) findViewById(R.id.ActivityBlockBase_EmoticonImage);
         int resourceId  = getResources().getIdentifier(emoticonName, "drawable", getPackageName());
         emoticon.setImageDrawable(getResources().getDrawable(resourceId));
     }
@@ -170,20 +171,12 @@ public class ActivityBlockBase<T> extends AppCompatActivity {
         setEmoticonTab();
         emoticonFlag=true;
         emoticonLayout.setVisibility(View.VISIBLE);
-        nestedScrollView.fullScroll(ScrollView.FOCUS_DOWN);
-        /*nestedScrollView.post(new Runnable() {
-            @Override
-            public void run() {
-                nestedScrollView.smoothScrollTo(0, getRelativeTop(tabHost));
-            }
-        });*/
     }
 
     protected void hideEmoticon(){
         emoticonFlag = false;
         slidrInterface.unlock();
         nestedScrollView.setSmoothScrollingEnabled(true);
-        nestedScrollView.fullScroll(ScrollView.FOCUS_UP);
         emoticonLayout.setVisibility(View.GONE);
     }
 

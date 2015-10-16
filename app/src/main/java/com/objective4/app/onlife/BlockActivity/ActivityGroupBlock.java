@@ -126,18 +126,6 @@ public class ActivityGroupBlock extends ActivityBlockBase<ModelGroup> {
                     sweetSheet.setDelegate(new RecyclerViewDelegate(false));
                 }
                 sweetSheet.setBackgroundEffect(new DimEffect(0.8f));
-                sweetSheet.setOnMenuItemClickListener(new SweetSheet.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onItemClick(int position, MenuEntity menuEntity1) {
-                        ModelPerson friend = friendsInGroup.get(position);
-                        Intent intent = new Intent(ActivityGroupBlock.this, ActivityFriendBlock.class);
-                        intent.putExtra("data", friend);
-                        intent.putExtra("actualuser", actualUser);
-                        startActivity(intent);
-                        overridePendingTransition(R.animator.push_right, R.animator.push_left);
-                        return true;
-                    }
-                });
                 sweetSheet.toggle();
             }
             else{
