@@ -42,7 +42,7 @@ public class TaskSendNotification extends AsyncTask<ModelPerson, String, String[
                 .setText(context.getResources().getString(R.string.blocking))
                 .setTextColor(context.getResources().getColor(R.color.black))
                 .setTranslationY(100)
-                .setProgressColor(context.getResources().getColor(R.color.orange_light))
+                .setProgressColor(context.getResources().getColor(R.color.accent))
                 .show();
     }
 
@@ -76,12 +76,18 @@ public class TaskSendNotification extends AsyncTask<ModelPerson, String, String[
         p.add(new BasicNameValuePair("message", message));
         p.add(new BasicNameValuePair("gifName", gifName));
 
-        JSONObject json = jsonParser.makeHttpRequest("http://104.236.74.55/onlife/gcm.php", "POST", p);
         try {
-            if(!json.getBoolean("error")){
-                return new String[]{"true",returnMessage};
+            JSONObject json = jsonParser.makeHttpRequest("http://104.236.74.55/onlife/gcm.php", "POST", p);
+            switch (json.getInt("code")){
+                case 0: return new String[]{"true",returnMessage};
+                case -1: return new String[]{"false","No registrado"};
             }
+            /*if(!json.getBoolean("error")){
+                return new String[]{"true",returnMessage};
+            }*/
         } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return new String[]{"false",returnMessage};
@@ -95,6 +101,9 @@ public class TaskSendNotification extends AsyncTask<ModelPerson, String, String[
             SnackBar.show(context,result[1]);
         }else{
             toast.success();
+            /*if (context instanceof ActivityBlockBase){
+                context.finish();
+            }*/
             if (!result[1].equals("")) SnackBar.show(context,result[1]);
         }
     }

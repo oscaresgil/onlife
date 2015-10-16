@@ -51,8 +51,8 @@ public class ActivityFriendBlock extends ActivityBlockBase<ModelPerson> {
         if (actualObject.refreshImageBig() || !imageInDisk(this,actualObject.getId()+"_"+getResources().getInteger(R.integer.adapter_contact_size_large))){
             if (imageInDisk(this,actualObject.getId()+"_"+getResources().getInteger(R.integer.adapter_contact_size_little)))
                 avatar.setImageBitmap(loadImage(this,actualObject.getId()+"_"+getResources().getInteger(R.integer.adapter_contact_size_little)));
-            ModelSessionData.getInstance().getFriends().get(position).setRefreshImageBig(false);
             new TaskSimpleImageDownload(this,avatar,getResources().getInteger(R.integer.adapter_contact_size_large)).execute(actualObject);
+            ModelSessionData.getInstance().getFriends().get(position).setRefreshImageBig(false);
         }else{
             avatar.setImageBitmap(loadImage(this,actualObject.getId()+"_"+getResources().getInteger(R.integer.adapter_contact_size_large)));
         }
@@ -116,7 +116,7 @@ public class ActivityFriendBlock extends ActivityBlockBase<ModelPerson> {
                 boolean devAdmin = checkDeviceAdmin(this);
                 if (actualObject.getState().equals("A") && devAdmin) {
                     try {
-                        new TaskSendNotification(ActivityFriendBlock.this, actualUser.getName(), messageTextView.getText().toString(), emoticonId).execute(actualObject);
+                        new TaskSendNotification(ActivityFriendBlock.this, actualUser.getName(), messageTextView.getText().toString(), emoticonName).execute(actualObject);
                         messageTextView.setText("");
                     } catch (Exception ex) {
                         ex.printStackTrace();

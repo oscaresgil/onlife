@@ -99,9 +99,10 @@ public class AdapterBaseElements<T> extends RecyclerView.Adapter<AdapterBaseElem
     }
 
     public void clear(){
-        if (elements!=null)
+        if (elements!=null) {
             elements.clear();
-        notifyDataSetChanged();
+            notifyDataSetChanged();
+        }
     }
 
     public List<T> getFriends() {
@@ -116,8 +117,8 @@ public class AdapterBaseElements<T> extends RecyclerView.Adapter<AdapterBaseElem
 
         public ElementHolder(View view) {
             super(view);
-            avatar = (ImageView) view.findViewById(R.id.LayoutBase_ImageViewFriend);
-            name = (TextView) view.findViewById(R.id.LayoutBase_TextViewNameFriend);
+            avatar = (ImageView) view.findViewById(R.id.LayoutSelectContactGroup_ImageViewFriend);
+            name = (TextView) view.findViewById(R.id.LayoutSelectContactGroup_TextViewNameFriend);
             visibility = (ImageView)view.findViewById(R.id.LayoutBase_VisibilityImageView);
             view.setOnClickListener(this);
             view.setOnLongClickListener(this);

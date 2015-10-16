@@ -32,7 +32,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/activity_friend_block_card_view_margin"
-                    android:layout_marginBottom="@dimen/activity_friend_block_card_view_margin">
+                    android:layout_marginBottom="@dimen/activity_friend_block_card_view_margin"
+                    app:cardCornerRadius="2dp"
+                    app:cardElevation="2dp"
+                    app:cardUseCompatPadding="true">
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -92,8 +95,9 @@
                                 android:layout_margin="@dimen/activity_friend_block_edittext_message_margin"
                                 android:inputType="textCapSentences"
                                 app:met_baseColor="@color/black"
-                                app:met_primaryColor="@color/orange_light"
-                                app:met_hideUnderline="true"/>
+                                app:met_primaryColor="@color/primary"
+                                app:met_hideUnderline="true"
+                                android:editable="true" />
                         </RelativeLayout>
                     </LinearLayout>
                 </android.support.v7.widget.CardView>
@@ -109,7 +113,7 @@
                         android:layout_height="65dp"
                         app:iconColor="@color/black"
                         app:primaryColor="@color/white"
-                        app:accentColor="@color/orange_light"
+                        app:accentColor="@color/primary"
                         app:hasIcons="true"/>
                     <android.support.v4.view.ViewPager
                         android:id="@+id/ActivityBlockBase_ViewPager"
@@ -129,14 +133,15 @@
             android:id="@+id/ActivityBlockBase_AppBar"
             android:layout_height="@dimen/activity_friend_block_app_bar_layout_height"
             android:layout_width="match_parent"
-            android:fitsSystemWindows="true">
+            android:fitsSystemWindows="true"
+            android:elevation="4dp">
 
             <android.support.design.widget.CollapsingToolbarLayout
                 android:id="@+id/ActivityBlockBase_CollapsingToolBarLayout"
                 android:layout_height="match_parent"
                 android:layout_width="match_parent"
                 android:fitsSystemWindows="true"
-                app:contentScrim="@color/orange_light"
+                app:contentScrim="@color/primary"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
                 <FrameLayout
@@ -157,7 +162,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_gravity="bottom"
-                        android:layout_alignParentBottom="true"
                         android:background="@color/black_transparent"/>
                 </FrameLayout>
 
@@ -166,7 +170,7 @@
                     android:layout_height="?attr/actionBarSize"
                     android:layout_width="match_parent"
                     android:background="@android:color/transparent"
-                    app:layout_collapseMode="pin"/>
+                    app:layout_collapseMode="pin" />
             </android.support.design.widget.CollapsingToolbarLayout>
 
         </android.support.design.widget.AppBarLayout>
@@ -176,10 +180,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="block"
+            android:layout_marginRight="10dp"
             android:src="@drawable/ic_lock_black_24dp"
             app:borderWidth="@dimen/activity_friend_block_fab_block_border"
-            app:backgroundTint="@color/orange_light"
+            app:backgroundTint="@color/primary"
             app:layout_anchor="@id/ActivityBlockBase_AppBar"
-            app:layout_anchorGravity="bottom|right|end"/>
+            app:layout_anchorGravity="bottom|right|end"
+            app:elevation="6dp" />
     </android.support.design.widget.CoordinatorLayout>
 </RelativeLayout>

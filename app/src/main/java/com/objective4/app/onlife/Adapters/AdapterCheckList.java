@@ -36,9 +36,9 @@ public class AdapterCheckList extends ArrayAdapter<ModelPerson> {
             convertView = inflater.inflate(R.layout.layout_select_contact_group, parent, false);
 
             holder = new Holder();
-            holder.avatar = (ImageView) convertView.findViewById(R.id.LayoutBase_ImageViewFriend);
+            holder.avatar = (ImageView) convertView.findViewById(R.id.LayoutSelectContactGroup_ImageViewFriend);
             holder.avatar.setImageBitmap(BitmapFactory.decodeResource(context.getResources(),R.drawable.loading_friend_icon));
-            holder.name = (TextView) convertView.findViewById(R.id.LayoutBase_TextViewNameFriend);
+            holder.name = (TextView) convertView.findViewById(R.id.LayoutSelectContactGroup_TextViewNameFriend);
             convertView.setTag(holder);
         }
         else {

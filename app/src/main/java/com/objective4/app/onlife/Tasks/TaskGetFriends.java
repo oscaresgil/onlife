@@ -50,7 +50,7 @@ public class TaskGetFriends extends AsyncTask<String, Void, ArrayList<ModelPerso
                     .title(R.string.dialog_please_wait)
                     .content(R.string.loading_friends)
                     .progress(true,10)
-                    .widgetColor(context.getResources().getColor(R.color.orange_light))
+                    .widgetColor(context.getResources().getColor(R.color.accent))
                     .cancelable(false)
                     .show();
         }

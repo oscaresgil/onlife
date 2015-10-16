@@ -128,7 +128,7 @@ public class ActivityHome extends AppCompatActivity{
                 .build());
         MaterialDialog.Builder materialDialog = new MaterialDialog.Builder(this)
                 .title(R.string.settings_options)
-                .titleColorRes(R.color.orange_light)
+                .titleColorRes(R.color.accent)
                 .adapter(materialAdapter, new MaterialDialog.ListCallback() {
                     @Override
                     public void onSelection(final MaterialDialog materialDialog, View view, int which, CharSequence charSequence) {
@@ -137,9 +137,9 @@ public class ActivityHome extends AppCompatActivity{
                                     .title(getResources().getString(R.string.settings_option_uninstall) + "?")
                                     .content(R.string.really_delete)
                                     .positiveText(R.string.yes)
-                                    .positiveColorRes(R.color.orange_light)
+                                    .positiveColorRes(R.color.black)
                                     .negativeText(R.string.no)
-                                    .negativeColorRes(R.color.red)
+                                    .negativeColorRes(R.color.accent)
                                     .callback(new MaterialDialog.ButtonCallback() {
                                         @Override
                                         public void onPositive(MaterialDialog dialog) {

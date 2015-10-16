@@ -3,7 +3,8 @@
     android:id="@+id/FragmentContacts_SwipeRefreshLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/gray">
+    android:background="@color/gray"
+    android:elevation="3dp">
     <!-- http://www.hermosaprogramacion.com/2015/02/android-recyclerview-cardview/ -->
     <android.support.v7.widget.RecyclerView
         android:id="@+id/FragmentContacts_ListView"

@@ -9,6 +9,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
 import com.objective4.app.onlife.Adapters.AdapterBaseElements;
+import com.objective4.app.onlife.BlockActivity.ActivityFriendBlock;
 import com.objective4.app.onlife.Models.ModelPerson;
 import com.objective4.app.onlife.R;
 
@@ -66,21 +67,25 @@ public class TaskSimpleImageDownload extends AsyncTask<ModelPerson,Void,Bitmap> 
 
     @Override
     protected void onPostExecute(Bitmap bitmap) {
-        if (isCancelled()){
-            bitmap = null;
-        }
-        if (imageViewReference != null && bitmap != null) {
-            final ImageView imageView = imageViewReference.get();
-            final TaskSimpleImageDownload bitmapWorkerTask =
-                    AdapterBaseElements.AsyncDrawable.getBitmapWorkerTask(imageView);
-            if (this == bitmapWorkerTask && imageView != null) {
-                Animation myFadeInAnimation = AnimationUtils.loadAnimation(context, R.anim.fadein);
-                imageView.startAnimation(myFadeInAnimation);
-                imageView.setImageBitmap(bitmap);
+        if (context instanceof ActivityFriendBlock){
+            ImageView imageView = imageViewReference.get();
+            Animation myFadeInAnimation = AnimationUtils.loadAnimation(context, R.anim.fadein);
+            imageView.startAnimation(myFadeInAnimation);
+            imageView.setImageBitmap(bitmap);
+        }else {
+            if (isCancelled()) {
+                bitmap = null;
+            }
+            if (imageViewReference != null && bitmap != null) {
+                final ImageView imageView = imageViewReference.get();
+                final TaskSimpleImageDownload bitmapWorkerTask =
+                        AdapterBaseElements.AsyncDrawable.getBitmapWorkerTask(imageView);
+                if (this == bitmapWorkerTask && imageView != null) {
+                    Animation myFadeInAnimation = AnimationUtils.loadAnimation(context, R.anim.fadein);
+                    imageView.startAnimation(myFadeInAnimation);
+                    imageView.setImageBitmap(bitmap);
+                }
             }
         }
-        /*Animation myFadeInAnimation = AnimationUtils.loadAnimation(context, R.anim.fadein);
-        avatar.startAnimation(myFadeInAnimation);
-        avatar.setImageBitmap(imageBitmap);*/
     }
 }

@@ -90,14 +90,16 @@ public class StaticMethods {
         IntentFilter filter = new IntentFilter();
         filter.addAction(Intent.ACTION_SCREEN_OFF);
         filter.addAction(Intent.ACTION_SCREEN_ON);
+        filter.addAction(Intent.ACTION_SHUTDOWN);
+
         BroadcastReceiver receiver = new BroadcastReceiverPhoneStatus();
         context.registerReceiver(receiver,filter);
     }
 
     public static SlidrInterface setSlidr(Context context){
         SlidrConfig config = new SlidrConfig.Builder()
-                .primaryColor(context.getResources().getColor(R.color.orange))
-                .secondaryColor(context.getResources().getColor(R.color.orange_light))
+                .primaryColor(context.getResources().getColor(R.color.primary))
+                .secondaryColor(context.getResources().getColor(R.color.primary_dark))
                 .position(SlidrPosition.LEFT)
                 .sensitivity(0.4f)
                 .build();

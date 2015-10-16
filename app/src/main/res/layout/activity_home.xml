@@ -9,15 +9,14 @@
         android:id="@+id/ActivityHome_AppBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        android:elevation="4dp">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/ActivityHome_ToolBar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@android:color/transparent"
-            android:elevation="4dp"
-            app:layout_scrollFlags="scroll|enterAlways" />
+            android:background="@android:color/transparent"/>
 
         <!-- http://blog.grafixartist.com/material-design-tabs-with-android-design-support-library/ -->
         <android.support.design.widget.TabLayout
@@ -25,7 +24,6 @@
             android:id="@+id/ActivityHome_SlindingTabs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:elevation="3dp"
             app:tabMaxWidth="0dp"
             app:tabGravity="fill"
             app:tabMode="fixed" />

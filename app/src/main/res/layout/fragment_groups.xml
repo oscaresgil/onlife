@@ -19,7 +19,7 @@
         android:layout_gravity="right"
         android:layout_marginBottom="?attr/actionBarSize"
         android:src="@drawable/ic_add_black_24dp"
-        fab:fab_colorNormal="@color/orange_light"
-        fab:fab_colorPressed="@color/orange" />-->
+        fab:fab_colorNormal="@color/primary"
+        fab:fab_colorPressed="@color/primary_dark" />-->
 
 </FrameLayout>

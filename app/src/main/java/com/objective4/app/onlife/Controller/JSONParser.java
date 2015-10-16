@@ -10,7 +10,6 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.protocol.HTTP;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -33,7 +32,7 @@ public class JSONParser {
     // function get json from url
     // by making HTTP POST or GET mehtod
     public JSONObject makeHttpRequest(String url, String method,
-                                      List<NameValuePair> params) {
+                                      List<NameValuePair> params) throws Exception {
 
         // Making HTTP request
         try {
@@ -85,10 +84,7 @@ public class JSONParser {
         }
 
         // try parse the string to a JSON object
-        try {
-            jObj = new JSONObject(json);
-        } catch (JSONException e) {
-        }
+        jObj = new JSONObject(json);
 
         // return JSON String
         return jObj;

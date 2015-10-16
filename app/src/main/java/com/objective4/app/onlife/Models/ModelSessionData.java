@@ -30,6 +30,16 @@ public class ModelSessionData implements Serializable{
         this.modelGroups = modelGroups;
     }
 
+    public boolean addFriend(ModelPerson p){
+        for (ModelPerson f: friends){
+            if (p.getId().equals(f.getId())){
+                return false;
+            }
+        }
+        friends.add(p);
+        return true;
+    }
+
     public ModelPerson getUser() {
         return user;
     }

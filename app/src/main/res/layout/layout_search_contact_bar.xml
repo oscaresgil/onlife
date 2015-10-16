@@ -19,7 +19,7 @@
         android:imeOptions="actionSearch"
         android:visibility="gone"
         app:met_baseColor="@color/black"
-        app:met_primaryColor="@color/orange_light"
+        app:met_primaryColor="@color/primary"
         app:met_hideUnderline="true"
         app:theme="@style/FriendStyle"
         android:singleLine="true" />

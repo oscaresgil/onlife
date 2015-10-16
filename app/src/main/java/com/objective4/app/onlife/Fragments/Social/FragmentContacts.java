@@ -74,8 +74,6 @@ public class FragmentContacts extends Fragment {
         listView.setLayoutManager(new LinearLayoutManager(getActivity()));
         listView.setAdapter(adapter);
 
-        //listView.getItemAnimator().setSupportsChangeAnimations(false);
-
         getActivity().registerReceiver(broadcastReceiver, new IntentFilter("com.objective4.app.onlife.Fragments.Social.FragmentContacts"));
 
         return v;
@@ -118,9 +116,12 @@ public class FragmentContacts extends Fragment {
                 }
             }else if("new_user".equals(tag)){
                 ModelPerson newUser = (ModelPerson) extras.getSerializable("new_user");
-                ModelSessionData.getInstance().getFriends().add(newUser);
-                int pos = getItemPosition(ModelSessionData.getInstance().getFriends(),newUser.getId());
-                adapter.notifyItemInserted(pos);
+
+                boolean b = ModelSessionData.getInstance().addFriend(newUser);
+                if (b){
+                    int pos = getItemPosition(ModelSessionData.getInstance().getFriends(),newUser.getId());
+                    adapter.notifyItemInserted(pos);
+                }
             } else if("no_device_admin".equals(tag)){
                 activateDeviceAdmin(getActivity());
             }
@@ -149,7 +150,7 @@ public class FragmentContacts extends Fragment {
             }
 
         });
-        mSwipeRefreshLayout.setColorSchemeResources(R.color.orange_light, R.color.orange);
+        mSwipeRefreshLayout.setColorSchemeResources(R.color.accent, R.color.primary, R.color.primary_dark);
         mSwipeRefreshLayout.setSize(R.integer.fragment_contacts_size_refresh_layout);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -182,7 +183,6 @@ public class FragmentContacts extends Fragment {
         int i = item.getItemId();
         if (i==R.id.searchContact){
             handleMenuSearch();
-            adapter.notifyDataSetChanged();
         }
 
         return super.onOptionsItemSelected(item);

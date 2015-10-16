@@ -29,12 +29,12 @@ public class ListenerTextWatcher implements TextWatcher {
     public void onTextChanged(CharSequence s, int start, int before, int count) {
         actualChar = s.length();
         if (actualChar > 30) {
-            maxCharsView.setTextColor(context.getResources().getColor(R.color.red));
+            maxCharsView.setTextColor(context.getResources().getColor(R.color.accent));
             messageTextView.setText(text);
             messageTextView.setSelection(messageTextView.getText().length());
         } else {
             if (actualChar == 30){
-                maxCharsView.setTextColor(context.getResources().getColor(R.color.red));
+                maxCharsView.setTextColor(context.getResources().getColor(R.color.accent));
             }else{
                 maxCharsView.setTextColor(context.getResources().getColor(R.color.black));
             }

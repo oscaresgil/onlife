@@ -149,9 +149,9 @@ public class ActivityGroupBlock extends ActivityBlockBase<ModelGroup> {
                 .title(getResources().getString(R.string.delete) + " " + actualObject.getName())
                 .content(R.string.really_delete)
                 .positiveText(R.string.yes)
-                .positiveColorRes(R.color.orange_light)
+                .positiveColorRes(R.color.black)
                 .negativeText(R.string.no)
-                .negativeColorRes(R.color.red)
+                .negativeColorRes(R.color.accent)
                 .callback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onPositive(MaterialDialog dialog) {
@@ -204,7 +204,7 @@ public class ActivityGroupBlock extends ActivityBlockBase<ModelGroup> {
             boolean devAdmin = checkDeviceAdmin(this);
             if (listenerTextWatcher.getActualChar() <= 30 && devAdmin) {
                 try {
-                    new TaskSendNotification(ActivityGroupBlock.this, actualUser.getName(), messageTextView.getText().toString(),emoticonId).execute(friendsInGroup.toArray(new ModelPerson[friendsInGroup.size()]));
+                    new TaskSendNotification(ActivityGroupBlock.this, actualUser.getName(), messageTextView.getText().toString(),emoticonName).execute(friendsInGroup.toArray(new ModelPerson[friendsInGroup.size()]));
                     messageTextView.setText("");
                 } catch (Exception ex) {
                     SnackBar.show(ActivityGroupBlock.this, R.string.error);
@@ -243,7 +243,7 @@ public class ActivityGroupBlock extends ActivityBlockBase<ModelGroup> {
 
         final MaterialDialog.Builder materialDialog = new MaterialDialog.Builder(this)
                 .title(R.string.photo_select_image)
-                .titleColorRes(R.color.orange_light)
+                .titleColorRes(R.color.accent)
                 .adapter(materialAdapter, new MaterialDialog.ListCallback() {
                     @Override
                     public void onSelection(MaterialDialog materialDialog, View view, int which, CharSequence charSequence) {

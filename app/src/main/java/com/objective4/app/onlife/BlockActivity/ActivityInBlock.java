@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -30,6 +31,7 @@ public class ActivityInBlock extends Activity{
 
     private TextView textViewMessage,textViewUser,textViewNumber;
     private RelativeLayout relativeLayout;
+    private ImageView emoticonImageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +44,7 @@ public class ActivityInBlock extends Activity{
         textViewNumber = (TextView) findViewById(R.id.ActivityInBlock_TextViewNumberMessage);
         textViewUser = (TextView) findViewById(R.id.ActivityInBlock_TextViewName);
         textViewMessage = (TextView) findViewById(R.id.ActivityInBlock_TextViewMessage);
+        emoticonImageView = (ImageView) findViewById(R.id.ActivityInBlock_EmoticonImageView);
 
         textViewNumber.setOnClickListener(new OnClickListenerMessage());
         textViewUser.setOnClickListener(new OnClickListenerMessage());
@@ -64,6 +67,10 @@ public class ActivityInBlock extends Activity{
         textViewUser.setText(user);
         textViewMessage.setText(message);
 
+        if (!"".equals(emoticonName)) {
+            int resourceId = getResources().getIdentifier(emoticonName, "drawable", getPackageName());
+            emoticonImageView.setImageDrawable(getResources().getDrawable(resourceId));
+        }
 
     }
 
@@ -87,7 +94,7 @@ public class ActivityInBlock extends Activity{
         message = intent.getStringExtra("message");
         emoticonName = intent.getStringExtra("gif");
 
-        messages.add(new ModelMessages(user, message, emoticonName,colors[new Random().nextInt(20)]));
+        messages.add(new ModelMessages(user, message, emoticonName, colors[new Random().nextInt(20)]));
         textViewNumber.setText(String.format("%d/%d", numPage + 1, messages.size()));
     }
 
@@ -97,6 +104,7 @@ public class ActivityInBlock extends Activity{
             numPage++;
             if (numPage>=messages.size()){
                 finish();
+                System.exit(0);
             }else {
                 ModelMessages m = messages.get(numPage);
                 textViewNumber.setText(String.format("%d/%d", numPage + 1, messages.size()));

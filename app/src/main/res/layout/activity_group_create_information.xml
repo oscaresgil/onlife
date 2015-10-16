@@ -1,67 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/ActivityCreateGroup_RelativeLayoutMain"
-    android:orientation="vertical"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/ActivityCreateGroup_CoordinatorLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background_material_light"
-    android:animateLayoutChanges="true">
+    android:fitsSystemWindows="true">
 
-    <LinearLayout
-        android:id="@+id/ActivityCreateGroup_LinearLayoutSubMain"
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/ActivityCreateGroup_AppBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="@dimen/activity_group_create_information_linear_layout_sub_main_padding"
-        android:animateLayoutChanges="true">
+        android:theme="@style/AppTheme"
+        android:elevation="4dp">
 
-		<ImageView
-            android:id="@+id/ActivityCreateGroup_ImageButtonSelectImage"
-            android:layout_width="@dimen/layout_select_contact_group_image_height_width"
-            android:layout_height="@dimen/layout_select_contact_group_image_height_width"
-            android:scaleType="fitCenter"
-            android:layout_margin="@dimen/activity_group_create_information_ratio_image_view_margin"/>
-        <com.rengwuxian.materialedittext.MaterialEditText
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/ActivityCreateGroup_EditTextNameGroup"
-            android:layout_margin="@dimen/activity_group_create_information_edit_text_name_group_margin"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:enabled="true"
-            android:hint="@string/group_name"
-            app:met_baseColor="@color/black"
-            app:met_primaryColor="@color/orange_light"
-            app:met_errorColor="@color/red"
-            app:met_hideUnderline="true"/>
-    </LinearLayout>
-    <FrameLayout
-        android:id="@+id/ActivityCreateGroup_FrameLayoutSelectFriends"
-        android:layout_below="@id/ActivityCreateGroup_LinearLayoutSubMain"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:animateLayoutChanges="true">
-        <com.melnykov.fab.FloatingActionButton
-            xmlns:fab="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/ActivityCreateGroup_FABSearchFriend"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/activity_group_create_information_fab_search_margin_bottom"
-            android:layout_marginRight="@dimen/activity_group_create_information_fab_search_margin_right"
-            android:onClick="search"
-            android:src="@drawable/ic_search_black_24dp"
-            android:layout_gravity="right"
-            fab:fab_colorNormal="@color/orange_light"
-            fab:fab_colorPressed="@color/orange"
-            fab:fab_shadow="true"/>
-        <LinearLayout
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/ActivityCreateGroup_ToolBar"
+            android:layout_height="?attr/actionBarSize"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            <ListView
-                android:layout_height="fill_parent"
+            android:background="@android:color/transparent"/>
+
+        <LinearLayout
+            android:id="@+id/ActivityCreateGroup_LinearLayoutSubMain"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/activity_group_create_information_linear_layout_sub_main_padding"
+            android:animateLayoutChanges="true">
+
+            <ImageView
+                android:id="@+id/ActivityCreateGroup_ImageButtonSelectImage"
+                android:layout_width="@dimen/layout_select_contact_group_image_height_width"
+                android:layout_height="@dimen/layout_select_contact_group_image_height_width"
+                android:scaleType="fitCenter"
+                android:layout_margin="@dimen/activity_group_create_information_ratio_image_view_margin"
+                android:src="@drawable/ic_camera_alt_black_24dp"/>
+            <com.rengwuxian.materialedittext.MaterialEditText
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/ActivityCreateGroup_EditTextNameGroup"
+                android:layout_margin="@dimen/activity_group_create_information_edit_text_name_group_margin"
                 android:layout_width="fill_parent"
-                android:id="@+id/ActivityCreateGroup_ListViewFriends"
-                android:listSelector="@drawable/list_selector"/>
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:enabled="true"
+                android:hint="@string/group_name"
+                app:met_baseColor="@color/black"
+                app:met_primaryColor="@color/primary"
+                app:met_errorColor="@color/accent"
+                app:met_hideUnderline="true"/>
         </LinearLayout>
-    </FrameLayout>
-</RelativeLayout>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/ActivityCreateGroup_ButtonDone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="addGroup"
+        android:layout_marginRight="10dp"
+        android:src="@drawable/ic_done_black_24dp"
+        app:borderWidth="@dimen/activity_friend_block_fab_block_border"
+        app:backgroundTint="@color/primary_dark"
+        app:layout_anchor="@id/ActivityCreateGroup_AppBar"
+        app:layout_anchorGravity="bottom|right|end"
+        app:elevation="6dp" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/ActivityCreateGroup_ListViewFriends"
+        android:layout_below="@id/ActivityCreateGroup_AppBar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+
+</android.support.design.widget.CoordinatorLayout>
