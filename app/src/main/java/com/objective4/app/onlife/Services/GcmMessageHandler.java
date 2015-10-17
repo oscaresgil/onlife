@@ -1,6 +1,7 @@
 package com.objective4.app.onlife.Services;
 
 import android.app.IntentService;
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.admin.DevicePolicyManager;
 import android.content.Context;
@@ -109,11 +110,11 @@ public class GcmMessageHandler extends IntentService {
 
 
     protected void onMessage(Context context) {
-        NotificationCompat.Builder mBuilder =
-                new NotificationCompat.Builder(this)
-                        .setSmallIcon(R.drawable.ic_white_notification)
+        Notification.Builder mBuilder =
+                new Notification.Builder(this)
+                        .setSmallIcon(R.drawable.ic_notification_icon)
                         .setTicker(getResources().getString(R.string.notification_someone_block_you))
-                        .setStyle(new NotificationCompat.BigTextStyle())
+                        .setStyle(new Notification.BigTextStyle())
                         .setOnlyAlertOnce(true);
 
         NotificationManager myNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
