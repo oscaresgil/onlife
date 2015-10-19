@@ -31,7 +31,6 @@ public class ActivityInBlock extends Activity{
 
     private TextView textViewMessage,textViewUser,textViewNumber;
     private RelativeLayout relativeLayout;
-    private ImageView emoticonImageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,19 +40,22 @@ public class ActivityInBlock extends Activity{
         setContentView(R.layout.activity_in_block);
 
         numPage = 0;
+
+        LinearLayout linearLayout = (LinearLayout) findViewById(R.id.ActivityInBlock_LinearLayoutMessage);
+        relativeLayout = (RelativeLayout) findViewById(R.id.ActivityInBlock_RelativeLayoutMain);
+
         textViewNumber = (TextView) findViewById(R.id.ActivityInBlock_TextViewNumberMessage);
         textViewUser = (TextView) findViewById(R.id.ActivityInBlock_TextViewName);
         textViewMessage = (TextView) findViewById(R.id.ActivityInBlock_TextViewMessage);
-        emoticonImageView = (ImageView) findViewById(R.id.ActivityInBlock_EmoticonImageView);
+        ImageView emoticonImageView = (ImageView) findViewById(R.id.ActivityInBlock_EmoticonImageView);
 
         textViewNumber.setOnClickListener(new OnClickListenerMessage());
         textViewUser.setOnClickListener(new OnClickListenerMessage());
         textViewMessage.setOnClickListener(new OnClickListenerMessage());
-
-        LinearLayout linearLayout = (LinearLayout) findViewById(R.id.ActivityInBlock_LinearLayoutMessage);
+        emoticonImageView.setOnClickListener(new OnClickListenerMessage());
         linearLayout.setOnClickListener(new OnClickListenerMessage());
-        relativeLayout = (RelativeLayout) findViewById(R.id.ActivityInBlock_RelativeLayoutMain);
         relativeLayout.setOnClickListener(new OnClickListenerMessage());
+
         relativeLayout.setBackgroundColor(Color.parseColor(colors[new Random().nextInt(20)]));
 
         user = getIntent().getStringExtra("user");

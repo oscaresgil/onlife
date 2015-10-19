@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import com.kenny.snackbar.SnackBar;
 import com.objective4.app.onlife.Controller.JSONParser;
 import com.objective4.app.onlife.Models.ModelPerson;
+import com.objective4.app.onlife.Models.ModelSessionData;
 import com.objective4.app.onlife.R;
 
 import net.steamcrafted.loadtoast.LoadToast;
@@ -15,6 +16,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.ConnectException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -80,12 +82,12 @@ public class TaskSendNotification extends AsyncTask<ModelPerson, String, String[
             JSONObject json = jsonParser.makeHttpRequest("http://104.236.74.55/onlife/gcm.php", "POST", p);
             switch (json.getInt("code")){
                 case 0: return new String[]{"true",returnMessage};
-                case -1: return new String[]{"false","No registrado"};
+                case -1: return new String[]{"false",context.getResources().getString(R.string.gcm_not_registered)};
             }
-            /*if(!json.getBoolean("error")){
-                return new String[]{"true",returnMessage};
-            }*/
-        } catch (JSONException e) {
+
+        }catch(ConnectException e){
+            returnMessage = context.getResources().getString(R.string.no_connection);
+        }catch (JSONException e) {
             e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();

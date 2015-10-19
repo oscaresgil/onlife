@@ -77,15 +77,13 @@ public class ActivityMain extends Activity{
 
         // Review first instalation
         if(!sharedPreferences.contains("onboarding_complete")) {
-            Intent onboarding = new Intent(this, ActivityOnboarding.class);
-            startActivity(onboarding);
+            startActivity(new Intent(this, ActivityOnboarding.class));
             finish();
         }
 
         // Get phone GCM
-        if (!sharedPreferences.contains("idGcm")){
-            TaskGetGCM gcm = new TaskGetGCM(this);
-            gcm.execute();
+        if ("".equals(sharedPreferences.getString("idGcm",""))){
+            new TaskGetGCM(this).execute();
         }
 
         FacebookSdk.sdkInitialize(this.getApplicationContext());
@@ -108,9 +106,8 @@ public class ActivityMain extends Activity{
                     sharedPreferences.edit().putString("userLogin", gson.toJson(userLogin)).apply();
                     sharedPreferences.edit().putString("friends", gson.toJson(new ArrayList<ModelPerson>())).apply();
                     sharedPreferences.edit().putString("groups", gson.toJson(new ArrayList<ModelGroup>())).apply();
-                    sharedPreferences.edit().putBoolean("first_login",true).apply();
-                    TaskAddNewUser taskAddNewUser = new TaskAddNewUser();
-                    taskAddNewUser.execute(userLogin);
+                    sharedPreferences.edit().putBoolean("first_login", true).apply();
+                    new TaskAddNewUser(ActivityMain.this).execute(userLogin);
 
                     Bundle params = new Bundle();
                     params.putString("fields", "id,name");

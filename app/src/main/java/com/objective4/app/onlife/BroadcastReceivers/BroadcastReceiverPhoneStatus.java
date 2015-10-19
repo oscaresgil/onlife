@@ -22,10 +22,10 @@ public class BroadcastReceiverPhoneStatus extends BroadcastReceiver {
 
         if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)){
             state = "A";
-            new TaskChangeState().execute(id,state);
+            new TaskChangeState(context).execute(id,state);
         }else if(intent.getAction().equals(Intent.ACTION_SCREEN_OFF) || intent.getAction().equals(Intent.ACTION_SHUTDOWN)){
             state = "I";
-            new TaskChangeState().execute(id,state);
+            new TaskChangeState(context).execute(id,state);
         }
     }
 }

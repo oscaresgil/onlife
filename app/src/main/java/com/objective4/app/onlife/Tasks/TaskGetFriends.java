@@ -3,6 +3,7 @@ package com.objective4.app.onlife.Tasks;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.provider.Settings;
 import android.view.View;
@@ -23,11 +24,13 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONObject;
 
+import java.net.ConnectException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import static com.objective4.app.onlife.Controller.StaticMethods.isFriendAlready;
 import static com.objective4.app.onlife.Controller.StaticMethods.isNetworkAvailable;
 
 public class TaskGetFriends extends AsyncTask<String, Void, ArrayList<ModelPerson>> {
@@ -71,9 +74,12 @@ public class TaskGetFriends extends AsyncTask<String, Void, ArrayList<ModelPerso
             Gson gson = new Gson();
 
             return gson.fromJson(jsonFriends.getString("friends"), (new TypeToken<ArrayList<ModelPerson>>(){}.getType()));
-        }catch(Exception ex){
+        }catch(ConnectException e){
+            SnackBar.show((Activity) context, context.getResources().getString(R.string.no_connection));
+            return (ArrayList<ModelPerson>) ModelSessionData.getInstance().getFriends();
+        } catch(Exception ex){
             ex.printStackTrace();
-            return new ArrayList<>();
+            return (ArrayList<ModelPerson>) ModelSessionData.getInstance().getFriends();
         }
     }
 
@@ -92,11 +98,15 @@ public class TaskGetFriends extends AsyncTask<String, Void, ArrayList<ModelPerso
             });
 
             ModelSessionData.getInstance().setFriends(friends);
+
+            Gson gson = new Gson();
+            SharedPreferences sharedPreferences = context.getSharedPreferences(ActivityMain.MyPREFERENCES, Context.MODE_PRIVATE);
+            sharedPreferences.edit().putString("friends",gson.toJson(ModelSessionData.getInstance().getFriends())).apply();
+
             AdapterBaseElements adapterContact = ((ActivityHome) context).getAdapterContact();
             adapterContact.updateElements(friends);
-        }
-        else{
-            SnackBar.show((Activity)context, R.string.no_connection, R.string.button_change_connection, new View.OnClickListener() {
+        } else {
+            SnackBar.show((Activity) context, R.string.no_connection, R.string.button_change_connection, new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     context.startActivity(new Intent(Settings.ACTION_WIRELESS_SETTINGS));

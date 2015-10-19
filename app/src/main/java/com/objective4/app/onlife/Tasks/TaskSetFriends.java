@@ -1,9 +1,11 @@
 package com.objective4.app.onlife.Tasks;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.kenny.snackbar.SnackBar;
 import com.objective4.app.onlife.Activities.ActivityMain;
 import com.objective4.app.onlife.Controller.JSONParser;
 import com.objective4.app.onlife.R;
@@ -12,6 +14,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONObject;
 
+import java.net.ConnectException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,10 +51,12 @@ public class TaskSetFriends extends AsyncTask<ArrayList<String>, Void, String> {
             p.add(new BasicNameValuePair("id_friends[]", params[0].get(i)));
         }
         try{
-            JSONObject response = null;
-            response = jsonParser.makeHttpRequest(ActivityMain.SERVER_URL, "POST", p);
+            JSONObject response =  jsonParser.makeHttpRequest(ActivityMain.SERVER_URL, "POST", p);
             boolean error = response.getBoolean("error");
             return id;
+        }catch(ConnectException e){
+            SnackBar.show((Activity)context, context.getResources().getString(R.string.no_connection));
+            return null;
         }catch(Exception ex){
             ex.printStackTrace();
             return null;

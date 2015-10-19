@@ -100,5 +100,7 @@
     <string name="app_link_image_url" translatable="false">http://www.onlife-app.com/myapplink/logo.png</string>
     <string name="friends_blocked_number">Friends Blocked:</string>
     <string name="invite_friends">Invite Friends</string>
+    <string name="playservices_not_installed">Google Play Services not supported. Please install and configure Google Play Store.</string>
+    <string name="gcm_not_registered">Friend not registered</string>
 
 </resources>

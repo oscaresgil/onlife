@@ -1,5 +1,6 @@
 package com.objective4.app.onlife.Tasks;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -8,6 +9,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
+import com.kenny.snackbar.SnackBar;
 import com.objective4.app.onlife.Adapters.AdapterBaseElements;
 import com.objective4.app.onlife.BlockActivity.ActivityFriendBlock;
 import com.objective4.app.onlife.Models.ModelPerson;
@@ -24,6 +26,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
+import java.net.ConnectException;
 
 import static com.objective4.app.onlife.Controller.StaticMethods.saveImage;
 
@@ -57,6 +60,8 @@ public class TaskSimpleImageDownload extends AsyncTask<ModelPerson,Void,Bitmap> 
             imageBitmap = BitmapFactory.decodeStream(inputStream);
             saveImage(context, p.getId()+"_"+size, imageBitmap);
             return imageBitmap;
+        } catch(ConnectException e){
+            SnackBar.show((Activity)context, context.getResources().getString(R.string.no_connection));
         } catch (ClientProtocolException e) {
             e.printStackTrace();
         } catch (IOException e) {

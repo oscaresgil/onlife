@@ -5,6 +5,7 @@ import android.content.Context;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
+import com.objective4.app.onlife.R;
 
 public final class GCMHelper {
     private static GoogleCloudMessaging gcm = null;
@@ -26,7 +27,7 @@ public final class GCMHelper {
         String regid = "";
         //Check if Play store services are available.
         if (!checkPlayServices())
-            throw new Exception("Google Play Services not supported. Please install and configure Google Play Store.");
+            throw new Exception(context.getResources().getString(R.string.playservices_not_installed));
 
         if (gcm == null) {
             gcm = GoogleCloudMessaging.getInstance(context);

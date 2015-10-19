@@ -95,5 +95,7 @@
     <string name="device_admin_not_activated">Administrador de dispositivo no activado</string>
     <string name="friends_blocked_number">Amigos Bloqueados: </string>
     <string name="invite_friends">Invitar Amigos</string>
+    <string name="playservices_not_installed">Google Play Services no está correctamente instalado. Por favor instalelo de nuevo.</string>
+    <string name="gcm_not_registered">Amigo no registrado</string>
 
 </resources>

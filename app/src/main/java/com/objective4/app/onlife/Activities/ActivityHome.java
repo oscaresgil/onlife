@@ -17,6 +17,7 @@ import android.view.View;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.simplelist.MaterialSimpleListAdapter;
 import com.afollestad.materialdialogs.simplelist.MaterialSimpleListItem;
+import com.facebook.appevents.AppEventsLogger;
 import com.facebook.login.LoginManager;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -81,8 +82,15 @@ public class ActivityHome extends AppCompatActivity{
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        AppEventsLogger.activateApp(this);
+    }
+
+    @Override
     protected void onPause() {
         super.onPause();
+        AppEventsLogger.deactivateApp(this);
     }
 
     @Override
@@ -172,7 +180,7 @@ public class ActivityHome extends AppCompatActivity{
         delDirImages(this, ModelSessionData.getInstance().getFriends(), ModelSessionData.getInstance().getModelGroups());
         ModelSessionData.getInstance().clear();
         LoginManager.getInstance().logOut();
-        new TaskChangeState().execute(userLogin.getId(), "O");
+        new TaskChangeState(ActivityHome.this).execute(userLogin.getId(), "O");
         finish();
     }
 

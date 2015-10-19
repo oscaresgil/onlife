@@ -1,9 +1,11 @@
 package com.objective4.app.onlife.Tasks;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 
+import com.kenny.snackbar.SnackBar;
 import com.objective4.app.onlife.Activities.ActivityMain;
 import com.objective4.app.onlife.GCMClient.GCMHelper;
 
@@ -27,9 +29,12 @@ public class TaskGetGCM extends AsyncTask<Void, Void, String> {
             msg = gcmRegID;
             return msg;
         } catch (IOException e) {
+            e.printStackTrace();
+            SnackBar.show((Activity)context,e.getMessage());
             return null;
         } catch (Exception e) {
             e.printStackTrace();
+            SnackBar.show((Activity) context, e.getMessage());
             return null;
         }
     }
