@@ -37,6 +37,7 @@ import java.util.List;
 import static com.objective4.app.onlife.Controller.StaticMethods.activateDeviceAdmin;
 import static com.objective4.app.onlife.Controller.StaticMethods.getModelPersonIndex;
 import static com.objective4.app.onlife.Controller.StaticMethods.isNetworkAvailable;
+import static com.objective4.app.onlife.Controller.StaticMethods.setHashToList;
 import static com.objective4.app.onlife.Controller.StaticMethods.showSoftKeyboard;
 
 public class FragmentContacts extends Fragment {
@@ -63,12 +64,12 @@ public class FragmentContacts extends Fragment {
         setHasOptionsMenu(true);
         View v = inflater.inflate (R.layout.fragment_contacts, container, false);
         actualUser = ModelSessionData.getInstance().getUser();
-        friends = ModelSessionData.getInstance().getFriends();
+        friends = setHashToList(ModelSessionData.getInstance().getFriends());
         addFriends= (TextView)v.findViewById(R.id.addFriendsButton);
 
         friendsFiltred = new ArrayList<>();
 
-        adapter = new AdapterBaseElements<>(getActivity(), ModelSessionData.getInstance().getFriends(), FragmentContacts.class, ActivityFriendBlock.class);
+        adapter = new AdapterBaseElements<>(getActivity(), setHashToList(ModelSessionData.getInstance().getFriends()), FragmentContacts.class, ActivityFriendBlock.class);
         ((ActivityHome)getActivity()).setAdapterContact(adapter);
 
         listView = (RecyclerView) v.findViewById(R.id.FragmentContacts_ListView);
@@ -100,23 +101,23 @@ public class FragmentContacts extends Fragment {
                 String id = extras.getString("id");
                 String state = extras.getString("state");
                 if ("O".equals(state)) {
-                    int pos = getModelPersonIndex(ModelSessionData.getInstance().getFriends(), id);
-                    if (pos!=-1) {
-                        ModelSessionData.getInstance().getFriends().remove(pos);
+                    boolean b = ModelSessionData.getInstance().getFriends().containsKey(id);
+                    if (b){
+                        ModelSessionData.getInstance().getFriends().remove(id);
                         adapter.removeFriend(id);
                     }
                 } else {
-                    int pos = getModelPersonIndex(ModelSessionData.getInstance().getFriends(), id);
-                    if (pos!=-1){
-                        ModelSessionData.getInstance().getFriends().get(pos).setState(state);
-                        adapter.notifyItemChanged(pos);
+                    boolean b = ModelSessionData.getInstance().getFriends().containsKey(id);
+                    if (b){
+                        ModelSessionData.getInstance().getFriends().get(id).setState(state);
+                        adapter.notifyItemChanged(getModelPersonIndex(setHashToList(ModelSessionData.getInstance().getFriends()), id));
                     }
                 }
             }else if("new_user".equals(tag)){
                 ModelPerson newUser = (ModelPerson) extras.getSerializable("new_user");
-                int pos = getModelPersonIndex(ModelSessionData.getInstance().getFriends(),newUser.getId());
+                int pos = getModelPersonIndex(setHashToList(ModelSessionData.getInstance().getFriends()),newUser.getId());
                 if (pos==-1){
-                    ModelSessionData.getInstance().addFriend(newUser);
+                    ModelSessionData.getInstance().getFriends().put(newUser.getId(),newUser);
                     adapter.addFriend(newUser);
                 }
             } else if("friends_updated".equals(tag)){
@@ -235,7 +236,7 @@ public class FragmentContacts extends Fragment {
         }
         else{
             friendsFiltred.clear();
-            friendsFiltred.addAll(friends);
+            friendsFiltred.addAll(setHashToList(ModelSessionData.getInstance().getFriends()));
             listView.setAdapter(new AdapterBaseElements<>(getActivity(), friendsFiltred, FragmentContacts.class, ActivityFriendBlock.class));
             assert actionBar != null;
             actionBar.setDisplayShowCustomEnabled(true);
@@ -253,7 +254,7 @@ public class FragmentContacts extends Fragment {
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
                     mSearchQuery = searchText.getText().toString();
                     AdapterBaseElements adapterContact = (AdapterBaseElements) listView.getAdapter();
-                    adapterContact.updateElements(performSearch(friends, mSearchQuery));
+                    adapterContact.updateElements(performSearch(setHashToList(ModelSessionData.getInstance().getFriends()), mSearchQuery));
                 }
 
                 @Override

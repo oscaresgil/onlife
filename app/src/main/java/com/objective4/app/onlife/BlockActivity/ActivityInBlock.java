@@ -27,15 +27,11 @@ public class ActivityInBlock extends Activity{
     private String emoticonName;
     private List<ModelMessages> messages;
     private String[] colors = {"#1abc9c" ,"#2ecc71", "#3498db", "#9b59b6", "#34495e", "#16a085", "#27ae60", "#2980b9", "#8e44ad", "#2c3e50", "#f1c40f", "#e67e22", "#e74c3c", "#95a5a6", "#f39c12", "#d35400", "#c0392b", "#bdc3c7", "#7f8c8d"};
-    private boolean flagForAds;
-
     private TextView textViewMessage,textViewUser,textViewNumber;
     private RelativeLayout relativeLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        AppLovinSdk.initializeSdk(this);
-        this.flagForAds=true;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_in_block);
 
@@ -79,14 +75,6 @@ public class ActivityInBlock extends Activity{
     @Override
     protected void onResume() {
         super.onResume();
-        if(flagForAds){
-            if(AppLovinInterstitialAd.isAdReadyToDisplay(this)){
-                // An ad is available to display.  It's safe to call show.
-                AppLovinInterstitialAd.show(this);
-                flagForAds=false;
-
-            }
-        }
     }
 
     @Override

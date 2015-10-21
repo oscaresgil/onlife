@@ -10,6 +10,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -33,6 +34,7 @@ import com.objective4.app.onlife.Tasks.TaskChangeState;
 import com.objective4.app.onlife.Tasks.TaskGetFriends;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import static com.objective4.app.onlife.Controller.StaticMethods.activateDeviceAdmin;
@@ -40,6 +42,9 @@ import static com.objective4.app.onlife.Controller.StaticMethods.deactivateDevic
 import static com.objective4.app.onlife.Controller.StaticMethods.delDirImages;
 import static com.objective4.app.onlife.Controller.StaticMethods.getModelGroupIndex;
 import static com.objective4.app.onlife.Controller.StaticMethods.inviteFacebookFriends;
+import static com.objective4.app.onlife.Controller.StaticMethods.setHashToList;
+import static com.objective4.app.onlife.Controller.StaticMethods.setListToHash;
+import static com.objective4.app.onlife.Controller.StaticMethods.unSelectFriends;
 
 public class ActivityHome extends AppCompatActivity{
     private ModelPerson userLogin;
@@ -59,19 +64,28 @@ public class ActivityHome extends AppCompatActivity{
         sharedPreferences = getSharedPreferences(ActivityMain.MyPREFERENCES, Context.MODE_PRIVATE);
         Gson gson = new Gson();
         userLogin = gson.fromJson(sharedPreferences.getString("userLogin", ""), ModelPerson.class);
-        List<ModelPerson> friends = gson.fromJson(sharedPreferences.getString("friends", ""), (new TypeToken<ArrayList<ModelPerson>>() {
-        }.getType()));
 
+        List<ModelPerson> friends = new ArrayList<>();
+        List<ModelGroup> groups = new ArrayList<>();
+        String friendsString = sharedPreferences.getString("friends","");
+        Log.e("HOME",friendsString);
+        if ("".equals(friendsString) || "{}".equals(friendsString)){
+            new TaskGetFriends(this, true).execute(userLogin.getId());
+        }else {
+            friends = gson.fromJson(friendsString, (new TypeToken<ArrayList<ModelPerson>>() {
+            }.getType()));
+            groups = gson.fromJson(sharedPreferences.getString("groups", ""), (new TypeToken<ArrayList<ModelGroup>>() {
+            }.getType()));
+        }
 
-        List<ModelGroup> groups = gson.fromJson(sharedPreferences.getString("groups", ""), (new TypeToken<ArrayList<ModelGroup>>() {
-        }.getType()));
+        HashMap<String,ModelPerson> hashMap = setListToHash(friends);
 
         if (sharedPreferences.getBoolean("first_login", false)) {
             new TaskGetFriends(this, true).execute(userLogin.getId());
             sharedPreferences.edit().putBoolean("first_login", false).apply();
         }
 
-        ModelSessionData.initInstance(userLogin, friends, groups);
+        ModelSessionData.initInstance(userLogin, hashMap, groups);
 
         ViewPager viewPager = (ViewPager) findViewById(R.id.ActivityHome_ViewPager);
         TabLayout tabLayout = (TabLayout) findViewById(R.id.ActivityHome_SlindingTabs);
@@ -120,7 +134,7 @@ public class ActivityHome extends AppCompatActivity{
     protected void onDestroy() {
         Gson gson = new Gson();
         sharedPreferences.edit().putString("userLogin", gson.toJson(ModelSessionData.getInstance().getUser())).apply();
-        sharedPreferences.edit().putString("friends", gson.toJson(ModelSessionData.getInstance().getFriends())).apply();
+        sharedPreferences.edit().putString("friends", gson.toJson(setHashToList(ModelSessionData.getInstance().getFriends()))).apply();
         sharedPreferences.edit().putString("groups", gson.toJson(ModelSessionData.getInstance().getModelGroups())).apply();
         super.onDestroy();
 
@@ -177,7 +191,7 @@ public class ActivityHome extends AppCompatActivity{
         sharedPreferences.edit().remove("friends").apply();
         sharedPreferences.edit().remove("groups").apply();
         sharedPreferences.edit().remove("userLogin").apply();
-        delDirImages(this, ModelSessionData.getInstance().getFriends(), ModelSessionData.getInstance().getModelGroups());
+        delDirImages(this, setHashToList(ModelSessionData.getInstance().getFriends()), ModelSessionData.getInstance().getModelGroups());
         ModelSessionData.getInstance().clear();
         LoginManager.getInstance().logOut();
         new TaskChangeState(ActivityHome.this).execute(userLogin.getId(), "O");
@@ -204,6 +218,7 @@ public class ActivityHome extends AppCompatActivity{
                 List<ModelGroup> groups = ModelSessionData.getInstance().getModelGroups();
                 groups.add(newG);
                 getAdapterGroup().notifyItemInserted(groups.size());
+                unSelectFriends(setHashToList(ModelSessionData.getInstance().getFriends()));
             }
         }
     }

@@ -32,8 +32,10 @@ import com.r0adkll.slidr.model.SlidrPosition;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 
 public class StaticMethods {
@@ -185,7 +187,7 @@ public class StaticMethods {
     public static void showSoftKeyboard(Context context, View v){
         InputMethodManager imm = (InputMethodManager)context.getSystemService(
                 Context.INPUT_METHOD_SERVICE);
-        imm.showSoftInput(v,0);
+        imm.showSoftInput(v, 0);
     }
 
     public static boolean imageInDisk(Context context, String name){
@@ -290,5 +292,22 @@ public class StaticMethods {
         ConnectivityManager connectivityManager = (ConnectivityManager) activity.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
+    public static HashMap setListToHash(List<ModelPerson> friends){
+        HashMap<String,ModelPerson> hashMap = new HashMap<>();
+        for (ModelPerson p: friends) hashMap.put(p.getId(),p);
+        return hashMap;
+    }
+
+    public static List<ModelPerson> setHashToList(HashMap<String,ModelPerson> hashMap){
+        List<ModelPerson> friends = new ArrayList(hashMap.values());
+        Collections.sort(friends, new Comparator<ModelPerson>() {
+            @Override
+            public int compare(ModelPerson modelPerson1, ModelPerson modelPerson2) {
+                return modelPerson1.getName().compareTo(modelPerson2.getName());
+            }
+        });
+        return friends;
     }
 }

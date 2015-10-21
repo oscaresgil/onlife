@@ -56,6 +56,7 @@ public class TaskSendNotification extends AsyncTask<ModelPerson, String, String[
         List<NameValuePair> p = new ArrayList<>();
         if (params.length==1){
             ModelPerson f = params[0];
+            f = ModelSessionData.getInstance().getFriends().get(f.getId());
             if (actualTime - f.getLastBlockedTime() > context.getResources().getInteger(R.integer.block_time_remaining)){
                 p.add(new BasicNameValuePair("id[]",f.getId_phone()));
                 f.setLastBlockedTime(actualTime);
@@ -65,7 +66,8 @@ public class TaskSendNotification extends AsyncTask<ModelPerson, String, String[
         }else {
             for (int i = 0; i < params.length; i++) {
                 ModelPerson f = params[i];
-                if (actualTime - f.getLastBlockedTime() > context.getResources().getInteger(R.integer.block_time_remaining)){
+                f = ModelSessionData.getInstance().getFriends().get(f.getId());
+                if (actualTime - f.getLastBlockedTime() > context.getResources().getInteger(R.integer.block_time_remaining) && f.getState().equals("A")){
                     p.add(new BasicNameValuePair("id[]", f.getId_phone()));
                     f.setLastBlockedTime(actualTime);
                     numBlocked++;

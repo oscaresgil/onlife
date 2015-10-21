@@ -28,10 +28,13 @@ import java.net.ConnectException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 
 import static com.objective4.app.onlife.Controller.StaticMethods.isFriendAlready;
 import static com.objective4.app.onlife.Controller.StaticMethods.isNetworkAvailable;
+import static com.objective4.app.onlife.Controller.StaticMethods.setHashToList;
+import static com.objective4.app.onlife.Controller.StaticMethods.setListToHash;
 
 public class TaskGetFriends extends AsyncTask<String, Void, ArrayList<ModelPerson>> {
     private MaterialDialog dialog;
@@ -76,10 +79,10 @@ public class TaskGetFriends extends AsyncTask<String, Void, ArrayList<ModelPerso
             return gson.fromJson(jsonFriends.getString("friends"), (new TypeToken<ArrayList<ModelPerson>>(){}.getType()));
         }catch(ConnectException e){
             SnackBar.show((Activity) context, context.getResources().getString(R.string.no_connection));
-            return (ArrayList<ModelPerson>) ModelSessionData.getInstance().getFriends();
+            return (ArrayList<ModelPerson>) setHashToList(ModelSessionData.getInstance().getFriends());
         } catch(Exception ex){
             ex.printStackTrace();
-            return (ArrayList<ModelPerson>) ModelSessionData.getInstance().getFriends();
+            return (ArrayList<ModelPerson>) setHashToList(ModelSessionData.getInstance().getFriends());
         }
     }
 
@@ -90,21 +93,15 @@ public class TaskGetFriends extends AsyncTask<String, Void, ArrayList<ModelPerso
             if (flagDialog) dialog.dismiss();
 
             for (ModelPerson f: friends) { f.setRefreshImage(true); f.setRefreshImageBig(true); }
-            Collections.sort(friends, new Comparator<ModelPerson>() {
-                @Override
-                public int compare(ModelPerson modelPerson1, ModelPerson modelPerson2) {
-                    return modelPerson1.getName().compareTo(modelPerson2.getName());
-                }
-            });
-
-            ModelSessionData.getInstance().setFriends(friends);
+            HashMap<String,ModelPerson> hashMap = setListToHash(friends);
+            ModelSessionData.getInstance().setFriends(hashMap);
 
             Gson gson = new Gson();
             SharedPreferences sharedPreferences = context.getSharedPreferences(ActivityMain.MyPREFERENCES, Context.MODE_PRIVATE);
-            sharedPreferences.edit().putString("friends",gson.toJson(ModelSessionData.getInstance().getFriends())).apply();
+            sharedPreferences.edit().putString("friends",gson.toJson(setHashToList(ModelSessionData.getInstance().getFriends()))).apply();
 
             AdapterBaseElements adapterContact = ((ActivityHome) context).getAdapterContact();
-            adapterContact.updateElements(friends);
+            adapterContact.updateElements(setHashToList(hashMap));
         } else {
             SnackBar.show((Activity) context, R.string.no_connection, R.string.button_change_connection, new View.OnClickListener() {
                 @Override

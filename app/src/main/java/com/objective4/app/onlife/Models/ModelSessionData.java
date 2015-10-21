@@ -4,15 +4,18 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+
+import static com.objective4.app.onlife.Controller.StaticMethods.setHashToList;
 
 public class ModelSessionData implements Serializable{
     private static ModelSessionData instance;
     private ModelPerson user;
-    private List<ModelPerson> friends;
+    private HashMap<String,ModelPerson> hashFriends;
     private List<ModelGroup> modelGroups;
 
-    public static void initInstance(ModelPerson user, List<ModelPerson> friends, List<ModelGroup> modelGroups) {
+    public static void initInstance(ModelPerson user, HashMap<String,ModelPerson> friends, List<ModelGroup> modelGroups) {
         instance = new ModelSessionData(user,friends,modelGroups);
     }
 
@@ -26,43 +29,29 @@ public class ModelSessionData implements Serializable{
     public ModelSessionData() {
     }
 
-    public ModelSessionData(ModelPerson user, List<ModelPerson> friends, List<ModelGroup> modelGroups) {
+    public ModelSessionData(ModelPerson user, HashMap<String,ModelPerson> hashFriends, List<ModelGroup> modelGroups) {
         this.user = user;
-        this.friends = friends;
+        this.hashFriends = hashFriends;
         this.modelGroups = modelGroups;
-    }
-
-    public void addFriend(ModelPerson p){
-        friends.add(p);
-        Collections.sort(friends, new Comparator<ModelPerson>() {
-            @Override
-            public int compare(ModelPerson modelPerson1, ModelPerson modelPerson2) {
-                return modelPerson1.getName().compareTo(modelPerson2.getName());
-            }
-        });
     }
 
     public ModelPerson getUser() {
         return user;
     }
 
-    public List<ModelPerson> getFriends() {
-        return friends;
+    public HashMap<String,ModelPerson> getFriends() {
+        return hashFriends;
     }
 
-    public void setFriends(List<ModelPerson> friends) {
-        this.friends = friends;
+    public void setFriends(HashMap<String,ModelPerson> friends) {
+        this.hashFriends = friends;
     }
 
     public void clear(){
         ModelPerson modelPerson = new ModelPerson();
-        List<ModelPerson> friends = new ArrayList<>();
+        HashMap<String,ModelPerson> friends = new HashMap<>();
         List<ModelGroup> groups = new ArrayList<>();
         instance = new ModelSessionData(modelPerson,friends,groups);
-    }
-
-    public void setModelGroups(List<ModelGroup> modelGroups) {
-        this.modelGroups = modelGroups;
     }
 
     public List<ModelGroup> getModelGroups() {
@@ -72,7 +61,7 @@ public class ModelSessionData implements Serializable{
     @Override public String toString() {
         return "SessionData{" +
                 "user=" + user +
-                ", friends=" + friends +
+                ", friends=" + hashFriends.toString() +
                 '}';
     }
 }

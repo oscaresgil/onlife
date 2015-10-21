@@ -22,6 +22,8 @@ import java.util.List;
 import ca.barrenechea.widget.recyclerview.decoration.DividerDecoration;
 import ca.barrenechea.widget.recyclerview.decoration.StickyHeaderDecoration;
 
+import static com.objective4.app.onlife.Controller.StaticMethods.setHashToList;
+
 public class ActivitySelectContacts extends Activity {
     private StickyHeaderDecoration decor;
     private RecyclerView mList;
@@ -35,7 +37,7 @@ public class ActivitySelectContacts extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_contact);
 
-        friends = ModelSessionData.getInstance().getFriends();
+        friends = setHashToList(ModelSessionData.getInstance().getFriends());
 
         mList = (RecyclerView) findViewById(R.id.ActivitySelectContact_RecyclerViewList);
         mList.setHasFixedSize(true);

@@ -37,9 +37,9 @@ import static com.objective4.app.onlife.Controller.StaticMethods.animationEnd;
 import static com.objective4.app.onlife.Controller.StaticMethods.hideSoftKeyboard;
 import static com.objective4.app.onlife.Controller.StaticMethods.performCrop;
 import static com.objective4.app.onlife.Controller.StaticMethods.saveImage;
+import static com.objective4.app.onlife.Controller.StaticMethods.setHashToList;
 import static com.objective4.app.onlife.Controller.StaticMethods.setSlidr;
 import static com.objective4.app.onlife.Controller.StaticMethods.showSoftKeyboard;
-import static com.objective4.app.onlife.Controller.StaticMethods.unSelectFriends;
 
 public class ActivityGroupCreateInformation extends AppCompatActivity {
     private static final int PICK_FROM_CAMERA = 1;
@@ -72,7 +72,7 @@ public class ActivityGroupCreateInformation extends AppCompatActivity {
         if (getSupportActionBar() != null)
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        friends = ModelSessionData.getInstance().getFriends();
+        friends = setHashToList(ModelSessionData.getInstance().getFriends());
 
         avatarGroup = (ImageView) findViewById(R.id.ActivityCreateGroup_ImageButtonSelectImage);
         avatarGroup.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.ic_image_camera_alt_large));
@@ -112,7 +112,6 @@ public class ActivityGroupCreateInformation extends AppCompatActivity {
         else{
             super.onBackPressed();
             hideSoftKeyboard(this, nameNewGroup);
-            unSelectFriends(ModelSessionData.getInstance().getFriends());
             animationEnd(this);
         }
     }
@@ -127,7 +126,6 @@ public class ActivityGroupCreateInformation extends AppCompatActivity {
                 handleMenuSearch();
             } else {
                 finish();
-                unSelectFriends(ModelSessionData.getInstance().getFriends());
                 animationEnd(this);
             }
         }
@@ -184,7 +182,6 @@ public class ActivityGroupCreateInformation extends AppCompatActivity {
                     }
 
                     ModelGroup newG = new ModelGroup(ModelSessionData.getInstance().getModelGroups().size(), name, selected, path, limit, state);
-                    unSelectFriends(ModelSessionData.getInstance().getFriends());
 
                     Intent returnIntent = new Intent();
                     returnIntent.putExtra("new_group", newG);

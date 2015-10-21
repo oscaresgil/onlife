@@ -35,11 +35,10 @@ public class ActivityFriendBlock extends ActivityBlockBase<ModelPerson> {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        actualObject = ModelSessionData.getInstance().getFriends().get(actualObject.getId());
         collapser.setTitle(actualObject.getName());
 
         findViewById(R.id.ActivityBlockBase_RadioButton).setVisibility(View.VISIBLE);
-
-        int position = getIntent().getIntExtra("position",-1);
 
         if (actualObject.getState().equals("I")){
             visibility.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.ic_action_visibility_off_2));
@@ -52,7 +51,7 @@ public class ActivityFriendBlock extends ActivityBlockBase<ModelPerson> {
             if (imageInDisk(this,actualObject.getId()+"_"+getResources().getInteger(R.integer.adapter_contact_size_little)))
                 avatar.setImageBitmap(loadImage(this,actualObject.getId()+"_"+getResources().getInteger(R.integer.adapter_contact_size_little)));
             new TaskSimpleImageDownload(this,avatar,getResources().getInteger(R.integer.adapter_contact_size_large)).execute(actualObject);
-            ModelSessionData.getInstance().getFriends().get(position).setRefreshImageBig(false);
+            actualObject.setRefreshImageBig(false);
         }else{
             avatar.setImageBitmap(loadImage(this,actualObject.getId()+"_"+getResources().getInteger(R.integer.adapter_contact_size_large)));
         }
