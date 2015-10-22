@@ -4,20 +4,22 @@ public class ModelMessages {
     private String userName;
     private String message="";
     private String gifName="";
-    private String color="";
+    private int color;
+    private int colorDark;
 
-    public ModelMessages(String userName, String message, String gifName, String color) {
+    public ModelMessages(String userName, String message, String gifName, int color, int colorDark) {
         this.userName = userName;
         this.message = message;
         this.gifName = gifName;
         this.color = color;
+        this.colorDark = colorDark;
     }
 
-    public String getColor() {
+    public int getColor() {
         return color;
     }
 
-    public void setColor(String color) {
+    public void setColor(int color) {
         this.color = color;
     }
 
@@ -43,6 +45,14 @@ public class ModelMessages {
 
     public void setGifName(String gifName) {
         this.gifName = gifName;
+    }
+
+    public int getColorDark() {
+        return colorDark;
+    }
+
+    public void setColorDark(int colorDark) {
+        this.colorDark = colorDark;
     }
 
     @Override

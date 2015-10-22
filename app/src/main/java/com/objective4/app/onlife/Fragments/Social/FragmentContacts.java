@@ -42,7 +42,6 @@ import static com.objective4.app.onlife.Controller.StaticMethods.showSoftKeyboar
 
 public class FragmentContacts extends Fragment {
     private ModelPerson actualUser;
-    private List<ModelPerson> friends;
 
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private RecyclerView listView;
@@ -51,7 +50,6 @@ public class FragmentContacts extends Fragment {
     private MenuItem mSearchAction;
     private MaterialEditText searchText;
     private List<ModelPerson> friendsFiltred;
-    private LinearLayoutManager linearLayoutManager;
     public static boolean isSearchOpened = false;
     private String mSearchQuery;
     private TextView addFriends;
@@ -64,7 +62,7 @@ public class FragmentContacts extends Fragment {
         setHasOptionsMenu(true);
         View v = inflater.inflate (R.layout.fragment_contacts, container, false);
         actualUser = ModelSessionData.getInstance().getUser();
-        friends = setHashToList(ModelSessionData.getInstance().getFriends());
+        List<ModelPerson> friends = setHashToList(ModelSessionData.getInstance().getFriends());
         addFriends= (TextView)v.findViewById(R.id.addFriendsButton);
 
         friendsFiltred = new ArrayList<>();
@@ -74,7 +72,7 @@ public class FragmentContacts extends Fragment {
 
         listView = (RecyclerView) v.findViewById(R.id.FragmentContacts_ListView);
         listView.setHasFixedSize(true);
-        linearLayoutManager = new LinearLayoutManager(getActivity());
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         listView.setLayoutManager(linearLayoutManager);
         listView.setAdapter(adapter);
 

@@ -111,6 +111,7 @@ public class ActivityMain extends Activity{
 
                     Bundle params = new Bundle();
                     params.putString("fields", "id,name");
+                    params.putString("limit", "5000");
                     new GraphRequest(AccessToken.getCurrentAccessToken(),"/me/friends",params,HttpMethod.GET, new TaskFacebookFriendRequest(ActivityMain.this,TAG,userLogin)).executeAsync();
                     mProfileTracker.stopTracking();
                 }
