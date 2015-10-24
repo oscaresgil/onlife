@@ -97,7 +97,7 @@ public class TaskGetFriends extends AsyncTask<String, Void, ArrayList<ModelPerso
             ModelSessionData.getInstance().setFriends(hashMap);
 
             SharedPreferences sharedPreferences = context.getSharedPreferences(ActivityMain.MyPREFERENCES, Context.MODE_PRIVATE);
-            Boolean b = context.getSharedPreferences(ActivityMain.MyPREFERENCES, Context.MODE_PRIVATE).getBoolean("first_login",false);
+            Boolean b = sharedPreferences.getBoolean("first_login", false);
             if (b){
                 Gson gson = new Gson();
                 sharedPreferences.edit().putString("friends",gson.toJson(setHashToList(ModelSessionData.getInstance().getFriends()))).apply();

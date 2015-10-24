@@ -1,13 +1,19 @@
 package com.objective4.app.onlife.Tasks;
 
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.AsyncTask;
 
-import com.kenny.snackbar.SnackBar;
+import com.afollestad.materialdialogs.AlertDialogWrapper;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.objective4.app.onlife.Activities.ActivityMain;
 import com.objective4.app.onlife.GCMClient.GCMHelper;
+import com.objective4.app.onlife.R;
 
 import java.io.IOException;
 
@@ -22,7 +28,7 @@ public class TaskGetGCM extends AsyncTask<Void, Void, String> {
 
     @Override
     protected String doInBackground(Void... params) {
-        String msg = "";
+        String msg;
         try {
             GCMHelper gcmRegistrationHelper = new GCMHelper(context);
             String gcmRegID = gcmRegistrationHelper.GCMRegister(ActivityMain.PROJECT_NUMBER);
@@ -30,11 +36,9 @@ public class TaskGetGCM extends AsyncTask<Void, Void, String> {
             return msg;
         } catch (IOException e) {
             e.printStackTrace();
-            SnackBar.show((Activity)context,e.getMessage());
             return null;
         } catch (Exception e) {
             e.printStackTrace();
-            SnackBar.show((Activity) context, e.getMessage());
             return null;
         }
     }
@@ -43,6 +47,10 @@ public class TaskGetGCM extends AsyncTask<Void, Void, String> {
     public void onPostExecute(String idMSG) {
         sharedPreferences = context.getSharedPreferences(ActivityMain.MyPREFERENCES, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("gcmId", idMSG);
-        editor.commit();
+        if (idMSG == null){
+            editor.putBoolean("update_playservice", true).apply();
+        }else{
+            editor.putString("gcmId", idMSG).apply();
+            editor.remove("update_playservice").apply();
+        }
 }}

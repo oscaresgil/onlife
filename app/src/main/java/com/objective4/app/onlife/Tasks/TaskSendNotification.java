@@ -1,9 +1,15 @@
 package com.objective4.app.onlife.Tasks;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 
 import com.kenny.snackbar.SnackBar;
+import com.objective4.app.onlife.Activities.ActivityHome;
+import com.objective4.app.onlife.Activities.ActivityMain;
+import com.objective4.app.onlife.BlockActivity.ActivityFriendBlock;
+import com.objective4.app.onlife.BlockActivity.ActivityGroupBlock;
 import com.objective4.app.onlife.Controller.JSONParser;
 import com.objective4.app.onlife.Models.ModelPerson;
 import com.objective4.app.onlife.Models.ModelSessionData;
@@ -50,49 +56,56 @@ public class TaskSendNotification extends AsyncTask<ModelPerson, String, String[
 
     @Override
     protected String[] doInBackground(ModelPerson... params) {
-        //Parametros a enviar
         String returnMessage = "";
-        long actualTime = Calendar.getInstance().getTimeInMillis();
-        List<NameValuePair> p = new ArrayList<>();
-        if (params.length==1){
-            ModelPerson f = params[0];
-            f = ModelSessionData.getInstance().getFriends().get(f.getId());
-            if (actualTime - f.getLastBlockedTime() > context.getResources().getInteger(R.integer.block_time_remaining)){
-                p.add(new BasicNameValuePair("id[]",f.getId_phone()));
-                f.setLastBlockedTime(actualTime);
-            }else{
-                returnMessage = context.getResources().getString(R.string.toast_not_time_yet)+" "+((context.getResources().getInteger(R.integer.block_time_remaining)-(actualTime - f.getLastBlockedTime()))/1000)+" s";
-            }
-        }else {
-            for (int i = 0; i < params.length; i++) {
-                ModelPerson f = params[i];
+        SharedPreferences sharedPreferences = context.getSharedPreferences(ActivityMain.MyPREFERENCES, Context.MODE_PRIVATE);
+        if (!sharedPreferences.contains("update_key") || 2 == sharedPreferences.getInt("update_key",0)) {
+            //Parametros a enviar
+            long actualTime = Calendar.getInstance().getTimeInMillis();
+            List<NameValuePair> p = new ArrayList<>();
+            if (params.length == 1) {
+                ModelPerson f = params[0];
                 f = ModelSessionData.getInstance().getFriends().get(f.getId());
-                if (actualTime - f.getLastBlockedTime() > context.getResources().getInteger(R.integer.block_time_remaining) && f.getState().equals("A")){
+                if (actualTime - f.getLastBlockedTime() > context.getResources().getInteger(R.integer.block_time_remaining)) {
                     p.add(new BasicNameValuePair("id[]", f.getId_phone()));
                     f.setLastBlockedTime(actualTime);
-                    numBlocked++;
+                } else {
+                    returnMessage = context.getResources().getString(R.string.toast_not_time_yet) + " " + ((context.getResources().getInteger(R.integer.block_time_remaining) - (actualTime - f.getLastBlockedTime())) / 1000) + " s";
                 }
-            }
-            returnMessage = context.getResources().getString(R.string.friends_blocked_number)+" "+numBlocked+"/"+params.length;
-        }
-
-        p.add(new BasicNameValuePair("userName", actualUser));
-        p.add(new BasicNameValuePair("message", message));
-        p.add(new BasicNameValuePair("gifName", gifName));
-
-        try {
-            JSONObject json = jsonParser.makeHttpRequest("http://104.236.74.55/onlife/gcm.php", "POST", p);
-            switch (json.getInt("code")){
-                case 0: return new String[]{"true",returnMessage};
-                case -1: return new String[]{"false",context.getResources().getString(R.string.gcm_not_registered)};
+            } else {
+                for (int i = 0; i < params.length; i++) {
+                    ModelPerson f = params[i];
+                    f = ModelSessionData.getInstance().getFriends().get(f.getId());
+                    if (actualTime - f.getLastBlockedTime() > context.getResources().getInteger(R.integer.block_time_remaining) && f.getState().equals("A")) {
+                        p.add(new BasicNameValuePair("id[]", f.getId_phone()));
+                        f.setLastBlockedTime(actualTime);
+                        numBlocked++;
+                    }
+                }
+                returnMessage = context.getResources().getString(R.string.friends_blocked_number) + " " + numBlocked + "/" + params.length;
             }
 
-        }catch(ConnectException e){
-            returnMessage = context.getResources().getString(R.string.no_connection);
-        }catch (JSONException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
+            p.add(new BasicNameValuePair("userName", actualUser));
+            p.add(new BasicNameValuePair("message", message));
+            p.add(new BasicNameValuePair("gifName", gifName));
+
+            try {
+                JSONObject json = jsonParser.makeHttpRequest("http://104.236.74.55/onlife/gcm.php", "POST", p);
+                switch (json.getInt("code")) {
+                    case 0:
+                        return new String[]{"true", returnMessage};
+                    case -1:
+                        return new String[]{"false", context.getResources().getString(R.string.gcm_not_registered)};
+                }
+
+            } catch (ConnectException e) {
+                returnMessage = context.getResources().getString(R.string.no_connection);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }else{
+            returnMessage = context.getResources().getString(R.string.update_forced);
         }
         return new String[]{"false",returnMessage};
     }
@@ -109,6 +122,10 @@ public class TaskSendNotification extends AsyncTask<ModelPerson, String, String[
                 context.finish();
             }*/
             if (!result[1].equals("")) SnackBar.show(context,result[1]);
+
+            if (context instanceof ActivityFriendBlock){
+                ((ActivityFriendBlock)context).setTimer();
+            }
         }
     }
 }

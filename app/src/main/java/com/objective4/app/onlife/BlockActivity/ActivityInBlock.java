@@ -37,10 +37,10 @@ public class ActivityInBlock extends Activity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_in_block);
-        int alpha = 1;
-        colors  = new int[]{Color.argb(alpha, 26, 188, 156), Color.argb(alpha,46, 204, 113), Color.argb(alpha,52, 152, 219), Color.argb(alpha,155, 89, 182), Color.argb(alpha,52, 73, 94), Color.argb(alpha,39, 174, 96), Color.argb(alpha,22, 160, 133), Color.argb(alpha,41, 128, 185), Color.argb(alpha,142, 68, 173), Color.argb(alpha,44, 62, 80), Color.argb(alpha,241, 196, 15), Color.argb(alpha,230, 126, 34), Color.argb(alpha,231, 76, 60), Color.argb(alpha,236, 240, 241), Color.argb(alpha,149, 165, 166), Color.argb(alpha,243, 156, 18), Color.argb(alpha,211, 84, 0), Color.argb(alpha,192, 57, 43), Color.argb(alpha,189, 195, 199), Color.argb(alpha,127, 140, 141)};
-        alpha = (int)(1 * 55.0f);
-        colorsDarks  = new int[]{Color.argb(alpha, 26, 188, 156), Color.argb(alpha,46, 204, 113), Color.argb(alpha,52, 152, 219), Color.argb(alpha,155, 89, 182), Color.argb(alpha,52, 73, 94), Color.argb(alpha,39, 174, 96), Color.argb(alpha,22, 160, 133), Color.argb(alpha,41, 128, 185), Color.argb(alpha,142, 68, 173), Color.argb(alpha,44, 62, 80), Color.argb(alpha,241, 196, 15), Color.argb(alpha,230, 126, 34), Color.argb(alpha,231, 76, 60), Color.argb(alpha,236, 240, 241), Color.argb(alpha,149, 165, 166), Color.argb(alpha,243, 156, 18), Color.argb(alpha,211, 84, 0), Color.argb(alpha,192, 57, 43), Color.argb(alpha,189, 195, 199), Color.argb(alpha,127, 140, 141)};
+        int alpha = 230;
+        colors  = new int[]{Color.argb(alpha, 26, 188, 156), Color.argb(alpha,46, 204, 113), Color.argb(alpha,52, 152, 219), Color.argb(alpha,155, 89, 182), Color.argb(alpha,52, 73, 94), Color.argb(alpha,39, 174, 96), Color.argb(alpha,22, 160, 133), Color.argb(alpha,41, 128, 185), Color.argb(alpha,142, 68, 173), Color.argb(alpha,44, 62, 80), Color.argb(alpha,241, 196, 15), Color.argb(alpha,230, 126, 34), Color.argb(alpha,231, 76, 60), Color.argb(alpha,149, 165, 166), Color.argb(alpha,243, 156, 18), Color.argb(alpha,211, 84, 0), Color.argb(alpha,192, 57, 43), Color.argb(alpha,189, 195, 199), Color.argb(alpha,127, 140, 141)};
+        alpha = 255;
+        colorsDarks  = new int[]{Color.argb(alpha, 26, 188, 156), Color.argb(alpha,46, 204, 113), Color.argb(alpha,52, 152, 219), Color.argb(alpha,155, 89, 182), Color.argb(alpha,52, 73, 94), Color.argb(alpha,39, 174, 96), Color.argb(alpha,22, 160, 133), Color.argb(alpha,41, 128, 185), Color.argb(alpha,142, 68, 173), Color.argb(alpha,44, 62, 80), Color.argb(alpha,241, 196, 15), Color.argb(alpha,230, 126, 34), Color.argb(alpha,231, 76, 60), Color.argb(alpha,149, 165, 166), Color.argb(alpha,243, 156, 18), Color.argb(alpha,211, 84, 0), Color.argb(alpha,192, 57, 43), Color.argb(alpha,189, 195, 199), Color.argb(alpha,127, 140, 141)};
 
         numPage = 0;
 
@@ -59,7 +59,11 @@ public class ActivityInBlock extends Activity{
         linearLayout.setOnClickListener(new OnClickListenerMessage());
         relativeLayout.setOnClickListener(new OnClickListenerMessage());
 
-        relativeLayout.setBackgroundColor(getResources().getColor(R.color.primary));
+        int numb = new Random().nextInt(20);
+        relativeLayout.setBackgroundColor(colors[numb]);
+        if (Build.VERSION.SDK_INT >= 21) {
+            getWindow().setStatusBarColor(colorsDarks[numb]);
+        }
 
         user = getIntent().getStringExtra("user");
         message = getIntent().getStringExtra("message");

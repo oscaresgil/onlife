@@ -1,7 +1,10 @@
 package com.objective4.app.onlife.Activities;
 
 import android.app.Activity;
+import android.app.Dialog;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -15,6 +18,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.simplelist.MaterialSimpleListAdapter;
 import com.afollestad.materialdialogs.simplelist.MaterialSimpleListItem;
@@ -31,6 +35,7 @@ import com.objective4.app.onlife.Models.ModelSessionData;
 import com.objective4.app.onlife.R;
 import com.objective4.app.onlife.Services.ServicePhoneState;
 import com.objective4.app.onlife.Tasks.TaskChangeState;
+import com.objective4.app.onlife.Tasks.TaskCheckVersion;
 import com.objective4.app.onlife.Tasks.TaskGetFriends;
 
 import java.util.ArrayList;
@@ -51,6 +56,7 @@ public class ActivityHome extends AppCompatActivity{
     private SharedPreferences sharedPreferences;
     private AdapterBaseElements adapterContact;
     private AdapterBaseElements adapterGroup;
+    private Dialog updateForcedDialog,updateOptionalDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,10 +64,12 @@ public class ActivityHome extends AppCompatActivity{
         setContentView(R.layout.activity_home);
 
         setSupportActionBar((Toolbar) findViewById(R.id.ActivityHome_ToolBar));
+        new TaskCheckVersion(this).execute();
         startService(new Intent(this, ServicePhoneState.class));
         activateDeviceAdmin(this);
 
         sharedPreferences = getSharedPreferences(ActivityMain.MyPREFERENCES, Context.MODE_PRIVATE);
+        sharedPreferences.edit().putBoolean("session", true).apply();
         Gson gson = new Gson();
         userLogin = gson.fromJson(sharedPreferences.getString("userLogin", ""), ModelPerson.class);
 
@@ -82,7 +90,6 @@ public class ActivityHome extends AppCompatActivity{
 
         if (sharedPreferences.getBoolean("first_login", false)) {
             new TaskGetFriends(this, true).execute(userLogin.getId());
-            sharedPreferences.edit().putBoolean("first_login", false).apply();
         }
 
         ModelSessionData.initInstance(userLogin, hashMap, groups);
@@ -92,12 +99,15 @@ public class ActivityHome extends AppCompatActivity{
         viewPager.setAdapter(new AdapterFragmentPager(getSupportFragmentManager(), this));
         tabLayout.setupWithViewPager(viewPager);
 
-        sharedPreferences.edit().putBoolean("session", true).apply();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        if (sharedPreferences.contains("update_key")){
+            int val = sharedPreferences.getInt("update_key",0);
+            setDialogUpdate(val);
+        }
         AppEventsLogger.activateApp(this);
     }
 
@@ -191,6 +201,7 @@ public class ActivityHome extends AppCompatActivity{
         sharedPreferences.edit().remove("friends").apply();
         sharedPreferences.edit().remove("groups").apply();
         sharedPreferences.edit().remove("userLogin").apply();
+        sharedPreferences.edit().remove("update_key").apply();
         delDirImages(this, setHashToList(ModelSessionData.getInstance().getFriends()), ModelSessionData.getInstance().getModelGroups());
         ModelSessionData.getInstance().clear();
         LoginManager.getInstance().logOut();
@@ -241,5 +252,54 @@ public class ActivityHome extends AppCompatActivity{
 
     public void inviteFriends(View view){
         inviteFacebookFriends(this);
+    }
+
+    public void setDialogUpdate(int val){
+        if (val==1) {
+            if (updateForcedDialog == null || !updateForcedDialog.isShowing())
+                updateForcedDialog = new AlertDialogWrapper.Builder(this)
+                        .setTitle(getResources().getString(R.string.update_available))
+                        .setMessage(getResources().getString(R.string.update_forced))
+                        .setCancelable(false)
+                        .setNegativeButton(R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                startPlayActivity();
+                            }
+                        }).show();
+        }else if(val==2){
+            if (updateOptionalDialog == null || !updateOptionalDialog.isShowing())
+                updateOptionalDialog = new MaterialDialog.Builder(this)
+                        .title(getResources().getString(R.string.update_available))
+                        .content(getResources().getString(R.string.update_optional))
+                        .positiveText(R.string.yes)
+                        .positiveColorRes(R.color.accent)
+                        .negativeText(R.string.no)
+                        .cancelable(false)
+                        .negativeColorRes(R.color.black)
+                        .callback(new MaterialDialog.ButtonCallback() {
+                            @Override
+                            public void onPositive(MaterialDialog dialog) {
+                                startPlayActivity();
+                                sharedPreferences.edit().remove("update_key").apply();
+                                dialog.dismiss();
+                            }
+
+                            @Override
+                            public void onNegative(MaterialDialog dialog) {
+                                sharedPreferences.edit().remove("update_key").apply();
+                                dialog.dismiss();
+                            }
+                        }).show();
+        }
+    }
+
+    public void startPlayActivity() {
+        String appPackageName = getPackageName();
+        try {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
+        } catch (ActivityNotFoundException e) {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
+        }
     }
 }

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="language_type">en</string>
     <string name="app_name" translatable="false">Onlife</string>
     <string name="gcm_server_id" translatable="false">AIzaSyBMo260wxpPNsCHle_ynoMUx4sju9W76LY</string>
 
@@ -10,6 +11,7 @@
     <string name="uploading_friends">Uploading friends</string>
     <string name="getting_images">Getting Friends\' Images</string>
     <string name="dialog_please_wait">Please Wait…</string>
+    <string name="dialog_loading">Loading</string>
 
     <string name="dialog_title_creating_group">Creating Group</string>
     <string name="group_name">Change Group\'s Name…</string>
@@ -62,6 +64,7 @@
     <string name="friend_inactive">Inactive Friend</string>
 
     <string name="no_connection">No connection.</string>
+    <string name="no_connection_connect">Connect to continue</string>
     <string name="no_server">Server not available.</string>
     <string name="error">There was an error.</string>
     <string name="button_change_connection">Change Connection</string>
@@ -102,5 +105,9 @@
     <string name="invite_friends">Invite Friends</string>
     <string name="playservices_not_installed">Google Play Services not supported. Please install and configure Google Play Store.</string>
     <string name="gcm_not_registered">Friend not registered</string>
+    <string name="update_available">There\'s a new update</string>
+    <string name="update_forced">Please update to continue</string>
+    <string name="update_optional">Wanna update it?</string>
+    <string name="update_playservices">Google Play Services not updated</string>
 
 </resources>

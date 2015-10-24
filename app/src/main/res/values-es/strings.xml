@@ -97,5 +97,12 @@
     <string name="invite_friends">Invitar Amigos</string>
     <string name="playservices_not_installed">Google Play Services no está correctamente instalado. Por favor instalelo de nuevo.</string>
     <string name="gcm_not_registered">Amigo no registrado</string>
+    <string name="no_connection_connect">Conectate para continuar.</string>
+    <string name="update_available">Hay nueva actualización</string>
+    <string name="update_forced">Por favor actualiza para continuar</string>
+    <string name="update_optional">¿Quieres actualizar?</string>
+    <string name="dialog_loading">Cargando</string>
+    <string name="language_type">es</string>
+    <string name="update_playservices">Google Play Services no actualizado</string>
 
 </resources>

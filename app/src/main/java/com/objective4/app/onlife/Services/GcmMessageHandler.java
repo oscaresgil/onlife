@@ -45,6 +45,7 @@ public class GcmMessageHandler extends IntentService {
     @Override protected void onHandleIntent(Intent intent) {
         Bundle extras = intent.getExtras();
         String tag = extras.getString("tag");
+        sharedPreferences = getSharedPreferences("OnlifePrefs", Context.MODE_PRIVATE);
         if (tag !=null) {
             switch (tag) {
                 case "block":
@@ -52,19 +53,14 @@ public class GcmMessageHandler extends IntentService {
                     user = extras.getString("userName");
                     gifName = extras.getString("gifName");
                     boolean adminChecked = checkDeviceAdmin(this);
-                    if ((!user.equals("") || user != null) && adminChecked) {
+                    if ((user != null || !user.equals("")) && adminChecked && sharedPreferences.getInt("update_key",0)!=1) {
                         onMessage(this);
-                    } else if (!adminChecked) {
-                        Intent i = new Intent("com.objective4.app.onlife.Fragments.Social.FragmentContacts");
-                        i.putExtra("tag", "no_device_admin");
-                        sendBroadcast(i);
                     }
                     break;
                 case "newUser":
                     String user = extras.getString("user");
                     ModelPerson newUser = gson.fromJson(user, ModelPerson.class);
 
-                    sharedPreferences = getSharedPreferences("OnlifePrefs", Context.MODE_PRIVATE);
                     List<ModelPerson> friends = gson.fromJson(sharedPreferences.getString("friends", ""), (new TypeToken<ArrayList<ModelPerson>>() {}.getType()));
                     if (!isFriendAlready(friends,newUser.getId())){
                         friends.add(newUser);
@@ -88,7 +84,6 @@ public class GcmMessageHandler extends IntentService {
                     String state = extras.getString("state");
 
                     if (state.equals("O")){
-                        sharedPreferences = getSharedPreferences("OnlifePrefs", Context.MODE_PRIVATE);
                         List<ModelPerson> friendsR = gson.fromJson(sharedPreferences.getString("friends", ""), (new TypeToken<ArrayList<ModelPerson>>() {}.getType()));
                         List<ModelGroup> groupsR = gson.fromJson(sharedPreferences.getString("groups", ""), (new TypeToken<ArrayList<ModelGroup>>() {}.getType()));
                         removeFriend(this,friendsR,groupsR,idP);

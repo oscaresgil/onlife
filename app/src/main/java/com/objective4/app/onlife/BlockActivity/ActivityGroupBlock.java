@@ -80,6 +80,8 @@ public class ActivityGroupBlock extends ActivityBlockBase<ModelGroup> {
                 return true;
             }
         });
+
+
     }
 
     @Override

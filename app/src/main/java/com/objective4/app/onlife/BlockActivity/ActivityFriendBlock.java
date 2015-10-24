@@ -6,13 +6,19 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.provider.Settings;
+import android.support.design.widget.FloatingActionButton;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
 import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
 
+import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
 import com.kenny.snackbar.SnackBar;
 import com.objective4.app.onlife.Models.ModelPerson;
 import com.objective4.app.onlife.Models.ModelSessionData;
@@ -22,6 +28,8 @@ import com.objective4.app.onlife.Tasks.TaskSimpleImageDownload;
 
 import net.soulwolf.widget.ratiolayout.widget.RatioImageView;
 
+import java.util.Calendar;
+
 import static com.objective4.app.onlife.Controller.StaticMethods.activateDeviceAdmin;
 import static com.objective4.app.onlife.Controller.StaticMethods.animationEnd;
 import static com.objective4.app.onlife.Controller.StaticMethods.checkDeviceAdmin;
@@ -29,9 +37,13 @@ import static com.objective4.app.onlife.Controller.StaticMethods.hideSoftKeyboar
 import static com.objective4.app.onlife.Controller.StaticMethods.imageInDisk;
 import static com.objective4.app.onlife.Controller.StaticMethods.isNetworkAvailable;
 import static com.objective4.app.onlife.Controller.StaticMethods.loadImage;
+import static com.objective4.app.onlife.Controller.StaticMethods.setHashToList;
 import static com.objective4.app.onlife.Controller.StaticMethods.showSoftKeyboard;
 
 public class ActivityFriendBlock extends ActivityBlockBase<ModelPerson> {
+    private RoundCornerProgressBar progressBar;
+    private FloatingActionButton blockFab;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,12 +70,23 @@ public class ActivityFriendBlock extends ActivityBlockBase<ModelPerson> {
 
         messageTextView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_DONE){
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
                     block(v);
                 }
                 return true;
             }
         });
+
+        blockFab = (FloatingActionButton)findViewById(R.id.ActivityBlockBase_ButtonBlock);
+
+        progressBar = (RoundCornerProgressBar) findViewById(R.id.ActivityBlockBase_ProgressBarTime);
+        progressBar.setMax(getResources().getInteger(R.integer.block_time_remaining));
+        long actualTime = Calendar.getInstance().getTimeInMillis();
+        if (actualTime - actualObject.getLastBlockedTime() < getResources().getInteger(R.integer.block_time_remaining)) {
+            setTimer();
+        }else{
+            progressBar.setProgress(getResources().getInteger(R.integer.block_time_remaining));
+        }
     }
 
     @Override
@@ -143,5 +166,31 @@ public class ActivityFriendBlock extends ActivityBlockBase<ModelPerson> {
                 }
             });
         }
+    }
+
+    public void setTimer() {
+        blockFab.animate().alpha(0).setInterpolator(new AccelerateInterpolator()).start();
+        nestedScrollView.setNestedScrollingEnabled(false);
+        nestedScrollView.setSmoothScrollingEnabled(false);
+        blockFab.setClickable(false);
+
+        long actualTime = Calendar.getInstance().getTimeInMillis();
+        int time = (int) (actualTime - actualObject.getLastBlockedTime());
+        int dif = getResources().getInteger(R.integer.block_time_remaining) - time;
+        progressBar.setProgress(time);
+
+        new CountDownTimer(dif, 1000) {
+            public void onTick(long millisUntilFinished) {
+                int actual = (int) millisUntilFinished;
+                progressBar.setProgress(getResources().getInteger(R.integer.block_time_remaining) - actual);
+            }
+
+            public void onFinish() {
+                blockFab.animate().alpha(1).setInterpolator(new DecelerateInterpolator()).start();
+                nestedScrollView.setNestedScrollingEnabled(true);
+                nestedScrollView.setSmoothScrollingEnabled(true);
+                blockFab.setClickable(true);
+            }
+        }.start();
     }
 }

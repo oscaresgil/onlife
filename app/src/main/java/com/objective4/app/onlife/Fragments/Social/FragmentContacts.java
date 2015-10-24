@@ -124,8 +124,6 @@ public class FragmentContacts extends Fragment {
                 }else{
                     addFriends.setVisibility(View.GONE);
                 }
-            } else if("no_device_admin".equals(tag)) {
-                activateDeviceAdmin(getActivity());
             }
         }
     };

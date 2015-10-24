@@ -25,8 +25,14 @@
                 android:id="@+id/ActivityBlockBase_LinearLayoutContact"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:padding="@dimen/activity_friend_block_relative_layout_contact_padding">
+                android:orientation="vertical">
+                <com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar
+                    android:id="@+id/ActivityBlockBase_ProgressBarTime"
+                    android:layout_width="fill_parent"
+                    android:layout_height="10dp"
+                    app:rcBackgroundColor="@color/background_material_light"
+                    app:rcProgressColor="@color/primary"
+                    android:clickable="false" />
                 <android.support.v7.widget.CardView
                     android:id="@+id/ActivityBlockBase_CardViewMessage"
                     android:layout_width="match_parent"
@@ -186,6 +192,7 @@
             app:backgroundTint="@color/primary"
             app:layout_anchor="@id/ActivityBlockBase_AppBar"
             app:layout_anchorGravity="bottom|right|end"
-            app:elevation="6dp" />
+            app:elevation="6dp"
+            android:focusable="true" />
     </android.support.design.widget.CoordinatorLayout>
 </RelativeLayout>

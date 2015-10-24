@@ -1,19 +1,16 @@
 package com.objective4.app.onlife.Activities;
 
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.view.View;
 
-import com.objective4.app.onlife.Models.ModelGroup;
-import com.objective4.app.onlife.Models.ModelPerson;
-import com.objective4.app.onlife.R;
-import com.objective4.app.onlife.Tasks.TaskAddNewUser;
-import com.objective4.app.onlife.Tasks.TaskFacebookFriendRequest;
-import com.objective4.app.onlife.Tasks.TaskGetGCM;
+import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -25,14 +22,20 @@ import com.facebook.Profile;
 import com.facebook.ProfileTracker;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.gson.Gson;
 import com.kenny.snackbar.SnackBar;
+import com.objective4.app.onlife.Models.ModelGroup;
+import com.objective4.app.onlife.Models.ModelPerson;
+import com.objective4.app.onlife.R;
+import com.objective4.app.onlife.Tasks.TaskAddNewUser;
+import com.objective4.app.onlife.Tasks.TaskFacebookFriendRequest;
+import com.objective4.app.onlife.Tasks.TaskGetGCM;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import static com.objective4.app.onlife.Controller.StaticMethods.activateDeviceAdmin;
-import static com.objective4.app.onlife.Controller.StaticMethods.isNetworkAvailable;
 
 public class ActivityMain extends Activity{
     public static final String PROJECT_NUMBER = "194566212765";
@@ -41,7 +44,6 @@ public class ActivityMain extends Activity{
     public static final String MyPREFERENCES = "OnlifePrefs";
     public static final String name = "nameKey";
 
-    private List<ModelPerson> friends = new ArrayList<>();
     private ModelPerson userLogin;
 
     private LoginButton loginButton;
@@ -50,7 +52,7 @@ public class ActivityMain extends Activity{
 
     private ProfileTracker mProfileTracker;
 
-    private FacebookCallback<LoginResult> facebookCallback = new FacebookCallback<LoginResult>() {
+    /*private FacebookCallback<LoginResult> facebookCallback = new FacebookCallback<LoginResult>() {
         @Override
         public void onSuccess(LoginResult loginResult) {
         }
@@ -64,7 +66,7 @@ public class ActivityMain extends Activity{
             e.printStackTrace();
             SnackBar.show(ActivityMain.this, R.string.no_server);
         }
-    };
+    };*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,21 +94,17 @@ public class ActivityMain extends Activity{
         loginButton = (LoginButton) findViewById(R.id.login_button);
         loginButton.setReadPermissions("public_profile", "user_friends", "email");
 
-        /*LoginManager.getInstance().logOut();
-        SharedPreferences preferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
-        preferences.edit().clear().commit();*/
-
         mProfileTracker = new ProfileTracker() {
             @Override
             protected void onCurrentProfileChanged(Profile oldProfile, Profile profile) {
-                if (profile!=null) {
+                if (profile!=null && !sharedPreferences.getBoolean("session",false)) {
                     Gson gson = new Gson();
                     sharedPreferences = getSharedPreferences(ActivityMain.MyPREFERENCES, Context.MODE_PRIVATE);
                     userLogin = new ModelPerson(profile.getId(), sharedPreferences.getString("gcmId", ""), profile.getName(), "http://graph.facebook.com/" + profile.getId() + "/picture?", "A");
+                    sharedPreferences.edit().putBoolean("first_login", true).apply();
                     sharedPreferences.edit().putString("userLogin", gson.toJson(userLogin)).apply();
                     sharedPreferences.edit().putString("friends", gson.toJson(new ArrayList<ModelPerson>())).apply();
                     sharedPreferences.edit().putString("groups", gson.toJson(new ArrayList<ModelGroup>())).apply();
-                    sharedPreferences.edit().putBoolean("first_login", true).apply();
                     new TaskAddNewUser(ActivityMain.this).execute(userLogin);
 
                     Bundle params = new Bundle();
@@ -135,31 +133,33 @@ public class ActivityMain extends Activity{
     @Override
     protected void onResume() {
         super.onResume();
-
-        if (isNetworkAvailable(ActivityMain.this)) {
-            loginButton.registerCallback(callbackManager, facebookCallback);
-        }else{
-            SnackBar.show(ActivityMain.this, R.string.no_connection, R.string.button_change_connection, new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    startActivity(new Intent(Settings.ACTION_WIRELESS_SETTINGS));
-                }
-            });
-        }
-
-        if (!isNetworkAvailable(ActivityMain.this)) {
-            SnackBar.show(ActivityMain.this, R.string.no_connection, R.string.button_change_connection, new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    startActivity(new Intent(Settings.ACTION_WIRELESS_SETTINGS));
-                }
-            });
-        }
-
-        if(sharedPreferences.contains("session")){
-            gotoHome();
-        }else{
-            mProfileTracker.startTracking();
+        if (sharedPreferences.getBoolean("update_playservice",false)){
+            int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+            if (resultCode == ConnectionResult.SUCCESS) {
+                new TaskGetGCM(this).execute();
+            }else {
+                new AlertDialogWrapper.Builder(this)
+                        .setTitle(getResources().getString(R.string.update_playservices))
+                        .setMessage(getResources().getString(R.string.update_forced))
+                        .setCancelable(false)
+                        .setNegativeButton(R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                String appPackageName = GooglePlayServicesUtil.GOOGLE_PLAY_SERVICES_PACKAGE;
+                                try {
+                                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
+                                } catch (ActivityNotFoundException e) {
+                                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
+                                }
+                            }
+                        }).show();
+            }
+        }else {
+            if (sharedPreferences.getBoolean("session",false)) {
+                gotoHome();
+            } else {
+                mProfileTracker.startTracking();
+            }
         }
     }
 
@@ -169,7 +169,6 @@ public class ActivityMain extends Activity{
     }
 
     public void gotoHome(){
-
         Intent home = new Intent(ActivityMain.this,ActivityHome.class);
         startActivity(home);
     }
