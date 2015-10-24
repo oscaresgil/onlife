@@ -4,8 +4,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.support.design.widget.Snackbar;
 
-import com.kenny.snackbar.SnackBar;
+
 import com.objective4.app.onlife.Activities.ActivityHome;
 import com.objective4.app.onlife.Activities.ActivityMain;
 import com.objective4.app.onlife.BlockActivity.ActivityFriendBlock;
@@ -26,6 +27,8 @@ import java.net.ConnectException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+
+import static com.objective4.app.onlife.Controller.StaticMethods.makeSnackbar;
 
 public class TaskSendNotification extends AsyncTask<ModelPerson, String, String[]>{
     private Activity context;
@@ -112,16 +115,15 @@ public class TaskSendNotification extends AsyncTask<ModelPerson, String, String[
 
     @Override
     protected void onPostExecute(String[] result){
-        SnackBar.cancelSnackBars(context);
         if (result[0].equals("false")){
             toast.error();
-            SnackBar.show(context,result[1]);
+            makeSnackbar(context, context.getCurrentFocus(), result[1], Snackbar.LENGTH_SHORT);
         }else{
             toast.success();
             /*if (context instanceof ActivityBlockBase){
                 context.finish();
             }*/
-            if (!result[1].equals("")) SnackBar.show(context,result[1]);
+            if (!result[1].equals("")) makeSnackbar(context,context.getCurrentFocus(),result[1],Snackbar.LENGTH_SHORT);
 
             if (context instanceof ActivityFriendBlock){
                 ((ActivityFriendBlock)context).setTimer();

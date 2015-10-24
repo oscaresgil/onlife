@@ -3,9 +3,8 @@ package com.objective4.app.onlife.Tasks;
 import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
-import android.widget.Toast;
+import android.support.design.widget.Snackbar;
 
-import com.kenny.snackbar.SnackBar;
 import com.objective4.app.onlife.Activities.ActivityMain;
 import com.objective4.app.onlife.Controller.JSONParser;
 import com.objective4.app.onlife.Models.ModelPerson;
@@ -18,6 +17,9 @@ import org.json.JSONObject;
 import java.net.ConnectException;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.objective4.app.onlife.Controller.StaticMethods.makeSnackbar;
+
 public class TaskAddNewUser extends AsyncTask<ModelPerson, ModelPerson, Boolean> {
     private Context context;
     private JSONParser jsonParser;
@@ -43,12 +45,18 @@ public class TaskAddNewUser extends AsyncTask<ModelPerson, ModelPerson, Boolean>
             boolean error = json.getBoolean("error");
             return error;
         }catch(ConnectException e){
-            SnackBar.show((Activity)context,context.getResources().getString(R.string.no_connection));
-            return false;
+            return null;
         }catch (Exception ex){
             ex.printStackTrace();
-            return false;
+            return null;
         }
     }
 
+    @Override
+    protected void onPostExecute(Boolean aBoolean) {
+        super.onPostExecute(aBoolean);
+        if (aBoolean==null){
+            makeSnackbar(context, ((Activity) context).findViewById(R.id.ActivityMain_ImageViewLogo), R.string.no_connection, Snackbar.LENGTH_LONG);
+        }
+    }
 }

@@ -64,9 +64,9 @@
     <string name="friend_inactive">Inactive Friend</string>
 
     <string name="no_connection">No connection.</string>
-    <string name="no_connection_connect">Connect to continue</string>
+    <string name="no_connection_connect">Please connect to continue</string>
     <string name="no_server">Server not available.</string>
-    <string name="error">There was an error.</string>
+    <string name="error">There was an error. Try again</string>
     <string name="button_change_connection">Change Connection</string>
     <string name="button_group_change_name">Change group name!</string>
     <string name="toast_contacts_refreshed">Contacts Refreshed!</string>

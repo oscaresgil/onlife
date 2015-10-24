@@ -58,7 +58,7 @@
 
     <string name="no_connection">No hay conexión.</string>
     <string name="no_server">Servidor no disponible.</string>
-    <string name="error">Hubo un error.</string>
+    <string name="error">Hubo un error. Intenta de nuevo</string>
     <string name="button_change_connection">Cambiar Conexión</string>
     <string name="button_group_change_name">Cambiar el nombre del Grupo!</string>
     <string name="toast_contacts_refreshed">Contactos Actualizados!</string>
@@ -97,7 +97,7 @@
     <string name="invite_friends">Invitar Amigos</string>
     <string name="playservices_not_installed">Google Play Services no está correctamente instalado. Por favor instalelo de nuevo.</string>
     <string name="gcm_not_registered">Amigo no registrado</string>
-    <string name="no_connection_connect">Conectate para continuar.</string>
+    <string name="no_connection_connect">Por favor conectate para continuar</string>
     <string name="update_available">Hay nueva actualización</string>
     <string name="update_forced">Por favor actualiza para continuar</string>
     <string name="update_optional">¿Quieres actualizar?</string>

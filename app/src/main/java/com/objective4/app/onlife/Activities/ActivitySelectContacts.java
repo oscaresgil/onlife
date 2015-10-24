@@ -10,12 +10,12 @@ import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 import android.widget.Toast;
 
+//import com.melnykov.fab.FloatingActionButton;
 import com.objective4.app.onlife.Adapters.AdapterStickyTitle;
 import com.objective4.app.onlife.Listeners.ListenerFlipCheckbox;
 import com.objective4.app.onlife.Models.ModelPerson;
 import com.objective4.app.onlife.Models.ModelSessionData;
 import com.objective4.app.onlife.R;
-import com.melnykov.fab.FloatingActionButton;
 
 import java.util.List;
 
@@ -60,13 +60,13 @@ public class ActivitySelectContacts extends Activity {
         listener.setAnimation1(animation1);
         listener.setAnimation2(animation2);
 
-        FloatingActionButton chooseContact = (FloatingActionButton) findViewById(R.id.ActivitySelectContact_ButtonOk);
+        /*FloatingActionButton chooseContact = (FloatingActionButton) findViewById(R.id.ActivitySelectContact_ButtonOk);
         chooseContact.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
             }
         });
-        chooseContact.attachToRecyclerView(mList);
+        chooseContact.attachToRecyclerView(mList);*/
         Bundle params = new Bundle();
         params.putString("fields","id,name");
     }

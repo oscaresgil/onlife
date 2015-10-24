@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -22,7 +23,6 @@ import android.widget.LinearLayout;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.simplelist.MaterialSimpleListAdapter;
 import com.afollestad.materialdialogs.simplelist.MaterialSimpleListItem;
-import com.kenny.snackbar.SnackBar;
 import com.objective4.app.onlife.Adapters.AdapterSelectFriend;
 import com.objective4.app.onlife.Models.ModelGroup;
 import com.objective4.app.onlife.Models.ModelPerson;
@@ -35,11 +35,13 @@ import java.util.List;
 
 import static com.objective4.app.onlife.Controller.StaticMethods.animationEnd;
 import static com.objective4.app.onlife.Controller.StaticMethods.hideSoftKeyboard;
+import static com.objective4.app.onlife.Controller.StaticMethods.makeSnackbar;
 import static com.objective4.app.onlife.Controller.StaticMethods.performCrop;
 import static com.objective4.app.onlife.Controller.StaticMethods.saveImage;
 import static com.objective4.app.onlife.Controller.StaticMethods.setHashToList;
 import static com.objective4.app.onlife.Controller.StaticMethods.setSlidr;
 import static com.objective4.app.onlife.Controller.StaticMethods.showSoftKeyboard;
+import static com.objective4.app.onlife.Controller.StaticMethods.unSelectFriends;
 
 public class ActivityGroupCreateInformation extends AppCompatActivity {
     private static final int PICK_FROM_CAMERA = 1;
@@ -149,6 +151,12 @@ public class ActivityGroupCreateInformation extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unSelectFriends(friends);
+    }
+
     public void addGroup(View v){
         List<ModelPerson> selected = new ArrayList();
         hideSoftKeyboard(this,nameNewGroup);
@@ -164,11 +172,11 @@ public class ActivityGroupCreateInformation extends AppCompatActivity {
 
         if (!name.equals("")  && !selected.isEmpty()){
             if (alreadyGroup(name)){
-                SnackBar.show(ActivityGroupCreateInformation.this, R.string.group_already, R.string.button_group_change_name, new View.OnClickListener() {
+                makeSnackbar(this,nameNewGroup,R.string.group_already,Snackbar.LENGTH_SHORT,R.string.button_group_change_name, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         nameNewGroup.requestFocus();
-                        showSoftKeyboard(ActivityGroupCreateInformation.this,nameNewGroup);
+                        showSoftKeyboard(ActivityGroupCreateInformation.this, nameNewGroup);
                     }
                 });
             }
@@ -190,12 +198,12 @@ public class ActivityGroupCreateInformation extends AppCompatActivity {
                     animationEnd(this);
                 }
                 else{
-                    SnackBar.show(ActivityGroupCreateInformation.this,getResources().getString(R.string.toast_group_only_less_than_five_friends));
+                    makeSnackbar(this, nameNewGroup, R.string.toast_group_only_less_than_five_friends, Snackbar.LENGTH_SHORT);
                 }
             }
         }
         else{
-            SnackBar.show(ActivityGroupCreateInformation.this,getResources().getString(R.string.toast_group_not_yet_created));
+            makeSnackbar(this, nameNewGroup, R.string.toast_group_not_yet_created, Snackbar.LENGTH_SHORT);
         }
     }
 

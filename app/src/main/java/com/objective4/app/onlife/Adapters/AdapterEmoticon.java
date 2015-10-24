@@ -11,9 +11,6 @@ import com.objective4.app.onlife.R;
 
 import java.util.List;
 
-import pl.droidsonroids.gif.GifDrawable;
-import pl.droidsonroids.gif.GifImageView;
-
 public class AdapterEmoticon extends BaseAdapter {
     private Context context;
     private List<String> emoticonImages;

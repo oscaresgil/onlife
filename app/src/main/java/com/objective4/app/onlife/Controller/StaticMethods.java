@@ -15,12 +15,12 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
+import android.support.design.widget.Snackbar;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
 import com.facebook.share.model.AppInviteContent;
 import com.facebook.share.widget.AppInviteDialog;
-import com.kenny.snackbar.SnackBar;
 import com.objective4.app.onlife.BroadcastReceivers.BroadcastReceiverPhoneStatus;
 import com.objective4.app.onlife.Models.ModelGroup;
 import com.objective4.app.onlife.Models.ModelPerson;
@@ -40,6 +40,28 @@ import java.util.List;
 
 public class StaticMethods {
     public static final int ACTIVATION_REQUEST = 47;
+
+    public static Snackbar makeSnackbar(Context context, View v, int textId, int duration){
+        Snackbar snackbar = Snackbar.make(v,textId,duration);
+        snackbar.getView().setBackgroundColor(context.getResources().getColor(R.color.accent));
+        snackbar.show();
+        return snackbar;
+    }
+
+    public static Snackbar makeSnackbar(Context context, View v, String text, int duration){
+        Snackbar snackbar = Snackbar.make(v,text,duration);
+        snackbar.getView().setBackgroundColor(context.getResources().getColor(R.color.accent));
+        snackbar.show();
+        return snackbar;
+    }
+
+
+    public static Snackbar makeSnackbar(Context context, View v, int textId, int duration, int actionTextId, View.OnClickListener listener){
+        Snackbar snackbar = Snackbar.make(v,textId,duration).setAction(actionTextId, listener);
+        snackbar.getView().setBackgroundColor(context.getResources().getColor(R.color.accent));
+        snackbar.show();
+        return snackbar;
+    }
 
     public static void activateDeviceAdmin(Activity activity){
         DevicePolicyManager devicePolicyManager = (DevicePolicyManager) activity.getSystemService(Context.DEVICE_POLICY_SERVICE);
@@ -280,7 +302,7 @@ public class StaticMethods {
                 }
             }
             else{
-                SnackBar.show(((Activity)context), context.getResources().getString(R.string.not_supported_image_crop));
+                makeSnackbar(context,((Activity)context).getCurrentFocus(),R.string.not_supported_image_crop,Snackbar.LENGTH_SHORT);
             }
         }
         catch(Exception e){

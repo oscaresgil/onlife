@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.support.design.widget.Snackbar;
 
 import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -16,6 +17,9 @@ import com.objective4.app.onlife.GCMClient.GCMHelper;
 import com.objective4.app.onlife.R;
 
 import java.io.IOException;
+
+import static com.objective4.app.onlife.Controller.StaticMethods.isNetworkAvailable;
+import static com.objective4.app.onlife.Controller.StaticMethods.makeSnackbar;
 
 
 public class TaskGetGCM extends AsyncTask<Void, Void, String> {
@@ -45,12 +49,16 @@ public class TaskGetGCM extends AsyncTask<Void, Void, String> {
 
     @Override
     public void onPostExecute(String idMSG) {
-        sharedPreferences = context.getSharedPreferences(ActivityMain.MyPREFERENCES, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        if (idMSG == null){
-            editor.putBoolean("update_playservice", true).apply();
+        if (isNetworkAvailable((Activity)context)){
+            sharedPreferences = context.getSharedPreferences(ActivityMain.MyPREFERENCES, Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            if (idMSG == null) {
+                editor.putBoolean("update_playservice", true).apply();
+            } else {
+                editor.putString("gcmId", idMSG).apply();
+                editor.remove("update_playservice").apply();
+            }
         }else{
-            editor.putString("gcmId", idMSG).apply();
-            editor.remove("update_playservice").apply();
+            makeSnackbar(context,((Activity) context).findViewById(R.id.ActivityMain_ImageViewLogo), R.string.no_connection, Snackbar.LENGTH_LONG);
         }
 }}

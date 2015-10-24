@@ -2,13 +2,15 @@ package com.objective4.app.onlife.Tasks;
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 
-import com.kenny.snackbar.SnackBar;
 import com.objective4.app.onlife.Models.ModelPerson;
 import com.objective4.app.onlife.R;
 
 import java.util.ArrayList;
+
+import static com.objective4.app.onlife.Controller.StaticMethods.makeSnackbar;
 
 public class TaskRefresh extends TaskGetFriends {
     private Context context;
@@ -34,6 +36,6 @@ public class TaskRefresh extends TaskGetFriends {
     protected void onPostExecute(ArrayList<ModelPerson> friends) {
         super.onPostExecute(friends);
         mSwipeRefreshLayout.setRefreshing(false);
-        SnackBar.show((Activity) context, R.string.toast_contacts_refreshed);
+        makeSnackbar(context,((Activity)context).findViewById(R.id.ActivityHome_CoordinatorLayout),R.string.toast_contacts_refreshed, Snackbar.LENGTH_SHORT);
     }
 }

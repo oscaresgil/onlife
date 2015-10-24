@@ -6,12 +6,12 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.provider.Settings;
+import android.support.design.widget.Snackbar;
 import android.view.View;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.kenny.snackbar.SnackBar;
 import com.objective4.app.onlife.Activities.ActivityHome;
 import com.objective4.app.onlife.Activities.ActivityMain;
 import com.objective4.app.onlife.Adapters.AdapterBaseElements;
@@ -33,12 +33,13 @@ import java.util.List;
 
 import static com.objective4.app.onlife.Controller.StaticMethods.isFriendAlready;
 import static com.objective4.app.onlife.Controller.StaticMethods.isNetworkAvailable;
+import static com.objective4.app.onlife.Controller.StaticMethods.makeSnackbar;
 import static com.objective4.app.onlife.Controller.StaticMethods.setHashToList;
 import static com.objective4.app.onlife.Controller.StaticMethods.setListToHash;
 
 public class TaskGetFriends extends AsyncTask<String, Void, ArrayList<ModelPerson>> {
     private MaterialDialog dialog;
-    private boolean flagDialog;
+    private boolean flagDialog,internetAvailable=false;
     private Context context;
     private JSONParser jsonParser;
 
@@ -78,42 +79,52 @@ public class TaskGetFriends extends AsyncTask<String, Void, ArrayList<ModelPerso
 
             return gson.fromJson(jsonFriends.getString("friends"), (new TypeToken<ArrayList<ModelPerson>>(){}.getType()));
         }catch(ConnectException e){
-            SnackBar.show((Activity) context, context.getResources().getString(R.string.no_connection));
-            return (ArrayList<ModelPerson>) setHashToList(ModelSessionData.getInstance().getFriends());
+            internetAvailable = true;
+            return null;
         } catch(Exception ex){
             ex.printStackTrace();
-            return (ArrayList<ModelPerson>) setHashToList(ModelSessionData.getInstance().getFriends());
+            return null;
         }
     }
 
     @Override
     protected void onPostExecute(ArrayList<ModelPerson> friends) {
         super.onPostExecute(friends);
-        if (isNetworkAvailable((Activity)context)){
-            if (flagDialog) dialog.dismiss();
+        if (friends == null){
+            if (internetAvailable) makeSnackbar(context, ((Activity) context).findViewById(R.id.ActivityHome_CoordinatorLayout), R.string.no_connection, Snackbar.LENGTH_INDEFINITE);
+            else if (isNetworkAvailable((Activity)context)) makeSnackbar(context, ((Activity) context).findViewById(R.id.ActivityHome_CoordinatorLayout), R.string.no_connection, Snackbar.LENGTH_INDEFINITE);
+            else makeSnackbar(context, ((Activity) context).findViewById(R.id.ActivityHome_CoordinatorLayout), R.string.error, Snackbar.LENGTH_INDEFINITE);
+        }
+        else {
+            if (isNetworkAvailable((Activity) context)) {
+                if (flagDialog) dialog.dismiss();
 
-            for (ModelPerson f: friends) { f.setRefreshImage(true); f.setRefreshImageBig(true); }
-            HashMap<String,ModelPerson> hashMap = setListToHash(friends);
-            ModelSessionData.getInstance().setFriends(hashMap);
-
-            SharedPreferences sharedPreferences = context.getSharedPreferences(ActivityMain.MyPREFERENCES, Context.MODE_PRIVATE);
-            Boolean b = sharedPreferences.getBoolean("first_login", false);
-            if (b){
-                Gson gson = new Gson();
-                sharedPreferences.edit().putString("friends",gson.toJson(setHashToList(ModelSessionData.getInstance().getFriends()))).apply();
-                sharedPreferences.edit().putBoolean("first_login", false).apply();
-            }
-
-            AdapterBaseElements adapterContact = ((ActivityHome) context).getAdapterContact();
-            adapterContact.updateElements(setHashToList(hashMap));
-        } else {
-            SnackBar.show((Activity) context, R.string.no_connection, R.string.button_change_connection, new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    context.startActivity(new Intent(Settings.ACTION_WIRELESS_SETTINGS));
+                for (ModelPerson f : friends) {
+                    f.setRefreshImage(true);
+                    f.setRefreshImageBig(true);
                 }
-            });
-            if (flagDialog) dialog.dismiss();
+                HashMap<String, ModelPerson> hashMap = setListToHash(friends);
+                ModelSessionData.getInstance().setFriends(hashMap);
+
+                SharedPreferences sharedPreferences = context.getSharedPreferences(ActivityMain.MyPREFERENCES, Context.MODE_PRIVATE);
+                Boolean b = sharedPreferences.getBoolean("first_login", false);
+                if (b) {
+                    Gson gson = new Gson();
+                    sharedPreferences.edit().putString("friends", gson.toJson(setHashToList(ModelSessionData.getInstance().getFriends()))).apply();
+                    sharedPreferences.edit().putBoolean("first_login", false).apply();
+                }
+
+                AdapterBaseElements adapterContact = ((ActivityHome) context).getAdapterContact();
+                adapterContact.updateElements(setHashToList(hashMap));
+            } else {
+                makeSnackbar(context, ((Activity) context).findViewById(R.id.ActivityHome_CoordinatorLayout), R.string.no_connection, Snackbar.LENGTH_LONG, R.string.button_change_connection, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        context.startActivity(new Intent(Settings.ACTION_WIRELESS_SETTINGS));
+                    }
+                });
+                if (flagDialog) dialog.dismiss();
+            }
         }
     }
 }

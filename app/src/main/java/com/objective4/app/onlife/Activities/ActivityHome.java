@@ -76,12 +76,12 @@ public class ActivityHome extends AppCompatActivity{
         List<ModelPerson> friends = new ArrayList<>();
         List<ModelGroup> groups = new ArrayList<>();
         String friendsString = sharedPreferences.getString("friends","");
-        Log.e("HOME",friendsString);
         if ("".equals(friendsString) || "{}".equals(friendsString)){
             new TaskGetFriends(this, true).execute(userLogin.getId());
         }else {
             friends = gson.fromJson(friendsString, (new TypeToken<ArrayList<ModelPerson>>() {
             }.getType()));
+            unSelectFriends(friends);
             groups = gson.fromJson(sharedPreferences.getString("groups", ""), (new TypeToken<ArrayList<ModelGroup>>() {
             }.getType()));
         }

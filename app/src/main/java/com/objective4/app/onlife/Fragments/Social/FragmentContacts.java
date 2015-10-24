@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -21,7 +22,6 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 
-import com.kenny.snackbar.SnackBar;
 import com.objective4.app.onlife.Activities.ActivityHome;
 import com.objective4.app.onlife.Adapters.AdapterBaseElements;
 import com.objective4.app.onlife.BlockActivity.ActivityFriendBlock;
@@ -37,6 +37,7 @@ import java.util.List;
 import static com.objective4.app.onlife.Controller.StaticMethods.activateDeviceAdmin;
 import static com.objective4.app.onlife.Controller.StaticMethods.getModelPersonIndex;
 import static com.objective4.app.onlife.Controller.StaticMethods.isNetworkAvailable;
+import static com.objective4.app.onlife.Controller.StaticMethods.makeSnackbar;
 import static com.objective4.app.onlife.Controller.StaticMethods.setHashToList;
 import static com.objective4.app.onlife.Controller.StaticMethods.showSoftKeyboard;
 
@@ -269,7 +270,7 @@ public class FragmentContacts extends Fragment {
             new TaskRefresh(getActivity(),mSwipeRefreshLayout).execute(actualUser.getId());
         }else{
             mSwipeRefreshLayout.setRefreshing(false);
-            SnackBar.show(getActivity(), R.string.no_connection, R.string.button_change_connection, new View.OnClickListener() {
+            makeSnackbar(getActivity(),getView(), R.string.no_connection, Snackbar.LENGTH_LONG, R.string.button_change_connection, new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     startActivity(new Intent(Settings.ACTION_WIRELESS_SETTINGS));

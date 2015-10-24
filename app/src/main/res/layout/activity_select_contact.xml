@@ -23,7 +23,7 @@
             android:paddingLeft="@dimen/activity_select_contact_recyclerview_padding_vertical"
             android:paddingRight="@dimen/activity_select_contact_recyclerview_padding_vertical"
             android:paddingTop="@dimen/activity_select_contact_recyclerview_padding_vertical"/>
-        <com.melnykov.fab.FloatingActionButton xmlns:fab="http://schemas.android.com/apk/res-auto"
+        <!--<com.melnykov.fab.FloatingActionButton xmlns:fab="http://schemas.android.com/apk/res-auto"
             android:id="@+id/ActivitySelectContact_ButtonOk"
             android:layout_alignParentRight="true"
             android:layout_width="wrap_content"
@@ -32,6 +32,6 @@
             android:layout_margin="@dimen/activity_select_contact_button_ok_margin"
             android:src="@drawable/ic_done_black_24dp"
             fab:fab_colorNormal="@color/primary"
-            fab:fab_colorPressed="@color/primary_dark" />
+            fab:fab_colorPressed="@color/primary_dark" />-->
     </FrameLayout>
 </RelativeLayout>

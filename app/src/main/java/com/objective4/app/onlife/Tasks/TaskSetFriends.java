@@ -3,9 +3,9 @@ package com.objective4.app.onlife.Tasks;
 import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.support.design.widget.Snackbar;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.kenny.snackbar.SnackBar;
 import com.objective4.app.onlife.Activities.ActivityMain;
 import com.objective4.app.onlife.Controller.JSONParser;
 import com.objective4.app.onlife.R;
@@ -17,6 +17,8 @@ import org.json.JSONObject;
 import java.net.ConnectException;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.objective4.app.onlife.Controller.StaticMethods.makeSnackbar;
 
 public class TaskSetFriends extends AsyncTask<ArrayList<String>, Void, String> {
     private MaterialDialog dialog;
@@ -55,7 +57,7 @@ public class TaskSetFriends extends AsyncTask<ArrayList<String>, Void, String> {
             boolean error = response.getBoolean("error");
             return id;
         }catch(ConnectException e){
-            SnackBar.show((Activity)context, context.getResources().getString(R.string.no_connection));
+            e.printStackTrace();
             return null;
         }catch(Exception ex){
             ex.printStackTrace();
@@ -66,6 +68,7 @@ public class TaskSetFriends extends AsyncTask<ArrayList<String>, Void, String> {
     @Override
     protected void onPostExecute(String userId) {
         super.onPostExecute(userId);
-        dialog.dismiss();
+        if (userId == null) makeSnackbar(context,((Activity)context).findViewById(R.id.ActivityMain_ImageViewLogo),R.string.error, Snackbar.LENGTH_SHORT);
+        else dialog.dismiss();
     }
 }

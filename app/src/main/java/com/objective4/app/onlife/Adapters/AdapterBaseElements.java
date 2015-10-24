@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,7 +16,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.kenny.snackbar.SnackBar;
 import com.objective4.app.onlife.BlockActivity.ActivityGroupBlock;
 import com.objective4.app.onlife.Fragments.Social.FragmentContacts;
 import com.objective4.app.onlife.Fragments.Social.FragmentGroups;
@@ -37,6 +37,7 @@ import static com.objective4.app.onlife.Controller.StaticMethods.getModelPersonI
 import static com.objective4.app.onlife.Controller.StaticMethods.imageInDisk;
 import static com.objective4.app.onlife.Controller.StaticMethods.isFriendAlready;
 import static com.objective4.app.onlife.Controller.StaticMethods.loadImage;
+import static com.objective4.app.onlife.Controller.StaticMethods.makeSnackbar;
 
 public class AdapterBaseElements<T> extends RecyclerView.Adapter<AdapterBaseElements.ElementHolder> {
     private Context context;
@@ -175,7 +176,7 @@ public class AdapterBaseElements<T> extends RecyclerView.Adapter<AdapterBaseElem
                 } else if (!devAdmin) {
                     activateDeviceAdmin(activity);
                 } else {
-                    SnackBar.show(activity, R.string.friend_inactive);
+                    makeSnackbar(context, v, R.string.friend_inactive, Snackbar.LENGTH_SHORT);
                 }
             }else if(typeClass == FragmentGroups.class){
                 ModelGroup actualModelGroup = (ModelGroup) elements.get(getLayoutPosition());

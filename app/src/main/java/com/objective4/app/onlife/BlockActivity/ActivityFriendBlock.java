@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.provider.Settings;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
@@ -19,7 +20,6 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
 
 import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
-import com.kenny.snackbar.SnackBar;
 import com.objective4.app.onlife.Models.ModelPerson;
 import com.objective4.app.onlife.Models.ModelSessionData;
 import com.objective4.app.onlife.R;
@@ -37,6 +37,7 @@ import static com.objective4.app.onlife.Controller.StaticMethods.hideSoftKeyboar
 import static com.objective4.app.onlife.Controller.StaticMethods.imageInDisk;
 import static com.objective4.app.onlife.Controller.StaticMethods.isNetworkAvailable;
 import static com.objective4.app.onlife.Controller.StaticMethods.loadImage;
+import static com.objective4.app.onlife.Controller.StaticMethods.makeSnackbar;
 import static com.objective4.app.onlife.Controller.StaticMethods.setHashToList;
 import static com.objective4.app.onlife.Controller.StaticMethods.showSoftKeyboard;
 
@@ -142,24 +143,24 @@ public class ActivityFriendBlock extends ActivityBlockBase<ModelPerson> {
                         messageTextView.setText("");
                     } catch (Exception ex) {
                         ex.printStackTrace();
-                        SnackBar.show(ActivityFriendBlock.this, R.string.error);
+                        makeSnackbar(ActivityFriendBlock.this, messageTextView, R.string.error, Snackbar.LENGTH_SHORT);
                     }
                 }else if(!devAdmin){
                     activateDeviceAdmin(this);
                 }else{
-                    SnackBar.show(ActivityFriendBlock.this,R.string.friend_inactive);
+                    makeSnackbar(this, messageTextView, R.string.friend_inactive, Snackbar.LENGTH_SHORT);
                 }
             } else {
-                SnackBar.show(ActivityFriendBlock.this, R.string.message_max_characters, R.string.button_change_text_message, new View.OnClickListener() {
+                makeSnackbar(this, messageTextView, R.string.message_max_characters, Snackbar.LENGTH_SHORT, R.string.button_change_text_message, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         messageTextView.requestFocus();
-                        showSoftKeyboard(ActivityFriendBlock.this,messageTextView);
+                        showSoftKeyboard(ActivityFriendBlock.this, messageTextView);
                     }
                 });
             }
         } else {
-            SnackBar.show(ActivityFriendBlock.this, R.string.no_connection, R.string.button_change_connection, new View.OnClickListener() {
+            makeSnackbar(this, messageTextView, R.string.no_connection, Snackbar.LENGTH_LONG, R.string.button_change_connection, new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     startActivity(new Intent(Settings.ACTION_WIRELESS_SETTINGS));

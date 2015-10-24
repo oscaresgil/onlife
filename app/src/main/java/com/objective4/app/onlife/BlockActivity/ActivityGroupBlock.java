@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.provider.Settings;
+import android.support.design.widget.Snackbar;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,7 +19,6 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.simplelist.MaterialSimpleListAdapter;
 import com.afollestad.materialdialogs.simplelist.MaterialSimpleListItem;
-import com.kenny.snackbar.SnackBar;
 import com.mingle.entity.MenuEntity;
 import com.mingle.sweetpick.DimEffect;
 import com.mingle.sweetpick.RecyclerViewDelegate;
@@ -39,6 +39,7 @@ import static com.objective4.app.onlife.Controller.StaticMethods.checkDeviceAdmi
 import static com.objective4.app.onlife.Controller.StaticMethods.hideSoftKeyboard;
 import static com.objective4.app.onlife.Controller.StaticMethods.isNetworkAvailable;
 import static com.objective4.app.onlife.Controller.StaticMethods.loadImage;
+import static com.objective4.app.onlife.Controller.StaticMethods.makeSnackbar;
 import static com.objective4.app.onlife.Controller.StaticMethods.performCrop;
 import static com.objective4.app.onlife.Controller.StaticMethods.saveImage;
 import static com.objective4.app.onlife.Controller.StaticMethods.showSoftKeyboard;
@@ -197,21 +198,21 @@ public class ActivityGroupBlock extends ActivityBlockBase<ModelGroup> {
                     new TaskSendNotification(ActivityGroupBlock.this, actualUser.getName(), messageTextView.getText().toString(),emoticonName).execute(friendsInGroup.toArray(new ModelPerson[friendsInGroup.size()]));
                     messageTextView.setText("");
                 } catch (Exception ex) {
-                    SnackBar.show(ActivityGroupBlock.this, R.string.error);
+                    makeSnackbar(this, messageTextView, R.string.error, Snackbar.LENGTH_SHORT);
                 }
             }else if(!devAdmin){
                 activateDeviceAdmin(this);
             } else {
-                SnackBar.show(ActivityGroupBlock.this, R.string.message_max_characters, R.string.button_change_text_message, new View.OnClickListener() {
+                makeSnackbar(this, messageTextView, R.string.max_characters_text, Snackbar.LENGTH_SHORT, R.string.button_change_text_message, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         messageTextView.requestFocus();
-                        showSoftKeyboard(ActivityGroupBlock.this,messageTextView);
+                        showSoftKeyboard(ActivityGroupBlock.this, messageTextView);
                     }
                 });
             }
         }else{
-            SnackBar.show(ActivityGroupBlock.this, R.string.no_connection, R.string.button_change_connection, new View.OnClickListener() {
+            makeSnackbar(this, messageTextView, R.string.no_connection, Snackbar.LENGTH_LONG, R.string.button_change_connection, new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     startActivity(new Intent(Settings.ACTION_WIRELESS_SETTINGS));
