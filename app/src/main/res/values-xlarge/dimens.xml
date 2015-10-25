@@ -107,7 +107,7 @@
     <!-- Layout Contact Dimensions -->
     <dimen name="layout_contact_card_margin">7dp</dimen>
     <dimen name="layout_contact_card_height">70dp</dimen>
-    <dimen name="layout_contact_text_size">14sp</dimen>
+    <dimen name="layout_contact_text_size">18sp</dimen>
     <dimen name="layout_contact_margin_picture">5dp</dimen>
     <dimen name="layout_contact_margin_visibility">15dp</dimen>
 

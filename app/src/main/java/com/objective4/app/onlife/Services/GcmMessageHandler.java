@@ -7,8 +7,8 @@ import android.app.admin.DevicePolicyManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.NotificationCompat;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -105,18 +105,32 @@ public class GcmMessageHandler extends IntentService {
 
 
     protected void onMessage(Context context) {
-        Notification.Builder mBuilder =
-                new Notification.Builder(this)
-                        .setSmallIcon(R.drawable.ic_notification_icon)
-                        .setTicker(getResources().getString(R.string.notification_someone_block_you))
-                        .setStyle(new Notification.BigTextStyle())
-                        .setOnlyAlertOnce(true);
 
         NotificationManager myNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-        myNotificationManager.notify(0, mBuilder.build());
-        myNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        myNotificationManager.cancel(0);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Notification notification = new Notification.Builder(context)
+                    .setCategory(Notification.CATEGORY_PROMO)
+                    .setSmallIcon(R.drawable.icon_white)
+                    .setContentTitle(getResources().getString(R.string.notification_someone_block_you))
+                    .setContentText(user + " " + getResources().getString(R.string.notification_has_blocked))
+                    .setPriority(Notification.PRIORITY_MAX)
+                    .setVibrate(new long[]{1000, 1000, 1000, 1000, 1000})
+                    .setVisibility(Notification.VISIBILITY_PUBLIC).build();
+
+            myNotificationManager.notify(0,notification);
+        }else{
+            Notification.Builder mBuilder =
+                    new Notification.Builder(this)
+                            .setSmallIcon(R.drawable.icon_white)
+                            .setContentTitle(getResources().getString(R.string.notification_someone_block_you))
+                            .setContentText(user + " " + getResources().getString(R.string.notification_has_blocked))
+                            .setTicker(getResources().getString(R.string.notification_someone_block_you))
+                            .setStyle(new Notification.BigTextStyle())
+                            .setOnlyAlertOnce(true)
+                            .setVibrate(new long[]{1000, 1000, 1000, 1000, 1000});
+            myNotificationManager.notify(0, mBuilder.build());
+        }
 
         Intent i = new Intent(context, ActivityInBlock.class);
         i.putExtra("user",user);
@@ -129,6 +143,9 @@ public class GcmMessageHandler extends IntentService {
             Thread.sleep(2000);
         } catch (InterruptedException ignored) {}
         mDPM.lockNow();
+        myNotificationManager.cancel(0);
         startActivity(i);
     }
+
+
 }

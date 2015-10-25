@@ -1,8 +1,10 @@
 package com.objective4.app.onlife.Activities;
 
+import android.animation.Animator;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -34,6 +36,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.objective4.app.onlife.Controller.StaticMethods.animationEnd;
+import static com.objective4.app.onlife.Controller.StaticMethods.collapse;
+import static com.objective4.app.onlife.Controller.StaticMethods.expand;
 import static com.objective4.app.onlife.Controller.StaticMethods.hideSoftKeyboard;
 import static com.objective4.app.onlife.Controller.StaticMethods.makeSnackbar;
 import static com.objective4.app.onlife.Controller.StaticMethods.performCrop;
@@ -87,6 +91,7 @@ public class ActivityGroupCreateInformation extends AppCompatActivity {
         fab = (FloatingActionButton) findViewById(R.id.ActivityCreateGroup_ButtonDone);
         fab.bringToFront();
         nameNewGroup = (com.rengwuxian.materialedittext.MaterialEditText) findViewById(R.id.ActivityCreateGroup_EditTextNameGroup);
+        nameNewGroup.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/opensans.ttf"));
 
         friendsFiltred = new ArrayList<>();
         friendsFiltred.addAll(friends);
@@ -185,9 +190,6 @@ public class ActivityGroupCreateInformation extends AppCompatActivity {
                     if (!path.equals("")) {
                         path = saveImage(getApplicationContext(), name, bitmap);
                     }
-                    else{
-                        path = saveImage(getApplicationContext(), name, BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher));
-                    }
 
                     ModelGroup newG = new ModelGroup(ModelSessionData.getInstance().getModelGroups().size(), name, selected, path, limit, state);
 
@@ -237,14 +239,35 @@ public class ActivityGroupCreateInformation extends AppCompatActivity {
 
         LinearLayout mainLayout = (LinearLayout)this.findViewById(R.id.ActivityCreateGroup_LinearLayoutSubMain);
         // http://stackoverflow.com/questions/19765938/show-and-hide-a-view-with-a-slide-up-down-animation
-        mainLayout.animate().setStartDelay(getResources().getInteger(R.integer.animation_search_contact_create));
+        //mainLayout.animate().setStartDelay(getResources().getInteger(R.integer.animation_search_contact_create));
         //layout_friends.animate().setStartDelay(getResources().getInteger(R.integer.animation_search_contact_create));
-        fab.animate().setStartDelay(getResources().getInteger(R.integer.animation_search_contact_create));
+        //fab.animate().setStartDelay(getResources().getInteger(R.integer.animation_search_contact_create));
         if (isSearchOpened){
-            hideSoftKeyboard(this,searchText);
+            hideSoftKeyboard(this, searchText);
             hideSoftKeyboard(this, nameNewGroup);
-            //mainLayout.setVisibility(View.VISIBLE);
-            fab.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.ic_done_black_24dp));
+
+            expand(mainLayout);
+            fab.animate().setStartDelay(500).setListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    fab.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.ic_done_black_24dp));
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animation) {
+                    fab.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.ic_done_black_24dp));
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animation) {
+
+                }
+            }).start();
             fab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -262,8 +285,29 @@ public class ActivityGroupCreateInformation extends AppCompatActivity {
             isSearchOpened = false;
 
         } else{
-            //mainLayout.setVisibility(View.GONE);
-            fab.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.ic_clear_black_24dp));
+            collapse(mainLayout);
+
+            fab.animate().setStartDelay(500).setListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    fab.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.ic_clear_black_24dp));
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animation) {
+                    fab.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.ic_clear_black_24dp));
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animation) {
+
+                }
+            }).start();
             fab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

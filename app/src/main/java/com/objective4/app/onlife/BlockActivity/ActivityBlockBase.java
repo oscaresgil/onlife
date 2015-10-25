@@ -1,22 +1,18 @@
 package com.objective4.app.onlife.BlockActivity;
 
+import android.graphics.Typeface;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
 import com.objective4.app.onlife.Adapters.AdapterFragmentEmoticon;
 import com.objective4.app.onlife.Listeners.ListenerMessageFocusChanged;
 import com.objective4.app.onlife.Listeners.ListenerTextWatcher;
@@ -85,7 +81,9 @@ public class ActivityBlockBase<T> extends AppCompatActivity {
         viewPager.setAdapter(null);
 
         maxCharsView = (TextView) findViewById(R.id.ActivityBlockBase_TextViewMaxCharacters);
+        maxCharsView.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/opensans.ttf"));
         messageTextView = (MaterialEditText) findViewById(R.id.ActivityBlockBase_EditTextMessage);
+        messageTextView.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/opensans.ttf"));
         messageTextView.setOnFocusChangeListener(new ListenerMessageFocusChanged(this, messageTextView));
 
         listenerTextWatcher = new ListenerTextWatcher(this, maxCharsView, messageTextView);
@@ -96,12 +94,6 @@ public class ActivityBlockBase<T> extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (emoticonLayout.getVisibility() == View.GONE) {
-                    /*nestedScrollView.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            nestedScrollView.smoothScrollTo(0, getRelativeTop(tabHost));
-                        }
-                    });*/
                     showEmoticon();
                 } else {
                     hideEmoticon();
@@ -174,6 +166,7 @@ public class ActivityBlockBase<T> extends AppCompatActivity {
         slidrInterface.lock();
         setEmoticonTab();
         emoticonFlag=true;
+
         emoticonLayout.setVisibility(View.VISIBLE);
     }
 

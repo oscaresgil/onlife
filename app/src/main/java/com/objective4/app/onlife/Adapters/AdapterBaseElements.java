@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.design.widget.Snackbar;
@@ -35,7 +36,6 @@ import static com.objective4.app.onlife.Controller.StaticMethods.animationStart;
 import static com.objective4.app.onlife.Controller.StaticMethods.checkDeviceAdmin;
 import static com.objective4.app.onlife.Controller.StaticMethods.getModelPersonIndex;
 import static com.objective4.app.onlife.Controller.StaticMethods.imageInDisk;
-import static com.objective4.app.onlife.Controller.StaticMethods.isFriendAlready;
 import static com.objective4.app.onlife.Controller.StaticMethods.loadImage;
 import static com.objective4.app.onlife.Controller.StaticMethods.makeSnackbar;
 
@@ -84,7 +84,10 @@ public class AdapterBaseElements<T> extends RecyclerView.Adapter<AdapterBaseElem
 
         }else if(typeClass == FragmentGroups.class){
             ModelGroup groupData = (ModelGroup) elements.get(position);
-            holder.avatar.setImageBitmap(loadImage(context, groupData.getName()));
+            if (imageInDisk(context,groupData.getName()))
+                holder.avatar.setImageBitmap(loadImage(context, groupData.getName()));
+            else
+                holder.avatar.setImageBitmap(BitmapFactory.decodeResource(context.getResources(),R.mipmap.ic_launcher));
             holder.name.setText(groupData.getName());
             holder.visibility.setVisibility(View.GONE);
         }
@@ -129,8 +132,9 @@ public class AdapterBaseElements<T> extends RecyclerView.Adapter<AdapterBaseElem
 
         public ElementHolder(View view) {
             super(view);
-            avatar = (ImageView) view.findViewById(R.id.LayoutSelectContactGroup_ImageViewFriend);
-            name = (TextView) view.findViewById(R.id.LayoutSelectContactGroup_TextViewNameFriend);
+            avatar = (ImageView) view.findViewById(R.id.LayoutBase_ImageViewFriend);
+            name = (TextView) view.findViewById(R.id.LayoutBase_TextViewNameFriend);
+            name.setTypeface(Typeface.createFromAsset(context.getAssets(), "fonts/opensans.ttf"));
             visibility = (ImageView)view.findViewById(R.id.LayoutBase_VisibilityImageView);
             view.setOnClickListener(this);
             view.setOnLongClickListener(this);

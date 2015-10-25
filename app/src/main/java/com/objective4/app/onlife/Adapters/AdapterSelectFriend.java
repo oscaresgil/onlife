@@ -2,6 +2,7 @@ package com.objective4.app.onlife.Adapters;
 
 import android.content.Context;
 import android.graphics.BitmapFactory;
+import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -72,6 +73,7 @@ public class AdapterSelectFriend extends RecyclerView.Adapter<AdapterSelectFrien
             super(itemView);
             avatar = (ImageView) itemView.findViewById(R.id.LayoutSelectContactGroup_ImageViewFriend);
             name = (TextView) itemView.findViewById(R.id.LayoutSelectContactGroup_TextViewNameFriend);
+            name.setTypeface(Typeface.createFromAsset(context.getAssets(), "fonts/opensans.ttf"));
             itemView.setOnClickListener(this);
         }
 

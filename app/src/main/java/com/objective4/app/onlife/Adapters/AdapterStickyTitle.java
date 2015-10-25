@@ -78,8 +78,8 @@ public class AdapterStickyTitle extends RecyclerView.Adapter<AdapterStickyTitle.
             super(itemView);
 
             LinearLayout linearLayout = (LinearLayout) itemView;
-            imageView = (ImageView) linearLayout.findViewById(R.id.LayoutSelectContactGroup_ImageViewFriend);
-            textView = (TextView) linearLayout.findViewById(R.id.LayoutSelectContactGroup_TextViewNameFriend);
+            imageView = (ImageView) linearLayout.findViewById(R.id.LayoutBase_ImageViewFriend);
+            textView = (TextView) linearLayout.findViewById(R.id.LayoutBase_TextViewNameFriend);
         }
     }
 
@@ -102,7 +102,7 @@ public class AdapterStickyTitle extends RecyclerView.Adapter<AdapterStickyTitle.
             int item = recyclerView.getChildAdapterPosition(v);
             friends.get(item).setSelected(!friends.get(item).isSelected());
 
-            /*RatioImageView avatar = (RatioImageView) v.findViewById(R.id.LayoutSelectContactGroup_ImageViewFriend);
+            /*RatioImageView avatar = (RatioImageView) v.findViewById(R.id.LayoutBase_ImageViewFriend);
             listener.setFriend(friends.get(item));
             listener.setView(avatar);
             avatar.clearAnimation();

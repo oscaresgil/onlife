@@ -4,17 +4,15 @@ package com.objective4.app.onlife.BlockActivity;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.applovin.adview.AppLovinInterstitialAd;
-import com.applovin.sdk.AppLovinSdk;
 import com.objective4.app.onlife.Models.ModelMessages;
 import com.objective4.app.onlife.R;
 
@@ -48,8 +46,11 @@ public class ActivityInBlock extends Activity{
         relativeLayout = (RelativeLayout) findViewById(R.id.ActivityInBlock_RelativeLayoutMain);
 
         textViewNumber = (TextView) findViewById(R.id.ActivityInBlock_TextViewNumberMessage);
+        textViewNumber.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/opensans.ttf"));
         textViewUser = (TextView) findViewById(R.id.ActivityInBlock_TextViewName);
+        textViewUser.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/opensans.ttf"));
         textViewMessage = (TextView) findViewById(R.id.ActivityInBlock_TextViewMessage);
+        textViewMessage.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/opensans.ttf"));
         ImageView emoticonImageView = (ImageView) findViewById(R.id.ActivityInBlock_EmoticonImageView);
 
         textViewNumber.setOnClickListener(new OnClickListenerMessage());

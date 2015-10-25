@@ -180,8 +180,10 @@ public class ActivityMain extends Activity{
         startActivity(i);
     }
 
-    public void gotoHome(){
-        Intent home = new Intent(ActivityMain.this,ActivityHome.class);
-        startActivity(home);
+    public void gotoHome() {
+        if (!ActivityHome.isRunning){
+            Intent home = new Intent(ActivityMain.this, ActivityHome.class);
+            startActivity(home);
+        }
     }
 }

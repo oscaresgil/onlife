@@ -4,13 +4,14 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.provider.Settings;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.util.Log;
+import android.support.v7.graphics.Palette;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
@@ -38,7 +39,6 @@ import static com.objective4.app.onlife.Controller.StaticMethods.imageInDisk;
 import static com.objective4.app.onlife.Controller.StaticMethods.isNetworkAvailable;
 import static com.objective4.app.onlife.Controller.StaticMethods.loadImage;
 import static com.objective4.app.onlife.Controller.StaticMethods.makeSnackbar;
-import static com.objective4.app.onlife.Controller.StaticMethods.setHashToList;
 import static com.objective4.app.onlife.Controller.StaticMethods.showSoftKeyboard;
 
 public class ActivityFriendBlock extends ActivityBlockBase<ModelPerson> {
@@ -59,13 +59,24 @@ public class ActivityFriendBlock extends ActivityBlockBase<ModelPerson> {
             visibility.setImageBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.ic_action_visibility_on));
         }
 
+        progressBar = (RoundCornerProgressBar) findViewById(R.id.ActivityBlockBase_ProgressBarTime);
+        progressBar.setMax(getResources().getInteger(R.integer.block_time_remaining));
+
         RatioImageView avatar = (RatioImageView) findViewById(R.id.ActivityBlockBase_ImageViewContact);
         if (actualObject.refreshImageBig() || !imageInDisk(this,actualObject.getId()+"_"+getResources().getInteger(R.integer.adapter_contact_size_large))){
             if (imageInDisk(this,actualObject.getId()+"_"+getResources().getInteger(R.integer.adapter_contact_size_little)))
                 avatar.setImageBitmap(loadImage(this,actualObject.getId()+"_"+getResources().getInteger(R.integer.adapter_contact_size_little)));
-            new TaskSimpleImageDownload(this,avatar,getResources().getInteger(R.integer.adapter_contact_size_large)).execute(actualObject);
+            new TaskSimpleImageDownload(this,avatar,getResources().getInteger(R.integer.adapter_contact_size_large),progressBar).execute(actualObject);
             actualObject.setRefreshImageBig(false);
         }else{
+            Bitmap bitmap = loadImage(this,actualObject.getId()+"_"+getResources().getInteger(R.integer.adapter_contact_size_large));
+            //http://code.tutsplus.com/es/tutorials/coloring-android-apps-with-palette--cms-24096
+            Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
+                @Override
+                public void onGenerated(Palette palette) {
+                    if (palette.getDarkVibrantSwatch() != null) progressBar.setProgressBackgroundColor(palette.getDarkVibrantSwatch().getRgb());
+                }
+            });
             avatar.setImageBitmap(loadImage(this,actualObject.getId()+"_"+getResources().getInteger(R.integer.adapter_contact_size_large)));
         }
 
@@ -80,8 +91,6 @@ public class ActivityFriendBlock extends ActivityBlockBase<ModelPerson> {
 
         blockFab = (FloatingActionButton)findViewById(R.id.ActivityBlockBase_ButtonBlock);
 
-        progressBar = (RoundCornerProgressBar) findViewById(R.id.ActivityBlockBase_ProgressBarTime);
-        progressBar.setMax(getResources().getInteger(R.integer.block_time_remaining));
         long actualTime = Calendar.getInstance().getTimeInMillis();
         if (actualTime - actualObject.getLastBlockedTime() < getResources().getInteger(R.integer.block_time_remaining)) {
             setTimer();
@@ -187,6 +196,7 @@ public class ActivityFriendBlock extends ActivityBlockBase<ModelPerson> {
             }
 
             public void onFinish() {
+                progressBar.setProgress(getResources().getInteger(R.integer.block_time_remaining));
                 blockFab.animate().alpha(1).setInterpolator(new DecelerateInterpolator()).start();
                 nestedScrollView.setNestedScrollingEnabled(true);
                 nestedScrollView.setSmoothScrollingEnabled(true);

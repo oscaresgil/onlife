@@ -2,6 +2,7 @@ package com.objective4.app.onlife.BlockActivity;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -37,6 +38,7 @@ import static com.objective4.app.onlife.Controller.StaticMethods.activateDeviceA
 import static com.objective4.app.onlife.Controller.StaticMethods.animationEnd;
 import static com.objective4.app.onlife.Controller.StaticMethods.checkDeviceAdmin;
 import static com.objective4.app.onlife.Controller.StaticMethods.hideSoftKeyboard;
+import static com.objective4.app.onlife.Controller.StaticMethods.imageInDisk;
 import static com.objective4.app.onlife.Controller.StaticMethods.isNetworkAvailable;
 import static com.objective4.app.onlife.Controller.StaticMethods.loadImage;
 import static com.objective4.app.onlife.Controller.StaticMethods.makeSnackbar;
@@ -61,7 +63,8 @@ public class ActivityGroupBlock extends ActivityBlockBase<ModelGroup> {
         friendsInGroup = actualObject.getFriendsInGroup();
 
         avatarGroup = (RatioImageView) findViewById(R.id.ActivityBlockBase_ImageViewContact);
-        avatarGroup.setImageBitmap(loadImage(this, actualObject.getName()));
+        if (imageInDisk(this,actualObject.getName())) avatarGroup.setImageBitmap(loadImage(this, actualObject.getName()));
+        else avatarGroup.setImageBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.ic_social_group));
         avatarGroup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

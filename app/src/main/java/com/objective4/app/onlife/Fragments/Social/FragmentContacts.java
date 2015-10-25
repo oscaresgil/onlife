@@ -34,7 +34,6 @@ import com.rengwuxian.materialedittext.MaterialEditText;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.objective4.app.onlife.Controller.StaticMethods.activateDeviceAdmin;
 import static com.objective4.app.onlife.Controller.StaticMethods.getModelPersonIndex;
 import static com.objective4.app.onlife.Controller.StaticMethods.isNetworkAvailable;
 import static com.objective4.app.onlife.Controller.StaticMethods.makeSnackbar;
@@ -63,8 +62,9 @@ public class FragmentContacts extends Fragment {
         setHasOptionsMenu(true);
         View v = inflater.inflate (R.layout.fragment_contacts, container, false);
         actualUser = ModelSessionData.getInstance().getUser();
-        List<ModelPerson> friends = setHashToList(ModelSessionData.getInstance().getFriends());
+
         addFriends= (TextView)v.findViewById(R.id.addFriendsButton);
+        if (!ModelSessionData.getInstance().getFriends().isEmpty()) addFriends.setVisibility(View.GONE);
 
         friendsFiltred = new ArrayList<>();
 
@@ -118,6 +118,7 @@ public class FragmentContacts extends Fragment {
                 if (pos==-1){
                     ModelSessionData.getInstance().getFriends().put(newUser.getId(),newUser);
                     adapter.addFriend(newUser);
+                    addFriends.setVisibility(View.GONE);
                 }
             } else if("friends_updated".equals(tag)){
                 if(ModelSessionData.getInstance().getFriends().isEmpty()){

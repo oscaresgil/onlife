@@ -13,7 +13,6 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -52,6 +51,8 @@ import static com.objective4.app.onlife.Controller.StaticMethods.setListToHash;
 import static com.objective4.app.onlife.Controller.StaticMethods.unSelectFriends;
 
 public class ActivityHome extends AppCompatActivity{
+    public static boolean isRunning=false;
+
     private ModelPerson userLogin;
     private SharedPreferences sharedPreferences;
     private AdapterBaseElements adapterContact;
@@ -98,12 +99,12 @@ public class ActivityHome extends AppCompatActivity{
         TabLayout tabLayout = (TabLayout) findViewById(R.id.ActivityHome_SlindingTabs);
         viewPager.setAdapter(new AdapterFragmentPager(getSupportFragmentManager(), this));
         tabLayout.setupWithViewPager(viewPager);
-
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        isRunning = true;
         if (sharedPreferences.contains("update_key")){
             int val = sharedPreferences.getInt("update_key",0);
             setDialogUpdate(val);
@@ -131,12 +132,14 @@ public class ActivityHome extends AppCompatActivity{
     @Override
     public void onBackPressed() {
         moveTaskToBack(true);
+        isRunning = false;
         onTrimMemory(TRIM_MEMORY_UI_HIDDEN);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
+        isRunning = false;
         onTrimMemory(TRIM_MEMORY_UI_HIDDEN);
     }
 
@@ -206,6 +209,7 @@ public class ActivityHome extends AppCompatActivity{
         ModelSessionData.getInstance().clear();
         LoginManager.getInstance().logOut();
         new TaskChangeState(ActivityHome.this).execute(userLogin.getId(), "O");
+        isRunning = false;
         finish();
     }
 

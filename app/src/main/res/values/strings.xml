@@ -109,5 +109,6 @@
     <string name="update_forced">Please update to continue</string>
     <string name="update_optional">Wanna update it?</string>
     <string name="update_playservices">Google Play Services not updated</string>
+    <string name="notification_has_blocked">has blocked you.</string>
 
 </resources>
