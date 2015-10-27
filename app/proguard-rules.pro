@@ -24,6 +24,7 @@
 
 -keep class com.caverock.androidsvg.** { *; }
 -dontwarn com.caverock.androidsvg.**
+-dontwarn com.akexorcist.roundcornerprogressbar.**
 -keep class com.google.android.gms.** { *; }
 -dontwarn com.google.android.gms.**
 
@@ -45,9 +46,6 @@
 -keep public class * extends android.app.IntentService
 -keep public class * extends android.os.AsyncTask
 -keep public class * extends android.support.v7.widget.RecyclerView.*
-
--dontwarn applovin-sdk-6.1.1.**
--dontwarn applovin-sdk-6.1.1-javadoc.**
 
 -keep public class * extends android.view.View {
     public <init>(android.content.Context);

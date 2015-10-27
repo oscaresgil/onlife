@@ -7,7 +7,9 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import com.eftimoff.androipathview.PathView;
+import com.facebook.FacebookSdk;
 import com.objective4.app.onlife.R;
+import com.objective4.app.onlife.Tasks.TaskCheckVersion;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -16,7 +18,9 @@ public class ActivityLogoScreen extends Activity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        FacebookSdk.sdkInitialize(this.getApplicationContext());
         SharedPreferences sharedPreferences = getSharedPreferences(ActivityMain.MyPREFERENCES, Context.MODE_PRIVATE);
+        new TaskCheckVersion(this).execute();
         boolean sessionTag = sharedPreferences.getBoolean("session", false);
         if (!sessionTag){
             setContentView(R.layout.activity_logo_screen);
@@ -37,10 +41,11 @@ public class ActivityLogoScreen extends Activity{
             };
 
             Timer timer = new Timer();
-            timer.schedule(task,getResources().getInteger(R.integer.activity_logo_screen_splash_screen_time));
+            timer.schedule(task, getResources().getInteger(R.integer.activity_logo_screen_splash_screen_time));
+
         }else{
-            Intent mainIntent = new Intent().setClass(ActivityLogoScreen.this,ActivityMain.class);
-            startActivity(mainIntent);
+            Intent homeIntent = new Intent().setClass(ActivityLogoScreen.this,ActivityHome.class);
+            startActivity(homeIntent);
             finish();
         }
     }

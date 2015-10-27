@@ -1,6 +1,7 @@
 package com.objective4.app.onlife.Tasks;
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.support.design.widget.Snackbar;
@@ -45,11 +46,15 @@ public class TaskSetFriends extends AsyncTask<ArrayList<String>, Void, String> {
     @Override
     protected String doInBackground(ArrayList<String>... params) {
         String id = params[0].get(0);
+        ContentValues values = new ContentValues();
+        values.put("tag", "setFriends");
+        values.put("myId", id);
         List<NameValuePair> p = new ArrayList<>();
         p.add(new BasicNameValuePair("tag", "setFriends"));
         p.add(new BasicNameValuePair("myId", id));
 
         for(int i = 1; i<params[0].size(); i++){
+            values.put("id_friends[]", params[0].get(i));
             p.add(new BasicNameValuePair("id_friends[]", params[0].get(i)));
         }
         try{

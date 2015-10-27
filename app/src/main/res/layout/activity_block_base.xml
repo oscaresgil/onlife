@@ -180,6 +180,7 @@
             android:layout_height="wrap_content"
             android:onClick="block"
             android:layout_marginRight="10dp"
+            android:layout_marginEnd="10dp"
             android:src="@drawable/ic_lock_black_24dp"
             app:borderWidth="@dimen/activity_friend_block_fab_block_border"
             app:backgroundTint="@color/primary"

@@ -5,11 +5,13 @@ import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -44,7 +46,7 @@ public class ActivityBlockBase<T> extends AppCompatActivity {
     protected ImageView visibility;
     protected ImageView emoticon;
 
-    protected MaterialEditText messageTextView;
+    protected EditText messageTextView;
     protected ListenerTextWatcher listenerTextWatcher;
     protected TextView maxCharsView;
 
@@ -85,12 +87,8 @@ public class ActivityBlockBase<T> extends AppCompatActivity {
 
         maxCharsView = (TextView) findViewById(R.id.ActivityBlockBase_TextViewMaxCharacters);
         maxCharsView.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/oldrepublic.ttf"));
-        messageTextView = (MaterialEditText) findViewById(R.id.ActivityBlockBase_EditTextMessage);
+        messageTextView = (EditText) findViewById(R.id.ActivityBlockBase_EditTextMessage);
         messageTextView.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/oldrepublic.ttf"));
-        messageTextView.setOnFocusChangeListener(new ListenerMessageFocusChanged(this, messageTextView));
-
-        listenerTextWatcher = new ListenerTextWatcher(this, maxCharsView, messageTextView);
-        messageTextView.addTextChangedListener(listenerTextWatcher);
 
         ImageButton emoticonButton = (ImageButton) findViewById(R.id.ActivityBlockBase_EmoticonButton);
         emoticonButton.setOnClickListener(new View.OnClickListener() {
@@ -120,7 +118,7 @@ public class ActivityBlockBase<T> extends AppCompatActivity {
         if (viewPager.getAdapter() == null){
             AdapterFragmentEmoticon adapter = new AdapterFragmentEmoticon(getSupportFragmentManager(),this);
             viewPager.setAdapter(adapter);
-            viewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+            viewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
                 @Override
                 public void onPageSelected(int position) {
                     tabHost.setSelectedNavigationItem(position);
@@ -129,7 +127,7 @@ public class ActivityBlockBase<T> extends AppCompatActivity {
 
             for (int i=0; i<adapter.getCount(); i++){
                 int resourceId  = getResources().getIdentifier(getImage(i), "drawable", getPackageName());
-                Bitmap b = decodeDrawable(this,resourceId,20);
+                Bitmap b = decodeDrawable(this, resourceId, 20);
                 tabHost.addTab(tabHost.newTab().setIcon(new BitmapDrawable(getResources(),b)).setTabListener(new MaterialTabListener() {
                     @Override
                     public void onTabSelected(MaterialTab tab) {
@@ -165,7 +163,7 @@ public class ActivityBlockBase<T> extends AppCompatActivity {
         this.emoticonName = emoticonName;
         hideEmoticon();
         int resourceId  = getResources().getIdentifier(emoticonName, "drawable", getPackageName());
-        emoticon.setImageDrawable(getResources().getDrawable(resourceId));
+        emoticon.setImageDrawable(ContextCompat.getDrawable(this,resourceId));
     }
 
     protected void showEmoticon(){

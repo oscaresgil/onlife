@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -79,7 +80,7 @@ public class ActivityInBlock extends Activity{
 
         if (!"".equals(emoticonName)) {
             int resourceId = getResources().getIdentifier(emoticonName, "drawable", getPackageName());
-            if (resourceId!=0) emoticonImageView.setImageDrawable(getResources().getDrawable(resourceId));
+            if (resourceId!=0) emoticonImageView.setImageDrawable(ContextCompat.getDrawable(this,resourceId));
         }
 
     }

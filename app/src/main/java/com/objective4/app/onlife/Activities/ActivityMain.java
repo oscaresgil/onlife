@@ -13,7 +13,6 @@ import android.view.View;
 import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
-import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.HttpMethod;
 import com.facebook.Profile;
@@ -26,14 +25,12 @@ import com.objective4.app.onlife.Models.ModelGroup;
 import com.objective4.app.onlife.Models.ModelPerson;
 import com.objective4.app.onlife.R;
 import com.objective4.app.onlife.Tasks.TaskAddNewUser;
-import com.objective4.app.onlife.Tasks.TaskCheckVersion;
 import com.objective4.app.onlife.Tasks.TaskFacebookFriendRequest;
 import com.objective4.app.onlife.Tasks.TaskGetGCM;
 
 import java.util.ArrayList;
 
 import static com.objective4.app.onlife.Controller.StaticMethods.activateDeviceAdmin;
-import static com.objective4.app.onlife.Controller.StaticMethods.isNetworkAvailable;
 
 public class ActivityMain extends Activity{
     public static final String PROJECT_NUMBER = "194566212765";
@@ -81,16 +78,10 @@ public class ActivityMain extends Activity{
             finish();
         }
 
-        if(sharedPreferences.getBoolean("onboarding_complete",false) || sharedPreferences.getBoolean("session",false)){
-            new TaskCheckVersion(this).execute();
-        }
-
         // Get phone GCM
         if ("".equals(sharedPreferences.getString("idGcm",""))){
             new TaskGetGCM(this).execute();
         }
-
-        FacebookSdk.sdkInitialize(this.getApplicationContext());
 
         setContentView(R.layout.activity_main);
         loginButton = (LoginButton) findViewById(R.id.login_button);
@@ -136,47 +127,29 @@ public class ActivityMain extends Activity{
     @Override
     protected void onResume() {
         super.onResume();
-        if (isNetworkAvailable(this)) {
-            if (sharedPreferences.getBoolean("update_playservice", false)) {
-                int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
-                if (resultCode == ConnectionResult.SUCCESS) {
-                    new TaskGetGCM(this).execute();
-                } else {
-                    new AlertDialogWrapper.Builder(this)
-                            .setTitle(getResources().getString(R.string.update_playservices))
-                            .setMessage(getResources().getString(R.string.update_forced))
-                            .setCancelable(false)
-                            .setNegativeButton(R.string.ok, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    String appPackageName = GooglePlayServicesUtil.GOOGLE_PLAY_SERVICES_PACKAGE;
-                                    try {
-                                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
-                                    } catch (ActivityNotFoundException e) {
-                                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
-                                    }
-                                }
-                            }).show();
-                }
+        if (sharedPreferences.getBoolean("update_playservice", false)) {
+            int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+            if (resultCode == ConnectionResult.SUCCESS) {
+                new TaskGetGCM(this).execute();
             } else {
-                if (sharedPreferences.getBoolean("session", false)) {
-                    gotoHome();
-                } else {
-                    mProfileTracker.startTracking();
-                }
+                new AlertDialogWrapper.Builder(this)
+                        .setTitle(getResources().getString(R.string.update_playservices))
+                        .setMessage(getResources().getString(R.string.update_forced))
+                        .setCancelable(false)
+                        .setNegativeButton(R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                String appPackageName = GooglePlayServicesUtil.GOOGLE_PLAY_SERVICES_PACKAGE;
+                                try {
+                                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
+                                } catch (ActivityNotFoundException e) {
+                                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
+                                }
+                            }
+                        }).show();
             }
-        }else{
-            new AlertDialogWrapper.Builder(this)
-                    .setTitle(getResources().getString(R.string.no_connection))
-                    .setMessage(getResources().getString(R.string.no_connection_connect))
-                    .setCancelable(false)
-                    .setNegativeButton(R.string.ok, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            finish();
-                            System.exit(0);
-                        }
-                    }).show();
+        } else {
+            mProfileTracker.startTracking();
         }
     }
 
@@ -189,6 +162,7 @@ public class ActivityMain extends Activity{
         if (!ActivityHome.isRunning){
             Intent home = new Intent(ActivityMain.this, ActivityHome.class);
             startActivity(home);
+            finish();
         }
     }
 }
