@@ -1,6 +1,8 @@
 package com.objective4.app.onlife.BlockActivity;
 
+import android.graphics.Bitmap;
 import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.view.ViewPager;
@@ -27,6 +29,7 @@ import it.neokree.materialtabs.MaterialTabHost;
 import it.neokree.materialtabs.MaterialTabListener;
 
 import static com.objective4.app.onlife.Controller.StaticMethods.animationEnd;
+import static com.objective4.app.onlife.Controller.StaticMethods.decodeDrawable;
 import static com.objective4.app.onlife.Controller.StaticMethods.hideSoftKeyboard;
 import static com.objective4.app.onlife.Controller.StaticMethods.setSlidr;
 
@@ -81,9 +84,9 @@ public class ActivityBlockBase<T> extends AppCompatActivity {
         viewPager.setAdapter(null);
 
         maxCharsView = (TextView) findViewById(R.id.ActivityBlockBase_TextViewMaxCharacters);
-        maxCharsView.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/opensans.ttf"));
+        maxCharsView.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/oldrepublic.ttf"));
         messageTextView = (MaterialEditText) findViewById(R.id.ActivityBlockBase_EditTextMessage);
-        messageTextView.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/opensans.ttf"));
+        messageTextView.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/oldrepublic.ttf"));
         messageTextView.setOnFocusChangeListener(new ListenerMessageFocusChanged(this, messageTextView));
 
         listenerTextWatcher = new ListenerTextWatcher(this, maxCharsView, messageTextView);
@@ -126,7 +129,8 @@ public class ActivityBlockBase<T> extends AppCompatActivity {
 
             for (int i=0; i<adapter.getCount(); i++){
                 int resourceId  = getResources().getIdentifier(getImage(i), "drawable", getPackageName());
-                tabHost.addTab(tabHost.newTab().setIcon(getResources().getDrawable(resourceId)).setTabListener(new MaterialTabListener() {
+                Bitmap b = decodeDrawable(this,resourceId,20);
+                tabHost.addTab(tabHost.newTab().setIcon(new BitmapDrawable(getResources(),b)).setTabListener(new MaterialTabListener() {
                     @Override
                     public void onTabSelected(MaterialTab tab) {
                         viewPager.setCurrentItem(tab.getPosition());
@@ -148,8 +152,12 @@ public class ActivityBlockBase<T> extends AppCompatActivity {
     public String getImage(int position){
         if (position==0){
             return "smiley19";
-        }else{
+        }else if (position==1){
             return "a23";
+        }else if(position==2){
+            return "hand_9";
+        }else{
+            return "avatar_3";
         }
     }
 

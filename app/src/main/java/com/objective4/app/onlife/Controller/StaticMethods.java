@@ -46,6 +46,32 @@ import java.util.List;
 public class StaticMethods {
     public static final int ACTIVATION_REQUEST = 47;
 
+    public static Bitmap decodeDrawable(Context context,int d, int size){
+        try {
+            // Decode image size
+            BitmapFactory.Options o = new BitmapFactory.Options();
+            o.inJustDecodeBounds = true;
+            BitmapFactory.decodeResource(context.getResources(),d,o);
+
+            // The new size we want to scale to
+            final int REQUIRED_SIZE=size;
+
+            // Find the correct scale value. It should be the power of 2.
+            int scale = 1;
+            while(o.outWidth / scale / 2 >= REQUIRED_SIZE &&
+                    o.outHeight / scale / 2 >= REQUIRED_SIZE) {
+                scale *= 2;
+            }
+
+            // Decode with inSampleSize
+            BitmapFactory.Options o2 = new BitmapFactory.Options();
+            o2.inSampleSize = scale;
+            return BitmapFactory.decodeResource(context.getResources(), d, o2);
+        } catch (Exception e) {}
+        return null;
+
+    }
+
     public static void expand(final View v) {
         v.measure(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
         final int targetHeight = v.getMeasuredHeight();
@@ -103,7 +129,7 @@ public class StaticMethods {
     public static Snackbar makeSnackbar(Context context, View v, int textId, int duration){
         Snackbar snackbar = Snackbar.make(v,textId,duration);
         snackbar.getView().setBackgroundColor(context.getResources().getColor(R.color.accent));
-        ((TextView)snackbar.getView().findViewById(android.support.design.R.id.snackbar_text)).setTypeface(Typeface.createFromAsset(context.getAssets(), "fonts/opensans.ttf"));
+        ((TextView)snackbar.getView().findViewById(android.support.design.R.id.snackbar_text)).setTypeface(Typeface.createFromAsset(context.getAssets(), "fonts/oldrepublic.ttf"));
         snackbar.show();
         return snackbar;
     }
@@ -111,7 +137,7 @@ public class StaticMethods {
     public static Snackbar makeSnackbar(Context context, View v, String text, int duration){
         Snackbar snackbar = Snackbar.make(v,text,duration);
         snackbar.getView().setBackgroundColor(context.getResources().getColor(R.color.accent));
-        ((TextView)snackbar.getView().findViewById(android.support.design.R.id.snackbar_text)).setTypeface(Typeface.createFromAsset(context.getAssets(), "fonts/opensans.ttf"));
+        ((TextView)snackbar.getView().findViewById(android.support.design.R.id.snackbar_text)).setTypeface(Typeface.createFromAsset(context.getAssets(), "fonts/oldrepublic.ttf"));
         snackbar.show();
         return snackbar;
     }

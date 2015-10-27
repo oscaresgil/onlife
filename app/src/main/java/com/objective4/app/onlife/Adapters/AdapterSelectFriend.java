@@ -73,7 +73,7 @@ public class AdapterSelectFriend extends RecyclerView.Adapter<AdapterSelectFrien
             super(itemView);
             avatar = (ImageView) itemView.findViewById(R.id.LayoutSelectContactGroup_ImageViewFriend);
             name = (TextView) itemView.findViewById(R.id.LayoutSelectContactGroup_TextViewNameFriend);
-            name.setTypeface(Typeface.createFromAsset(context.getAssets(), "fonts/opensans.ttf"));
+            name.setTypeface(Typeface.createFromAsset(context.getAssets(), "fonts/oldrepublic.ttf"));
             itemView.setOnClickListener(this);
         }
 

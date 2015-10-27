@@ -46,11 +46,11 @@ public class ActivityInBlock extends Activity{
         relativeLayout = (RelativeLayout) findViewById(R.id.ActivityInBlock_RelativeLayoutMain);
 
         textViewNumber = (TextView) findViewById(R.id.ActivityInBlock_TextViewNumberMessage);
-        textViewNumber.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/opensans.ttf"));
+        textViewNumber.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/oldrepublic.ttf"));
         textViewUser = (TextView) findViewById(R.id.ActivityInBlock_TextViewName);
-        textViewUser.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/opensans.ttf"));
+        textViewUser.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/oldrepublic.ttf"));
         textViewMessage = (TextView) findViewById(R.id.ActivityInBlock_TextViewMessage);
-        textViewMessage.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/opensans.ttf"));
+        textViewMessage.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/oldrepublic.ttf"));
         ImageView emoticonImageView = (ImageView) findViewById(R.id.ActivityInBlock_EmoticonImageView);
 
         textViewNumber.setOnClickListener(new OnClickListenerMessage());
@@ -79,7 +79,7 @@ public class ActivityInBlock extends Activity{
 
         if (!"".equals(emoticonName)) {
             int resourceId = getResources().getIdentifier(emoticonName, "drawable", getPackageName());
-            emoticonImageView.setImageDrawable(getResources().getDrawable(resourceId));
+            if (resourceId!=0) emoticonImageView.setImageDrawable(getResources().getDrawable(resourceId));
         }
 
     }

@@ -34,7 +34,6 @@ import com.objective4.app.onlife.Models.ModelSessionData;
 import com.objective4.app.onlife.R;
 import com.objective4.app.onlife.Services.ServicePhoneState;
 import com.objective4.app.onlife.Tasks.TaskChangeState;
-import com.objective4.app.onlife.Tasks.TaskCheckVersion;
 import com.objective4.app.onlife.Tasks.TaskGetFriends;
 
 import java.util.ArrayList;
@@ -65,7 +64,6 @@ public class ActivityHome extends AppCompatActivity{
         setContentView(R.layout.activity_home);
 
         setSupportActionBar((Toolbar) findViewById(R.id.ActivityHome_ToolBar));
-        new TaskCheckVersion(this).execute();
         startService(new Intent(this, ServicePhoneState.class));
         activateDeviceAdmin(this);
 
@@ -158,7 +156,11 @@ public class ActivityHome extends AppCompatActivity{
     }
 
     public void settings(MenuItem item) {
-        final MaterialSimpleListAdapter materialAdapter = new MaterialSimpleListAdapter(this);
+        MaterialSimpleListAdapter materialAdapter = new MaterialSimpleListAdapter(this);
+        materialAdapter.add(new MaterialSimpleListItem.Builder(this)
+                .content(R.string.see_tutorial)
+                .icon(R.drawable.ic_help_outline_black_48dp)
+                .build());
         materialAdapter.add(new MaterialSimpleListItem.Builder(this)
                 .content(R.string.settings_option_uninstall)
                 .icon(R.drawable.ic_phonelink_erase_black_48dp)
@@ -169,7 +171,10 @@ public class ActivityHome extends AppCompatActivity{
                 .adapter(materialAdapter, new MaterialDialog.ListCallback() {
                     @Override
                     public void onSelection(final MaterialDialog materialDialog, View view, int which, CharSequence charSequence) {
-                        if (which == 0) {
+                        if (which == 0){
+                            startActivity(new Intent(ActivityHome.this, ActivityOnboarding.class));
+                            materialDialog.dismiss();
+                        }else if (which == 1) {
                             new MaterialDialog.Builder(ActivityHome.this)
                                     .title(getResources().getString(R.string.settings_option_uninstall) + "?")
                                     .content(R.string.really_delete)

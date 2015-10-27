@@ -26,12 +26,9 @@ import org.json.JSONObject;
 
 import java.net.ConnectException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
-import static com.objective4.app.onlife.Controller.StaticMethods.isFriendAlready;
 import static com.objective4.app.onlife.Controller.StaticMethods.isNetworkAvailable;
 import static com.objective4.app.onlife.Controller.StaticMethods.makeSnackbar;
 import static com.objective4.app.onlife.Controller.StaticMethods.setHashToList;
@@ -71,12 +68,8 @@ public class TaskGetFriends extends AsyncTask<String, Void, ArrayList<ModelPerso
         p.add(new BasicNameValuePair("myId", id));
         JSONObject jsonFriends;
         try{
-            do{
-                jsonFriends = jsonParser.makeHttpRequest(ActivityMain.SERVER_URL, "POST", p);
-            }
-            while(!isNetworkAvailable((Activity) context));
+            jsonFriends = jsonParser.makeHttpRequest(ActivityMain.SERVER_URL, "POST", p);
             Gson gson = new Gson();
-
             return gson.fromJson(jsonFriends.getString("friends"), (new TypeToken<ArrayList<ModelPerson>>(){}.getType()));
         }catch(ConnectException e){
             internetAvailable = true;
@@ -89,7 +82,6 @@ public class TaskGetFriends extends AsyncTask<String, Void, ArrayList<ModelPerso
 
     @Override
     protected void onPostExecute(ArrayList<ModelPerson> friends) {
-        super.onPostExecute(friends);
         if (friends == null){
             if (internetAvailable) makeSnackbar(context, ((Activity) context).findViewById(R.id.ActivityHome_CoordinatorLayout), R.string.no_connection, Snackbar.LENGTH_INDEFINITE);
             else if (isNetworkAvailable((Activity)context)) makeSnackbar(context, ((Activity) context).findViewById(R.id.ActivityHome_CoordinatorLayout), R.string.no_connection, Snackbar.LENGTH_INDEFINITE);
@@ -97,7 +89,6 @@ public class TaskGetFriends extends AsyncTask<String, Void, ArrayList<ModelPerso
         }
         else {
             if (isNetworkAvailable((Activity) context)) {
-                if (flagDialog) dialog.dismiss();
 
                 for (ModelPerson f : friends) {
                     f.setRefreshImage(true);
@@ -115,7 +106,7 @@ public class TaskGetFriends extends AsyncTask<String, Void, ArrayList<ModelPerso
                 }
 
                 AdapterBaseElements adapterContact = ((ActivityHome) context).getAdapterContact();
-                adapterContact.updateElements(setHashToList(hashMap));
+                if (adapterContact!=null) adapterContact.updateElements(setHashToList(hashMap));
             } else {
                 makeSnackbar(context, ((Activity) context).findViewById(R.id.ActivityHome_CoordinatorLayout), R.string.no_connection, Snackbar.LENGTH_LONG, R.string.button_change_connection, new View.OnClickListener() {
                     @Override
@@ -123,8 +114,8 @@ public class TaskGetFriends extends AsyncTask<String, Void, ArrayList<ModelPerso
                         context.startActivity(new Intent(Settings.ACTION_WIRELESS_SETTINGS));
                     }
                 });
-                if (flagDialog) dialog.dismiss();
             }
+            if (flagDialog) dialog.dismiss();
         }
     }
 }

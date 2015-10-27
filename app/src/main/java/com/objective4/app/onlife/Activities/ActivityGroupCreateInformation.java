@@ -91,7 +91,7 @@ public class ActivityGroupCreateInformation extends AppCompatActivity {
         fab = (FloatingActionButton) findViewById(R.id.ActivityCreateGroup_ButtonDone);
         fab.bringToFront();
         nameNewGroup = (com.rengwuxian.materialedittext.MaterialEditText) findViewById(R.id.ActivityCreateGroup_EditTextNameGroup);
-        nameNewGroup.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/opensans.ttf"));
+        nameNewGroup.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/oldrepublic.ttf"));
 
         friendsFiltred = new ArrayList<>();
         friendsFiltred.addAll(friends);
@@ -177,7 +177,7 @@ public class ActivityGroupCreateInformation extends AppCompatActivity {
 
         if (!name.equals("")  && !selected.isEmpty()){
             if (alreadyGroup(name)){
-                makeSnackbar(this,nameNewGroup,R.string.group_already,Snackbar.LENGTH_SHORT,R.string.button_group_change_name, new View.OnClickListener() {
+                makeSnackbar(this,nameNewGroup,R.string.group_already,Snackbar.LENGTH_LONG,R.string.button_group_change_name, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         nameNewGroup.requestFocus();
@@ -200,12 +200,12 @@ public class ActivityGroupCreateInformation extends AppCompatActivity {
                     animationEnd(this);
                 }
                 else{
-                    makeSnackbar(this, nameNewGroup, R.string.toast_group_only_less_than_five_friends, Snackbar.LENGTH_SHORT);
+                    makeSnackbar(this, nameNewGroup, R.string.toast_group_only_less_than_five_friends, Snackbar.LENGTH_LONG);
                 }
             }
         }
         else{
-            makeSnackbar(this, nameNewGroup, R.string.toast_group_not_yet_created, Snackbar.LENGTH_SHORT);
+            makeSnackbar(this, nameNewGroup, R.string.toast_group_not_yet_created, Snackbar.LENGTH_LONG);
         }
     }
 

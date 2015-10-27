@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "com.objective4.app.onlife"
-        minSdkVersion 16
+        minSdkVersion 15
         targetSdkVersion 22
         versionCode 1
         versionName "1.0"

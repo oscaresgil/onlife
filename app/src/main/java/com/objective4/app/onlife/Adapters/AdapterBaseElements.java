@@ -134,7 +134,7 @@ public class AdapterBaseElements<T> extends RecyclerView.Adapter<AdapterBaseElem
             super(view);
             avatar = (ImageView) view.findViewById(R.id.LayoutBase_ImageViewFriend);
             name = (TextView) view.findViewById(R.id.LayoutBase_TextViewNameFriend);
-            name.setTypeface(Typeface.createFromAsset(context.getAssets(), "fonts/opensans.ttf"));
+            name.setTypeface(Typeface.createFromAsset(context.getAssets(), "fonts/oldrepublic.ttf"));
             visibility = (ImageView)view.findViewById(R.id.LayoutBase_VisibilityImageView);
             view.setOnClickListener(this);
             view.setOnLongClickListener(this);

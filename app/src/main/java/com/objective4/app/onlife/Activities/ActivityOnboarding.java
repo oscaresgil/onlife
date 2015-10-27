@@ -2,6 +2,7 @@ package com.objective4.app.onlife.Activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -75,7 +76,12 @@ public class ActivityOnboarding extends FragmentActivity {
             @Override
             public void onClick(View v) {
                 if(pager.getCurrentItem() == 4) { // The last screen
-                    finishOnboarding();
+                    SharedPreferences sharedPreferences = getSharedPreferences(ActivityMain.MyPREFERENCES, Context.MODE_PRIVATE);
+                    if (sharedPreferences.getBoolean("onboarding_complete",false)){
+                        finish();
+                    }else {
+                        finishOnboarding();
+                    }
                 } else {
                     pager.setCurrentItem(
                             pager.getCurrentItem() + 1,

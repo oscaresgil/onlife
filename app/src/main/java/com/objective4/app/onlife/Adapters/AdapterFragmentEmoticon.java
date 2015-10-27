@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
 import com.objective4.app.onlife.Fragments.Emoticons.FragmentAnimals;
+import com.objective4.app.onlife.Fragments.Emoticons.FragmentHands;
 import com.objective4.app.onlife.Fragments.Emoticons.FragmentSmiley;
 import com.objective4.app.onlife.R;
 
@@ -22,6 +23,7 @@ public class AdapterFragmentEmoticon extends FragmentStatePagerAdapter {
         switch (position) {
             case 0 : return new FragmentSmiley();
             case 1 : return new FragmentAnimals();
+            case 2 : return new FragmentHands();
             default: return null;
         }
     }

@@ -26,6 +26,7 @@ import com.objective4.app.onlife.Models.ModelGroup;
 import com.objective4.app.onlife.Models.ModelPerson;
 import com.objective4.app.onlife.R;
 import com.objective4.app.onlife.Tasks.TaskAddNewUser;
+import com.objective4.app.onlife.Tasks.TaskCheckVersion;
 import com.objective4.app.onlife.Tasks.TaskFacebookFriendRequest;
 import com.objective4.app.onlife.Tasks.TaskGetGCM;
 
@@ -78,6 +79,10 @@ public class ActivityMain extends Activity{
         if(!sharedPreferences.contains("onboarding_complete")) {
             startActivity(new Intent(this, ActivityOnboarding.class));
             finish();
+        }
+
+        if(sharedPreferences.getBoolean("onboarding_complete",false) || sharedPreferences.getBoolean("session",false)){
+            new TaskCheckVersion(this).execute();
         }
 
         // Get phone GCM

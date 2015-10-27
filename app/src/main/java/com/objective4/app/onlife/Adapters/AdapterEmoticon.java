@@ -2,6 +2,8 @@ package com.objective4.app.onlife.Adapters;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -10,6 +12,8 @@ import android.widget.ImageView;
 import com.objective4.app.onlife.R;
 
 import java.util.List;
+
+import static com.objective4.app.onlife.Controller.StaticMethods.decodeDrawable;
 
 public class AdapterEmoticon extends BaseAdapter {
     private Context context;
@@ -50,7 +54,10 @@ public class AdapterEmoticon extends BaseAdapter {
 
         String name = emoticonImages.get(position);
         int resourceId = context.getResources().getIdentifier(name, "drawable", context.getPackageName());
-        emoticonHolder.emoticonImageView.setImageDrawable(context.getResources().getDrawable(resourceId));
+        Bitmap b = decodeDrawable(context,resourceId,50);
+
+        //emoticonHolder.emoticonImageView.setImageDrawable(context.getResources().getDrawable(resourceId));
+        emoticonHolder.emoticonImageView.setImageDrawable(new BitmapDrawable(context.getResources(),b));
         return convertView;
     }
 

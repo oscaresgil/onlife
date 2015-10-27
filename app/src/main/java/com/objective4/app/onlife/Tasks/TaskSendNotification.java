@@ -6,11 +6,8 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.support.design.widget.Snackbar;
 
-
-import com.objective4.app.onlife.Activities.ActivityHome;
 import com.objective4.app.onlife.Activities.ActivityMain;
 import com.objective4.app.onlife.BlockActivity.ActivityFriendBlock;
-import com.objective4.app.onlife.BlockActivity.ActivityGroupBlock;
 import com.objective4.app.onlife.Controller.JSONParser;
 import com.objective4.app.onlife.Models.ModelPerson;
 import com.objective4.app.onlife.Models.ModelSessionData;
@@ -20,7 +17,6 @@ import net.steamcrafted.loadtoast.LoadToast;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.ConnectException;
@@ -73,10 +69,13 @@ public class TaskSendNotification extends AsyncTask<ModelPerson, String, String[
                     f.setLastBlockedTime(actualTime);
                 } else {
                     returnMessage = context.getResources().getString(R.string.toast_not_time_yet) + " " + ((context.getResources().getInteger(R.integer.block_time_remaining) - (actualTime - f.getLastBlockedTime())) / 1000) + " s";
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException ignored) {}
+                    return new String[]{"false",returnMessage};
                 }
             } else {
-                for (int i = 0; i < params.length; i++) {
-                    ModelPerson f = params[i];
+                for (ModelPerson f : params) {
                     f = ModelSessionData.getInstance().getFriends().get(f.getId());
                     if (actualTime - f.getLastBlockedTime() > context.getResources().getInteger(R.integer.block_time_remaining) && f.getState().equals("A")) {
                         p.add(new BasicNameValuePair("id[]", f.getId_phone()));
@@ -85,6 +84,12 @@ public class TaskSendNotification extends AsyncTask<ModelPerson, String, String[
                     }
                 }
                 returnMessage = context.getResources().getString(R.string.friends_blocked_number) + " " + numBlocked + "/" + params.length;
+                if (numBlocked==0){
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException ignored) {}
+                    return new String[]{"false",returnMessage};
+                }
             }
 
             p.add(new BasicNameValuePair("userName", actualUser));
@@ -102,8 +107,6 @@ public class TaskSendNotification extends AsyncTask<ModelPerson, String, String[
 
             } catch (ConnectException e) {
                 returnMessage = context.getResources().getString(R.string.no_connection);
-            } catch (JSONException e) {
-                e.printStackTrace();
             } catch (Exception e) {
                 e.printStackTrace();
             }

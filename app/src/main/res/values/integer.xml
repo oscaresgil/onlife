@@ -35,11 +35,13 @@
     <integer name="block_time_group_remaining">65000</integer>
 
     <!-- Adapter Num Fragments -->
-    <integer name="fragment_numbers_emoticons">2</integer>
+    <integer name="fragment_numbers_emoticons">3</integer>
     <!-- Emoticon Smiley Number -->
     <integer name="emoticon_smiley_number">38</integer>
     <!-- Emoticon Animal Number -->
     <integer name="emoticon_animal_number">34</integer>
+    <!-- Emoticon Hand Number-->
+    <integer name="emoticon_hand_number">11</integer>
 
     <!-- Animation Fade In Images Integer -->
     <integer name="fade_in_animation_duration">1500</integer>
