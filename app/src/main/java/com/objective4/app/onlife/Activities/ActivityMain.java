@@ -47,22 +47,6 @@ public class ActivityMain extends Activity{
 
     private ProfileTracker mProfileTracker;
 
-    /*private FacebookCallback<LoginResult> facebookCallback = new FacebookCallback<LoginResult>() {
-        @Override
-        public void onSuccess(LoginResult loginResult) {
-        }
-
-        @Override
-        public void onCancel() {
-        }
-
-        @Override
-        public void onError(FacebookException e) {
-            e.printStackTrace();
-            SnackBar.show(ActivityMain.this, R.string.no_server);
-        }
-    };*/
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,10 +74,10 @@ public class ActivityMain extends Activity{
         mProfileTracker = new ProfileTracker() {
             @Override
             protected void onCurrentProfileChanged(Profile oldProfile, Profile profile) {
-                if (profile!=null && !sharedPreferences.getBoolean("session",false)) {
+                if (profile!=null) {
                     Gson gson = new Gson();
                     sharedPreferences = getSharedPreferences(ActivityMain.MyPREFERENCES, Context.MODE_PRIVATE);
-                    userLogin = new ModelPerson(profile.getId(), sharedPreferences.getString("gcmId", ""), profile.getName(), "http://graph.facebook.com/" + profile.getId() + "/picture?", "A");
+                    userLogin = new ModelPerson(profile.getId(), sharedPreferences.getString("gcmId", ""), profile.getName(), "https://graph.facebook.com/" + profile.getId() + "/picture?", "A");
                     sharedPreferences.edit().putBoolean("first_login", true).apply();
                     sharedPreferences.edit().putString("userLogin", gson.toJson(userLogin)).apply();
                     sharedPreferences.edit().putString("friends", gson.toJson(new ArrayList<ModelPerson>())).apply();
@@ -103,10 +87,9 @@ public class ActivityMain extends Activity{
                     Bundle params = new Bundle();
                     params.putString("fields", "id,name");
                     params.putString("limit", "5000");
-                    new GraphRequest(AccessToken.getCurrentAccessToken(),"/me/friends",params,HttpMethod.GET, new TaskFacebookFriendRequest(ActivityMain.this,TAG,userLogin)).executeAsync();
+                    new GraphRequest(AccessToken.getCurrentAccessToken(),"/me/friends",params,HttpMethod.GET, new TaskFacebookFriendRequest(ActivityMain.this,userLogin)).executeAsync();
                     mProfileTracker.stopTracking();
                 }
-                else if(sharedPreferences.getBoolean("session",false)) gotoHome();
             }
         };
 

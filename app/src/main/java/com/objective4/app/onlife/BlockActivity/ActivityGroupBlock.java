@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -120,7 +121,11 @@ public class ActivityGroupBlock extends ActivityBlockBase<ModelGroup> {
                     MenuEntity menuEntity = new MenuEntity();
                     ModelPerson f = friendsInGroup.get(j);
                     menuEntity.title = f.getName();
-                    menuEntity.icon = new BitmapDrawable(getResources(), loadImage(this, f.getId()+"_"+getResources().getInteger(R.integer.adapter_contact_size_little)));
+                    if (imageInDisk(this,f.getId()+"_"+getResources().getInteger(R.integer.adapter_contact_size_little))){
+                        menuEntity.icon = new BitmapDrawable(getResources(), loadImage(this, f.getId()+"_"+getResources().getInteger(R.integer.adapter_contact_size_little)));
+                    }else{
+                        menuEntity.icon = ContextCompat.getDrawable(this,R.drawable.loading_friend_icon);
+                    }
                     menuEntities.add(menuEntity);
                 }
                 sweetSheet.setMenuList(menuEntities);

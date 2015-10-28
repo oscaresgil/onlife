@@ -18,13 +18,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.objective4.app.onlife.Adapters.AdapterFragmentEmoticon;
-import com.objective4.app.onlife.Listeners.ListenerMessageFocusChanged;
 import com.objective4.app.onlife.Listeners.ListenerTextWatcher;
 import com.objective4.app.onlife.Models.ModelPerson;
 import com.objective4.app.onlife.Models.ModelSessionData;
 import com.objective4.app.onlife.R;
 import com.r0adkll.slidr.model.SlidrInterface;
-import com.rengwuxian.materialedittext.MaterialEditText;
 
 import it.neokree.materialtabs.MaterialTab;
 import it.neokree.materialtabs.MaterialTabHost;
@@ -89,6 +87,8 @@ public class ActivityBlockBase<T> extends AppCompatActivity {
         maxCharsView.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/oldrepublic.ttf"));
         messageTextView = (EditText) findViewById(R.id.ActivityBlockBase_EditTextMessage);
         messageTextView.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/oldrepublic.ttf"));
+        listenerTextWatcher = new ListenerTextWatcher(this, maxCharsView, messageTextView);
+        messageTextView.addTextChangedListener(listenerTextWatcher);
 
         ImageButton emoticonButton = (ImageButton) findViewById(R.id.ActivityBlockBase_EmoticonButton);
         emoticonButton.setOnClickListener(new View.OnClickListener() {

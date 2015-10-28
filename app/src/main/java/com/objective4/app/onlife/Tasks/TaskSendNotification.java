@@ -58,7 +58,6 @@ public class TaskSendNotification extends AsyncTask<ModelPerson, String, String[
         String returnMessage = "";
         SharedPreferences sharedPreferences = context.getSharedPreferences(ActivityMain.MyPREFERENCES, Context.MODE_PRIVATE);
         if (!sharedPreferences.contains("update_key") || 2 == sharedPreferences.getInt("update_key",0)) {
-            //Parametros a enviar
             long actualTime = Calendar.getInstance().getTimeInMillis();
             List<NameValuePair> p = new ArrayList<>();
             if (params.length == 1) {
@@ -107,8 +106,7 @@ public class TaskSendNotification extends AsyncTask<ModelPerson, String, String[
 
             } catch (ConnectException e) {
                 returnMessage = context.getResources().getString(R.string.no_connection);
-            } catch (Exception e) {
-                e.printStackTrace();
+            } catch (Exception ignored) {
             }
         }else{
             returnMessage = context.getResources().getString(R.string.update_forced);
@@ -120,12 +118,9 @@ public class TaskSendNotification extends AsyncTask<ModelPerson, String, String[
     protected void onPostExecute(String[] result){
         if (result[0].equals("false")){
             toast.error();
-            makeSnackbar(context, context.getCurrentFocus(), result[1], Snackbar.LENGTH_SHORT);
+            makeSnackbar(context, context.getCurrentFocus(), result[1], Snackbar.LENGTH_LONG);
         }else{
             toast.success();
-            /*if (context instanceof ActivityBlockBase){
-                context.finish();
-            }*/
             if (!result[1].equals("")) makeSnackbar(context,context.getCurrentFocus(),result[1],Snackbar.LENGTH_SHORT);
 
             if (context instanceof ActivityFriendBlock){

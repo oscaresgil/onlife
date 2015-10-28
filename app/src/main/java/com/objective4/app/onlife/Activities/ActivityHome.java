@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -45,6 +46,7 @@ import static com.objective4.app.onlife.Controller.StaticMethods.deactivateDevic
 import static com.objective4.app.onlife.Controller.StaticMethods.delDirImages;
 import static com.objective4.app.onlife.Controller.StaticMethods.getModelGroupIndex;
 import static com.objective4.app.onlife.Controller.StaticMethods.inviteFacebookFriends;
+import static com.objective4.app.onlife.Controller.StaticMethods.makeSnackbar;
 import static com.objective4.app.onlife.Controller.StaticMethods.setHashToList;
 import static com.objective4.app.onlife.Controller.StaticMethods.setListToHash;
 import static com.objective4.app.onlife.Controller.StaticMethods.unSelectFriends;
@@ -57,6 +59,7 @@ public class ActivityHome extends AppCompatActivity{
     private AdapterBaseElements adapterContact;
     private AdapterBaseElements adapterGroup;
     private Dialog updateForcedDialog,updateOptionalDialog;
+    private TabLayout tabLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,7 +97,7 @@ public class ActivityHome extends AppCompatActivity{
         ModelSessionData.initInstance(userLogin, hashMap, groups);
 
         ViewPager viewPager = (ViewPager) findViewById(R.id.ActivityHome_ViewPager);
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.ActivityHome_SlindingTabs);
+        tabLayout = (TabLayout) findViewById(R.id.ActivityHome_SlindingTabs);
         viewPager.setAdapter(new AdapterFragmentPager(getSupportFragmentManager(), this));
         tabLayout.setupWithViewPager(viewPager);
     }
@@ -213,9 +216,12 @@ public class ActivityHome extends AppCompatActivity{
         delDirImages(this, setHashToList(ModelSessionData.getInstance().getFriends()), ModelSessionData.getInstance().getModelGroups());
         ModelSessionData.getInstance().clear();
         LoginManager.getInstance().logOut();
-        new TaskChangeState(ActivityHome.this).execute(userLogin.getId(), "O");
+        new TaskChangeState().execute(userLogin.getId(), "O");
         isRunning = false;
-        finish();
+        if (item != null) {
+            startActivity(new Intent(ActivityHome.this, ActivityMain.class));
+            finish();
+        }
     }
 
     @Override
@@ -264,6 +270,7 @@ public class ActivityHome extends AppCompatActivity{
     }
 
     public void setDialogUpdate(int val){
+        if (val==0) makeSnackbar(this,tabLayout,R.string.no_connection, Snackbar.LENGTH_LONG);
         if (val==1) {
             if (updateForcedDialog == null || !updateForcedDialog.isShowing())
                 updateForcedDialog = new AlertDialogWrapper.Builder(this)

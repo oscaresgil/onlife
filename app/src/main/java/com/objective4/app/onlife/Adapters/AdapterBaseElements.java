@@ -158,11 +158,11 @@ public class AdapterBaseElements<T> extends RecyclerView.Adapter<AdapterBaseElem
 
                 }
             } else {*/
-                if (intentClass == ActivityGroupBlock.class){
-                    ((Activity)context).startActivityForResult(i, GROUP_BLOCK_ACTIVITY_ID);
-                }else{
-                    context.startActivity(i);
-                }
+            if (intentClass == ActivityGroupBlock.class){
+                ((Activity)context).startActivityForResult(i, GROUP_BLOCK_ACTIVITY_ID);
+            }else{
+                context.startActivity(i);
+            }
             //}
 
             animationStart(context);

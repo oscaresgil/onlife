@@ -36,6 +36,7 @@ public class TaskRefresh extends TaskGetFriends {
     protected void onPostExecute(ArrayList<ModelPerson> friends) {
         super.onPostExecute(friends);
         mSwipeRefreshLayout.setRefreshing(false);
-        makeSnackbar(context,((Activity)context).findViewById(R.id.ActivityHome_CoordinatorLayout),R.string.toast_contacts_refreshed, Snackbar.LENGTH_SHORT);
+        mSwipeRefreshLayout.setEnabled(true);
+        if (friends!=null) makeSnackbar(context,((Activity)context).findViewById(R.id.ActivityHome_CoordinatorLayout),R.string.toast_contacts_refreshed, Snackbar.LENGTH_SHORT);
     }
 }

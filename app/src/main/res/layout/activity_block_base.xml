@@ -78,21 +78,11 @@
                                     android:layout_margin="@dimen/activity_friend_block_textview_maxlength_margin"
                                     android:text="@string/max_characters_text"/>
                             </LinearLayout>
-                            <LinearLayout
-                                android:id="@+id/ActivityBlockBase_LinearLayoutDivider"
-                                android:layout_width="fill_parent"
-                                android:layout_height="@dimen/activity_friend_block_linearlayout_divider_height"
-                                android:orientation="vertical"
-                                android:layout_below="@id/ActivityBlockBase_LayoutMaxCharacters"
-                                android:layout_marginLeft="@dimen/activity_friend_block_linearlayout_divider_margin"
-                                android:layout_marginRight="@dimen/activity_friend_block_linearlayout_divider_margin"
-                                android:background="@color/black"
-                                android:divider="@color/black"/>
                             <EditText
                                 android:id="@+id/ActivityBlockBase_EditTextMessage"
                                 android:layout_width="fill_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_below="@id/ActivityBlockBase_LinearLayoutDivider"
+                                android:layout_below="@id/ActivityBlockBase_LayoutMaxCharacters"
                                 android:imeOptions="actionDone"
                                 android:singleLine="true"
                                 android:hint="@string/send_a_message_bar"

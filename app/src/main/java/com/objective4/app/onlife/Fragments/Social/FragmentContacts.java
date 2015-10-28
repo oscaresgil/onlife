@@ -136,7 +136,7 @@ public class FragmentContacts extends Fragment {
         super.onResume();
         mSwipeRefreshLayout = (SwipeRefreshLayout) getActivity().findViewById(R.id.FragmentContacts_SwipeRefreshLayout);
 
-        listView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+        /*listView.setOnScrollListener(new RecyclerView.OnScrollListener() {
 
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -154,7 +154,7 @@ public class FragmentContacts extends Fragment {
                 mSwipeRefreshLayout.setEnabled(enable);
             }
 
-        });
+        });*/
         mSwipeRefreshLayout.setColorSchemeResources(R.color.accent, R.color.primary, R.color.primary_dark);
         mSwipeRefreshLayout.setSize(R.integer.fragment_contacts_size_refresh_layout);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -268,9 +268,11 @@ public class FragmentContacts extends Fragment {
 
     public void refreshContact(){
         if (isNetworkAvailable(getActivity())) {
+            mSwipeRefreshLayout.setEnabled(false);
             new TaskRefresh(getActivity(),mSwipeRefreshLayout).execute(actualUser.getId());
         }else{
             mSwipeRefreshLayout.setRefreshing(false);
+            mSwipeRefreshLayout.setEnabled(false);
             makeSnackbar(getActivity(),getView(), R.string.no_connection, Snackbar.LENGTH_LONG, R.string.button_change_connection, new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

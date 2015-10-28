@@ -12,7 +12,6 @@ import com.objective4.app.onlife.R;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
-import org.json.JSONObject;
 
 import java.net.ConnectException;
 import java.util.ArrayList;
@@ -23,6 +22,7 @@ import static com.objective4.app.onlife.Controller.StaticMethods.makeSnackbar;
 public class TaskAddNewUser extends AsyncTask<ModelPerson, ModelPerson, Boolean> {
     private Context context;
     private JSONParser jsonParser;
+    private boolean networkFailure = false;
 
     public TaskAddNewUser(Context context){
         jsonParser = new JSONParser();
@@ -41,22 +41,18 @@ public class TaskAddNewUser extends AsyncTask<ModelPerson, ModelPerson, Boolean>
         p.add(new BasicNameValuePair("name", n.getName()));
         p.add(new BasicNameValuePair("state", n.getState()));
         try {
-            JSONObject json = jsonParser.makeHttpRequest(ActivityMain.SERVER_URL, "POST", p);
-            boolean error = json.getBoolean("error");
-            return error;
+            return jsonParser.makeHttpRequest(ActivityMain.SERVER_URL, "POST", p).getBoolean("error");
         }catch(ConnectException e){
-            return null;
-        }catch (Exception ex){
-            ex.printStackTrace();
-            return null;
+            networkFailure = true;
+        }catch (Exception ignored){
         }
+        return null;
     }
 
     @Override
     protected void onPostExecute(Boolean aBoolean) {
         super.onPostExecute(aBoolean);
-        if (aBoolean==null){
-            makeSnackbar(context, ((Activity) context).findViewById(R.id.ActivityMain_ImageViewLogo), R.string.no_connection, Snackbar.LENGTH_LONG);
-        }
+        if (aBoolean==null)makeSnackbar(context, ((Activity) context).findViewById(R.id.ActivityMain_ImageViewLogo), R.string.error, Snackbar.LENGTH_LONG);
+        else if(networkFailure) makeSnackbar(context, ((Activity) context).findViewById(R.id.ActivityMain_ImageViewLogo), R.string.no_connection, Snackbar.LENGTH_LONG);
     }
 }

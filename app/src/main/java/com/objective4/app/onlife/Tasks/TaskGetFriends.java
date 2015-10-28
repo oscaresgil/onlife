@@ -29,14 +29,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import static com.objective4.app.onlife.Controller.StaticMethods.comparePerson;
 import static com.objective4.app.onlife.Controller.StaticMethods.isNetworkAvailable;
 import static com.objective4.app.onlife.Controller.StaticMethods.makeSnackbar;
 import static com.objective4.app.onlife.Controller.StaticMethods.setHashToList;
-import static com.objective4.app.onlife.Controller.StaticMethods.setListToHash;
 
 public class TaskGetFriends extends AsyncTask<String, Void, ArrayList<ModelPerson>> {
     private MaterialDialog dialog;
-    private boolean flagDialog,internetAvailable=false;
+    private boolean flagDialog, connectionFailure =false;
     private Context context;
     private JSONParser jsonParser;
 
@@ -72,50 +72,46 @@ public class TaskGetFriends extends AsyncTask<String, Void, ArrayList<ModelPerso
             Gson gson = new Gson();
             return gson.fromJson(jsonFriends.getString("friends"), (new TypeToken<ArrayList<ModelPerson>>(){}.getType()));
         }catch(ConnectException e){
-            internetAvailable = true;
-            return null;
-        } catch(Exception ex){
-            ex.printStackTrace();
-            return null;
-        }
+            connectionFailure = true;
+        } catch(Exception ignored){}
+        return null;
     }
 
     @Override
     protected void onPostExecute(ArrayList<ModelPerson> friends) {
-        if (friends == null){
-            if (internetAvailable) makeSnackbar(context, ((Activity) context).findViewById(R.id.ActivityHome_CoordinatorLayout), R.string.no_connection, Snackbar.LENGTH_INDEFINITE);
-            else if (isNetworkAvailable((Activity)context)) makeSnackbar(context, ((Activity) context).findViewById(R.id.ActivityHome_CoordinatorLayout), R.string.no_connection, Snackbar.LENGTH_INDEFINITE);
-            else makeSnackbar(context, ((Activity) context).findViewById(R.id.ActivityHome_CoordinatorLayout), R.string.error, Snackbar.LENGTH_INDEFINITE);
-        }
-        else {
-            if (isNetworkAvailable((Activity) context)) {
-
-                for (ModelPerson f : friends) {
-                    f.setRefreshImage(true);
-                    f.setRefreshImageBig(true);
-                }
-                HashMap<String, ModelPerson> hashMap = setListToHash(friends);
-                ModelSessionData.getInstance().setFriends(hashMap);
-
-                SharedPreferences sharedPreferences = context.getSharedPreferences(ActivityMain.MyPREFERENCES, Context.MODE_PRIVATE);
-                Boolean b = sharedPreferences.getBoolean("first_login", false);
-                if (b) {
-                    Gson gson = new Gson();
-                    sharedPreferences.edit().putString("friends", gson.toJson(setHashToList(ModelSessionData.getInstance().getFriends()))).apply();
-                    sharedPreferences.edit().putBoolean("first_login", false).apply();
-                }
-
-                AdapterBaseElements adapterContact = ((ActivityHome) context).getAdapterContact();
-                if (adapterContact!=null) adapterContact.updateElements(setHashToList(hashMap));
-            } else {
-                makeSnackbar(context, ((Activity) context).findViewById(R.id.ActivityHome_CoordinatorLayout), R.string.no_connection, Snackbar.LENGTH_LONG, R.string.button_change_connection, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        context.startActivity(new Intent(Settings.ACTION_WIRELESS_SETTINGS));
-                    }
-                });
+        if (isNetworkAvailable((Activity) context)) {
+            if (friends == null){
+                if (connectionFailure) makeSnackbar(context, ((Activity) context).findViewById(R.id.ActivityHome_CoordinatorLayout), R.string.no_connection, Snackbar.LENGTH_INDEFINITE);
+                else makeSnackbar(context, ((Activity) context).findViewById(R.id.ActivityHome_CoordinatorLayout), R.string.error, Snackbar.LENGTH_INDEFINITE);
             }
-            if (flagDialog) dialog.dismiss();
+            else {
+                    HashMap<String,ModelPerson> hashMap = comparePerson(ModelSessionData.getInstance().getFriends(), friends);
+                    ModelSessionData.getInstance().setFriends(hashMap);
+
+                    AdapterBaseElements adapterContact = ((ActivityHome) context).getAdapterContact();
+                    if (adapterContact!=null) adapterContact.updateElements(setHashToList(hashMap));
+
+                    SharedPreferences sharedPreferences = context.getSharedPreferences(ActivityMain.MyPREFERENCES, Context.MODE_PRIVATE);
+                    if (sharedPreferences.getBoolean("first_login", false)) {
+                        Gson gson = new Gson();
+                        sharedPreferences.edit().putString("friends", gson.toJson(setHashToList(ModelSessionData.getInstance().getFriends()))).apply();
+                        sharedPreferences.edit().putBoolean("first_login", false).apply();
+
+                        Intent i = new Intent("com.objective4.app.onlife.Fragments.Social.FragmentContacts");
+                        i.putExtra("tag", "friends_updated");
+                        context.sendBroadcast(i);
+
+                    }
+
+                if (flagDialog) if (dialog.isShowing())  dialog.dismiss();
+            }
+        } else {
+            makeSnackbar(context, ((Activity) context).findViewById(R.id.ActivityHome_CoordinatorLayout), R.string.no_connection, Snackbar.LENGTH_LONG, R.string.button_change_connection, new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    context.startActivity(new Intent(Settings.ACTION_WIRELESS_SETTINGS));
+                }
+            });
         }
     }
 }

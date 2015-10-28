@@ -31,8 +31,7 @@ public class TaskCheckVersion extends AsyncTask<Void,Void,Double> {
             return Double.parseDouble(version);
         } catch (ConnectException e){
             return -1.0;
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException ignored) {
         }
         return 0.0;
     }
@@ -41,30 +40,34 @@ public class TaskCheckVersion extends AsyncTask<Void,Void,Double> {
     protected void onPostExecute(Double version) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(ActivityMain.MyPREFERENCES, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-
-        //if (version==-1.0) INTERNET
-        if(version!=0.0){
-            double actualVersion = 0.0;
-            try {
-                PackageInfo pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
-                actualVersion = Double.parseDouble(pInfo.versionName);
-            } catch (PackageManager.NameNotFoundException e) {
-                e.printStackTrace();
-            }
-
-            if (version != Double.parseDouble(sharedPreferences.getString("version_name", "0.0")) && version>actualVersion) {
-                editor.putString("version_name",""+version).apply();
-                version = version * 10;
-                if (version % 2 == 0) {
-                    editor.putInt("update_key", 1).apply();
-                    ((ActivityHome)context).setDialogUpdate(1);
-                } else {
-                    editor.putInt("update_key", 2).apply();
-                    ((ActivityHome)context).setDialogUpdate(2);
+        if (version != -1) {
+            //if (version==-1.0) INTERNET
+            if (version != 0.0) {
+                double actualVersion = 0.0;
+                try {
+                    PackageInfo pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+                    actualVersion = Double.parseDouble(pInfo.versionName);
+                } catch (PackageManager.NameNotFoundException e) {
+                    e.printStackTrace();
                 }
-            }else{
-                if (sharedPreferences.contains("update_key")) editor.remove("update_key").apply();
+
+                if (version != Double.parseDouble(sharedPreferences.getString("version_name", "0.0")) && version > actualVersion) {
+                    editor.putString("version_name", "" + version).apply();
+                    version = version * 10;
+                    if (version % 2 == 0) {
+                        editor.putInt("update_key", 1).apply();
+                        ((ActivityHome) context).setDialogUpdate(1);
+                    } else {
+                        editor.putInt("update_key", 2).apply();
+                        ((ActivityHome) context).setDialogUpdate(2);
+                    }
+                } else {
+                    if (sharedPreferences.contains("update_key"))
+                        editor.remove("update_key").apply();
+                }
             }
+        }else{
+            ((ActivityHome) context).setDialogUpdate(0);
         }
     }
 }

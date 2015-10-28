@@ -11,6 +11,7 @@ import android.os.CountDownTimer;
 import android.provider.Settings;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.graphics.Palette;
 import android.view.KeyEvent;
 import android.view.MenuItem;
@@ -64,8 +65,8 @@ public class ActivityFriendBlock extends ActivityBlockBase<ModelPerson> {
 
         RatioImageView avatar = (RatioImageView) findViewById(R.id.ActivityBlockBase_ImageViewContact);
         if (actualObject.refreshImageBig() || !imageInDisk(this,actualObject.getId()+"_"+getResources().getInteger(R.integer.adapter_contact_size_large))){
-            if (imageInDisk(this,actualObject.getId()+"_"+getResources().getInteger(R.integer.adapter_contact_size_little)))
-                avatar.setImageBitmap(loadImage(this,actualObject.getId()+"_"+getResources().getInteger(R.integer.adapter_contact_size_little)));
+            if (!actualObject.refreshImage() || imageInDisk(this,actualObject.getId()+"_"+getResources().getInteger(R.integer.adapter_contact_size_little))) avatar.setImageBitmap(loadImage(this,actualObject.getId()+"_"+getResources().getInteger(R.integer.adapter_contact_size_little)));
+            else avatar.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.loading_friend_icon));
             new TaskSimpleImageDownload(this,avatar,getResources().getInteger(R.integer.adapter_contact_size_large),progressBar).execute(actualObject);
             actualObject.setRefreshImageBig(false);
         }else{

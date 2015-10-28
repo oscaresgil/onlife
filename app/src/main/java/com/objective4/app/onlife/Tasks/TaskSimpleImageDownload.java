@@ -17,13 +17,10 @@ import com.objective4.app.onlife.R;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.entity.BufferedHttpEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -72,19 +69,15 @@ public class TaskSimpleImageDownload extends AsyncTask<ModelPerson,Void,Bitmap> 
             saveImage(context, p.getId()+"_"+size, imageBitmap);
             return imageBitmap;
         } catch(ConnectException e){
-            e.printStackTrace();
             connectionFailure = true;
-        } catch (ClientProtocolException e) {
-            e.printStackTrace();
         } catch (IOException e) {
-            e.printStackTrace();
         }
         return null;
     }
 
     @Override
     protected void onPostExecute(Bitmap bitmap) {
-        if (!connectionFailure) {
+        if (!connectionFailure && bitmap!=null) {
             if (context instanceof ActivityFriendBlock) {
                 if (progressBar!=null){
                     Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {

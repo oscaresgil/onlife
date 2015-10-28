@@ -25,6 +25,7 @@ public class TaskSetFriends extends AsyncTask<ArrayList<String>, Void, String> {
     private MaterialDialog dialog;
     private Context context;
     private JSONParser jsonParser;
+    private boolean connectionError = false;
 
     public TaskSetFriends(Context c){
         this.context = c;
@@ -59,21 +60,26 @@ public class TaskSetFriends extends AsyncTask<ArrayList<String>, Void, String> {
         }
         try{
             JSONObject response =  jsonParser.makeHttpRequest(ActivityMain.SERVER_URL, "POST", p);
-            boolean error = response.getBoolean("error");
-            return id;
+            if (response.getBoolean("error")) return null;
+            else return id;
         }catch(ConnectException e){
-            e.printStackTrace();
-            return null;
-        }catch(Exception ex){
-            ex.printStackTrace();
-            return null;
+            connectionError = true;
+        }catch(Exception ignored){
         }
+        return null;
     }
 
     @Override
     protected void onPostExecute(String userId) {
         super.onPostExecute(userId);
-        if (userId == null) makeSnackbar(context,((Activity)context).findViewById(R.id.ActivityMain_ImageViewLogo),R.string.error, Snackbar.LENGTH_SHORT);
-        else dialog.dismiss();
+        if (userId == null) {
+            if (connectionError)makeSnackbar(context, ((Activity) context).findViewById(R.id.ActivityMain_ImageViewLogo), R.string.no_connection, Snackbar.LENGTH_LONG);
+            else makeSnackbar(context, ((Activity) context).findViewById(R.id.ActivityMain_ImageViewLogo), R.string.error, Snackbar.LENGTH_LONG);
+        }
+        else {
+            if (dialog.isShowing()) dialog.dismiss();
+            ActivityMain activityMain = (ActivityMain) context;
+            activityMain.gotoHome();
+        }
     }
 }

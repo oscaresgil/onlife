@@ -127,7 +127,7 @@ public class StaticMethods {
     }
 
     public static Snackbar makeSnackbar(Context context, View v, int textId, int duration){
-        Snackbar snackbar = Snackbar.make(v,textId,duration);
+        Snackbar snackbar = Snackbar.make(v, textId, duration);
         snackbar.getView().setBackgroundColor(context.getResources().getColor(R.color.accent));
         ((TextView)snackbar.getView().findViewById(android.support.design.R.id.snackbar_text)).setTypeface(Typeface.createFromAsset(context.getAssets(), "fonts/oldrepublic.ttf"));
         snackbar.show();
@@ -135,7 +135,7 @@ public class StaticMethods {
     }
 
     public static Snackbar makeSnackbar(Context context, View v, String text, int duration){
-        Snackbar snackbar = Snackbar.make(v,text,duration);
+        Snackbar snackbar = Snackbar.make(v, text, duration);
         snackbar.getView().setBackgroundColor(context.getResources().getColor(R.color.accent));
         ((TextView)snackbar.getView().findViewById(android.support.design.R.id.snackbar_text)).setTypeface(Typeface.createFromAsset(context.getAssets(), "fonts/oldrepublic.ttf"));
         snackbar.show();
@@ -418,5 +418,19 @@ public class StaticMethods {
             }
         });
         return friends;
+    }
+
+    public static HashMap<String,ModelPerson> comparePerson(HashMap<String,ModelPerson> hashMap, ArrayList<ModelPerson> friends){
+        for (ModelPerson f: friends){
+            if (!hashMap.containsKey(f.getId())){
+                f.setRefreshImage(true);
+                f.setRefreshImageBig(true);
+                hashMap.put(f.getId(),f);
+            }else {
+                hashMap.get(f.getId()).setRefreshImage(true);
+                hashMap.get(f.getId()).setRefreshImageBig(true);
+            }
+        }
+        return hashMap;
     }
 }
