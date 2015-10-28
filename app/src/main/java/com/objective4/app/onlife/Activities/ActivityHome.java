@@ -149,7 +149,9 @@ public class ActivityHome extends AppCompatActivity{
         super.onStop();
         isRunning = false;
         onTrimMemory(TRIM_MEMORY_UI_HIDDEN);
-        unregisterReceiver(broadcastReceiver);
+        try{
+            unregisterReceiver(broadcastReceiver);
+        }catch(Exception ignored){}
     }
 
     @Override
