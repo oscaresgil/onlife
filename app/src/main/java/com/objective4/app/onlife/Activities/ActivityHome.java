@@ -3,9 +3,11 @@ package com.objective4.app.onlife.Activities;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.ActivityNotFoundException;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
@@ -77,7 +79,7 @@ public class ActivityHome extends AppCompatActivity{
 
         List<ModelPerson> friends = new ArrayList<>();
         List<ModelGroup> groups = new ArrayList<>();
-        String friendsString = sharedPreferences.getString("friends","");
+        String friendsString = sharedPreferences.getString("friends", "");
         if ("".equals(friendsString) || "{}".equals(friendsString)){
             new TaskGetFriends(this, true).execute(userLogin.getId());
         }else {
@@ -100,12 +102,17 @@ public class ActivityHome extends AppCompatActivity{
         tabLayout = (TabLayout) findViewById(R.id.ActivityHome_SlindingTabs);
         viewPager.setAdapter(new AdapterFragmentPager(getSupportFragmentManager(), this));
         tabLayout.setupWithViewPager(viewPager);
+
+        if (sharedPreferences.getInt("update_key",0)==1){
+            setDialogUpdate(1);
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         isRunning = true;
+        registerReceiver(broadcastReceiver, new IntentFilter("com.objective4.app.onlife.Activities.ActivityHome"));
         if (sharedPreferences.contains("update_key")){
             int val = sharedPreferences.getInt("update_key",0);
             setDialogUpdate(val);
@@ -142,6 +149,7 @@ public class ActivityHome extends AppCompatActivity{
         super.onStop();
         isRunning = false;
         onTrimMemory(TRIM_MEMORY_UI_HIDDEN);
+        unregisterReceiver(broadcastReceiver);
     }
 
     @Override
@@ -154,6 +162,15 @@ public class ActivityHome extends AppCompatActivity{
 
     }
 
+    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Bundle extras = intent.getExtras();
+            int update = extras.getInt("update");
+            setDialogUpdate(update);
+        }
+    };
+
     public void inviteFriends(MenuItem item) {
         inviteFacebookFriends(this);
     }
@@ -163,6 +180,10 @@ public class ActivityHome extends AppCompatActivity{
         materialAdapter.add(new MaterialSimpleListItem.Builder(this)
                 .content(R.string.see_tutorial)
                 .icon(R.drawable.ic_help_outline_black_48dp)
+                .build());
+        materialAdapter.add(new MaterialSimpleListItem.Builder(this)
+                .content(R.string.see_privacy_policy)
+                .icon(R.drawable.ic_perm_device_information_black_48dp)
                 .build());
         materialAdapter.add(new MaterialSimpleListItem.Builder(this)
                 .content(R.string.settings_option_uninstall)
@@ -177,7 +198,10 @@ public class ActivityHome extends AppCompatActivity{
                         if (which == 0){
                             startActivity(new Intent(ActivityHome.this, ActivityOnboarding.class));
                             materialDialog.dismiss();
-                        }else if (which == 1) {
+                        }else if(which == 1){
+                            startActivity(new Intent(ActivityHome.this,ActivityPrivacyPolicy.class));
+                            materialDialog.dismiss();
+                        }else if (which == 2) {
                             new MaterialDialog.Builder(ActivityHome.this)
                                     .title(getResources().getString(R.string.settings_option_uninstall) + "?")
                                     .content(R.string.really_delete)
@@ -272,6 +296,8 @@ public class ActivityHome extends AppCompatActivity{
     public void setDialogUpdate(int val){
         if (val==0) makeSnackbar(this,tabLayout,R.string.no_connection, Snackbar.LENGTH_LONG);
         if (val==1) {
+            if (updateOptionalDialog!=null && updateOptionalDialog.isShowing())
+                updateOptionalDialog.dismiss();
             if (updateForcedDialog == null || !updateForcedDialog.isShowing())
                 updateForcedDialog = new AlertDialogWrapper.Builder(this)
                         .setTitle(getResources().getString(R.string.update_available))
@@ -284,6 +310,8 @@ public class ActivityHome extends AppCompatActivity{
                             }
                         }).show();
         }else if(val==2){
+            if (updateForcedDialog!=null && updateForcedDialog.isShowing())
+                updateForcedDialog.dismiss();
             if (updateOptionalDialog == null || !updateOptionalDialog.isShowing())
                 updateOptionalDialog = new MaterialDialog.Builder(this)
                         .title(getResources().getString(R.string.update_available))
@@ -307,6 +335,11 @@ public class ActivityHome extends AppCompatActivity{
                                 dialog.dismiss();
                             }
                         }).show();
+        }else if (val==3){
+            if (updateForcedDialog!=null && updateForcedDialog.isShowing())
+                updateForcedDialog.dismiss();
+            if (updateOptionalDialog!=null && updateOptionalDialog.isShowing())
+                updateOptionalDialog.dismiss();
         }
     }
 

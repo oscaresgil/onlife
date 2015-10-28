@@ -105,5 +105,6 @@
     <string name="language_type">es</string>
     <string name="update_playservices">Google Play Services no actualizado</string>
     <string name="notification_has_blocked">te ha bloqueado.</string>
+    <string name="see_privacy_policy">Politicas de Privacidad</string>
 
 </resources>

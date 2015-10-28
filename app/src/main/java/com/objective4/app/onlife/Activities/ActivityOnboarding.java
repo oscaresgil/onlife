@@ -114,10 +114,12 @@ public class ActivityOnboarding extends FragmentActivity {
         getSharedPreferences(ActivityMain.MyPREFERENCES, Context.MODE_PRIVATE).edit()
                 .putBoolean("onboarding_complete",true).commit();
 
-        // Launch the main Activity, called MainActivity
-        Intent main = new Intent(this, ActivityMain.class);
-        startActivity(main);
+        if (!getSharedPreferences(ActivityMain.MyPREFERENCES, Context.MODE_PRIVATE).getBoolean("session",false)){
+            // Launch the main Activity, called MainActivity
+            Intent main = new Intent(this, ActivityMain.class);
+            startActivity(main);
 
+        }
         // Close the ActivityOnboarding
         finish();
     }

@@ -35,7 +35,6 @@ import static com.objective4.app.onlife.Controller.StaticMethods.activateDeviceA
 public class ActivityMain extends Activity{
     public static final String PROJECT_NUMBER = "194566212765";
     public static final String SERVER_URL = "http://104.236.74.55/onlife/person.php";
-    public static final String TAG = "ActivityMain";
     public static final String MyPREFERENCES = "OnlifePrefs";
     public static final String name = "nameKey";
 
@@ -58,6 +57,7 @@ public class ActivityMain extends Activity{
 
         // Review first instalation
         if(!sharedPreferences.contains("onboarding_complete")) {
+            Intent i = new Intent(this, ActivityOnboarding.class);
             startActivity(new Intent(this, ActivityOnboarding.class));
             finish();
         }

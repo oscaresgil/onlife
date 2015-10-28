@@ -111,5 +111,6 @@
     <string name="update_playservices">Google Play Services not updated</string>
     <string name="notification_has_blocked">has blocked you.</string>
     <string name="see_tutorial" translatable="false">Tutorial</string>
+    <string name="see_privacy_policy">Privacy Policy</string>
 
 </resources>
