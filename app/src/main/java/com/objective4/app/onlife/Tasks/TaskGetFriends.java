@@ -15,13 +15,10 @@ import com.google.gson.reflect.TypeToken;
 import com.objective4.app.onlife.Activities.ActivityHome;
 import com.objective4.app.onlife.Activities.ActivityMain;
 import com.objective4.app.onlife.Adapters.AdapterBaseElements;
-import com.objective4.app.onlife.Controller.JSONParser;
+import com.objective4.app.onlife.Controller.ConnectionController;
 import com.objective4.app.onlife.Models.ModelPerson;
 import com.objective4.app.onlife.Models.ModelSessionData;
 import com.objective4.app.onlife.R;
-
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONObject;
 
 import java.net.ConnectException;
@@ -38,7 +35,7 @@ public class TaskGetFriends extends AsyncTask<String, Void, ArrayList<ModelPerso
     private MaterialDialog dialog;
     private boolean flagDialog, connectionFailure =false;
     private Context context;
-    private JSONParser jsonParser;
+    private ConnectionController connection;
 
     public TaskGetFriends(Context c, boolean flagDialog){
         this.flagDialog = flagDialog;
@@ -48,7 +45,7 @@ public class TaskGetFriends extends AsyncTask<String, Void, ArrayList<ModelPerso
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        jsonParser = new JSONParser();
+        connection = new ConnectionController();
         if (flagDialog) {
             dialog = new MaterialDialog.Builder(context)
                     .title(R.string.dialog_please_wait)
@@ -63,12 +60,12 @@ public class TaskGetFriends extends AsyncTask<String, Void, ArrayList<ModelPerso
     @Override
     protected ArrayList<ModelPerson> doInBackground(String... params) {
         String id = params[0];
-        List<NameValuePair> p = new ArrayList<>();
-        p.add(new BasicNameValuePair("tag", "getFriends"));
-        p.add(new BasicNameValuePair("myId", id));
+        HashMap<String,String> p = new HashMap<>();
+        p.put("tag", "getFriends");
+        p.put("myId", id);
         JSONObject jsonFriends;
         try{
-            jsonFriends = jsonParser.makeHttpRequest(ActivityMain.SERVER_URL, "POST", p);
+            jsonFriends = connection.makeHttpRequest("person.php", p);
             Gson gson = new Gson();
             return gson.fromJson(jsonFriends.getString("friends"), (new TypeToken<ArrayList<ModelPerson>>(){}.getType()));
         }catch(ConnectException e){

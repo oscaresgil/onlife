@@ -57,7 +57,7 @@ public class ActivityMain extends Activity{
 
         // Review first instalation
         if(!sharedPreferences.contains("onboarding_complete")) {
-            Intent i = new Intent(this, ActivityOnboarding.class);
+            
             startActivity(new Intent(this, ActivityOnboarding.class));
             finish();
         }

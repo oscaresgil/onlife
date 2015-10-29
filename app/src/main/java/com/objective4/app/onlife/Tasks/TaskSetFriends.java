@@ -1,35 +1,31 @@
 package com.objective4.app.onlife.Tasks;
 
 import android.app.Activity;
-import android.content.ContentValues;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.support.design.widget.Snackbar;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.objective4.app.onlife.Activities.ActivityMain;
-import com.objective4.app.onlife.Controller.JSONParser;
+import com.objective4.app.onlife.Controller.ConnectionController;
 import com.objective4.app.onlife.R;
-
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONObject;
 
 import java.net.ConnectException;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 
 import static com.objective4.app.onlife.Controller.StaticMethods.makeSnackbar;
 
 public class TaskSetFriends extends AsyncTask<ArrayList<String>, Void, String> {
     private MaterialDialog dialog;
     private Context context;
-    private JSONParser jsonParser;
+    private ConnectionController controller;
     private boolean connectionError = false;
 
     public TaskSetFriends(Context c){
         this.context = c;
-        jsonParser = new JSONParser();
+        controller = new ConnectionController();
     }
 
     @Override
@@ -47,21 +43,17 @@ public class TaskSetFriends extends AsyncTask<ArrayList<String>, Void, String> {
     @Override
     protected String doInBackground(ArrayList<String>... params) {
         String id = params[0].get(0);
-        ContentValues values = new ContentValues();
-        values.put("tag", "setFriends");
-        values.put("myId", id);
-        List<NameValuePair> p = new ArrayList<>();
-        p.add(new BasicNameValuePair("tag", "setFriends"));
-        p.add(new BasicNameValuePair("myId", id));
+        HashMap<String,String> p = new HashMap<>();
+        p.put("tag", "setFriends");
+        p.put("myId", id);
 
         for(int i = 1; i<params[0].size(); i++){
-            values.put("id_friends[]", params[0].get(i));
-            p.add(new BasicNameValuePair("id_friends[]", params[0].get(i)));
+            p.put("id_friends[]", params[0].get(i));
         }
         try{
-            JSONObject response =  jsonParser.makeHttpRequest(ActivityMain.SERVER_URL, "POST", p);
-            if (response.getBoolean("error")) return null;
-            else return id;
+            JSONObject response =  controller.makeHttpRequest("person.php", p);
+            boolean error = response.getBoolean("error");
+            return id;
         }catch(ConnectException e){
             connectionError = true;
         }catch(Exception ignored){

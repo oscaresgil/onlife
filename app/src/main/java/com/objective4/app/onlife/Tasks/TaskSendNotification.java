@@ -6,9 +6,10 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.support.design.widget.Snackbar;
 
+import com.google.gson.Gson;
 import com.objective4.app.onlife.Activities.ActivityMain;
 import com.objective4.app.onlife.BlockActivity.ActivityFriendBlock;
-import com.objective4.app.onlife.Controller.JSONParser;
+import com.objective4.app.onlife.Controller.ConnectionController;
 import com.objective4.app.onlife.Models.ModelPerson;
 import com.objective4.app.onlife.Models.ModelSessionData;
 import com.objective4.app.onlife.R;
@@ -19,9 +20,17 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONObject;
 
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.net.ConnectException;
+
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 
 import static com.objective4.app.onlife.Controller.StaticMethods.makeSnackbar;
@@ -29,7 +38,7 @@ import static com.objective4.app.onlife.Controller.StaticMethods.makeSnackbar;
 public class TaskSendNotification extends AsyncTask<ModelPerson, String, String[]>{
     private Activity context;
     private LoadToast toast;
-    private JSONParser jsonParser;
+    private ConnectionController connection;
     private String message="",actualUser, gifName="";
     private int numBlocked;
 
@@ -38,7 +47,7 @@ public class TaskSendNotification extends AsyncTask<ModelPerson, String, String[
         this.message = message;
         this.actualUser = actualUser;
         this.gifName = gifName;
-        jsonParser = new JSONParser();
+        connection = new ConnectionController();
         numBlocked = 0;
     }
 
@@ -59,12 +68,13 @@ public class TaskSendNotification extends AsyncTask<ModelPerson, String, String[
         SharedPreferences sharedPreferences = context.getSharedPreferences(ActivityMain.MyPREFERENCES, Context.MODE_PRIVATE);
         if (!sharedPreferences.contains("update_key") || 2 == sharedPreferences.getInt("update_key",0)) {
             long actualTime = Calendar.getInstance().getTimeInMillis();
-            List<NameValuePair> p = new ArrayList<>();
+            // hashmap para pasar parametros de id y phoneId
+            HashMap<String,String> map = new HashMap();
             if (params.length == 1) {
                 ModelPerson f = params[0];
                 f = ModelSessionData.getInstance().getFriends().get(f.getId());
                 if (actualTime - f.getLastBlockedTime() > context.getResources().getInteger(R.integer.block_time_remaining)) {
-                    p.add(new BasicNameValuePair("id[]", f.getId_phone()));
+                    map.put("id[]", f.getId_phone());
                     f.setLastBlockedTime(actualTime);
                 } else {
                     returnMessage = context.getResources().getString(R.string.toast_not_time_yet) + " " + ((context.getResources().getInteger(R.integer.block_time_remaining) - (actualTime - f.getLastBlockedTime())) / 1000) + " s";
@@ -77,7 +87,7 @@ public class TaskSendNotification extends AsyncTask<ModelPerson, String, String[
                 for (ModelPerson f : params) {
                     f = ModelSessionData.getInstance().getFriends().get(f.getId());
                     if (actualTime - f.getLastBlockedTime() > context.getResources().getInteger(R.integer.block_time_remaining) && f.getState().equals("A")) {
-                        p.add(new BasicNameValuePair("id[]", f.getId_phone()));
+                        map.put("id[]", f.getId_phone());
                         f.setLastBlockedTime(actualTime);
                         numBlocked++;
                     }
@@ -91,13 +101,17 @@ public class TaskSendNotification extends AsyncTask<ModelPerson, String, String[
                 }
             }
 
-            p.add(new BasicNameValuePair("userName", actualUser));
-            p.add(new BasicNameValuePair("message", message));
-            p.add(new BasicNameValuePair("gifName", gifName));
+            map.put("userName", actualUser);
+            map.put("message", message);
+            map.put("gifName",gifName);
 
+            HttpURLConnection urlConnection = null;
+            URL url;
             try {
-                JSONObject json = jsonParser.makeHttpRequest("http://104.236.74.55/onlife/gcm.php", "POST", p);
-                switch (json.getInt("code")) {
+
+                JSONObject jsonObject = connection.makeHttpRequest("gcm.php", map);
+
+                switch (jsonObject.getInt("code")) {
                     case 0:
                         return new String[]{"true", returnMessage};
                     case -1:
@@ -106,7 +120,14 @@ public class TaskSendNotification extends AsyncTask<ModelPerson, String, String[
 
             } catch (ConnectException e) {
                 returnMessage = context.getResources().getString(R.string.no_connection);
-            } catch (Exception ignored) {
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    urlConnection.disconnect();
+                } catch (Exception e) {
+                    e.printStackTrace(); //If you want further info on failure...
+                }
             }
         }else{
             returnMessage = context.getResources().getString(R.string.update_forced);
