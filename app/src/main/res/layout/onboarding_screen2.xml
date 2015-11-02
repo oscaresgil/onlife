@@ -50,8 +50,8 @@
                     android:layout_height="wrap_content"
                     android:text="@string/onboarding2_locked"
                     android:layout_below="@+id/watching"
-                    android:drawableLeft="@drawable/ic_action_visibility_off_2"
-                    android:drawableStart="@drawable/ic_action_visibility_off_2"
+                    android:drawableLeft="@drawable/ic_action_visibility_off"
+                    android:drawableStart="@drawable/ic_action_visibility_off"
                     android:textSize="20sp"/>
 
         </RelativeLayout>

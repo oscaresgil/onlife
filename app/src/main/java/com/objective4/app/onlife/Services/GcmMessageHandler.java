@@ -111,7 +111,7 @@ public class GcmMessageHandler extends IntentService {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Notification notification = new Notification.Builder(context)
                     .setCategory(Notification.CATEGORY_PROMO)
-                    .setSmallIcon(R.drawable.icon_white)
+                    .setSmallIcon(R.drawable.ic_notification_icon)
                     .setContentTitle(getResources().getString(R.string.notification_someone_block_you))
                     .setContentText(user + " " + getResources().getString(R.string.notification_has_blocked))
                     .setPriority(Notification.PRIORITY_MAX)
@@ -122,7 +122,7 @@ public class GcmMessageHandler extends IntentService {
         }else{
             Notification.Builder mBuilder =
                     new Notification.Builder(this)
-                            .setSmallIcon(R.drawable.icon_white)
+                            .setSmallIcon(R.drawable.ic_notification_icon)
                             .setContentTitle(getResources().getString(R.string.notification_someone_block_you))
                             .setContentText(user + " " + getResources().getString(R.string.notification_has_blocked))
                             .setTicker(getResources().getString(R.string.notification_someone_block_you))

@@ -55,7 +55,7 @@ public class ActivityFriendBlock extends ActivityBlockBase<ModelPerson> {
         findViewById(R.id.ActivityBlockBase_RadioButton).setVisibility(View.VISIBLE);
 
         if (actualObject.getState().equals("I")){
-            visibility.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.ic_action_visibility_off_2));
+            visibility.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.ic_action_visibility_off));
         }else if(actualObject.getState().equals("A")){
             visibility.setImageBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.ic_action_visibility_on));
         }
@@ -134,7 +134,7 @@ public class ActivityFriendBlock extends ActivityBlockBase<ModelPerson> {
             if (actualObject.getId().equals(id)){
                 actualObject.setState(state);
                 if ("I".equals(state)){
-                    visibility.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.ic_action_visibility_off_2));
+                    visibility.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.ic_action_visibility_off));
                 }else if("A".equals(state)){
                     visibility.setImageBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.ic_action_visibility_on));
                 }
