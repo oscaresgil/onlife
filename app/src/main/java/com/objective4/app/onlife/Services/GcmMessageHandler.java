@@ -27,7 +27,6 @@ import static com.objective4.app.onlife.Controller.StaticMethods.isFriendAlready
 import static com.objective4.app.onlife.Controller.StaticMethods.removeFriend;
 
 public class GcmMessageHandler extends IntentService {
-    private SharedPreferences sharedPreferences;
     private Gson gson;
     private String user;
     private String message;
@@ -45,7 +44,7 @@ public class GcmMessageHandler extends IntentService {
     @Override protected void onHandleIntent(Intent intent) {
         Bundle extras = intent.getExtras();
         String tag = extras.getString("tag");
-        sharedPreferences = getSharedPreferences("OnlifePrefs", Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences("OnlifePrefs", Context.MODE_PRIVATE);
         if (tag !=null) {
             switch (tag) {
                 case "block":
@@ -53,7 +52,7 @@ public class GcmMessageHandler extends IntentService {
                     user = extras.getString("userName");
                     gifName = extras.getString("gifName");
                     boolean adminChecked = checkDeviceAdmin(this);
-                    if ((user != null || !user.equals("")) && adminChecked && sharedPreferences.getInt("update_key",0)!=1) {
+                    if ((user != null && !user.equals("")) && adminChecked && sharedPreferences.getInt("update_key",0)!=1) {
                         onMessage(this);
                     }
                     break;
@@ -83,6 +82,7 @@ public class GcmMessageHandler extends IntentService {
                     String idP = extras.getString("id");
                     String state = extras.getString("state");
 
+                    assert state != null;
                     if (state.equals("O")){
                         List<ModelPerson> friendsR = gson.fromJson(sharedPreferences.getString("friends", ""), (new TypeToken<ArrayList<ModelPerson>>() {}.getType()));
                         List<ModelGroup> groupsR = gson.fromJson(sharedPreferences.getString("groups", ""), (new TypeToken<ArrayList<ModelGroup>>() {}.getType()));

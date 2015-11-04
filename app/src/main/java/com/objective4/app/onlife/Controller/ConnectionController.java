@@ -21,10 +21,7 @@ import java.util.Map;
 
 
 public class ConnectionController {
-    private InputStream is = null;
-    private JSONObject jObj = null;
     private String json = "";
-    private URL url;
 
     // constructor
     public ConnectionController() {
@@ -34,13 +31,13 @@ public class ConnectionController {
     // function get json from url
     // by making HTTP POST or GET mehtod
     public JSONObject makeHttpRequest(String file,
-                                      HashMap params) throws Exception {
+                                      HashMap<String, String> params) throws Exception {
 
         HttpURLConnection urlConnection = null;
         // Making HTTP request
         try {
             // request method is POST
-            url = new URL("http://104.236.74.55/onlife/" + file);
+            URL url = new URL("http://104.236.74.55/onlife/" + file);
             urlConnection = (HttpURLConnection) url.openConnection();
 
             // Poner parametros para la conexion
@@ -53,35 +50,28 @@ public class ConnectionController {
             osw.write(getPostDataString(params));
             osw.flush();
             osw.close();
-            is = new BufferedInputStream(urlConnection.getInputStream());
+            InputStream is = new BufferedInputStream(urlConnection.getInputStream());
 
             try {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(is, "iso-8859-1"), 8);
                 StringBuilder sb = new StringBuilder();
-                String line = "";
+                String line;
                 while ((line = reader.readLine()) != null) {
-                    sb.append(line + "\n");
+                    sb.append(line).append("\n");
                 }
                 is.close();
                 json = sb.toString();
-            } catch (Exception e) {
-            }
+            } catch (Exception ignored) {}
 
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        } catch (ClientProtocolException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }finally {
+            assert urlConnection != null;
             urlConnection.disconnect();
         }
 
-        // try parse the string to a JSON object
-        jObj = new JSONObject(json);
-
         // return JSON String
-        return jObj;
+        return new JSONObject(json);
     }
     private String getPostDataString(HashMap<String, String> params) throws UnsupportedEncodingException{
         StringBuilder result = new StringBuilder();

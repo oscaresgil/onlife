@@ -163,7 +163,7 @@ public class ActivityGroupCreateInformation extends AppCompatActivity {
     }
 
     public void addGroup(View v){
-        List<ModelPerson> selected = new ArrayList();
+        ArrayList<ModelPerson> selected = new ArrayList<>();
         hideSoftKeyboard(this,nameNewGroup);
         for (ModelPerson userData: friends){
             if (userData.isSelected()) {
@@ -279,6 +279,7 @@ public class ActivityGroupCreateInformation extends AppCompatActivity {
             friendsFiltred.clear();
             friendsFiltred.addAll(friends);
             adapterCheckList.notifyDataSetChanged();
+            assert actionBar != null;
             actionBar.setDisplayShowCustomEnabled(false);
             actionBar.setDisplayShowTitleEnabled(true);
 
@@ -317,6 +318,7 @@ public class ActivityGroupCreateInformation extends AppCompatActivity {
             });
             searchItem.setVisible(false);
 
+            assert actionBar != null;
             actionBar.setDisplayShowCustomEnabled(true);
             actionBar.setCustomView(R.layout.layout_search_contact_bar);
 
