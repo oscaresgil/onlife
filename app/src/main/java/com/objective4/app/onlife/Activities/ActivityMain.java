@@ -41,15 +41,16 @@ import static com.objective4.app.onlife.Controller.StaticMethods.makeSnackbar;
 public class ActivityMain extends Activity{
     public static final String PROJECT_NUMBER = "194566212765";
     public static final String MyPREFERENCES = "OnlifePrefs";
-    public static final String name = "nameKey";
+    public static final String SERVER_URL = "http://api.onlife-app.com/";
+    public static final String NAME_KEY = "nameKey";
 
     private ModelPerson userLogin;
     private Dialog dialog;
     private boolean gcmFlag = false;
+    private LoginButton loginButton;
 
     private CallbackManager callbackManager;
     private SharedPreferences sharedPreferences;
-    private LoginButton loginButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -132,7 +133,7 @@ public class ActivityMain extends Activity{
             @Override
             public void onError(FacebookException error) {
                 error.printStackTrace();
-                makeSnackbar(ActivityMain.this,findViewById(R.id.login_button),R.string.error, Snackbar.LENGTH_LONG);
+                makeSnackbar(ActivityMain.this, findViewById(R.id.login_button), R.string.error, Snackbar.LENGTH_LONG);
             }
         });
     }

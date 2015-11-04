@@ -60,7 +60,7 @@ public class LayoutSlidingTab extends HorizontalScrollView {
     private boolean mDistributeEvenly;
 
     private ViewPager mViewPager;
-    private SparseArray<String> mContentDescriptions = new SparseArray<String>();
+    private SparseArray<String> mContentDescriptions = new SparseArray<>();
     private ViewPager.OnPageChangeListener mViewPagerPageChangeListener;
 
     public LayoutSlidingTab(Context context) {
@@ -197,6 +197,7 @@ public class LayoutSlidingTab extends HorizontalScrollView {
                 lp.weight = 1;
             }
 
+            assert tabTitleView != null;
             tabTitleView.setText(adapter.getPageTitle(i));
             tabTitleView.setTextColor(getResources().getColorStateList(R.color.black));
             tabView.setOnClickListener(tabClickListener);

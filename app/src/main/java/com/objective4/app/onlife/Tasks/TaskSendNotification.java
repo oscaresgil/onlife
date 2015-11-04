@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.support.design.widget.Snackbar;
 
-import com.google.gson.Gson;
 import com.objective4.app.onlife.Activities.ActivityMain;
 import com.objective4.app.onlife.BlockActivity.ActivityFriendBlock;
 import com.objective4.app.onlife.Controller.ConnectionController;
@@ -16,25 +15,11 @@ import com.objective4.app.onlife.R;
 
 import net.steamcrafted.loadtoast.LoadToast;
 
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.net.ConnectException;
-
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
 
 import static com.objective4.app.onlife.Controller.StaticMethods.makeSnackbar;
 

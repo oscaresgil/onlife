@@ -17,7 +17,6 @@ import static com.objective4.app.onlife.Controller.StaticMethods.makeSnackbar;
 
 public class TaskGetGCM extends AsyncTask<Void, Void, String> {
     private Context context;
-    private SharedPreferences sharedPreferences;
     private boolean connectionFailure = false;
 
     public TaskGetGCM(Context context){
@@ -37,7 +36,7 @@ public class TaskGetGCM extends AsyncTask<Void, Void, String> {
     @Override
     public void onPostExecute(String idMSG) {
         if (isNetworkAvailable((Activity)context)){
-            sharedPreferences = context.getSharedPreferences(ActivityMain.MyPREFERENCES, Context.MODE_PRIVATE);
+            SharedPreferences sharedPreferences = context.getSharedPreferences(ActivityMain.MyPREFERENCES, Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
             if (idMSG == null) {
                 if (connectionFailure) makeSnackbar(context,((Activity) context).findViewById(R.id.ActivityMain_ImageViewLogo), R.string.no_connection, Snackbar.LENGTH_LONG);

@@ -25,7 +25,6 @@ import ca.barrenechea.widget.recyclerview.decoration.StickyHeaderDecoration;
 import static com.objective4.app.onlife.Controller.StaticMethods.setHashToList;
 
 public class ActivitySelectContacts extends Activity {
-    private StickyHeaderDecoration decor;
     private RecyclerView mList;
     private List<ModelPerson> friends;
     private List<ModelPerson> allFriends;
@@ -73,7 +72,7 @@ public class ActivitySelectContacts extends Activity {
 
     public void setAdapterAndDecor() {
         AdapterStickyTitle adapter = new AdapterStickyTitle(this,mList,allFriends,listener,animation1);
-        decor = new StickyHeaderDecoration(adapter);
+        StickyHeaderDecoration decor = new StickyHeaderDecoration(adapter);
 
         mList.setAdapter(adapter);
         mList.addItemDecoration(decor, 1);

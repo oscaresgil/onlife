@@ -15,7 +15,6 @@ import java.util.Map;
 
 public class AdapterFragmentPager extends FragmentPagerAdapter{
     private Context context;
-    private FragmentManager fm;
     private Map<Integer,String> fragmentTags;
 
     private final int PAGE_COUNT = 2;
@@ -24,7 +23,6 @@ public class AdapterFragmentPager extends FragmentPagerAdapter{
     public AdapterFragmentPager(FragmentManager fm, Context context) {
         super(fm);
         this.context = context;
-        this.fm = fm;
         fragmentTags = new HashMap<>();
         tabTitles = new String[]{context.getResources().getString(R.string.tab_contacts),context.getResources().getString(R.string.tab_groups)};
     }

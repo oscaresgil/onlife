@@ -114,6 +114,7 @@ public class FragmentContacts extends Fragment {
                 }
             }else if("new_user".equals(tag)){
                 ModelPerson newUser = (ModelPerson) extras.getSerializable("new_user");
+                assert newUser != null;
                 int pos = getModelPersonIndex(setHashToList(ModelSessionData.getInstance().getFriends()),newUser.getId());
                 if (pos==-1){
                     ModelSessionData.getInstance().getFriends().put(newUser.getId(),newUser);

@@ -5,12 +5,9 @@ import android.content.Context;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 
-import com.objective4.app.onlife.Models.ModelPerson;
 import com.objective4.app.onlife.R;
 
 import org.json.JSONObject;
-
-import java.util.ArrayList;
 
 import static com.objective4.app.onlife.Controller.StaticMethods.makeSnackbar;
 

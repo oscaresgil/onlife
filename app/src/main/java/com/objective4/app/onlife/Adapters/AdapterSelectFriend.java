@@ -3,6 +3,7 @@ package com.objective4.app.onlife.Adapters;
 import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -52,7 +53,7 @@ public class AdapterSelectFriend extends RecyclerView.Adapter<AdapterSelectFrien
             if (imageInDisk(context,friend.getId()+"_"+context.getResources().getInteger(R.integer.adapter_contact_size_little))){
                 holder.avatar.setImageBitmap(loadImage(context,friend.getId()+"_"+context.getResources().getInteger(R.integer.adapter_contact_size_little)));
             }else{
-                holder.avatar.setImageDrawable(context.getResources().getDrawable(R.drawable.loading_friend_icon));
+                holder.avatar.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.loading_friend_icon));
             }
         }
 

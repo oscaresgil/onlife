@@ -21,15 +21,12 @@ public final class GCMHelper {
     private static Context context = null;
 
     public GCMHelper(Context context) {
-        this.context = context;
+        GCMHelper.context = context;
     }
 
     private static boolean checkPlayServices() {
         int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(context);
-        if (resultCode != ConnectionResult.SUCCESS) {
-            return false;
-        }
-        return true;
+        return resultCode == ConnectionResult.SUCCESS;
     }
 
     public String GCMRegister(String SENDER_ID) throws Exception {

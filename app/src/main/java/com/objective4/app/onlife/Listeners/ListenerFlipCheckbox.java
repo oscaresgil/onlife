@@ -2,6 +2,7 @@ package com.objective4.app.onlife.Listeners;
 
 import android.content.Context;
 import android.graphics.BitmapFactory;
+import android.support.v4.content.ContextCompat;
 import android.view.animation.Animation;
 import android.widget.ImageView;
 
@@ -47,7 +48,7 @@ public class ListenerFlipCheckbox implements Animation.AnimationListener{
                 if (imageInDisk(context,f.getId()+"_"+context.getResources().getInteger(R.integer.adapter_contact_size_little))){
                     imageButton.setImageBitmap(loadImage(context,f.getId()+"_"+context.getResources().getInteger(R.integer.adapter_contact_size_little)));
                 }else{
-                    imageButton.setImageDrawable(context.getResources().getDrawable(R.drawable.loading_friend_icon));
+                    imageButton.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.loading_friend_icon));
                 }
             }
             else{

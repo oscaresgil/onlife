@@ -37,7 +37,6 @@ public class TaskGetFriends extends AsyncTask<String, Void, JSONObject> {
     private MaterialDialog dialog;
     private boolean flagDialog, connectionFailure =false;
     private Context context;
-    private ConnectionController connection;
 
     public TaskGetFriends(Context c, boolean flagDialog){
         this.flagDialog = flagDialog;
@@ -47,7 +46,6 @@ public class TaskGetFriends extends AsyncTask<String, Void, JSONObject> {
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        connection = new ConnectionController();
         if (flagDialog) {
             dialog = new MaterialDialog.Builder(context)
                     .title(R.string.dialog_please_wait)

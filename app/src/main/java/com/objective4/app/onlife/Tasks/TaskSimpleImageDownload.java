@@ -17,7 +17,6 @@ import com.objective4.app.onlife.R;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.entity.BufferedHttpEntity;
@@ -26,8 +25,6 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
-import java.net.ConnectException;
-import java.net.URL;
 
 import static com.objective4.app.onlife.Controller.StaticMethods.saveImage;
 

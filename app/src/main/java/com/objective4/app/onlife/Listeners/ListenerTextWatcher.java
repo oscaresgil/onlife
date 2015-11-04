@@ -41,7 +41,7 @@ public class ListenerTextWatcher implements TextWatcher {
             text = s.toString();
         }
         int maximumChars = 30;
-        maxCharsView.setText(actualChar + "/" + maximumChars);
+        maxCharsView.setText(String.format("%d/%d", actualChar, maximumChars));
     }
 
     @Override

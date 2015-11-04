@@ -1,5 +1,7 @@
 package com.objective4.app.onlife.Controller;
 
+import com.objective4.app.onlife.Activities.ActivityMain;
+
 import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
@@ -17,23 +19,18 @@ import java.net.URL;
 public class ConnectionController {
     private String json = "";
 
-    // constructor
-    public ConnectionController() {
-
-    }
-
-    // function get json from url
-    // by making HTTP POST or GET mehtod
+    // Get json from url
     public JSONObject makeHttpRequest(JSONObject params) throws Exception {
 
         HttpURLConnection urlConnection = null;
+
         // Making HTTP request
         try {
             // request method is POST
-            URL url = new URL("http://api.onlife-app.com/");
+            URL url = new URL(ActivityMain.SERVER_URL);
             urlConnection = (HttpURLConnection) url.openConnection();
 
-            // Poner parametros para la conexion
+            // Connection parameters
             urlConnection.setDoOutput(true);
             urlConnection.setRequestMethod("POST");
             urlConnection.setRequestProperty("Content-Type", "application/json");
