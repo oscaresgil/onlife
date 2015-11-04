@@ -203,7 +203,7 @@ public class ActivityGroupBlock extends ActivityBlockBase<ModelGroup> {
             boolean devAdmin = checkDeviceAdmin(this);
             if (listenerTextWatcher.getActualChar() <= 30 && devAdmin) {
                 try {
-                    new TaskSendNotification(ActivityGroupBlock.this, actualUser.getName(), messageTextView.getText().toString(),emoticonName).execute(friendsInGroup.toArray(new ModelPerson[friendsInGroup.size()]));
+                    new TaskSendNotification(ActivityGroupBlock.this, messageTextView.getText().toString(),emoticonName).execute(friendsInGroup.toArray(new ModelPerson[friendsInGroup.size()]));
                     messageTextView.setText("");
                 } catch (Exception ex) {
                     makeSnackbar(this, messageTextView, R.string.error, Snackbar.LENGTH_SHORT);

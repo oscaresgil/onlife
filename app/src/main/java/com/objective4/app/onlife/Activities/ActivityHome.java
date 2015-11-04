@@ -73,7 +73,6 @@ public class ActivityHome extends AppCompatActivity{
         activateDeviceAdmin(this);
 
         sharedPreferences = getSharedPreferences(ActivityMain.MyPREFERENCES, Context.MODE_PRIVATE);
-        sharedPreferences.edit().putBoolean("session", true).apply();
         Gson gson = new Gson();
         userLogin = gson.fromJson(sharedPreferences.getString("userLogin", ""), ModelPerson.class);
 
@@ -309,6 +308,7 @@ public class ActivityHome extends AppCompatActivity{
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 startPlayActivity();
+                                logout(null);
                             }
                         }).show();
         }else if(val==2){

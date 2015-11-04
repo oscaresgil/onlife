@@ -107,30 +107,25 @@ public class GcmMessageHandler extends IntentService {
     protected void onMessage(Context context) {
 
         NotificationManager myNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        Notification.Builder notificationBuilder = new Notification.Builder(context)
+                .setSmallIcon(R.drawable.ic_notification_icon)
+                .setOnlyAlertOnce(true)
+                .setContentTitle(getResources().getString(R.string.notification_someone_block_you))
+                .setContentText(user + " " + getResources().getString(R.string.notification_has_blocked))
+                .setVibrate(new long[]{1000, 1000, 1000, 1000, 1000});
+
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Notification notification = new Notification.Builder(context)
-                    .setCategory(Notification.CATEGORY_PROMO)
-                    .setSmallIcon(R.drawable.ic_notification_icon)
-                    .setContentTitle(getResources().getString(R.string.notification_someone_block_you))
-                    .setContentText(user + " " + getResources().getString(R.string.notification_has_blocked))
+            notificationBuilder.setCategory(Notification.CATEGORY_PROMO)
                     .setPriority(Notification.PRIORITY_MAX)
-                    .setVibrate(new long[]{1000, 1000, 1000, 1000, 1000})
-                    .setVisibility(Notification.VISIBILITY_PUBLIC).build();
+                    .setVisibility(Notification.VISIBILITY_PUBLIC);
 
-            myNotificationManager.notify(0,notification);
         }else{
-            Notification.Builder mBuilder =
-                    new Notification.Builder(this)
-                            .setSmallIcon(R.drawable.ic_notification_icon)
-                            .setContentTitle(getResources().getString(R.string.notification_someone_block_you))
-                            .setContentText(user + " " + getResources().getString(R.string.notification_has_blocked))
-                            .setTicker(getResources().getString(R.string.notification_someone_block_you))
-                            .setStyle(new Notification.BigTextStyle())
-                            .setOnlyAlertOnce(true)
-                            .setVibrate(new long[]{1000, 1000, 1000, 1000, 1000});
-            myNotificationManager.notify(0, mBuilder.build());
+            notificationBuilder.setTicker(getResources().getString(R.string.notification_someone_block_you))
+                            .setStyle(new Notification.BigTextStyle());
         }
+
+        myNotificationManager.notify(0,notificationBuilder.build());
 
         Intent i = new Intent(context, ActivityInBlock.class);
         i.putExtra("user",user);

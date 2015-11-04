@@ -9,7 +9,6 @@
         android:id="@+id/ActivityHome_AppBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/AppTheme"
         android:elevation="4dp">
 
         <android.support.v7.widget.Toolbar

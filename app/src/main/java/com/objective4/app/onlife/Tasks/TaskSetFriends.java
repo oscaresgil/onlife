@@ -9,15 +9,17 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.objective4.app.onlife.Activities.ActivityMain;
 import com.objective4.app.onlife.Controller.ConnectionController;
 import com.objective4.app.onlife.R;
+
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.ConnectException;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Arrays;
 
 import static com.objective4.app.onlife.Controller.StaticMethods.makeSnackbar;
 
-public class TaskSetFriends extends AsyncTask<ArrayList<String>, Void, String> {
+public class TaskSetFriends extends AsyncTask<String, Void, JSONObject> {
     private MaterialDialog dialog;
     private Context context;
     private ConnectionController controller;
@@ -41,19 +43,17 @@ public class TaskSetFriends extends AsyncTask<ArrayList<String>, Void, String> {
     }
 
     @Override
-    protected String doInBackground(ArrayList<String>... params) {
-        String id = params[0].get(0);
-        HashMap<String,String> p = new HashMap<>();
-        p.put("tag", "setFriends");
-        p.put("myId", id);
-
-        for(int i = 1; i<params[0].size(); i++){
-            p.put("id_friends[]", params[0].get(i));
+    protected JSONObject doInBackground(String... params) {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("tag","setFriends");
+            jsonObject.put("myId", params[0]);
+            jsonObject.put("id_friends",new JSONArray(Arrays.asList(Arrays.copyOfRange(params,1,params.length))));
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
         try{
-            JSONObject response =  controller.makeHttpRequest("person.php", p);
-            boolean error = response.getBoolean("error");
-            return id;
+            return controller.makeHttpRequest(jsonObject);
         }catch(ConnectException e){
             connectionError = true;
         }catch(Exception ignored){
@@ -62,11 +62,11 @@ public class TaskSetFriends extends AsyncTask<ArrayList<String>, Void, String> {
     }
 
     @Override
-    protected void onPostExecute(String userId) {
+    protected void onPostExecute(JSONObject userId) {
         super.onPostExecute(userId);
         if (userId == null) {
             if (connectionError)makeSnackbar(context, ((Activity) context).findViewById(R.id.ActivityMain_ImageViewLogo), R.string.no_connection, Snackbar.LENGTH_LONG);
-            else makeSnackbar(context, ((Activity) context).findViewById(R.id.ActivityMain_ImageViewLogo), R.string.error, Snackbar.LENGTH_LONG);
+            else makeSnackbar(context, ((Activity) context).findViewById(R.id.ActivityMain_ImageViewLogo), R.string.error, Snackbar.LENGTH_INDEFINITE);
         }
         else {
             if (dialog.isShowing()) dialog.dismiss();

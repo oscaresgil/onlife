@@ -272,7 +272,7 @@ public class FragmentContacts extends Fragment {
             new TaskRefresh(getActivity(),mSwipeRefreshLayout).execute(actualUser.getId());
         }else{
             mSwipeRefreshLayout.setRefreshing(false);
-            mSwipeRefreshLayout.setEnabled(false);
+            mSwipeRefreshLayout.setEnabled(true);
             makeSnackbar(getActivity(),getView(), R.string.no_connection, Snackbar.LENGTH_LONG, R.string.button_change_connection, new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

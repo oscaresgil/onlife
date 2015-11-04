@@ -4,11 +4,9 @@ import java.io.Serializable;
 
 public class ModelPerson implements Serializable{
     private String id;
-    private String id_phone;
     private String name;
-    private String photo;
     private String state;
-    private int background;
+
     private boolean selected;
     private boolean refreshImage,refreshImageBig;
     private long lastBlockedTime;
@@ -16,16 +14,19 @@ public class ModelPerson implements Serializable{
     public ModelPerson() {
     }
 
-    public ModelPerson(String id, String id_phone, String name, String photo, String state) {
+    public ModelPerson(String id, String name) {
         this.id = id;
-        this.id_phone = id_phone;
         this.name = name;
-        this.photo = photo;
-        this.state = state;
         selected = false;
         lastBlockedTime = 0;
         refreshImage = true;
         refreshImageBig = true;
+    }
+
+    public ModelPerson(String id, String name, String state) {
+        this.id = id;
+        this.name = name;
+        this.state = state;
     }
 
     public String getId() {
@@ -36,10 +37,6 @@ public class ModelPerson implements Serializable{
         this.id = id;
     }
 
-    public String getId_phone() {
-        return id_phone;
-    }
-
     public String getName() {
         return name;
     }
@@ -48,24 +45,12 @@ public class ModelPerson implements Serializable{
         this.name = name;
     }
 
-    public String getPhoto() {
-        return photo;
-    }
-
     public String getState() {
         return state;
     }
 
     public void setState(String state) {
         this.state = state;
-    }
-
-    public int getBackground() {
-        return background;
-    }
-
-    public void setBackground(int background) {
-        this.background = background;
     }
 
     public boolean isSelected() {
@@ -104,13 +89,11 @@ public class ModelPerson implements Serializable{
     public String toString() {
         return "ModelPerson{" +
                 "id='" + id + '\'' +
-                ", id_phone='" + id_phone + '\'' +
                 ", name='" + name + '\'' +
-                ", photo='" + photo + '\'' +
                 ", state='" + state + '\'' +
-                ", background=" + background +
                 ", selected=" + selected +
-                ", refresh=" + refreshImage +
+                ", refreshImage=" + refreshImage +
+                ", refreshImageBig=" + refreshImageBig +
                 ", lastBlockedTime=" + lastBlockedTime +
                 '}';
     }

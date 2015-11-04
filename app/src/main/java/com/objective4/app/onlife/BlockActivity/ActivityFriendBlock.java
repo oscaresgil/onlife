@@ -65,7 +65,7 @@ public class ActivityFriendBlock extends ActivityBlockBase<ModelPerson> {
 
         RatioImageView avatar = (RatioImageView) findViewById(R.id.ActivityBlockBase_ImageViewContact);
         if (actualObject.refreshImageBig() || !imageInDisk(this,actualObject.getId()+"_"+getResources().getInteger(R.integer.adapter_contact_size_large))){
-            if (!actualObject.refreshImage() || imageInDisk(this,actualObject.getId()+"_"+getResources().getInteger(R.integer.adapter_contact_size_little))) avatar.setImageBitmap(loadImage(this,actualObject.getId()+"_"+getResources().getInteger(R.integer.adapter_contact_size_little)));
+            if (!actualObject.refreshImage() && imageInDisk(this,actualObject.getId()+"_"+getResources().getInteger(R.integer.adapter_contact_size_little))) avatar.setImageBitmap(loadImage(this,actualObject.getId()+"_"+getResources().getInteger(R.integer.adapter_contact_size_little)));
             else avatar.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.loading_friend_icon));
             new TaskSimpleImageDownload(this,avatar,getResources().getInteger(R.integer.adapter_contact_size_large),progressBar).execute(actualObject);
             actualObject.setRefreshImageBig(false);
@@ -149,7 +149,7 @@ public class ActivityFriendBlock extends ActivityBlockBase<ModelPerson> {
                 boolean devAdmin = checkDeviceAdmin(this);
                 if (actualObject.getState().equals("A") && devAdmin) {
                     try {
-                        new TaskSendNotification(ActivityFriendBlock.this, actualUser.getName(), messageTextView.getText().toString(), emoticonName).execute(actualObject);
+                        new TaskSendNotification(ActivityFriendBlock.this, messageTextView.getText().toString(), emoticonName).execute(actualObject);
                         messageTextView.setText("");
                     } catch (Exception ex) {
                         ex.printStackTrace();

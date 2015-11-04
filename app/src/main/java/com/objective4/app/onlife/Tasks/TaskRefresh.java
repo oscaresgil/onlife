@@ -8,6 +8,8 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import com.objective4.app.onlife.Models.ModelPerson;
 import com.objective4.app.onlife.R;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 import static com.objective4.app.onlife.Controller.StaticMethods.makeSnackbar;
@@ -28,12 +30,12 @@ public class TaskRefresh extends TaskGetFriends {
     }
 
     @Override
-    protected ArrayList<ModelPerson> doInBackground(String... params) {
+    protected JSONObject doInBackground(String... params) {
         return super.doInBackground(params);
     }
 
     @Override
-    protected void onPostExecute(ArrayList<ModelPerson> friends) {
+    protected void onPostExecute(JSONObject friends) {
         super.onPostExecute(friends);
         mSwipeRefreshLayout.setRefreshing(false);
         mSwipeRefreshLayout.setEnabled(true);

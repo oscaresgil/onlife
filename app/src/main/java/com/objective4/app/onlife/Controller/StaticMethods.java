@@ -53,13 +53,10 @@ public class StaticMethods {
             o.inJustDecodeBounds = true;
             BitmapFactory.decodeResource(context.getResources(),d,o);
 
-            // The new size we want to scale to
-            final int REQUIRED_SIZE=size;
-
             // Find the correct scale value. It should be the power of 2.
             int scale = 1;
-            while(o.outWidth / scale / 2 >= REQUIRED_SIZE &&
-                    o.outHeight / scale / 2 >= REQUIRED_SIZE) {
+            while(o.outWidth / scale / 2 >= size &&
+                    o.outHeight / scale / 2 >= size) {
                 scale *= 2;
             }
 
@@ -67,7 +64,7 @@ public class StaticMethods {
             BitmapFactory.Options o2 = new BitmapFactory.Options();
             o2.inSampleSize = scale;
             return BitmapFactory.decodeResource(context.getResources(), d, o2);
-        } catch (Exception e) {}
+        } catch (Exception ignored) {}
         return null;
 
     }
@@ -310,27 +307,21 @@ public class StaticMethods {
         ContextWrapper cw = new ContextWrapper(context);
         File dirImages = cw.getDir("Profiles",Context.MODE_PRIVATE);
         for (ModelPerson p: friends){
-            File img = new File(dirImages, p.getId()+"_"+context.getResources().getInteger(R.integer.adapter_contact_size_large)+".png");
-            img.delete();
-            img = new File(dirImages, p.getId()+"_"+context.getResources().getInteger(R.integer.adapter_contact_size_little)+".png");
-            img.delete();
+            new File(dirImages, p.getId()+"_"+context.getResources().getInteger(R.integer.adapter_contact_size_large)+".png").delete();
+            new File(dirImages, p.getId()+"_"+context.getResources().getInteger(R.integer.adapter_contact_size_little)+".png").delete();
         }
         for (ModelGroup g: groups){
-            File img = new File(dirImages, g.getName()+"_"+context.getResources().getInteger(R.integer.adapter_contact_size_large)+".png");
-            img.delete();
-            img = new File(dirImages, g.getName()+"_"+context.getResources().getInteger(R.integer.adapter_contact_size_little)+".png");
-            img.delete();
+            new File(dirImages, g.getName()+"_"+context.getResources().getInteger(R.integer.adapter_contact_size_large)+".png").delete();
+            new File(dirImages, g.getName()+"_"+context.getResources().getInteger(R.integer.adapter_contact_size_little)+".png").delete();
         }
         return dirImages.delete();
     }
 
     public static boolean delImageProfile(Context context, String id){
         ContextWrapper cw = new ContextWrapper(context);
-        File dirImages = cw.getDir("Profiles",Context.MODE_APPEND);
-        File myPath = new File(dirImages, id+"_"+context.getResources().getInteger(R.integer.adapter_contact_size_large)+".png");
-        myPath.delete();
-        myPath = new File(dirImages, id+"_"+context.getResources().getInteger(R.integer.adapter_contact_size_little)+".png");
-        return myPath.delete();
+        File dirImages = cw.getDir("Profiles", Context.MODE_APPEND);
+        new File(dirImages, id+"_"+context.getResources().getInteger(R.integer.adapter_contact_size_large)+".png").delete();
+        return new File(dirImages, id+"_"+context.getResources().getInteger(R.integer.adapter_contact_size_little)+".png").delete();
     }
 
     public static Bitmap loadImage(Context context, String name){
@@ -350,9 +341,8 @@ public class StaticMethods {
         ContextWrapper cw = new ContextWrapper(context);
         File dirImages = cw.getDir("Profiles",Context.MODE_PRIVATE);
         File myPath = new File(dirImages, name+".png");
-        FileOutputStream fos = null;
         try{
-            fos = new FileOutputStream(myPath);
+            FileOutputStream fos = new FileOutputStream(myPath);
             image.compress(Bitmap.CompressFormat.PNG, 90, fos);
             fos.flush();
         }catch (Exception e){e.printStackTrace();}
@@ -403,14 +393,14 @@ public class StaticMethods {
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
-    public static HashMap setListToHash(List<ModelPerson> friends){
+    public static HashMap<String,ModelPerson> setListToHash(List<ModelPerson> friends){
         HashMap<String,ModelPerson> hashMap = new HashMap<>();
         for (ModelPerson p: friends) hashMap.put(p.getId(),p);
         return hashMap;
     }
 
     public static List<ModelPerson> setHashToList(HashMap<String,ModelPerson> hashMap){
-        List<ModelPerson> friends = new ArrayList(hashMap.values());
+        List<ModelPerson> friends = new ArrayList<>(hashMap.values());
         Collections.sort(friends, new Comparator<ModelPerson>() {
             @Override
             public int compare(ModelPerson modelPerson1, ModelPerson modelPerson2) {
@@ -420,7 +410,7 @@ public class StaticMethods {
         return friends;
     }
 
-    public static HashMap<String,ModelPerson> comparePerson(HashMap<String,ModelPerson> hashMap, ArrayList<ModelPerson> friends){
+    public static HashMap<String,ModelPerson> comparePerson(HashMap<String,ModelPerson> hashMap, List<ModelPerson> friends){
         for (ModelPerson f: friends){
             if (!hashMap.containsKey(f.getId())){
                 f.setRefreshImage(true);
@@ -429,6 +419,7 @@ public class StaticMethods {
             }else {
                 hashMap.get(f.getId()).setRefreshImage(true);
                 hashMap.get(f.getId()).setRefreshImageBig(true);
+                hashMap.get(f.getId()).setState(f.getState());
             }
         }
         return hashMap;

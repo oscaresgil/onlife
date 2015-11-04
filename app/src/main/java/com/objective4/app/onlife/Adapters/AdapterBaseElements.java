@@ -176,7 +176,7 @@ public class AdapterBaseElements<T> extends RecyclerView.Adapter<AdapterBaseElem
                 ModelPerson user = (ModelPerson) elements.get(getLayoutPosition());
                 boolean devAdmin = checkDeviceAdmin(context);
                 if (user.getState().equals("A") && devAdmin) {
-                    new TaskSendNotification(activity, ModelSessionData.getInstance().getUser().getName(), "", "").execute(user);
+                    new TaskSendNotification(activity, "", "").execute(user);
                 } else if (!devAdmin) {
                     activateDeviceAdmin(activity);
                 } else {
@@ -186,7 +186,7 @@ public class AdapterBaseElements<T> extends RecyclerView.Adapter<AdapterBaseElem
                 ModelGroup actualModelGroup = (ModelGroup) elements.get(getLayoutPosition());
                 boolean activeDev = checkDeviceAdmin(activity);
                 if (activeDev) {
-                    new TaskSendNotification(activity, ModelSessionData.getInstance().getUser().getName(), "", "").execute(actualModelGroup.getFriendsInGroup().toArray(new ModelPerson[actualModelGroup.getFriendsInGroup().size()]));
+                    new TaskSendNotification(activity, "", "").execute(actualModelGroup.getFriendsInGroup().toArray(new ModelPerson[actualModelGroup.getFriendsInGroup().size()]));
                 } else{
                     activateDeviceAdmin(activity);
                 }
@@ -222,7 +222,7 @@ public class AdapterBaseElements<T> extends RecyclerView.Adapter<AdapterBaseElem
         public static boolean cancelPotentialWork(String id, ImageView imageView){
             final TaskSimpleImageDownload bitmapTask = getBitmapWorkerTask(imageView);
             if (bitmapTask != null){
-                final String bitmapData = bitmapTask.data;
+                final String bitmapData = bitmapTask.getData();
                 if ("".equals(bitmapData) || !id.equals(bitmapData)){
                     bitmapTask.cancel(true);
                 }

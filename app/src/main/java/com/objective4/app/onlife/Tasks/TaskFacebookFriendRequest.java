@@ -25,32 +25,17 @@ public class TaskFacebookFriendRequest implements GraphRequest.Callback {
 
     @Override public void onCompleted(GraphResponse response) {
         try {
-            JSONObject objectResponse = response.getJSONObject();
-            JSONArray objectData = (JSONArray) objectResponse.get("data");
-            List<ModelPerson> friends = new ArrayList<>();
-            ArrayList<String> ids =  new ArrayList<>();
-            ids.add(user.getId());
+            JSONArray objectData = (JSONArray) response.getJSONObject().get("data");
+            String[] idsArray = new String[objectData.length()+1];
+            idsArray[0] = user.getId();
+
             for (int i=0; i<objectData.length(); i++){
                 JSONObject objectUser = (JSONObject) objectData.get(i);
                 String id = (String) objectUser.get("id");
-                ids.add(id);
-                String name = (String) objectUser.get("name");
-
-                // http://stackoverflow.com/questions/5841710/get-user-image-from-facebook-graph-api
-                // http://stackoverflow.com/questions/23559736/android-skimagedecoderfactory-returned-null-error
-                String path = "https://graph.facebook.com/" + id + "/picture?";
-                ModelPerson contact = new ModelPerson(id, null, name, path, "A");
-                friends.add(contact);
+                idsArray[i+1] = id;
             }
 
-            Collections.sort(friends, new Comparator<ModelPerson>() {
-                @Override
-                public int compare(ModelPerson modelPerson1, ModelPerson modelPerson2) {
-                    return modelPerson1.getName().compareTo(modelPerson2.getName());
-                }
-            });
-
-            new TaskSetFriends(context).execute(ids);
+            new TaskSetFriends(context).execute(idsArray);
 
         }catch(Exception e){e.printStackTrace();}
     }

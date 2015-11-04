@@ -18,6 +18,8 @@ import net.steamcrafted.loadtoast.LoadToast;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.InputStream;
@@ -29,6 +31,7 @@ import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -38,16 +41,13 @@ import static com.objective4.app.onlife.Controller.StaticMethods.makeSnackbar;
 public class TaskSendNotification extends AsyncTask<ModelPerson, String, String[]>{
     private Activity context;
     private LoadToast toast;
-    private ConnectionController connection;
-    private String message="",actualUser, gifName="";
+    private String message="", gifName="";
     private int numBlocked;
 
-    public TaskSendNotification(Activity c, String actualUser, String message, String gifName){
+    public TaskSendNotification(Activity c, String message, String gifName){
         this.context = c;
         this.message = message;
-        this.actualUser = actualUser;
         this.gifName = gifName;
-        connection = new ConnectionController();
         numBlocked = 0;
     }
 
@@ -68,67 +68,51 @@ public class TaskSendNotification extends AsyncTask<ModelPerson, String, String[
         SharedPreferences sharedPreferences = context.getSharedPreferences(ActivityMain.MyPREFERENCES, Context.MODE_PRIVATE);
         if (!sharedPreferences.contains("update_key") || 2 == sharedPreferences.getInt("update_key",0)) {
             long actualTime = Calendar.getInstance().getTimeInMillis();
+
             // hashmap para pasar parametros de id y phoneId
-            HashMap<String,String> map = new HashMap();
-            if (params.length == 1) {
-                ModelPerson f = params[0];
-                f = ModelSessionData.getInstance().getFriends().get(f.getId());
-                if (actualTime - f.getLastBlockedTime() > context.getResources().getInteger(R.integer.block_time_remaining)) {
-                    map.put("id[]", f.getId_phone());
-                    f.setLastBlockedTime(actualTime);
-                } else {
-                    returnMessage = context.getResources().getString(R.string.toast_not_time_yet) + " " + ((context.getResources().getInteger(R.integer.block_time_remaining) - (actualTime - f.getLastBlockedTime())) / 1000) + " s";
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException ignored) {}
-                    return new String[]{"false",returnMessage};
-                }
-            } else {
-                for (ModelPerson f : params) {
+            JSONObject map = new JSONObject();
+            try{
+                if (params.length == 1) {
+                    ModelPerson f = params[0];
                     f = ModelSessionData.getInstance().getFriends().get(f.getId());
-                    if (actualTime - f.getLastBlockedTime() > context.getResources().getInteger(R.integer.block_time_remaining) && f.getState().equals("A")) {
-                        map.put("id[]", f.getId_phone());
+                    if (actualTime - f.getLastBlockedTime() > context.getResources().getInteger(R.integer.block_time_remaining)) {
+                        map.put("id_blocked", new JSONArray(Arrays.asList(new String[]{f.getId()})));
                         f.setLastBlockedTime(actualTime);
-                        numBlocked++;
+                    } else {
+                        returnMessage = context.getResources().getString(R.string.toast_not_time_yet) + " " + ((context.getResources().getInteger(R.integer.block_time_remaining) - (actualTime - f.getLastBlockedTime())) / 1000) + " s";
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException ignored) {}
+                        return new String[]{"false",returnMessage};
+                    }
+                } else {
+                    ArrayList<String> ids = new ArrayList<>();
+                    for (ModelPerson f : params) {
+                        f = ModelSessionData.getInstance().getFriends().get(f.getId());
+                        if (actualTime - f.getLastBlockedTime() > context.getResources().getInteger(R.integer.block_time_remaining) && f.getState().equals("A")) {
+                            ids.add(f.getId());
+                            f.setLastBlockedTime(actualTime);
+                            numBlocked++;
+                        }
+                    }
+                    returnMessage = context.getResources().getString(R.string.friends_blocked_number) + " " + numBlocked + "/" + params.length;
+                    if (numBlocked==0){
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException ignored) {}
+                        return new String[]{"false",returnMessage};
+                    }else{
+                        map.put("id_blocked", new JSONArray(Arrays.asList(ids.toArray())));
                     }
                 }
-                returnMessage = context.getResources().getString(R.string.friends_blocked_number) + " " + numBlocked + "/" + params.length;
-                if (numBlocked==0){
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException ignored) {}
-                    return new String[]{"false",returnMessage};
-                }
-            }
+                map.put("tag","block");
+                map.put("id_blocking", ModelSessionData.getInstance().getUser().getId());
+                map.put("message", message);
+                map.put("gifName",gifName);
+                new ConnectionController().makeHttpRequest(map);
+                return new String[]{"true",returnMessage};
 
-            map.put("userName", actualUser);
-            map.put("message", message);
-            map.put("gifName",gifName);
-
-            HttpURLConnection urlConnection = null;
-            URL url;
-            try {
-
-                JSONObject jsonObject = connection.makeHttpRequest("gcm.php", map);
-
-                switch (jsonObject.getInt("code")) {
-                    case 0:
-                        return new String[]{"true", returnMessage};
-                    case -1:
-                        return new String[]{"false", context.getResources().getString(R.string.gcm_not_registered)};
-                }
-
-            } catch (ConnectException e) {
-                returnMessage = context.getResources().getString(R.string.no_connection);
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-                try {
-                    urlConnection.disconnect();
-                } catch (Exception e) {
-                    e.printStackTrace(); //If you want further info on failure...
-                }
-            }
+            }catch (Exception ignored){}
         }else{
             returnMessage = context.getResources().getString(R.string.update_forced);
         }
@@ -139,11 +123,10 @@ public class TaskSendNotification extends AsyncTask<ModelPerson, String, String[
     protected void onPostExecute(String[] result){
         if (result[0].equals("false")){
             toast.error();
-            makeSnackbar(context, context.getCurrentFocus(), result[1], Snackbar.LENGTH_LONG);
+            if (!result[1].equals("")) makeSnackbar(context, context.getCurrentFocus(), result[1], Snackbar.LENGTH_LONG);
         }else{
             toast.success();
-            if (!result[1].equals("")) makeSnackbar(context,context.getCurrentFocus(),result[1],Snackbar.LENGTH_SHORT);
-
+            if (!result[1].equals("")) makeSnackbar(context, context.getCurrentFocus(), result[1], Snackbar.LENGTH_LONG);
             if (context instanceof ActivityFriendBlock){
                 ((ActivityFriendBlock)context).setTimer();
             }

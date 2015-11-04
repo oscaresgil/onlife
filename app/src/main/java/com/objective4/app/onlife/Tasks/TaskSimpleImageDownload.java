@@ -17,6 +17,7 @@ import com.objective4.app.onlife.R;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.entity.BufferedHttpEntity;
@@ -26,17 +27,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.net.ConnectException;
+import java.net.URL;
 
 import static com.objective4.app.onlife.Controller.StaticMethods.saveImage;
 
 public class TaskSimpleImageDownload extends AsyncTask<ModelPerson,Void,Bitmap> {
-    public String data = "";
-    private boolean connectionFailure=false;
     private Context context;
-    private WeakReference<ImageView> imageViewReference;
-    private int size;
-    private Bitmap imageBitmap;
     private RoundCornerProgressBar progressBar;
+    private WeakReference<ImageView> imageViewReference;
+    private String data = "";
+    private int size;
 
     public TaskSimpleImageDownload(Context context, ImageView avatar, int size) {
         this.context = context;
@@ -47,15 +47,16 @@ public class TaskSimpleImageDownload extends AsyncTask<ModelPerson,Void,Bitmap> 
     public TaskSimpleImageDownload(Context context, ImageView avatar, int size, RoundCornerProgressBar progressBar) {
         this.context = context;
         this.size = size;
-        imageViewReference = new WeakReference<>(avatar);
         this.progressBar = progressBar;
+        imageViewReference = new WeakReference<>(avatar);
     }
 
     @Override
     protected Bitmap doInBackground(ModelPerson... params) {
         ModelPerson p = params[0];
         data = p.getId();
-        String urlStr = p.getPhoto()+"width="+size+"&height="+size;
+
+        String urlStr = "http://graph.facebook.com/" + p.getId() + "/picture?"+"width="+size+"&height="+size;
 
         HttpClient client = new DefaultHttpClient();
         HttpGet request = new HttpGet(urlStr);
@@ -65,19 +66,17 @@ public class TaskSimpleImageDownload extends AsyncTask<ModelPerson,Void,Bitmap> 
             HttpEntity entity = response.getEntity();
             BufferedHttpEntity bufferedEntity = new BufferedHttpEntity(entity);
             InputStream inputStream = bufferedEntity.getContent();
-            imageBitmap = BitmapFactory.decodeStream(inputStream);
+            Bitmap imageBitmap = BitmapFactory.decodeStream(inputStream);
             saveImage(context, p.getId()+"_"+size, imageBitmap);
             return imageBitmap;
-        } catch(ConnectException e){
-            connectionFailure = true;
-        } catch (IOException e) {
+        } catch (IOException ignored) {
         }
         return null;
     }
 
     @Override
     protected void onPostExecute(Bitmap bitmap) {
-        if (!connectionFailure && bitmap!=null) {
+        if (bitmap!=null) {
             if (context instanceof ActivityFriendBlock) {
                 if (progressBar!=null){
                     Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
@@ -96,10 +95,9 @@ public class TaskSimpleImageDownload extends AsyncTask<ModelPerson,Void,Bitmap> 
                     bitmap = null;
                 }
                 if (imageViewReference != null && bitmap != null) {
-                    final ImageView imageView = imageViewReference.get();
-                    final TaskSimpleImageDownload bitmapWorkerTask =
-                            AdapterBaseElements.AsyncDrawable.getBitmapWorkerTask(imageView);
-                    if (this == bitmapWorkerTask && imageView != null) {
+                    ImageView imageView = imageViewReference.get();
+                    TaskSimpleImageDownload bitmapWorkerTask = AdapterBaseElements.AsyncDrawable.getBitmapWorkerTask(imageView);
+                    if (this == bitmapWorkerTask) {
                         Animation myFadeInAnimation = AnimationUtils.loadAnimation(context, R.anim.fadein);
                         imageView.startAnimation(myFadeInAnimation);
                         imageView.setImageBitmap(bitmap);
@@ -107,5 +105,9 @@ public class TaskSimpleImageDownload extends AsyncTask<ModelPerson,Void,Bitmap> 
                 }
             }
         }
+    }
+
+    public String getData() {
+        return data;
     }
 }

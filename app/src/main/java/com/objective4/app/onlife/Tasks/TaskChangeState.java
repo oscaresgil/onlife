@@ -1,41 +1,24 @@
 package com.objective4.app.onlife.Tasks;
 
 import android.os.AsyncTask;
+
 import com.objective4.app.onlife.Controller.ConnectionController;
+
 import org.json.JSONObject;
-import java.net.ConnectException;
-import java.util.HashMap;
 
-public class TaskChangeState extends AsyncTask<String,Void,Boolean> {
-    private ConnectionController connection;
-
-    public TaskChangeState() {
-        connection = new ConnectionController();
-    }
+public class TaskChangeState extends AsyncTask<String,Void,Void> {
 
     @Override
-    protected void onPreExecute() {
-        super.onPreExecute();
-    }
-
-    @Override
-    protected Boolean doInBackground(String ... params) {
-        String id = params[0];
-        String state = params[1];
-
-        HashMap<String,String> p = new HashMap<>();
-        p.put("tag", "changeState");
-        p.put("id", id);
-        p.put("state", state);
-
+    protected Void doInBackground(String ... params) {
         try{
-            JSONObject response = connection.makeHttpRequest("person.php", p);
-            return response.getBoolean("error");
-        }catch(ConnectException e){
-            return null;
-        }catch(Exception ex){
-            ex.printStackTrace();
-            return null;
+            JSONObject p = new JSONObject();
+            p.put("tag", "changeState");
+            p.put("id", params[0]);
+            p.put("state", params[1]);
+            p.put("location","");
+            new ConnectionController().makeHttpRequest(p);
+        }catch(Exception ignored){
         }
+        return null;
     }
 }

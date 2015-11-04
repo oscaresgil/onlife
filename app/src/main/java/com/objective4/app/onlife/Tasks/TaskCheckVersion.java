@@ -26,7 +26,6 @@ public class TaskCheckVersion extends AsyncTask<Void,Void,String> {
     protected String doInBackground(Void... params) {
         try {
             Document doc = Jsoup.connect("https://play.google.com/store/apps/details?id=com.objective4.app.onlife&hl=en")
-                    //.userAgent("Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/20070725 Firefox/2.0.0.6")
                     .referrer("http://www.google.com").get();
             return doc.select("div[itemprop=softwareVersion]").first().ownText();
         } catch (IOException ignored) {
@@ -71,19 +70,6 @@ public class TaskCheckVersion extends AsyncTask<Void,Void,String> {
                     }
                 }
             }
-
-            /*if (version != Double.parseDouble(sharedPreferences.getString("version_name", "0.0")) && version > actualVersion) {
-                editor.putString("version_name", "" + version).apply();
-                version = version * 10;
-                if (version % 2 == 0) {
-                    editor.putInt("update_key", 1).apply();
-                } else {
-                    editor.putInt("update_key", 2).apply();
-                }
-            } else {
-                if (sharedPreferences.contains("update_key"))
-                    editor.remove("update_key").apply();
-            }*/
         }
     }
 
