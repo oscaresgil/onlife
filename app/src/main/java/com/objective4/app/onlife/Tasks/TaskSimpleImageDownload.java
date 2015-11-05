@@ -15,16 +15,12 @@ import com.objective4.app.onlife.BlockActivity.ActivityFriendBlock;
 import com.objective4.app.onlife.Models.ModelPerson;
 import com.objective4.app.onlife.R;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.entity.BufferedHttpEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
-
+import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 import static com.objective4.app.onlife.Controller.StaticMethods.saveImage;
 
@@ -53,20 +49,27 @@ public class TaskSimpleImageDownload extends AsyncTask<ModelPerson,Void,Bitmap> 
         ModelPerson p = params[0];
         data = p.getId();
 
-        String urlStr = "http://graph.facebook.com/" + p.getId() + "/picture?"+"width="+size+"&height="+size;
+        String urlStr = "http://graph.facebook.com/" + p.getId() + "/picture?" + "width=" + size + "&height=" + size;
 
-        HttpClient client = new DefaultHttpClient();
-        HttpGet request = new HttpGet(urlStr);
-        HttpResponse response;
+        HttpURLConnection urlConnection = null;
+        URL url;
         try {
-            response = client.execute(request);
-            HttpEntity entity = response.getEntity();
-            BufferedHttpEntity bufferedEntity = new BufferedHttpEntity(entity);
-            InputStream inputStream = bufferedEntity.getContent();
-            Bitmap imageBitmap = BitmapFactory.decodeStream(inputStream);
-            saveImage(context, p.getId()+"_"+size, imageBitmap);
+            url = new URL(urlStr);
+            urlConnection = (HttpURLConnection) url.openConnection();
+            urlConnection.setDoOutput(true);
+            urlConnection.setDoInput(true);
+            urlConnection.setRequestMethod("GET");
+
+            InputStream is = new BufferedInputStream(urlConnection.getInputStream());
+            Bitmap imageBitmap = BitmapFactory.decodeStream(is);
+            saveImage(context, p.getId() + "_" + size, imageBitmap);
             return imageBitmap;
-        } catch (IOException ignored) {
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            assert urlConnection != null;
+            urlConnection.disconnect();
         }
         return null;
     }
