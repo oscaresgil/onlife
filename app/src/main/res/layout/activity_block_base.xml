@@ -32,7 +32,8 @@
                     android:layout_height="10dp"
                     app:rcBackgroundColor="@color/background_material_light"
                     app:rcProgressColor="@color/primary"
-                    android:clickable="false" />
+                    android:clickable="false"
+                    android:layout_margin="-10dp"/>
                 <android.support.v7.widget.CardView
                     android:id="@+id/ActivityBlockBase_CardViewMessage"
                     android:layout_width="match_parent"

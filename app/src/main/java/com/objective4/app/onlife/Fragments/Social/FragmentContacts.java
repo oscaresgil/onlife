@@ -31,7 +31,12 @@ import com.objective4.app.onlife.R;
 import com.objective4.app.onlife.Tasks.TaskRefresh;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import static com.objective4.app.onlife.Controller.StaticMethods.getModelPersonIndex;
@@ -127,6 +132,27 @@ public class FragmentContacts extends Fragment {
                 }else{
                     addFriends.setVisibility(View.GONE);
                 }
+            } else if("friends_state".equals(tag)){
+                String data = extras.getString("friends_state");
+                JSONObject dataObject = null;
+                try {
+                    dataObject = new JSONObject(data);
+                    JSONArray dataArray = dataObject.getJSONArray("states");
+                    HashMap<String, ModelPerson> friends = ModelSessionData.getInstance().getFriends();
+                    for (int i=0; i<dataArray.length(); i++){
+                        JSONObject actualFriendObject = (JSONObject) dataArray.get(i);
+                        String id = actualFriendObject.getString("id");
+                        String state = actualFriendObject.getString("state");
+
+                        ModelPerson actualFriend = friends.get(id);
+                        if (!actualFriend.getState().equals(state)){
+                            actualFriend.setState(state);
+                            adapter.notifyItemChanged(getModelPersonIndex(setHashToList(ModelSessionData.getInstance().getFriends()), id));
+                        }
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         }
     };
@@ -136,26 +162,6 @@ public class FragmentContacts extends Fragment {
     public void onResume() {
         super.onResume();
         mSwipeRefreshLayout = (SwipeRefreshLayout) getActivity().findViewById(R.id.FragmentContacts_SwipeRefreshLayout);
-
-        /*listView.setOnScrollListener(new RecyclerView.OnScrollListener() {
-
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                boolean enable = false;
-                if (listView != null && listView.getChildCount() > 0) {
-
-                    android.support.v7.app.ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
-                    boolean firstItemVisible = actionBar.isShowing();
-                    boolean topOfFirstItemVisible = listView.getChildAt(0).getTop() == 0;
-                    enable = firstItemVisible && topOfFirstItemVisible;
-
-                    addFriends= (TextView)getActivity().findViewById(R.id.addFriendsButton);
-                    addFriends.setVisibility(View.INVISIBLE);
-                }
-                mSwipeRefreshLayout.setEnabled(enable);
-            }
-
-        });*/
         mSwipeRefreshLayout.setColorSchemeResources(R.color.accent, R.color.primary, R.color.primary_dark);
         mSwipeRefreshLayout.setSize(R.integer.fragment_contacts_size_refresh_layout);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {

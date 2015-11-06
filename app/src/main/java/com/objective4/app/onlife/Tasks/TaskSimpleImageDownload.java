@@ -21,6 +21,7 @@ import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLConnection;
 
 import static com.objective4.app.onlife.Controller.StaticMethods.saveImage;
 
@@ -49,27 +50,15 @@ public class TaskSimpleImageDownload extends AsyncTask<ModelPerson,Void,Bitmap> 
         ModelPerson p = params[0];
         data = p.getId();
 
-        String urlStr = "http://graph.facebook.com/" + p.getId() + "/picture?" + "width=" + size + "&height=" + size;
+        String urlStr = "https://graph.facebook.com/" + p.getId() + "/picture?" + "width=" + size + "&height=" + size;
 
-        HttpURLConnection urlConnection = null;
-        URL url;
         try {
-            url = new URL(urlStr);
-            urlConnection = (HttpURLConnection) url.openConnection();
-            urlConnection.setDoOutput(true);
-            urlConnection.setDoInput(true);
-            urlConnection.setRequestMethod("GET");
-
-            InputStream is = new BufferedInputStream(urlConnection.getInputStream());
-            Bitmap imageBitmap = BitmapFactory.decodeStream(is);
+            Bitmap imageBitmap = BitmapFactory.decodeStream(new URL(urlStr).openConnection().getInputStream());
             saveImage(context, p.getId() + "_" + size, imageBitmap);
             return imageBitmap;
 
         } catch (IOException e) {
             e.printStackTrace();
-        } finally {
-            assert urlConnection != null;
-            urlConnection.disconnect();
         }
         return null;
     }

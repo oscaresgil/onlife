@@ -27,6 +27,7 @@ import android.widget.TextView;
 import com.facebook.share.model.AppInviteContent;
 import com.facebook.share.widget.AppInviteDialog;
 import com.objective4.app.onlife.BroadcastReceivers.BroadcastReceiverPhoneStatus;
+import com.objective4.app.onlife.BroadcastReceivers.BroadcastReceiverPing;
 import com.objective4.app.onlife.Models.ModelGroup;
 import com.objective4.app.onlife.Models.ModelPerson;
 import com.objective4.app.onlife.R;
@@ -200,6 +201,11 @@ public class StaticMethods {
 
         BroadcastReceiver receiver = new BroadcastReceiverPhoneStatus();
         context.registerReceiver(receiver,filter);
+    }
+
+    public static void activatePingBroadcast(Context context){
+        BroadcastReceiver receiver = new BroadcastReceiverPing();
+        context.registerReceiver(receiver,new IntentFilter("com.objective4.app.onlife.BroadcastReceivers.BroadcastReceiverPing"));
     }
 
     public static SlidrInterface setSlidr(Context context){

@@ -7,15 +7,20 @@ import android.app.admin.DevicePolicyManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.hardware.display.DisplayManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.PowerManager;
+import android.view.Display;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.objective4.app.onlife.BlockActivity.ActivityInBlock;
+import com.objective4.app.onlife.BroadcastReceivers.BroadcastReceiverPing;
 import com.objective4.app.onlife.Models.ModelGroup;
 import com.objective4.app.onlife.Models.ModelPerson;
 import com.objective4.app.onlife.R;
+import com.objective4.app.onlife.Tasks.TaskChangeState;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -98,6 +103,14 @@ public class GcmMessageHandler extends IntentService {
                     sendBroadcast(i2);
                     break;
                 }
+                case "ping":{
+                    String idP = extras.getString("id");
+                    if (isScreenOn(getApplicationContext())) {
+                        Intent pingIntent = new Intent("com.objective4.app.onlife.BroadcastReceivers.BroadcastReceiverPing");
+                        pingIntent.putExtra("id", idP);
+                        sendBroadcast(pingIntent);
+                    }
+                }
             }
         }
     }
@@ -142,5 +155,26 @@ public class GcmMessageHandler extends IntentService {
         startActivity(i);
     }
 
+    /**
+     * Is the screen of the device on.
+     * @param context the context
+     * @return true when (at least one) screen is on
+     */
+    public boolean isScreenOn(Context context) {
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
+            DisplayManager dm = (DisplayManager) context.getSystemService(Context.DISPLAY_SERVICE);
+            boolean screenOn = false;
+            for (Display display : dm.getDisplays()) {
+                if (display.getState() != Display.STATE_OFF) {
+                    screenOn = true;
+                }
+            }
+            return screenOn;
+        } else {
+            PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+            //noinspection deprecation
+            return pm.isScreenOn();
+        }
+    }
 
 }

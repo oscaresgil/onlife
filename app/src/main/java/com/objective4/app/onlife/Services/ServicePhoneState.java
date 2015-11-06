@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.IBinder;
 
 import static com.objective4.app.onlife.Controller.StaticMethods.activatePhoneBroadcast;
+import static com.objective4.app.onlife.Controller.StaticMethods.activatePingBroadcast;
 
 public class ServicePhoneState extends Service {
 
@@ -12,6 +13,7 @@ public class ServicePhoneState extends Service {
     public void onCreate() {
         super.onCreate();
         activatePhoneBroadcast(this);
+        activatePingBroadcast(this);
     }
 
     @Override

@@ -38,6 +38,7 @@ import com.objective4.app.onlife.R;
 import com.objective4.app.onlife.Services.ServicePhoneState;
 import com.objective4.app.onlife.Tasks.TaskChangeState;
 import com.objective4.app.onlife.Tasks.TaskGetFriends;
+import com.objective4.app.onlife.Tasks.TaskGetState;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -96,6 +97,8 @@ public class ActivityHome extends AppCompatActivity{
         }
 
         ModelSessionData.initInstance(userLogin, hashMap, groups);
+
+        new TaskGetState(this).execute(ModelSessionData.getInstance().getUser().getId());
 
         ViewPager viewPager = (ViewPager) findViewById(R.id.ActivityHome_ViewPager);
         tabLayout = (TabLayout) findViewById(R.id.ActivityHome_SlindingTabs);
