@@ -115,10 +115,10 @@ public class ActivityHome extends AppCompatActivity{
         super.onResume();
         isRunning = true;
         registerReceiver(broadcastReceiver, new IntentFilter("com.objective4.app.onlife.Activities.ActivityHome"));
-        if (sharedPreferences.contains("update_key")){
+        /*if (sharedPreferences.contains("update_key")){
             int val = sharedPreferences.getInt("update_key",0);
             setDialogUpdate(val);
-        }
+        }*/
         AppEventsLogger.activateApp(this);
     }
 
@@ -210,9 +210,9 @@ public class ActivityHome extends AppCompatActivity{
                                     .title(getResources().getString(R.string.settings_option_uninstall) + "?")
                                     .content(R.string.really_delete)
                                     .positiveText(R.string.yes)
-                                    .positiveColorRes(R.color.black)
+                                    .positiveColorRes(R.color.accent)
                                     .negativeText(R.string.no)
-                                    .negativeColorRes(R.color.accent)
+                                    .negativeColorRes(R.color.black)
                                     .callback(new MaterialDialog.ButtonCallback() {
                                         @Override
                                         public void onPositive(MaterialDialog dialog) {

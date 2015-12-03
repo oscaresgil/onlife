@@ -2,6 +2,7 @@
 <!--http://www.hermosaprogramacion.com/2015/06/toolbar-en-android-creacion-de-action-bar-en-material-design/-->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/ActivityBlockBase_RelativeLayoutMain"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -32,6 +33,7 @@
                     android:layout_height="10dp"
                     app:rcBackgroundColor="@color/background_material_light"
                     app:rcProgressColor="@color/primary"
+                    app:rcRadius="0dp"
                     android:clickable="false"
                     android:layout_margin="-10dp"/>
                 <android.support.v7.widget.CardView
@@ -53,7 +55,7 @@
                             android:layout_width="wrap_content"
                             android:layout_margin="15dp"
                             android:layout_gravity="center"
-                            android:background="@drawable/circle_shape_drawable" />
+                            android:background="@drawable/ic_insert_emoticon_black_24dp" />
                         <RelativeLayout
                             android:id="@+id/ActivityBlockBase_RelativeLayoutMessage"
                             android:layout_width="match_parent"
@@ -125,7 +127,8 @@
             android:layout_height="@dimen/activity_friend_block_app_bar_layout_height"
             android:layout_width="match_parent"
             android:fitsSystemWindows="true"
-            android:elevation="4dp">
+            android:elevation="4dp"
+            tools:ignore="UnusedAttribute">
 
             <android.support.design.widget.CollapsingToolbarLayout
                 android:id="@+id/ActivityBlockBase_CollapsingToolBarLayout"
@@ -170,14 +173,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="block"
-            android:layout_marginRight="10dp"
-            android:layout_marginEnd="10dp"
+            android:layout_marginRight="@dimen/activity_block_base_floating_button_marginRight"
+            android:layout_marginEnd="@dimen/activity_block_base_floating_button_marginRight"
             android:src="@drawable/ic_lock_black_24dp"
             app:borderWidth="@dimen/activity_friend_block_fab_block_border"
-            app:backgroundTint="@color/primary"
+            app:backgroundTint="@color/accent"
             app:layout_anchor="@id/ActivityBlockBase_AppBar"
             app:layout_anchorGravity="bottom|right|end"
-            app:elevation="6dp"
+            app:elevation="@dimen/activity_block_base_floating_button_elevation"
             android:focusable="true" />
     </android.support.design.widget.CoordinatorLayout>
 </RelativeLayout>
