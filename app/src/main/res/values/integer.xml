@@ -31,7 +31,7 @@
     <integer name="adapter_contact_size_size">2</integer>
 
     <!-- Remaining time: 1.5s -->
-    <integer name="block_time_remaining">90000</integer>
+    <integer name="block_time_remaining">45000</integer>
     <integer name="block_time_group_remaining">65000</integer>
 
     <!-- Adapter Num Fragments -->
