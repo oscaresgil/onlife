@@ -1,56 +1,62 @@
 package com.objective4.app.onlife.Adapters;
 
 import android.content.Context;
+import android.graphics.BitmapFactory;
+import android.graphics.Typeface;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.objective4.app.onlife.Listeners.ListenerFlipCheckbox;
 import com.objective4.app.onlife.Models.ModelPerson;
 import com.objective4.app.onlife.R;
+import com.objective4.app.onlife.Tasks.TaskSimpleImageDownload;
 
 import java.util.List;
 
 import ca.barrenechea.widget.recyclerview.decoration.StickyHeaderAdapter;
 
+import static com.objective4.app.onlife.Controller.StaticMethods.imageInDisk;
 import static com.objective4.app.onlife.Controller.StaticMethods.loadImage;
 
 public class AdapterStickyTitle extends RecyclerView.Adapter<AdapterStickyTitle.ViewHolder> implements StickyHeaderAdapter<AdapterStickyTitle.HeaderHolder> {
-    private RecyclerView recyclerView;
-    private LayoutInflater mInflater;
     private Context context;
     private List<ModelPerson> friends;
-    private ListenerFlipCheckbox listener;
-    private Animation animation1;
 
-    public AdapterStickyTitle(Context context, RecyclerView recyclerView, List<ModelPerson> friends, ListenerFlipCheckbox listener, Animation animation1) {
-        mInflater = LayoutInflater.from(context);
+    public AdapterStickyTitle(Context context, List<ModelPerson> friends) {
         this.context = context;
-        this.recyclerView = recyclerView;
         this.friends = friends;
-        this.animation1 = animation1;
-        this.listener = listener;
     }
 
-    @Override public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        View view = mInflater.inflate(R.layout.layout_select_contact_group, viewGroup, false);
-        view.setOnClickListener(new OnClick(recyclerView));
-        return new ViewHolder(view);
+    @Override public ViewHolder onCreateViewHolder(ViewGroup parent, int i) {
+        return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_select_contact_group,parent,false));
     }
 
     @Override public void onBindViewHolder(ViewHolder viewHolder, int i) {
         viewHolder.textView.setText(friends.get(i).getName());
-        /*if (!friends.get(i).isHomeSelected()){
-            viewHolder.imageView.setImageBitmap(BitmapFactory.decodeResource(context.getResources(),R.drawable.ic_navigation_check));
+        ModelPerson userData = friends.get(i);
+
+        if (userData.isSelected()){
+            viewHolder.imageView.setImageBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_action_done_large));
         }
-        else{*/
-            viewHolder.imageView.setImageBitmap(loadImage(context, friends.get(i).getId()+"_"+context.getResources().getInteger(R.integer.adapter_contact_size_large)));
-        //}
+        else{
+            if (!imageInDisk(context,userData.getId() + "_" + context.getResources().getInteger(R.integer.adapter_contact_size_little))){
+                if (AdapterBaseElements.AsyncDrawable.cancelPotentialWork(userData.getId(), viewHolder.imageView)){
+                    final TaskSimpleImageDownload task = new TaskSimpleImageDownload(context,viewHolder.imageView,context.getResources().getInteger(R.integer.adapter_contact_size_little));
+                    final AdapterBaseElements.AsyncDrawable asyncDrawable = new AdapterBaseElements.AsyncDrawable(context.getResources(), BitmapFactory.decodeResource(context.getResources(), R.drawable.loading_friend_icon),task);
+                    viewHolder.imageView.setImageDrawable(asyncDrawable);
+                    task.execute(userData);
+                    userData.setRefreshImage(false);
+                }
+            }else{
+                viewHolder.imageView.setImageBitmap(loadImage(context, userData.getId() + "_" + context.getResources().getInteger(R.integer.adapter_contact_size_little)));
+            }
+        }
     }
 
     @Override public int getItemCount() {
@@ -62,52 +68,46 @@ public class AdapterStickyTitle extends RecyclerView.Adapter<AdapterStickyTitle.
     }
 
     @Override public HeaderHolder onCreateHeaderViewHolder(ViewGroup parent) {
-        View view = mInflater.inflate(R.layout.textview_header_title, parent, false);
-        return new HeaderHolder(view);
+        return new HeaderHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_header_select_friends, parent, false));
     }
 
     @Override public void onBindHeaderViewHolder(HeaderHolder viewholder, int position) {
         viewholder.header.setText(Character.toString ((char) getHeaderId(position)));
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder {
+    public void setFriends(List<ModelPerson> friends){
+        this.friends = friends;
+        notifyDataSetChanged();
+    }
+
+    class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public TextView textView;
         public ImageView imageView;
 
         public ViewHolder(View itemView) {
             super(itemView);
+            CardView cardView = (CardView) itemView;
+            cardView.setOnClickListener(this);
+            imageView = (ImageView) cardView.findViewById(R.id.LayoutSelectContactGroup_ImageViewFriend);
+            textView = (TextView) cardView.findViewById(R.id.LayoutSelectContactGroup_TextViewNameFriend);
+            textView.setTypeface(Typeface.createFromAsset(context.getAssets(), "fonts/oldrepublic.ttf"));
+        }
 
-            LinearLayout linearLayout = (LinearLayout) itemView;
-            imageView = (ImageView) linearLayout.findViewById(R.id.LayoutBase_ImageViewFriend);
-            textView = (TextView) linearLayout.findViewById(R.id.LayoutBase_TextViewNameFriend);
+        @Override
+        public void onClick(View v) {
+            ModelPerson actualFriend = friends.get(getLayoutPosition());
+            actualFriend.setSelected(!actualFriend.isSelected());
+            new ListenerFlipCheckbox(context, AnimationUtils.loadAnimation(context, R.anim.flip_left_out),AnimationUtils.loadAnimation(context, R.anim.flip_left_in)).setFriendAndView(actualFriend, (ImageView) v.findViewById(R.id.LayoutSelectContactGroup_ImageViewFriend));
         }
     }
 
-    class HeaderHolder extends RecyclerView.ViewHolder {
+    class HeaderHolder extends RecyclerView.ViewHolder{
         public TextView header;
 
         public HeaderHolder(View itemView) {
             super(itemView);
-            header = (TextView) itemView;
-        }
-    }
-
-    class OnClick implements View.OnClickListener{
-        private RecyclerView recyclerView;
-        public OnClick(RecyclerView recyclerView){
-            this.recyclerView = recyclerView;
-        }
-        @Override
-        public void onClick(View v) {
-            int item = recyclerView.getChildAdapterPosition(v);
-            friends.get(item).setSelected(!friends.get(item).isSelected());
-
-            /*RatioImageView avatar = (RatioImageView) v.findViewById(R.id.LayoutBase_ImageViewFriend);
-            listener.setFriend(friends.get(item));
-            listener.setView(avatar);
-            avatar.clearAnimation();
-            avatar.setAnimation(animation1);
-            avatar.startAnimation(animation1);*/
+            header = (TextView) itemView.findViewById(R.id.LayoutHeader_TextView);
+            header.setTypeface(Typeface.createFromAsset(context.getAssets(), "fonts/oldrepublic.ttf"));
         }
     }
 }

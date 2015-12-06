@@ -46,4 +46,7 @@
     <!-- Animation Fade In Images Integer -->
     <integer name="fade_in_animation_duration">1500</integer>
 
+    <!-- Message Length -->
+    <integer name="message_max_chars">70</integer>
+
 </resources>

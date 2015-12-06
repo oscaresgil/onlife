@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-     android:layout_height="match_parent"
-     android:layout_width="match_parent"
-    android:background="@color/background_gray">
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/FragmentGroups_CoordinatorLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_material_light">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/FragmentGroups_ListGroup"
@@ -11,15 +12,16 @@
         android:layout_height="wrap_content"
         android:background="@color/background_gray"/>
 
-    <!--<com.melnykov.fab.FloatingActionButton
+    <android.support.design.widget.FloatingActionButton
         xmlns:fab="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/FragmentGroup_ButtonAddGroup"
+        android:id="@+id/FragmentGroups_FAB"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="right"
-        android:layout_marginBottom="?attr/actionBarSize"
-        android:src="@drawable/ic_add_black_24dp"
-        fab:fab_colorNormal="@color/primary"
-        fab:fab_colorPressed="@color/primary_dark" />-->
+        android:layout_margin="15dp"
+        android:layout_gravity="bottom|end"
+        android:src="@drawable/ic_group_add_black_24dp"
+        fab:borderWidth="@dimen/activity_friend_block_fab_block_border"
+        fab:backgroundTint="@color/primary"
+        fab:elevation="6dp" />
 
-</FrameLayout>
+</android.support.design.widget.CoordinatorLayout>

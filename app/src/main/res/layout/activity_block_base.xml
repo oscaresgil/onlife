@@ -98,14 +98,12 @@
                     android:layout_height="match_parent"
                     android:orientation="vertical"
                     android:visibility="gone">
-                    <it.neokree.materialtabs.MaterialTabHost
+                    <android.support.design.widget.TabLayout
+                        style="@style/HomeTabLayoutStyle"
                         android:id="@+id/ActivityBlockBase_TabHost"
                         android:layout_width="match_parent"
-                        android:layout_height="65dp"
-                        app:iconColor="@color/black"
-                        app:primaryColor="@color/white"
-                        app:accentColor="@color/primary"
-                        app:hasIcons="true"/>
+                        android:layout_height="wrap_content"
+                        app:tabTextAppearance="@style/IconText"/>
                     <android.support.v4.view.ViewPager
                         android:id="@+id/ActivityBlockBase_ViewPager"
                         android:layout_width="match_parent"

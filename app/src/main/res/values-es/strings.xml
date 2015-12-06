@@ -51,7 +51,7 @@
     <string name="refresh_contact">Actualizar contactos</string>
 
     <string name="send_a_message_bar">Envía un mensaje…</string>
-    <string name="message_max_characters">Solo 30 caracteres por favor</string>
+    <string name="message_max_characters">Solo 70 caracteres por favor</string>
     <string name="button_change_text_message">Cambiar Texto</string>
     <string name="button_block">Bloquear!</string>
     <string name="friend_inactive">Amigo Inactivo</string>
@@ -106,5 +106,6 @@
     <string name="update_playservices">Google Play Services no actualizado</string>
     <string name="notification_has_blocked">te ha bloqueado.</string>
     <string name="see_privacy_policy">Politicas de Privacidad</string>
+    <string name="settings_select_contacts">Seleccionar amigos</string>
 
 </resources>

@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.provider.Settings;
@@ -20,7 +19,6 @@ import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.view.inputmethod.EditorInfo;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
@@ -147,7 +145,7 @@ public class ActivityFriendBlock extends ActivityBlockBase<ModelPerson> {
     public void block(View view) {
         if (isNetworkAvailable(this)) {
             hideSoftKeyboard(this,messageTextView);
-            if (listenerTextWatcher.getActualChar() < 31) {
+            if (listenerTextWatcher.getActualChar() < getResources().getInteger(R.integer.message_max_chars)+1) {
                 boolean devAdmin = checkDeviceAdmin(this);
                 if (actualObject.getState().equals("A") && devAdmin) {
                     try {
@@ -186,6 +184,7 @@ public class ActivityFriendBlock extends ActivityBlockBase<ModelPerson> {
         nestedScrollView.setNestedScrollingEnabled(false);
         nestedScrollView.setSmoothScrollingEnabled(false);
         blockFab.setClickable(false);
+        emoticonButton.setEnabled(false);
 
         long actualTime = Calendar.getInstance().getTimeInMillis();
         int time = (int) (actualTime - actualObject.getLastBlockedTime());
@@ -204,6 +203,7 @@ public class ActivityFriendBlock extends ActivityBlockBase<ModelPerson> {
                 nestedScrollView.setNestedScrollingEnabled(true);
                 nestedScrollView.setSmoothScrollingEnabled(true);
                 blockFab.setClickable(true);
+                emoticonButton.setEnabled(true);
             }
         }.start();
     }

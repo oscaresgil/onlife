@@ -1,10 +1,9 @@
 package com.objective4.app.onlife.BlockActivity;
 
-import android.graphics.Bitmap;
 import android.graphics.Typeface;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.NestedScrollView;
@@ -24,12 +23,7 @@ import com.objective4.app.onlife.Models.ModelSessionData;
 import com.objective4.app.onlife.R;
 import com.r0adkll.slidr.model.SlidrInterface;
 
-import it.neokree.materialtabs.MaterialTab;
-import it.neokree.materialtabs.MaterialTabHost;
-import it.neokree.materialtabs.MaterialTabListener;
-
 import static com.objective4.app.onlife.Controller.StaticMethods.animationEnd;
-import static com.objective4.app.onlife.Controller.StaticMethods.decodeDrawable;
 import static com.objective4.app.onlife.Controller.StaticMethods.hideSoftKeyboard;
 import static com.objective4.app.onlife.Controller.StaticMethods.setSlidr;
 
@@ -47,9 +41,10 @@ public class ActivityBlockBase<T> extends AppCompatActivity {
     protected EditText messageTextView;
     protected ListenerTextWatcher listenerTextWatcher;
     protected TextView maxCharsView;
+    protected ImageButton emoticonButton;
 
     protected boolean emoticonFlag = false;
-    protected MaterialTabHost tabHost;
+    protected TabLayout tabHost;
     protected ViewPager viewPager;
     protected SlidrInterface slidrInterface;
     protected String emoticonName="";
@@ -79,7 +74,7 @@ public class ActivityBlockBase<T> extends AppCompatActivity {
         emoticon = (ImageView) findViewById(R.id.ActivityBlockBase_EmoticonImage);
 
         emoticonLayout = (LinearLayout) findViewById(R.id.ActivityBlockBase_LayoutEmoticon);
-        tabHost = (MaterialTabHost) findViewById(R.id.ActivityBlockBase_TabHost);
+        tabHost = (TabLayout) findViewById(R.id.ActivityBlockBase_TabHost);
         viewPager = (ViewPager) findViewById(R.id.ActivityBlockBase_ViewPager);
         viewPager.setAdapter(null);
 
@@ -90,7 +85,7 @@ public class ActivityBlockBase<T> extends AppCompatActivity {
         listenerTextWatcher = new ListenerTextWatcher(this, maxCharsView, messageTextView);
         messageTextView.addTextChangedListener(listenerTextWatcher);
 
-        ImageButton emoticonButton = (ImageButton) findViewById(R.id.ActivityBlockBase_EmoticonButton);
+        emoticonButton = (ImageButton) findViewById(R.id.ActivityBlockBase_EmoticonButton);
         emoticonButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -116,9 +111,12 @@ public class ActivityBlockBase<T> extends AppCompatActivity {
 
     protected void setEmoticonTab(){
         if (viewPager.getAdapter() == null){
+
             AdapterFragmentEmoticon adapter = new AdapterFragmentEmoticon(getSupportFragmentManager(),this);
             viewPager.setAdapter(adapter);
-            viewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+            tabHost.setupWithViewPager(viewPager);
+
+            /*viewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
                 @Override
                 public void onPageSelected(int position) {
                     tabHost.setSelectedNavigationItem(position);
@@ -143,7 +141,7 @@ public class ActivityBlockBase<T> extends AppCompatActivity {
 
                     }
                 }));
-            }
+            }*/
         }
     }
 

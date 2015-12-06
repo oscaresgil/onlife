@@ -201,7 +201,7 @@ public class ActivityGroupBlock extends ActivityBlockBase<ModelGroup> {
         if (isNetworkAvailable(this)) {
             hideSoftKeyboard(this,messageTextView);
             boolean devAdmin = checkDeviceAdmin(this);
-            if (listenerTextWatcher.getActualChar() <= 30 && devAdmin) {
+            if (listenerTextWatcher.getActualChar() <= getResources().getInteger(R.integer.message_max_chars) && devAdmin) {
                 try {
                     new TaskSendNotification(ActivityGroupBlock.this, messageTextView.getText().toString(),emoticonName).execute(friendsInGroup.toArray(new ModelPerson[friendsInGroup.size()]));
                     messageTextView.setText("");

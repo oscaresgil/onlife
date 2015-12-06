@@ -42,6 +42,7 @@ import java.util.List;
 import static com.objective4.app.onlife.Controller.StaticMethods.getModelPersonIndex;
 import static com.objective4.app.onlife.Controller.StaticMethods.isNetworkAvailable;
 import static com.objective4.app.onlife.Controller.StaticMethods.makeSnackbar;
+import static com.objective4.app.onlife.Controller.StaticMethods.performSearch;
 import static com.objective4.app.onlife.Controller.StaticMethods.setHashToList;
 import static com.objective4.app.onlife.Controller.StaticMethods.showSoftKeyboard;
 
@@ -143,20 +144,22 @@ public class FragmentContacts extends Fragment {
                         JSONObject actualFriendObject = (JSONObject) dataArray.get(i);
                         String id = actualFriendObject.getString("id");
                         String state = actualFriendObject.getString("state");
-
-                        ModelPerson actualFriend = friends.get(id);
-                        if (!actualFriend.getState().equals(state)){
-                            actualFriend.setState(state);
-                            adapter.notifyItemChanged(getModelPersonIndex(setHashToList(ModelSessionData.getInstance().getFriends()), id));
+                        if (friends.containsKey(id)){
+                            ModelPerson actualFriend = friends.get(id);
+                            if (actualFriend!=null && !actualFriend.getState().equals(state)){
+                                actualFriend.setState(state);
+                                adapter.notifyItemChanged(getModelPersonIndex(setHashToList(ModelSessionData.getInstance().getFriends()), id));
+                            }
                         }
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+            } else if("remove_search".equals(tag)){
+                handleMenuSearch();
             }
         }
     };
-
 
     @Override
     public void onResume() {
@@ -186,7 +189,6 @@ public class FragmentContacts extends Fragment {
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
         mSearchAction = menu.findItem(R.id.MenuHome_SearchContact);
-        menu.findItem(R.id.MenuHome_AddGroup).setVisible(false);
         super.onPrepareOptionsMenu(menu);
     }
 
@@ -198,29 +200,6 @@ public class FragmentContacts extends Fragment {
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    public List<ModelPerson> performSearch(List<ModelPerson> actualFriends, String query){
-        String[] queryByWords = query.toLowerCase().split("\\s+");
-        List<ModelPerson> filtred = new ArrayList<>();
-        for (ModelPerson actual: actualFriends){
-            String content = (actual.getName()).toLowerCase();
-
-            for (String word: queryByWords){
-                int numberOfMatches = queryByWords.length;
-                if (content.contains(word)){
-                    numberOfMatches--;
-                }
-                else{
-                    break;
-                }
-
-                if (numberOfMatches == 0){
-                    filtred.add(actual);
-                }
-            }
-        }
-        return filtred;
     }
 
     public void handleMenuSearch(){
@@ -288,10 +267,4 @@ public class FragmentContacts extends Fragment {
             });
         }
     }
-
-    public static void setIsSearchOpened(boolean isSearchOpened) {
-        FragmentContacts.isSearchOpened = isSearchOpened;
-    }
-
-
 }

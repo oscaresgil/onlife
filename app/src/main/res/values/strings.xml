@@ -57,8 +57,8 @@
     <string name="refresh_contact">Refresh contacts</string>
 
     <string name="send_a_message_bar">Send a message…</string>
-    <string name="max_characters_text" translatable="false">0/30</string>
-    <string name="message_max_characters">Only 30 characters please</string>
+    <string name="max_characters_text" translatable="false">0/70</string>
+    <string name="message_max_characters">Only 70 characters please</string>
     <string name="button_change_text_message">Change Text</string>
     <string name="button_block">Lock!</string>
     <string name="friend_inactive">Inactive Friend</string>
@@ -112,5 +112,6 @@
     <string name="notification_has_blocked">has blocked you.</string>
     <string name="see_tutorial" translatable="false">Tutorial</string>
     <string name="see_privacy_policy">Privacy Policy</string>
+    <string name="settings_select_contacts">Select friends</string>
 
 </resources>

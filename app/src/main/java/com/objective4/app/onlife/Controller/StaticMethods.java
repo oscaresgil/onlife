@@ -430,4 +430,27 @@ public class StaticMethods {
         }
         return hashMap;
     }
+
+    public static List<ModelPerson> performSearch(List<ModelPerson> actualFriends, String query){
+        String[] queryByWords = query.toLowerCase().split("\\s+");
+        List<ModelPerson> filtred = new ArrayList<>();
+        for (ModelPerson actual: actualFriends){
+            String content = (actual.getName()).toLowerCase();
+
+            for (String word: queryByWords){
+                int numberOfMatches = queryByWords.length;
+                if (content.contains(word)){
+                    numberOfMatches--;
+                }
+                else{
+                    break;
+                }
+
+                if (numberOfMatches == 0){
+                    filtred.add(actual);
+                }
+            }
+        }
+        return filtred;
+    }
 }

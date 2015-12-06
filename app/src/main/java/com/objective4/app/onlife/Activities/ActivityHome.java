@@ -13,6 +13,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -30,6 +31,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.objective4.app.onlife.Adapters.AdapterBaseElements;
 import com.objective4.app.onlife.Adapters.AdapterFragmentPager;
+import com.objective4.app.onlife.Fragments.Social.FragmentContacts;
 import com.objective4.app.onlife.Fragments.Social.FragmentGroups;
 import com.objective4.app.onlife.Models.ModelGroup;
 import com.objective4.app.onlife.Models.ModelPerson;
@@ -54,7 +56,7 @@ import static com.objective4.app.onlife.Controller.StaticMethods.setHashToList;
 import static com.objective4.app.onlife.Controller.StaticMethods.setListToHash;
 import static com.objective4.app.onlife.Controller.StaticMethods.unSelectFriends;
 
-public class ActivityHome extends AppCompatActivity{
+public class ActivityHome extends AppCompatActivity implements ViewPager.OnPageChangeListener{
     public static boolean isRunning=false;
 
     private ModelPerson userLogin;
@@ -63,6 +65,8 @@ public class ActivityHome extends AppCompatActivity{
     private AdapterBaseElements adapterGroup;
     private Dialog updateForcedDialog,updateOptionalDialog;
     private TabLayout tabLayout;
+
+    private int fragmentPage = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,6 +108,8 @@ public class ActivityHome extends AppCompatActivity{
         tabLayout = (TabLayout) findViewById(R.id.ActivityHome_SlindingTabs);
         viewPager.setAdapter(new AdapterFragmentPager(getSupportFragmentManager(), this));
         tabLayout.setupWithViewPager(viewPager);
+
+        viewPager.addOnPageChangeListener(this);
 
         if (sharedPreferences.getInt("update_key",0)==1){
             setDialogUpdate(1);
@@ -190,6 +196,10 @@ public class ActivityHome extends AppCompatActivity{
                 .icon(R.drawable.ic_perm_device_information_black_48dp)
                 .build());
         materialAdapter.add(new MaterialSimpleListItem.Builder(this)
+                .content(R.string.settings_select_contacts)
+                .icon(R.drawable.ic_contacts_black_48dp)
+                .build());
+        materialAdapter.add(new MaterialSimpleListItem.Builder(this)
                 .content(R.string.settings_option_uninstall)
                 .icon(R.drawable.ic_phonelink_erase_black_48dp)
                 .build());
@@ -202,10 +212,13 @@ public class ActivityHome extends AppCompatActivity{
                         if (which == 0){
                             startActivity(new Intent(ActivityHome.this, ActivityOnboarding.class));
                             materialDialog.dismiss();
-                        }else if(which == 1){
-                            startActivity(new Intent(ActivityHome.this,ActivityPrivacyPolicy.class));
+                        }else if(which == 1) {
+                            startActivity(new Intent(ActivityHome.this, ActivityPrivacyPolicy.class));
                             materialDialog.dismiss();
-                        }else if (which == 2) {
+                        }else if (which == 2){
+                            startActivity(new Intent(ActivityHome.this,ActivitySelectContacts.class));
+                            materialDialog.dismiss();
+                        }else if (which == 3) {
                             new MaterialDialog.Builder(ActivityHome.this)
                                     .title(getResources().getString(R.string.settings_option_uninstall) + "?")
                                     .content(R.string.really_delete)
@@ -355,5 +368,38 @@ public class ActivityHome extends AppCompatActivity{
         } catch (ActivityNotFoundException e) {
             startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
         }
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuItem searchItem = menu.findItem(R.id.MenuHome_SearchContact);
+        if (fragmentPage==0 && searchItem!=null){
+            if (FragmentContacts.isSearchOpened){
+                searchItem.setIcon(ContextCompat.getDrawable(this, R.drawable.ic_close_black_24dp));
+            }
+            searchItem.setVisible(true);
+        }else if (fragmentPage==1 && searchItem!=null){
+            searchItem.setVisible(false);
+            if (FragmentContacts.isSearchOpened){
+                Intent i = new Intent("com.objective4.app.onlife.Fragments.Social.FragmentContacts");
+                i.putExtra("tag", "remove_search");
+                sendBroadcast(i);
+            }
+        }
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+    }
+
+    @Override
+    public void onPageSelected(int position) {
+        fragmentPage = position;
+        invalidateOptionsMenu();
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int state) {
     }
 }

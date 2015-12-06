@@ -18,24 +18,20 @@ public class ListenerFlipCheckbox implements Animation.AnimationListener{
     private ImageView imageButton;
     private Animation animation1,animation2;
 
-    public ListenerFlipCheckbox(Context context){
+    public ListenerFlipCheckbox(Context context, Animation animation1, Animation animation2) {
         this.context = context;
-    }
-
-    public void setFriend(ModelPerson f){
-        this.f = f;
-    }
-
-    public void setView(ImageView imageButton){
-        this.imageButton = imageButton;
-    }
-
-    public void setAnimation1(Animation animation1) {
         this.animation1 = animation1;
+        this.animation2 = animation2;
+
+        animation1.setAnimationListener(this);
+        animation2.setAnimationListener(this);
     }
 
-    public void setAnimation2(Animation animation2) {
-        this.animation2 = animation2;
+    public void setFriendAndView(ModelPerson f, ImageView imageButton){
+        this.f = f;
+        this.imageButton = imageButton;
+        imageButton.setAnimation(animation1);
+        imageButton.startAnimation(animation1);
     }
 
     @Override public void onAnimationStart(Animation animation) {

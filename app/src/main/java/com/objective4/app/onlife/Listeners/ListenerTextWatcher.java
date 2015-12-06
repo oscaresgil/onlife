@@ -28,19 +28,19 @@ public class ListenerTextWatcher implements TextWatcher {
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
         actualChar = s.length();
-        if (actualChar > 30) {
+        if (actualChar > context.getResources().getInteger(R.integer.message_max_chars)) {
             maxCharsView.setTextColor(context.getResources().getColor(R.color.accent));
             messageTextView.setText(text);
             messageTextView.setSelection(messageTextView.getText().length());
         } else {
-            if (actualChar == 30){
+            if (actualChar == context.getResources().getInteger(R.integer.message_max_chars)){
                 maxCharsView.setTextColor(context.getResources().getColor(R.color.accent));
             }else{
                 maxCharsView.setTextColor(context.getResources().getColor(R.color.black));
             }
             text = s.toString();
         }
-        int maximumChars = 30;
+        int maximumChars = context.getResources().getInteger(R.integer.message_max_chars);
         maxCharsView.setText(String.format("%d/%d", actualChar, maximumChars));
     }
 

@@ -8,7 +8,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -25,17 +24,12 @@ import static com.objective4.app.onlife.Controller.StaticMethods.loadImage;
 public class AdapterSelectFriend extends RecyclerView.Adapter<AdapterSelectFriend.SelectFriendHolder> {
     private Context context;
     private ListenerFlipCheckbox listener;
-    private Animation animation1, animation2;
     private List<ModelPerson> friends;
 
     public AdapterSelectFriend(Context context, List<ModelPerson> friends) {
         this.context = context;
         this.friends = friends;
-        listener = new ListenerFlipCheckbox(context);
-        animation1 = AnimationUtils.loadAnimation(context, R.anim.flip_left_out);
-        animation2 = AnimationUtils.loadAnimation(context, R.anim.flip_left_in);
-        animation1.setAnimationListener(listener); animation2.setAnimationListener(listener);
-        listener.setAnimation1(animation1); listener.setAnimation2(animation2);
+        listener = new ListenerFlipCheckbox(context,AnimationUtils.loadAnimation(context, R.anim.flip_left_out),AnimationUtils.loadAnimation(context, R.anim.flip_left_in));
     }
 
     @Override
@@ -83,12 +77,7 @@ public class AdapterSelectFriend extends RecyclerView.Adapter<AdapterSelectFrien
             ModelPerson actualFriend = friends.get(getLayoutPosition());
             actualFriend.setSelected(!actualFriend.isSelected());
 
-            listener.setFriend(actualFriend);
-            listener.setView(avatar);
-
-            avatar.clearAnimation();
-            avatar.setAnimation(animation1);
-            avatar.startAnimation(animation1);
+            listener.setFriendAndView(actualFriend,avatar);
         }
     }
 }

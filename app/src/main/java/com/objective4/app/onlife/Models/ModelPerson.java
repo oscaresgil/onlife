@@ -29,6 +29,12 @@ public class ModelPerson implements Serializable{
         this.state = state;
     }
 
+    public ModelPerson(String id, String name, boolean selected) {
+        this.id = id;
+        this.name = name;
+        this.selected = selected;
+    }
+
     public String getId() {
         return id;
     }

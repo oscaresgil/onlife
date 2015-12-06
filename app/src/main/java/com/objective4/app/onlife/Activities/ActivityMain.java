@@ -69,7 +69,7 @@ public class ActivityMain extends Activity{
 
         sharedPreferences.edit().remove("idGcm");
         if ("".equals(sharedPreferences.getString("idGcm",""))){
-            if(GooglePlayServicesUtil.isGooglePlayServicesAvailable(this) == ConnectionResult.SUCCESS) {
+            if (GooglePlayServicesUtil.isGooglePlayServicesAvailable(this) == ConnectionResult.SUCCESS) {
                 new TaskGetGCM(this).execute();
                 gcmFlag = false;
             }else{
