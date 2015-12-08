@@ -3,6 +3,7 @@ package com.objective4.app.onlife.BlockActivity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -234,10 +235,12 @@ public class ActivityGroupBlock extends ActivityBlockBase<ModelGroup> {
         materialAdapter.add(new MaterialSimpleListItem.Builder(this)
                 .content(R.string.photo_option_camera)
                 .icon(R.drawable.ic_camera_alt_black_24dp)
+                .backgroundColor(Color.WHITE)
                 .build());
         materialAdapter.add(new MaterialSimpleListItem.Builder(this)
                 .content(R.string.photo_option_sd)
                 .icon(R.drawable.ic_sd_card_black_24dp)
+                .backgroundColor(Color.WHITE)
                 .build());
 
         final MaterialDialog.Builder materialDialog = new MaterialDialog.Builder(this)

@@ -20,7 +20,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.TextView;
 
 import com.objective4.app.onlife.Activities.ActivityHome;
 import com.objective4.app.onlife.Adapters.AdapterBaseElements;
@@ -39,6 +38,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import static com.objective4.app.onlife.Controller.StaticMethods.delDirProfImages;
 import static com.objective4.app.onlife.Controller.StaticMethods.getModelPersonIndex;
 import static com.objective4.app.onlife.Controller.StaticMethods.isNetworkAvailable;
 import static com.objective4.app.onlife.Controller.StaticMethods.makeSnackbar;
@@ -58,7 +58,6 @@ public class FragmentContacts extends Fragment {
     private List<ModelPerson> friendsFiltred;
     public static boolean isSearchOpened = false;
     private String mSearchQuery;
-    private TextView addFriends;
 
     public FragmentContacts(){}
 
@@ -66,15 +65,14 @@ public class FragmentContacts extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         setHasOptionsMenu(true);
-        View v = inflater.inflate (R.layout.fragment_contacts, container, false);
+        View v = inflater.inflate(R.layout.fragment_contacts, container, false);
         actualUser = ModelSessionData.getInstance().getUser();
-
-        addFriends= (TextView)v.findViewById(R.id.addFriendsButton);
-        if (!ModelSessionData.getInstance().getFriends().isEmpty()) addFriends.setVisibility(View.GONE);
 
         friendsFiltred = new ArrayList<>();
 
-        adapter = new AdapterBaseElements<>(getActivity(), setHashToList(ModelSessionData.getInstance().getFriends()), FragmentContacts.class, ActivityFriendBlock.class);
+        List<ModelPerson> friends = setHashToList(ModelSessionData.getInstance().getFriends());
+        friends.add(new ModelPerson(String.format("%d", getActivity().getResources().getInteger(R.integer.id_invite_friends)), getResources().getString(R.string.invite_friends)));
+        adapter = new AdapterBaseElements<>(getActivity(), friends, FragmentContacts.class, ActivityFriendBlock.class);
         ((ActivityHome)getActivity()).setAdapterContact(adapter);
 
         listView = (RecyclerView) v.findViewById(R.id.FragmentContacts_ListView);
@@ -98,66 +96,62 @@ public class FragmentContacts extends Fragment {
     private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            Bundle extras = intent.getExtras();
-            String tag = extras.getString("tag");
+            try {
+                Bundle extras = intent.getExtras();
+                String tag = extras.getString("tag");
 
-            AdapterBaseElements adapter = ((ActivityHome) getActivity()).getAdapterContact();
-            if ("update".equals(tag)) {
-                String id = extras.getString("id");
-                String state = extras.getString("state");
-                if ("O".equals(state)) {
-                    boolean b = ModelSessionData.getInstance().getFriends().containsKey(id);
-                    if (b){
-                        ModelSessionData.getInstance().getFriends().remove(id);
-                        adapter.removeFriend(id);
-                    }
-                } else {
-                    boolean b = ModelSessionData.getInstance().getFriends().containsKey(id);
-                    if (b){
-                        ModelSessionData.getInstance().getFriends().get(id).setState(state);
-                        adapter.notifyItemChanged(getModelPersonIndex(setHashToList(ModelSessionData.getInstance().getFriends()), id));
-                    }
-                }
-            }else if("new_user".equals(tag)){
-                ModelPerson newUser = (ModelPerson) extras.getSerializable("new_user");
-                assert newUser != null;
-                int pos = getModelPersonIndex(setHashToList(ModelSessionData.getInstance().getFriends()),newUser.getId());
-                if (pos==-1){
-                    ModelSessionData.getInstance().getFriends().put(newUser.getId(),newUser);
-                    adapter.addFriend(newUser);
-                    addFriends.setVisibility(View.GONE);
-                }
-            } else if("friends_updated".equals(tag)){
-                if(ModelSessionData.getInstance().getFriends().isEmpty()){
-                    addFriends.setVisibility(View.VISIBLE);
-                }else{
-                    addFriends.setVisibility(View.GONE);
-                }
-            } else if("friends_state".equals(tag)){
-                String data = extras.getString("friends_state");
-                JSONObject dataObject = null;
-                try {
-                    dataObject = new JSONObject(data);
-                    JSONArray dataArray = dataObject.getJSONArray("states");
-                    HashMap<String, ModelPerson> friends = ModelSessionData.getInstance().getFriends();
-                    for (int i=0; i<dataArray.length(); i++){
-                        JSONObject actualFriendObject = (JSONObject) dataArray.get(i);
-                        String id = actualFriendObject.getString("id");
-                        String state = actualFriendObject.getString("state");
-                        if (friends.containsKey(id)){
-                            ModelPerson actualFriend = friends.get(id);
-                            if (actualFriend!=null && !actualFriend.getState().equals(state)){
-                                actualFriend.setState(state);
-                                adapter.notifyItemChanged(getModelPersonIndex(setHashToList(ModelSessionData.getInstance().getFriends()), id));
-                            }
+                AdapterBaseElements adapter = ((ActivityHome) getActivity()).getAdapterContact();
+                if ("update".equals(tag)) {
+                    String id = extras.getString("id");
+                    String state = extras.getString("state");
+                    if ("O".equals(state)) {
+                        boolean b = ModelSessionData.getInstance().getFriends().containsKey(id);
+                        if (b) {
+                            ModelSessionData.getInstance().getFriends().remove(id);
+                            adapter.removeFriend(id);
+                        }
+                        ((ActivityHome) getActivity()).getAdapterGroup().notifyDataSetChanged();
+                    } else {
+                        boolean b = ModelSessionData.getInstance().getFriends().containsKey(id);
+                        if (b) {
+                            ModelSessionData.getInstance().getFriends().get(id).setState(state);
+                            adapter.notifyItemChanged(getModelPersonIndex(setHashToList(ModelSessionData.getInstance().getFriends()), id));
                         }
                     }
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                } else if ("new_user".equals(tag)) {
+                    ModelPerson newUser = (ModelPerson) extras.getSerializable("new_user");
+                    assert newUser != null;
+                    int pos = getModelPersonIndex(setHashToList(ModelSessionData.getInstance().getFriends()), newUser.getId());
+                    if (pos == -1) {
+                        ModelSessionData.getInstance().getFriends().put(newUser.getId(), newUser);
+                        adapter.addFriend(newUser);
+                    }
+                } else if ("friends_state".equals(tag)) {
+                    String data = extras.getString("friends_state");
+                    JSONObject dataObject;
+                    try {
+                        dataObject = new JSONObject(data);
+                        JSONArray dataArray = dataObject.getJSONArray("states");
+                        HashMap<String, ModelPerson> friends = ModelSessionData.getInstance().getFriends();
+                        for (int i = 0; i < dataArray.length(); i++) {
+                            JSONObject actualFriendObject = (JSONObject) dataArray.get(i);
+                            String id = actualFriendObject.getString("id");
+                            String state = actualFriendObject.getString("state");
+                            if (friends.containsKey(id)) {
+                                ModelPerson actualFriend = friends.get(id);
+                                if (actualFriend != null && !actualFriend.getState().equals(state)) {
+                                    actualFriend.setState(state);
+                                    adapter.notifyItemChanged(getModelPersonIndex(setHashToList(ModelSessionData.getInstance().getFriends()), id));
+                                }
+                            }
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                } else if ("remove_search".equals(tag)) {
+                    handleMenuSearch();
                 }
-            } else if("remove_search".equals(tag)){
-                handleMenuSearch();
-            }
+            }catch (Exception ignored){}
         }
     };
 
@@ -211,9 +205,10 @@ public class FragmentContacts extends Fragment {
             assert actionBar != null;
             actionBar.setDisplayShowCustomEnabled(false);
             actionBar.setDisplayShowTitleEnabled(true);
-
-            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(getActivity().getWindow().getCurrentFocus().getWindowToken(), 0);
+            try {
+                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(getActivity().getWindow().getCurrentFocus().getWindowToken(), 0);
+            }catch (Exception ignored){}
 
             mSearchAction.setIcon(getResources().getDrawable(R.drawable.ic_search_black_24dp));
             isSearchOpened = false;
@@ -246,7 +241,7 @@ public class FragmentContacts extends Fragment {
                 }
             });
             searchText.requestFocus();
-            showSoftKeyboard(getActivity(),searchText);
+            showSoftKeyboard(getActivity(), searchText);
             mSearchAction.setIcon(getResources().getDrawable(R.drawable.ic_close_black_24dp));
             isSearchOpened = true;
         }
@@ -256,6 +251,7 @@ public class FragmentContacts extends Fragment {
         if (isNetworkAvailable(getActivity())) {
             mSwipeRefreshLayout.setEnabled(false);
             new TaskRefresh(getActivity(),mSwipeRefreshLayout).execute(actualUser.getId());
+            delDirProfImages(getActivity(),setHashToList(ModelSessionData.getInstance().getFriends()));
         }else{
             mSwipeRefreshLayout.setRefreshing(false);
             mSwipeRefreshLayout.setEnabled(true);

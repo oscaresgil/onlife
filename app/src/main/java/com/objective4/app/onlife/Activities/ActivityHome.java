@@ -3,12 +3,11 @@ package com.objective4.app.onlife.Activities;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.ActivityNotFoundException;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -120,11 +119,6 @@ public class ActivityHome extends AppCompatActivity implements ViewPager.OnPageC
     protected void onResume() {
         super.onResume();
         isRunning = true;
-        registerReceiver(broadcastReceiver, new IntentFilter("com.objective4.app.onlife.Activities.ActivityHome"));
-        /*if (sharedPreferences.contains("update_key")){
-            int val = sharedPreferences.getInt("update_key",0);
-            setDialogUpdate(val);
-        }*/
         AppEventsLogger.activateApp(this);
     }
 
@@ -157,9 +151,6 @@ public class ActivityHome extends AppCompatActivity implements ViewPager.OnPageC
         super.onStop();
         isRunning = false;
         onTrimMemory(TRIM_MEMORY_UI_HIDDEN);
-        try{
-            unregisterReceiver(broadcastReceiver);
-        }catch(Exception ignored){}
     }
 
     @Override
@@ -172,15 +163,6 @@ public class ActivityHome extends AppCompatActivity implements ViewPager.OnPageC
 
     }
 
-    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Bundle extras = intent.getExtras();
-            int update = extras.getInt("update");
-            setDialogUpdate(update);
-        }
-    };
-
     public void inviteFriends(MenuItem item) {
         inviteFacebookFriends(this);
     }
@@ -190,18 +172,21 @@ public class ActivityHome extends AppCompatActivity implements ViewPager.OnPageC
         materialAdapter.add(new MaterialSimpleListItem.Builder(this)
                 .content(R.string.see_tutorial)
                 .icon(R.drawable.ic_help_outline_black_48dp)
+                .backgroundColor(Color.WHITE)
                 .build());
         materialAdapter.add(new MaterialSimpleListItem.Builder(this)
                 .content(R.string.see_privacy_policy)
                 .icon(R.drawable.ic_perm_device_information_black_48dp)
+                .backgroundColor(Color.WHITE)
                 .build());
-        materialAdapter.add(new MaterialSimpleListItem.Builder(this)
+        /*materialAdapter.add(new MaterialSimpleListItem.Builder(this)
                 .content(R.string.settings_select_contacts)
                 .icon(R.drawable.ic_contacts_black_48dp)
-                .build());
+                .build());*/
         materialAdapter.add(new MaterialSimpleListItem.Builder(this)
                 .content(R.string.settings_option_uninstall)
                 .icon(R.drawable.ic_phonelink_erase_black_48dp)
+                .backgroundColor(Color.WHITE)
                 .build());
         MaterialDialog.Builder materialDialog = new MaterialDialog.Builder(this)
                 .title(R.string.settings_options)
@@ -216,9 +201,9 @@ public class ActivityHome extends AppCompatActivity implements ViewPager.OnPageC
                             startActivity(new Intent(ActivityHome.this, ActivityPrivacyPolicy.class));
                             materialDialog.dismiss();
                         }else if (which == 2){
-                            startActivity(new Intent(ActivityHome.this,ActivitySelectContacts.class));
+                            /*startActivity(new Intent(ActivityHome.this,ActivitySelectContacts.class));
                             materialDialog.dismiss();
-                        }else if (which == 3) {
+                        }else if (which == 3) {*/
                             new MaterialDialog.Builder(ActivityHome.this)
                                     .title(getResources().getString(R.string.settings_option_uninstall) + "?")
                                     .content(R.string.really_delete)

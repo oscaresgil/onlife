@@ -105,7 +105,10 @@
                         android:id="@+id/ActivityBlockBase_TabHost"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:tabTextAppearance="@style/IconText"/>
+                        app:tabTextAppearance="@style/IconText"
+                        app:tabMaxWidth="0dp"
+                        app:tabGravity="fill"
+                        app:tabMode="fixed"/>
                     <android.support.v4.view.ViewPager
                         android:id="@+id/ActivityBlockBase_ViewPager"
                         android:layout_width="match_parent"

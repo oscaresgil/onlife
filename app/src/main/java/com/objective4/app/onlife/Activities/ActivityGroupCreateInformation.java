@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
@@ -356,11 +357,13 @@ public class ActivityGroupCreateInformation extends AppCompatActivity {
         materialAdapter.add(new MaterialSimpleListItem.Builder(this)
                 .content(R.string.photo_option_camera)
                 .icon(R.drawable.ic_camera_alt_black_24dp)
+                .backgroundColor(Color.WHITE)
                 .build());
         materialAdapter.add(new MaterialSimpleListItem.Builder(this)
                 .content(R.string.photo_option_sd)
                 .icon(R.drawable.ic_sd_card_black_24dp)
-            .build());
+                .backgroundColor(Color.WHITE)
+                .build());
 
         final MaterialDialog.Builder materialDialog = new MaterialDialog.Builder(this)
                 .title(R.string.photo_select_image)

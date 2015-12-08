@@ -17,6 +17,7 @@ import net.steamcrafted.loadtoast.LoadToast;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -28,6 +29,7 @@ public class TaskSendNotification extends AsyncTask<ModelPerson, String, String[
     private LoadToast toast;
     private String message="", gifName="";
     private int numBlocked;
+    private boolean isMyUser = false;
 
     public TaskSendNotification(Activity c, String message, String gifName){
         this.context = c;
@@ -62,7 +64,11 @@ public class TaskSendNotification extends AsyncTask<ModelPerson, String, String[
                     f = ModelSessionData.getInstance().getFriends().get(f.getId());
                     if (actualTime - f.getLastBlockedTime() > context.getResources().getInteger(R.integer.block_time_remaining)) {
                         map.put("id_blocked", new JSONArray(Arrays.asList(new String[]{f.getId()})));
-                        f.setLastBlockedTime(actualTime);
+                        if (!f.getId().equals(ModelSessionData.getInstance().getUser().getId())){
+                            f.setLastBlockedTime(actualTime);
+                        }else{
+                            isMyUser = true;
+                        }
                     } else {
                         returnMessage = context.getResources().getString(R.string.toast_not_time_yet) + " " + ((context.getResources().getInteger(R.integer.block_time_remaining) - (actualTime - f.getLastBlockedTime())) / 1000) + " s";
                         try {
@@ -76,7 +82,9 @@ public class TaskSendNotification extends AsyncTask<ModelPerson, String, String[
                         f = ModelSessionData.getInstance().getFriends().get(f.getId());
                         if (actualTime - f.getLastBlockedTime() > context.getResources().getInteger(R.integer.block_time_remaining) && f.getState().equals("A")) {
                             ids.add(f.getId());
-                            f.setLastBlockedTime(actualTime);
+                            if (!f.getId().equals(ModelSessionData.getInstance().getUser().getId())){
+                                f.setLastBlockedTime(actualTime);
+                            }
                             numBlocked++;
                         }
                     }
@@ -112,7 +120,7 @@ public class TaskSendNotification extends AsyncTask<ModelPerson, String, String[
         }else{
             toast.success();
             if (!result[1].equals("")) makeSnackbar(context, context.getCurrentFocus(), result[1], Snackbar.LENGTH_LONG);
-            if (context instanceof ActivityFriendBlock){
+            if (context instanceof ActivityFriendBlock && !isMyUser){
                 ((ActivityFriendBlock)context).setTimer();
             }
         }

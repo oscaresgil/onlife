@@ -49,4 +49,6 @@
     <!-- Message Length -->
     <integer name="message_max_chars">70</integer>
 
+    <integer name="id_invite_friends">0</integer>
+
 </resources>

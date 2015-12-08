@@ -233,14 +233,17 @@ public class StaticMethods {
         return false;
     }
 
-    public static void removeFriend(Context context, List<ModelPerson> friends, List<ModelGroup> groups, String id){
-        for (int i=0; i<friends.size(); i++){
-            if (id.equals(friends.get(i).getId())){
+    public static List<ModelPerson> removeFriend(Context context, List<ModelPerson> friends, String id) {
+        for (int i = 0; i < friends.size(); i++) {
+            if (id.equals(friends.get(i).getId())) {
                 friends.remove(i);
-                delImageProfile(context,id);
-                break;
+                delImageProfile(context, id);
+                return friends;
             }
         }
+        return friends;
+    }
+    public static List<ModelGroup> removeFriendFromGroup(List<ModelGroup> groups, String id){
         for (int i = 0; i<groups.size(); i++){
             ModelGroup g = groups.get(i);
             for (int j=0; j<g.getFriendsInGroup().size(); j++){
@@ -250,10 +253,11 @@ public class StaticMethods {
                     if (g.getFriendsInGroup().isEmpty()){
                         groups.remove(j);
                     }
-                    break;
+                    return groups;
                 }
             }
         }
+        return groups;
     }
 
     public static int getModelPersonIndex(List<ModelPerson> friends, String id){
@@ -309,13 +313,18 @@ public class StaticMethods {
         return myPath.exists();
     }
 
-    public static boolean delDirImages(Context context,List<ModelPerson> friends, List<ModelGroup> groups){
+    public static File delDirProfImages(Context context, List<ModelPerson> friends){
         ContextWrapper cw = new ContextWrapper(context);
         File dirImages = cw.getDir("Profiles",Context.MODE_PRIVATE);
         for (ModelPerson p: friends){
             new File(dirImages, p.getId()+"_"+context.getResources().getInteger(R.integer.adapter_contact_size_large)+".png").delete();
             new File(dirImages, p.getId()+"_"+context.getResources().getInteger(R.integer.adapter_contact_size_little)+".png").delete();
         }
+        return dirImages;
+    }
+
+    public static boolean delDirImages(Context context,List<ModelPerson> friends, List<ModelGroup> groups){
+        File dirImages = delDirProfImages(context,friends);
         for (ModelGroup g: groups){
             new File(dirImages, g.getName()+"_"+context.getResources().getInteger(R.integer.adapter_contact_size_large)+".png").delete();
             new File(dirImages, g.getName()+"_"+context.getResources().getInteger(R.integer.adapter_contact_size_little)+".png").delete();
@@ -407,12 +416,14 @@ public class StaticMethods {
 
     public static List<ModelPerson> setHashToList(HashMap<String,ModelPerson> hashMap){
         List<ModelPerson> friends = new ArrayList<>(hashMap.values());
-        Collections.sort(friends, new Comparator<ModelPerson>() {
-            @Override
-            public int compare(ModelPerson modelPerson1, ModelPerson modelPerson2) {
-                return modelPerson1.getName().compareTo(modelPerson2.getName());
-            }
-        });
+        try {
+            Collections.sort(friends, new Comparator<ModelPerson>() {
+                @Override
+                public int compare(ModelPerson modelPerson1, ModelPerson modelPerson2) {
+                    return modelPerson1.getName().compareTo(modelPerson2.getName());
+                }
+            });
+        }catch (Exception e){}
         return friends;
     }
 

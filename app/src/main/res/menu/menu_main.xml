@@ -1,0 +1,8 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/MenuMain_Uninstall_app"
+        android:icon="@drawable/ic_phonelink_erase_black_48dp"
+        app:showAsAction="always"
+        android:title="@string/settings_option_uninstall"/>
+</menu>

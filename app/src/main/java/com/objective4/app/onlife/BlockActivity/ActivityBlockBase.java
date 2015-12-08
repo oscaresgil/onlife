@@ -86,16 +86,7 @@ public class ActivityBlockBase<T> extends AppCompatActivity {
         messageTextView.addTextChangedListener(listenerTextWatcher);
 
         emoticonButton = (ImageButton) findViewById(R.id.ActivityBlockBase_EmoticonButton);
-        emoticonButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (emoticonLayout.getVisibility() == View.GONE) {
-                    showEmoticon();
-                } else {
-                    hideEmoticon();
-                }
-            }
-        });
+        emoticonButton.setOnClickListener(new EmoticonClick());
     }
 
     @Override
@@ -115,45 +106,6 @@ public class ActivityBlockBase<T> extends AppCompatActivity {
             AdapterFragmentEmoticon adapter = new AdapterFragmentEmoticon(getSupportFragmentManager(),this);
             viewPager.setAdapter(adapter);
             tabHost.setupWithViewPager(viewPager);
-
-            /*viewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
-                @Override
-                public void onPageSelected(int position) {
-                    tabHost.setSelectedNavigationItem(position);
-                }
-            });
-
-            for (int i=0; i<adapter.getCount(); i++){
-                int resourceId  = getResources().getIdentifier(getImage(i), "drawable", getPackageName());
-                Bitmap b = decodeDrawable(this, resourceId, 20);
-                tabHost.addTab(tabHost.newTab().setIcon(new BitmapDrawable(getResources(),b)).setTabListener(new MaterialTabListener() {
-                    @Override
-                    public void onTabSelected(MaterialTab tab) {
-                        viewPager.setCurrentItem(tab.getPosition());
-                    }
-
-                    @Override
-                    public void onTabReselected(MaterialTab tab) {
-                    }
-
-                    @Override
-                    public void onTabUnselected(MaterialTab tab) {
-
-                    }
-                }));
-            }*/
-        }
-    }
-
-    public String getImage(int position){
-        if (position==0){
-            return "smiley19";
-        }else if (position==1){
-            return "a23";
-        }else if(position==2){
-            return "hand_9";
-        }else{
-            return "avatar_3";
         }
     }
 
@@ -179,6 +131,17 @@ public class ActivityBlockBase<T> extends AppCompatActivity {
         slidrInterface.unlock();
         nestedScrollView.setSmoothScrollingEnabled(true);
         emoticonLayout.setVisibility(View.GONE);
+    }
+
+    class EmoticonClick implements View.OnClickListener{
+        @Override
+        public void onClick(View v) {
+            if (emoticonLayout.getVisibility() == View.GONE) {
+                showEmoticon();
+            } else {
+                hideEmoticon();
+            }
+        }
     }
 
 }

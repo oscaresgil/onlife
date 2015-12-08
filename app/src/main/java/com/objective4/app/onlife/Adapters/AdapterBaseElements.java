@@ -10,6 +10,7 @@ import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,6 +37,7 @@ import static com.objective4.app.onlife.Controller.StaticMethods.animationStart;
 import static com.objective4.app.onlife.Controller.StaticMethods.checkDeviceAdmin;
 import static com.objective4.app.onlife.Controller.StaticMethods.getModelPersonIndex;
 import static com.objective4.app.onlife.Controller.StaticMethods.imageInDisk;
+import static com.objective4.app.onlife.Controller.StaticMethods.inviteFacebookFriends;
 import static com.objective4.app.onlife.Controller.StaticMethods.loadImage;
 import static com.objective4.app.onlife.Controller.StaticMethods.makeSnackbar;
 
@@ -64,22 +66,32 @@ public class AdapterBaseElements<T> extends RecyclerView.Adapter<AdapterBaseElem
 
         if (typeClass == FragmentContacts.class){
             ModelPerson userData = (ModelPerson) elements.get(position);
-            if (userData.refreshImage() || !imageInDisk(context, userData.getId() + "_" + context.getResources().getInteger(R.integer.adapter_contact_size_little))){
-                if (AsyncDrawable.cancelPotentialWork(userData.getId(), holder.avatar)){
-                    final TaskSimpleImageDownload task = new TaskSimpleImageDownload(context,holder.avatar,context.getResources().getInteger(R.integer.adapter_contact_size_little));
-                    final AsyncDrawable asyncDrawable = new AsyncDrawable(context.getResources(),BitmapFactory.decodeResource(context.getResources(), R.drawable.loading_friend_icon),task);
-                    holder.avatar.setImageDrawable(asyncDrawable);
-                    task.execute(userData);
-                    userData.setRefreshImage(false);
+            if (userData.getId().equals(String.format("%d",context.getResources().getInteger(R.integer.id_invite_friends)))){
+                holder.avatar.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_facebook_logo));
+                //holder.name.setGravity(Gravity.CENTER);
+            }else {
+                if (userData.refreshImage() || !imageInDisk(context, userData.getId() + "_" + context.getResources().getInteger(R.integer.adapter_contact_size_little))) {
+                    if (AsyncDrawable.cancelPotentialWork(userData.getId(), holder.avatar)) {
+                        final TaskSimpleImageDownload task = new TaskSimpleImageDownload(context, holder.avatar, context.getResources().getInteger(R.integer.adapter_contact_size_little));
+                        final AsyncDrawable asyncDrawable = new AsyncDrawable(context.getResources(), BitmapFactory.decodeResource(context.getResources(), R.drawable.loading_friend_icon), task);
+                        holder.avatar.setImageDrawable(asyncDrawable);
+                        task.execute(userData);
+                        userData.setRefreshImage(false);
+                    }
+                } else {
+                    holder.avatar.setImageBitmap(loadImage(context, userData.getId() + "_" + context.getResources().getInteger(R.integer.adapter_contact_size_little)));
                 }
-            }else{
-                holder.avatar.setImageBitmap(loadImage(context, userData.getId() + "_" + context.getResources().getInteger(R.integer.adapter_contact_size_little)));
             }
             holder.name.setText(userData.getName());
-            if (userData.getState().equals("I")){
-                holder.visibility.setImageBitmap(BitmapFactory.decodeResource(context.getResources(),R.drawable.ic_action_visibility_off));
-            }else if(userData.getState().equals("A")){
-                holder.visibility.setImageBitmap(BitmapFactory.decodeResource(context.getResources(),R.drawable.ic_action_visibility_on));
+
+            if (userData.getState()!=null) {
+                if (userData.getState().equals("I")) {
+                    holder.visibility.setImageBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_action_visibility_off));
+                } else if (userData.getState().equals("A")) {
+                    holder.visibility.setImageBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_action_visibility_on));
+                }
+            }else {
+                holder.visibility.setImageBitmap(null);
             }
 
         }else if(typeClass == FragmentGroups.class){
@@ -142,57 +154,62 @@ public class AdapterBaseElements<T> extends RecyclerView.Adapter<AdapterBaseElem
 
         @Override
         public void onClick(View v) {
-            Intent i = new Intent(context, intentClass);
-            i.putExtra("data", (Serializable) elements.get(getLayoutPosition()));
-            i.putExtra("actualuser", ModelSessionData.getInstance().getUser());
-            i.putExtra("position",getLayoutPosition());
-            /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                ActivityOptionsCompat options = ActivityOptionsCompat.makeCustomAnimation(context, R.anim.slide_right, R.anim.slide_left);
-
-                if (intentClass == ActivityGroupBlock.class){
-                    i.putExtra("position", getLayoutPosition());
-                    ActivityCompat.startActivityForResult((Activity)context, i, GROUP_BLOCK_ACTIVITY_ID, options.toBundle());
-
-                }else{
-                    ActivityCompat.startActivity((Activity)context, i, options.toBundle());
-
+            try {
+                Intent i = new Intent(context, intentClass);
+                i.putExtra("data", (Serializable) elements.get(getLayoutPosition()));
+                i.putExtra("actualuser", ModelSessionData.getInstance().getUser());
+                i.putExtra("position", getLayoutPosition());
+                if (intentClass == ActivityGroupBlock.class) {
+                    ((Activity) context).startActivityForResult(i, GROUP_BLOCK_ACTIVITY_ID);
+                } else {
+                    if (typeClass == FragmentContacts.class) {
+                        ModelPerson user = (ModelPerson) elements.get(getLayoutPosition());
+                        if (user.getId().equals(String.format("%d",context.getResources().getInteger(R.integer.id_invite_friends)))){
+                            inviteFacebookFriends(context);
+                            return;
+                        }
+                    }
+                    context.startActivity(i);
                 }
-            } else {*/
-            if (intentClass == ActivityGroupBlock.class){
-                ((Activity)context).startActivityForResult(i, GROUP_BLOCK_ACTIVITY_ID);
-            }else{
-                context.startActivity(i);
-            }
-            //}
 
-            animationStart(context);
+                animationStart(context);
+            }catch (Exception e){
+                makeSnackbar(context,v,R.string.error,Snackbar.LENGTH_LONG);
+            }
         }
 
         @Override
         public boolean onLongClick(View v) {
-            Activity activity = (Activity)context;
+            try {
+                Activity activity = (Activity) context;
 
-            if (typeClass == FragmentContacts.class){
-                ModelPerson user = (ModelPerson) elements.get(getLayoutPosition());
-                boolean devAdmin = checkDeviceAdmin(context);
-                if (user.getState().equals("A") && devAdmin) {
-                    new TaskSendNotification(activity, "", "").execute(user);
-                } else if (!devAdmin) {
-                    activateDeviceAdmin(activity);
-                } else {
-                    makeSnackbar(context, v, R.string.friend_inactive, Snackbar.LENGTH_SHORT);
+                if (typeClass == FragmentContacts.class) {
+                    ModelPerson user = (ModelPerson) elements.get(getLayoutPosition());
+                    if (!user.getId().equals(String.format("%d",context.getResources().getInteger(R.integer.id_invite_friends)))){
+                        boolean devAdmin = checkDeviceAdmin(context);
+                        if (user.getState().equals("A") && devAdmin) {
+                            new TaskSendNotification(activity, "", "").execute(user);
+                        } else if (!devAdmin) {
+                            activateDeviceAdmin(activity);
+                        } else {
+                            makeSnackbar(context, v, R.string.friend_inactive, Snackbar.LENGTH_SHORT);
+                        }
+                    }
+                } else if (typeClass == FragmentGroups.class) {
+                    ModelGroup actualModelGroup = (ModelGroup) elements.get(getLayoutPosition());
+                    boolean activeDev = checkDeviceAdmin(activity);
+                    if (activeDev) {
+                        new TaskSendNotification(activity, "", "").execute(actualModelGroup.getFriendsInGroup().toArray(new ModelPerson[actualModelGroup.getFriendsInGroup().size()]));
+                    } else {
+                        activateDeviceAdmin(activity);
+                    }
                 }
-            }else if(typeClass == FragmentGroups.class){
-                ModelGroup actualModelGroup = (ModelGroup) elements.get(getLayoutPosition());
-                boolean activeDev = checkDeviceAdmin(activity);
-                if (activeDev) {
-                    new TaskSendNotification(activity, "", "").execute(actualModelGroup.getFriendsInGroup().toArray(new ModelPerson[actualModelGroup.getFriendsInGroup().size()]));
-                } else{
-                    activateDeviceAdmin(activity);
-                }
+
+                return true;
+            }catch(Exception e){
+                makeSnackbar(context,v,R.string.error,Snackbar.LENGTH_LONG);
             }
-
-            return true;
+            return false;
         }
     }
 

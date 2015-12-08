@@ -1,6 +1,5 @@
 package com.objective4.app.onlife.Activities;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -9,10 +8,17 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.afollestad.materialdialogs.AlertDialogWrapper;
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -36,13 +42,13 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import static com.objective4.app.onlife.Controller.StaticMethods.activateDeviceAdmin;
+import static com.objective4.app.onlife.Controller.StaticMethods.deactivateDeviceAdmin;
 import static com.objective4.app.onlife.Controller.StaticMethods.makeSnackbar;
 
-public class ActivityMain extends Activity{
+public class ActivityMain extends AppCompatActivity{
     public static final String PROJECT_NUMBER = "194566212765";
     public static final String MyPREFERENCES = "OnlifePrefs";
     public static final String SERVER_URL = "http://api.onlife-app.com/";
-    public static final String NAME_KEY = "nameKey";
 
     private ModelPerson userLogin;
     private Dialog dialog;
@@ -56,12 +62,10 @@ public class ActivityMain extends Activity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Launch the activity to have the user enable our admin.
         activateDeviceAdmin(this);
 
         sharedPreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
 
-        // Review first instalation
         if(!sharedPreferences.contains("onboarding_complete")) {
             startActivity(new Intent(this, ActivityOnboarding.class));
             finish();
@@ -79,63 +83,103 @@ public class ActivityMain extends Activity{
         }
 
         setContentView(R.layout.activity_main);
+        setSupportActionBar((Toolbar) findViewById(R.id.ActivityMain_ToolBar));
+        setTitle("");
+
         loginButton = (LoginButton) findViewById(R.id.login_button);
         loginButton.setReadPermissions("public_profile", "user_friends", "email");
         callbackManager = CallbackManager.Factory.create();
-        loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
-            @Override
-            public void onSuccess(final LoginResult loginResult) {
-                GraphRequest request = GraphRequest.newMeRequest(
-                        loginResult.getAccessToken(),
-                        new GraphRequest.GraphJSONObjectCallback(){
-                            @Override
-                            public void onCompleted(JSONObject object, GraphResponse response) {
-                                try{
-                                    Gson gson = new Gson();
-                                    sharedPreferences = getSharedPreferences(ActivityMain.MyPREFERENCES, Context.MODE_PRIVATE);
+        try {
+            loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+                @Override
+                public void onSuccess(final LoginResult loginResult) {
+                    GraphRequest request = GraphRequest.newMeRequest(
+                            loginResult.getAccessToken(),
+                            new GraphRequest.GraphJSONObjectCallback() {
+                                @Override
+                                public void onCompleted(JSONObject object, GraphResponse response) {
+                                    try {
+                                        Gson gson = new Gson();
+                                        sharedPreferences = getSharedPreferences(ActivityMain.MyPREFERENCES, Context.MODE_PRIVATE);
 
-                                    object.put("id_phone", sharedPreferences.getString("gcmId", ""));
-                                    object.put("age", (new JSONObject(object.getString("age_range"))).getInt("min"));
-                                    object.put("tag", "newUser");
-                                    object.put("location", "");
-                                    object.remove("age_range");
-                                    new TaskAddNewUser(ActivityMain.this).execute(object);
+                                        object.put("id_phone", sharedPreferences.getString("gcmId", ""));
+                                        object.put("age", (new JSONObject(object.getString("age_range"))).getInt("min"));
+                                        object.put("tag", "newUser");
+                                        object.put("location", "");
+                                        object.remove("age_range");
+                                        new TaskAddNewUser(ActivityMain.this).execute(object);
 
-                                    loginButton.setEnabled(false);
-                                    userLogin = new ModelPerson(object.getString("id"), object.getString("name"));
+                                        loginButton.setEnabled(false);
+                                        userLogin = new ModelPerson(object.getString("id"), object.getString("name"));
 
-                                    sharedPreferences.edit().putBoolean("first_login", true).apply();
-                                    sharedPreferences.edit().putString("userLogin", gson.toJson(userLogin)).apply();
-                                    sharedPreferences.edit().putString("friends", gson.toJson(new ArrayList<ModelPerson>())).apply();
-                                    sharedPreferences.edit().putString("groups", gson.toJson(new ArrayList<ModelGroup>())).apply();
-                                    sharedPreferences.edit().putBoolean("session", true).apply();
+                                        sharedPreferences.edit().putBoolean("first_login", true).apply();
+                                        sharedPreferences.edit().putString("userLogin", gson.toJson(userLogin)).apply();
+                                        sharedPreferences.edit().putString("friends", gson.toJson(new ArrayList<ModelPerson>())).apply();
+                                        sharedPreferences.edit().putString("groups", gson.toJson(new ArrayList<ModelGroup>())).apply();
+                                        sharedPreferences.edit().putBoolean("session", true).apply();
 
-                                    Bundle params = new Bundle();
-                                    params.putString("fields", "id,name");
-                                    params.putString("limit", "5000");
-                                    new GraphRequest(loginResult.getAccessToken(),"/me/friends",params,HttpMethod.GET, new TaskFacebookFriendRequest(ActivityMain.this,userLogin)).executeAsync();
-                                }catch (Exception ignored){
-                                    makeSnackbar(ActivityMain.this, findViewById(R.id.login_button), R.string.error, Snackbar.LENGTH_LONG);
+                                        Bundle params = new Bundle();
+                                        params.putString("fields", "id,name");
+                                        params.putString("limit", "5000");
+                                        new GraphRequest(loginResult.getAccessToken(), "/me/friends", params, HttpMethod.GET, new TaskFacebookFriendRequest(ActivityMain.this, userLogin)).executeAsync();
+                                    } catch (Exception ignored) {
+                                        makeSnackbar(ActivityMain.this, findViewById(R.id.login_button), R.string.error, Snackbar.LENGTH_LONG);
+                                    }
                                 }
-                            }
-                        });
-                Bundle parameters = new Bundle();
-                parameters.putString("fields","id,name,gender,email,age_range");
-                request.setParameters(parameters);
-                request.executeAsync();
-            }
+                            });
+                    Bundle parameters = new Bundle();
+                    parameters.putString("fields", "id,name,gender,email,age_range");
+                    request.setParameters(parameters);
+                    request.executeAsync();
+                }
 
-            @Override
-            public void onCancel() {
-                loginButton.setEnabled(true);
-            }
+                @Override
+                public void onCancel() {
+                    loginButton.setEnabled(true);
+                }
 
-            @Override
-            public void onError(FacebookException error) {
-                error.printStackTrace();
-                makeSnackbar(ActivityMain.this, findViewById(R.id.login_button), R.string.error, Snackbar.LENGTH_LONG);
-            }
-        });
+                @Override
+                public void onError(FacebookException error) {
+                    error.printStackTrace();
+                    makeSnackbar(ActivityMain.this, findViewById(R.id.login_button), R.string.error, Snackbar.LENGTH_LONG);
+                }
+            });
+        }catch (Exception e){
+            makeSnackbar(ActivityMain.this, findViewById(R.id.login_button), R.string.error, Snackbar.LENGTH_LONG);
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.MenuMain_Uninstall_app){
+            new MaterialDialog.Builder(ActivityMain.this)
+                    .title(getResources().getString(R.string.settings_option_uninstall) + "?")
+                    .content(R.string.really_delete)
+                    .positiveText(R.string.yes)
+                    .positiveColorRes(R.color.accent)
+                    .negativeText(R.string.no)
+                    .negativeColorRes(R.color.black)
+                    .onPositive(new MaterialDialog.SingleButtonCallback() {
+                        @Override
+                        public void onClick(@NonNull MaterialDialog materialDialog, @NonNull DialogAction dialogAction) {
+                            deactivateDeviceAdmin(ActivityMain.this);
+
+                            Intent intent = new Intent(Intent.ACTION_DELETE);
+                            intent.setData(Uri.parse("package:" + getPackageName()));
+                            startActivity(intent);
+
+                            dialog.dismiss();
+                            dialog.cancel();
+                        }
+                    }).show();
+        }
+        return false;
     }
 
     @Override

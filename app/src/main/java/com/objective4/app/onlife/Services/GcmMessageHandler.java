@@ -16,11 +16,9 @@ import android.view.Display;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.objective4.app.onlife.BlockActivity.ActivityInBlock;
-import com.objective4.app.onlife.BroadcastReceivers.BroadcastReceiverPing;
 import com.objective4.app.onlife.Models.ModelGroup;
 import com.objective4.app.onlife.Models.ModelPerson;
 import com.objective4.app.onlife.R;
-import com.objective4.app.onlife.Tasks.TaskChangeState;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -30,6 +28,7 @@ import java.util.List;
 import static com.objective4.app.onlife.Controller.StaticMethods.checkDeviceAdmin;
 import static com.objective4.app.onlife.Controller.StaticMethods.isFriendAlready;
 import static com.objective4.app.onlife.Controller.StaticMethods.removeFriend;
+import static com.objective4.app.onlife.Controller.StaticMethods.removeFriendFromGroup;
 
 public class GcmMessageHandler extends IntentService {
     private Gson gson;
@@ -50,69 +49,74 @@ public class GcmMessageHandler extends IntentService {
         Bundle extras = intent.getExtras();
         String tag = extras.getString("tag");
         SharedPreferences sharedPreferences = getSharedPreferences("OnlifePrefs", Context.MODE_PRIVATE);
-        if (tag !=null) {
-            switch (tag) {
-                case "block":
-                    message = extras.getString("message");
-                    user = extras.getString("userName");
-                    gifName = extras.getString("gifName");
-                    boolean adminChecked = checkDeviceAdmin(this);
-                    if ((user != null && !user.equals("")) && adminChecked && sharedPreferences.getInt("update_key",0)!=1) {
-                        onMessage(this);
+        try {
+            if (tag != null) {
+                switch (tag) {
+                    case "block":
+                        message = extras.getString("message");
+                        user = extras.getString("userName");
+                        gifName = extras.getString("gifName");
+                        boolean adminChecked = checkDeviceAdmin(this);
+                        if ((user != null && !user.equals("")) && adminChecked && sharedPreferences.getInt("update_key", 0) != 1) {
+                            onMessage(this);
+                        }
+                        break;
+                    case "newUser":
+                        String user = extras.getString("user");
+                        ModelPerson newUser = gson.fromJson(user, ModelPerson.class);
+
+                        List<ModelPerson> friends = gson.fromJson(sharedPreferences.getString("friends", ""), (new TypeToken<ArrayList<ModelPerson>>() {
+                        }.getType()));
+                        if (!isFriendAlready(friends, newUser.getId())) {
+                            friends.add(newUser);
+                            Collections.sort(friends, new Comparator<ModelPerson>() {
+                                @Override
+                                public int compare(ModelPerson modelPerson1, ModelPerson modelPerson2) {
+                                    return modelPerson1.getName().compareTo(modelPerson2.getName());
+                                }
+                            });
+                            sharedPreferences.edit().putString("friends", gson.toJson(friends)).apply();
+                        }
+
+                        Intent i = new Intent("com.objective4.app.onlife.Fragments.Social.FragmentContacts");
+                        i.putExtra("tag", "new_user");
+                        i.putExtra("new_user", newUser);
+                        sendBroadcast(i);
+
+                        break;
+                    case "update": {
+                        String idP = extras.getString("id");
+                        String state = extras.getString("state");
+
+                        assert state != null;
+                        if (state.equals("O")) {
+                            List<ModelPerson> friendsR = gson.fromJson(sharedPreferences.getString("friends", ""), (new TypeToken<ArrayList<ModelPerson>>() {
+                            }.getType()));
+                            List<ModelGroup> groupsR = gson.fromJson(sharedPreferences.getString("groups", ""), (new TypeToken<ArrayList<ModelGroup>>() {
+                            }.getType()));
+
+                            sharedPreferences.edit().putString("friends", gson.toJson(removeFriend(this, friendsR, idP))).apply();
+                            sharedPreferences.edit().putString("groups", gson.toJson(removeFriendFromGroup(groupsR, idP))).apply();
+                        }
+
+                        Intent i2 = new Intent("com.objective4.app.onlife.Fragments.Social.FragmentContacts");
+                        i2.putExtra("tag", "update");
+                        i2.putExtra("id", idP);
+                        i2.putExtra("state", state);
+                        sendBroadcast(i2);
+                        break;
                     }
-                    break;
-                case "newUser":
-                    String user = extras.getString("user");
-                    ModelPerson newUser = gson.fromJson(user, ModelPerson.class);
-
-                    List<ModelPerson> friends = gson.fromJson(sharedPreferences.getString("friends", ""), (new TypeToken<ArrayList<ModelPerson>>() {}.getType()));
-                    if (!isFriendAlready(friends,newUser.getId())){
-                        friends.add(newUser);
-                        Collections.sort(friends, new Comparator<ModelPerson>() {
-                            @Override
-                            public int compare(ModelPerson modelPerson1, ModelPerson modelPerson2) {
-                                return modelPerson1.getName().compareTo(modelPerson2.getName());
-                            }
-                        });
-                        sharedPreferences.edit().putString("friends",gson.toJson(friends)).apply();
-                    }
-
-                    Intent i = new Intent("com.objective4.app.onlife.Fragments.Social.FragmentContacts");
-                    i.putExtra("tag", "new_user");
-                    i.putExtra("new_user", newUser);
-                    sendBroadcast(i);
-
-                    break;
-                case "update": {
-                    String idP = extras.getString("id");
-                    String state = extras.getString("state");
-
-                    assert state != null;
-                    if (state.equals("O")){
-                        List<ModelPerson> friendsR = gson.fromJson(sharedPreferences.getString("friends", ""), (new TypeToken<ArrayList<ModelPerson>>() {}.getType()));
-                        List<ModelGroup> groupsR = gson.fromJson(sharedPreferences.getString("groups", ""), (new TypeToken<ArrayList<ModelGroup>>() {}.getType()));
-                        removeFriend(this,friendsR,groupsR,idP);
-                        sharedPreferences.edit().putString("friends",gson.toJson(friendsR)).apply();
-                        sharedPreferences.edit().putString("groups",gson.toJson(groupsR)).apply();
-                    }
-
-                    Intent i2 = new Intent("com.objective4.app.onlife.Fragments.Social.FragmentContacts");
-                    i2.putExtra("tag", "update");
-                    i2.putExtra("id", idP);
-                    i2.putExtra("state", state);
-                    sendBroadcast(i2);
-                    break;
-                }
-                case "ping":{
-                    String idP = extras.getString("id");
-                    if (isScreenOn(getApplicationContext())) {
-                        Intent pingIntent = new Intent("com.objective4.app.onlife.BroadcastReceivers.BroadcastReceiverPing");
-                        pingIntent.putExtra("id", idP);
-                        sendBroadcast(pingIntent);
+                    case "ping": {
+                        String idP = extras.getString("id");
+                        if (isScreenOn(getApplicationContext())) {
+                            Intent pingIntent = new Intent("com.objective4.app.onlife.BroadcastReceivers.BroadcastReceiverPing");
+                            pingIntent.putExtra("id", idP);
+                            sendBroadcast(pingIntent);
+                        }
                     }
                 }
             }
-        }
+        }catch (Exception ignored){}
     }
 
 

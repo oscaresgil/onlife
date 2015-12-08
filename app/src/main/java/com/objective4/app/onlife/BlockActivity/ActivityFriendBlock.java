@@ -93,7 +93,7 @@ public class ActivityFriendBlock extends ActivityBlockBase<ModelPerson> {
         blockFab = (FloatingActionButton)findViewById(R.id.ActivityBlockBase_ButtonBlock);
 
         long actualTime = Calendar.getInstance().getTimeInMillis();
-        if (actualTime - actualObject.getLastBlockedTime() < getResources().getInteger(R.integer.block_time_remaining)) {
+        if (actualTime - actualObject.getLastBlockedTime() < getResources().getInteger(R.integer.block_time_remaining) && !ModelSessionData.getInstance().getUser().getId().equals(actualObject.getId())) {
             setTimer();
         }else{
             progressBar.setProgress(getResources().getInteger(R.integer.block_time_remaining));
@@ -143,8 +143,8 @@ public class ActivityFriendBlock extends ActivityBlockBase<ModelPerson> {
     };
 
     public void block(View view) {
+        hideSoftKeyboard(this,messageTextView);
         if (isNetworkAvailable(this)) {
-            hideSoftKeyboard(this,messageTextView);
             if (listenerTextWatcher.getActualChar() < getResources().getInteger(R.integer.message_max_chars)+1) {
                 boolean devAdmin = checkDeviceAdmin(this);
                 if (actualObject.getState().equals("A") && devAdmin) {
@@ -184,7 +184,12 @@ public class ActivityFriendBlock extends ActivityBlockBase<ModelPerson> {
         nestedScrollView.setNestedScrollingEnabled(false);
         nestedScrollView.setSmoothScrollingEnabled(false);
         blockFab.setClickable(false);
-        emoticonButton.setEnabled(false);
+        emoticonButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                makeSnackbar(ActivityFriendBlock.this,v,R.string.dialog_please_wait,Snackbar.LENGTH_LONG);
+            }
+        });
 
         long actualTime = Calendar.getInstance().getTimeInMillis();
         int time = (int) (actualTime - actualObject.getLastBlockedTime());
@@ -203,7 +208,7 @@ public class ActivityFriendBlock extends ActivityBlockBase<ModelPerson> {
                 nestedScrollView.setNestedScrollingEnabled(true);
                 nestedScrollView.setSmoothScrollingEnabled(true);
                 blockFab.setClickable(true);
-                emoticonButton.setEnabled(true);
+                emoticonButton.setOnClickListener(new EmoticonClick());
             }
         }.start();
     }

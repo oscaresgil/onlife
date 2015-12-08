@@ -2,12 +2,9 @@ package com.objective4.app.onlife.Tasks;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
-import android.provider.Settings;
 import android.support.design.widget.Snackbar;
-import android.view.View;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.gson.Gson;
@@ -29,7 +26,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import static com.objective4.app.onlife.Controller.StaticMethods.comparePerson;
-import static com.objective4.app.onlife.Controller.StaticMethods.isNetworkAvailable;
 import static com.objective4.app.onlife.Controller.StaticMethods.makeSnackbar;
 import static com.objective4.app.onlife.Controller.StaticMethods.setHashToList;
 
@@ -78,19 +74,20 @@ public class TaskGetFriends extends AsyncTask<String, Void, JSONObject> {
                 }.getType()));
 
                 HashMap<String,ModelPerson> hashMap = comparePerson(ModelSessionData.getInstance().getFriends(), friends);
+                ModelPerson actualUser = ModelSessionData.getInstance().getUser();
+                hashMap.put(ModelSessionData.getInstance().getUser().getId(),new ModelPerson(actualUser.getId(),actualUser.getName(),"A"));
                 ModelSessionData.getInstance().setFriends(hashMap);
 
                 AdapterBaseElements adapterContact = ((ActivityHome) context).getAdapterContact();
-                if (adapterContact!=null) adapterContact.updateElements(setHashToList(hashMap));
+                List<ModelPerson> friendsList = setHashToList(hashMap);
+                friendsList.add(new ModelPerson(String.format("%d",context.getResources().getInteger(R.integer.id_invite_friends)), context.getString(R.string.invite_friends)));
+
+                if (adapterContact!=null) adapterContact.updateElements(friendsList);
 
                 SharedPreferences sharedPreferences = context.getSharedPreferences(ActivityMain.MyPREFERENCES, Context.MODE_PRIVATE);
                 if (sharedPreferences.getBoolean("first_login", false)) {
                     sharedPreferences.edit().putString("friends", new Gson().toJson(setHashToList(ModelSessionData.getInstance().getFriends()))).apply();
                     sharedPreferences.edit().putBoolean("first_login", false).apply();
-
-                    Intent i = new Intent("com.objective4.app.onlife.Fragments.Social.FragmentContacts");
-                    i.putExtra("tag", "friends_updated");
-                    context.sendBroadcast(i);
                 }
 
                 if (flagDialog) if (dialog.isShowing())  dialog.dismiss();
