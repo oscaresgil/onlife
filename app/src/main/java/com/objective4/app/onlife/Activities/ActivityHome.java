@@ -30,6 +30,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.objective4.app.onlife.Adapters.AdapterBaseElements;
 import com.objective4.app.onlife.Adapters.AdapterFragmentPager;
+import com.objective4.app.onlife.Controller.AppRater;
 import com.objective4.app.onlife.Fragments.Social.FragmentContacts;
 import com.objective4.app.onlife.Fragments.Social.FragmentGroups;
 import com.objective4.app.onlife.Models.ModelGroup;
@@ -113,6 +114,12 @@ public class ActivityHome extends AppCompatActivity implements ViewPager.OnPageC
         if (sharedPreferences.getInt("update_key",0)==1){
             setDialogUpdate(1);
         }
+
+        AppRater appRater = new AppRater(this);
+        appRater.setDaysBeforePrompt(0);
+        appRater.setLaunchesBeforePrompt(1);
+        appRater.setPhrases(R.string.rate_title, R.string.rate_explanation, R.string.rate_now, R.string.rate_later, R.string.rate_never);
+        appRater.show();
     }
 
     @Override

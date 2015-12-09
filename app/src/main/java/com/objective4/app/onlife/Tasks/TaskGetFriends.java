@@ -80,15 +80,15 @@ public class TaskGetFriends extends AsyncTask<String, Void, JSONObject> {
 
                 AdapterBaseElements adapterContact = ((ActivityHome) context).getAdapterContact();
                 List<ModelPerson> friendsList = setHashToList(hashMap);
-                friendsList.add(new ModelPerson(String.format("%d",context.getResources().getInteger(R.integer.id_invite_friends)), context.getString(R.string.invite_friends)));
-
-                if (adapterContact!=null) adapterContact.updateElements(friendsList);
 
                 SharedPreferences sharedPreferences = context.getSharedPreferences(ActivityMain.MyPREFERENCES, Context.MODE_PRIVATE);
                 if (sharedPreferences.getBoolean("first_login", false)) {
                     sharedPreferences.edit().putString("friends", new Gson().toJson(setHashToList(ModelSessionData.getInstance().getFriends()))).apply();
                     sharedPreferences.edit().putBoolean("first_login", false).apply();
                 }
+
+                friendsList.add(new ModelPerson(String.format("%d",context.getResources().getInteger(R.integer.id_invite_friends)), context.getString(R.string.invite_friends)));
+                if (adapterContact!=null) adapterContact.updateElements(friendsList);
 
                 if (flagDialog) if (dialog.isShowing())  dialog.dismiss();
 

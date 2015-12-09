@@ -107,5 +107,10 @@
     <string name="notification_has_blocked">te ha bloqueado.</string>
     <string name="see_privacy_policy">Politicas de Privacidad</string>
     <string name="settings_select_contacts">Seleccionar amigos</string>
+    <string name="rate_title">¡Califica Onlife!</string>
+    <string name="rate_explanation">¿Te gusta Onlife? Por favor toma un momento para calificarnos en la Play Store.</string>
+    <string name="rate_now">Calificar ahora</string>
+    <string name="rate_later">Tal vez luego</string>
+    <string name="rate_never">Nunca</string>
 
 </resources>

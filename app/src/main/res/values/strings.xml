@@ -113,5 +113,10 @@
     <string name="see_tutorial" translatable="false">Tutorial</string>
     <string name="see_privacy_policy">Privacy Policy</string>
     <string name="settings_select_contacts">Select friends</string>
+    <string name="rate_title">Rate Onlife!</string>
+    <string name="rate_explanation">Do you like Onlife? Please take a moment to rate us on the Play Store.</string>
+    <string name="rate_now">Rate now</string>
+    <string name="rate_later">Maybe later</string>
+    <string name="rate_never">Never</string>
 
 </resources>

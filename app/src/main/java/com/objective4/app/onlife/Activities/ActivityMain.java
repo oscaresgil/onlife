@@ -174,8 +174,6 @@ public class ActivityMain extends AppCompatActivity{
                             intent.setData(Uri.parse("package:" + getPackageName()));
                             startActivity(intent);
 
-                            dialog.dismiss();
-                            dialog.cancel();
                         }
                     }).show();
         }
