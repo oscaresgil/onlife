@@ -116,8 +116,8 @@ public class ActivityHome extends AppCompatActivity implements ViewPager.OnPageC
         }
 
         AppRater appRater = new AppRater(this);
-        appRater.setDaysBeforePrompt(0);
-        appRater.setLaunchesBeforePrompt(1);
+        appRater.setDaysBeforePrompt(2);
+        appRater.setLaunchesBeforePrompt(5);
         appRater.setPhrases(R.string.rate_title, R.string.rate_explanation, R.string.rate_now, R.string.rate_later, R.string.rate_never);
         appRater.show();
     }
